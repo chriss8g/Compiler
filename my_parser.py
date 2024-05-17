@@ -42,7 +42,7 @@ def p_factor_expr(p):
     'factor : LPAREN expression RPAREN'
     p[0] = p[2]
 
-def p_error(p):
+def p_error():
     print("Error de sintaxis")
 
 parser = yacc.yacc()
