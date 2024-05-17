@@ -1,3 +1,5 @@
+from my_ast import ASTNode
+
 INT_TYPE = 'int'
 
 class SemanticError(Exception):

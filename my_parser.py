@@ -1,20 +1,6 @@
 import ply.yacc as yacc
 from lexer import tokens
-
-class ASTNode:
-    def __init__(self, type, children=None, leaf=None):
-        self.type = type
-        self.children = children if children is not None else []
-        self.leaf = leaf
-
-    def print(self):
-        result = f"({self.type}"
-        if self.leaf is not None:
-            result += f" {self.leaf}"
-        for child in self.children:
-            result += " " + child.print()
-        result += ")"
-        return result
+from my_ast import ASTNode
 
 def p_expression_binop(p):
     '''expression : expression PLUS term
