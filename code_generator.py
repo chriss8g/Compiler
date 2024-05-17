@@ -8,24 +8,25 @@ class TACInstruction:
     def __str__(self):
         return f"{self.result} = {self.arg1} {self.operation} {self.arg2}"
 
-tac_code = []
-temp_count = 0
+class code_generator:
+    def __init__(self):
+        self.tac_code = []
+        self.temp_count = 0
 
-def new_temp():
-    global temp_count
-    temp_count += 1
-    return f"t{temp_count}"
+    def new_temp(self):
+        self.temp_count += 1
+        return f"t{self.temp_count}"
 
-def generate_intermediate_code(node):
-    if node.type == 'num':
-        return node.leaf
+    def generate_intermediate_code(self, node):
+        if node.type == 'num':
+            return node.leaf
 
-    elif node.type == 'binop':
-        arg1 = generate_intermediate_code(node.children[0])
-        arg2 = generate_intermediate_code(node.children[1])
-        temp_var = new_temp()
-        tac_code.append(TACInstruction(node.leaf, arg1, arg2, temp_var))
-        return temp_var
+        elif node.type == 'binop':
+            arg1 = self.generate_intermediate_code(node.children[0])
+            arg2 = self.generate_intermediate_code(node.children[1])
+            temp_var = self.new_temp()
+            self.tac_code.append(TACInstruction(node.leaf, arg1, arg2, temp_var))
+            return temp_var
 
 if __name__ == "__main__":
     from my_parser import parser
@@ -43,11 +44,10 @@ if __name__ == "__main__":
             try:
                 check_semantics(result)
                 print("Semantics check passed")
-                generate_intermediate_code(result)
+                x = code_generator()
+                x.generate_intermediate_code(result)
                 print("TAC:")
-                for instr in tac_code:
+                for instr in x.tac_code:
                     print(instr)
-                tac_code = []
-                temp_count = 0
             except SemanticError as e:
                 print(f"Semantic error: {e}")
