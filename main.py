@@ -5,27 +5,22 @@ from code_generator import CodeGenerator
 if __name__ == "__main__":
     generator = CodeGenerator()
 
-    while True:
-        try:
-            s = input('calc > ')
-        except EOFError:
-            break
-        if not s:
-            continue
-        result = parser.parse(s)
-        if result:
-            try:
-                check_semantics(result)
-                print("Semantics check passed")
-                generator.generate_intermediate_code(result)
-                print("TAC:")
-                for instr in generator.tac_code:
-                    print(instr)
-                print("MIPS Code:")
-                mips_code = generator.generate_mips_code()
-                for line in mips_code:
-                    print(line)
-                generator.tac_code = []
-                generator.temp_count = 0
-            except SemanticError as e:
-                print(f"Semantic error: {e}")
+    with open('script.uh', 'r') as file:
+        lines = file.readlines()
+
+    with open('script.asm', 'w') as output_file:
+        for line in lines:
+            if not line.strip():
+                continue
+            result = parser.parse(line.strip())
+            if result:
+                try:
+                    check_semantics(result)
+                    generator.generate_intermediate_code(result)
+                    mips_code = generator.generate_mips_code()
+                    for asm_line in mips_code:
+                        output_file.write(asm_line + '\n')
+                    generator.tac_code = []
+                    generator.temp_count = 0
+                except SemanticError as e:
+                    print(f"Semantic error: {e}")
