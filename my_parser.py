@@ -1,35 +1,105 @@
 import ply.yacc as yacc
-from lexer import tokens
+from my_lexer import tokens
 from my_ast import ASTNode
 
-def p_expression_binop(p):
-    '''expression : expression PLUS term
-                  | expression MINUS term'''
-    p[0] = ASTNode(type='binop', children=[p[1], p[3]], leaf=p[2])
+# Precedencia de operaciones
+precedence = (
+    ('left', 'OR'), 
+    ('left', 'AND'), 
+    ('left', 'EQ', 'GT', 'LT', 'GE', 'LE', 'NE'),
+    ('left', 'PLUS', 'MINUS'), 
+    ('left', 'TIMES', 'DIVIDE'), 
+)
 
-def p_expression_term(p):
-    'expression : term'
-    p[0] = p[1]
+def p_expression(p):
+    '''expression : expressionL
+                  | expressionA'''
+    if len(p) == 2:
+        p[0] = p[1]
 
-def p_term_binop(p):
-    '''term : term TIMES factor
-            | term DIVIDE factor'''
-    p[0] = ASTNode(type='binop', children=[p[1], p[3]], leaf=p[2])
+def p_expressionL(p):
+    '''expressionL : expressionL OR termL
+                   | termL'''
+    if len(p) == 4:
+        if p[2] == '||':
+            p[0] = ASTNode(type='binlo', children=[p[1], p[3]], leaf=p[2])
+    elif len(p) == 2:
+        p[0] = p[1]
 
-def p_term_factor(p):
-    'term : factor'
-    p[0] = p[1]
+def p_termL(p):
+    '''termL : termL AND factorL
+             | factorL '''
+    
+    if len(p) == 4:
+        if p[2] == '&&':
+            p[0] = ASTNode(type='binlo', children=[p[1], p[3]], leaf=p[2])
+    elif len(p) == 2:
+        p[0] = p[1]
 
-def p_factor_num(p):
-    'factor : NUMBER'
-    p[0] = ASTNode(type='num', leaf=p[1])
+def p_factorL(p):
+    '''factorL : BOOL
+               | factorA EQ factorA
+               | factorA GT factorA
+               | factorA LT factorA
+               | factorA GE factorA
+               | factorA LE factorA
+               | factorA NE factorA
+               | LPAREN expressionL RPAREN'''
+    if len(p) == 4:
+        if p[2] == '==':
+            p[0] = ASTNode(type='binco', children=[p[1], p[3]], leaf=p[2])
+        elif p[2] == '>':
+            p[0] = ASTNode(type='binco', children=[p[1], p[3]], leaf=p[2])
+        elif p[2] == '<':
+            p[0] = ASTNode(type='binco', children=[p[1], p[3]], leaf=p[2])
+        elif p[2] == '>=':
+            p[0] = ASTNode(type='binco', children=[p[1], p[3]], leaf=p[2])
+        elif p[2] == '=<':
+            p[0] = ASTNode(type='binco', children=[p[1], p[3]], leaf=p[2])
+        elif p[2] == '!=':
+            p[0] = ASTNode(type='binco', children=[p[1], p[3]], leaf=p[2])
+        else:  # Caso para paréntesis
+            p[0] = p[2]
+    if len(p) == 2:
+        p[0] = ASTNode(type='bool', leaf=p[1])
+    
 
-def p_factor_expr(p):
-    'factor : LPAREN expression RPAREN'
-    p[0] = p[2]
+def p_expressionA(p):
+    '''expressionA : expressionA PLUS termA
+                   | expressionA MINUS termA
+                   | termA'''
+    if len(p) == 4:
+        if p[2] == '+':
+            p[0] = ASTNode(type='binop', children=[p[1], p[3]], leaf=p[2])
+        if p[2] == '-':
+            p[0] = ASTNode(type='binop', children=[p[1], p[3]], leaf=p[2])  
+    elif len(p) == 2:
+        p[0] = p[1]
 
-def p_error():
-    print("Error de sintaxis")
+def p_termA(p):
+    '''termA : termA TIMES factorA
+             | termA DIVIDE factorA
+             | factorA '''
+    
+    if len(p) == 4:
+        if p[2] == '*':
+            p[0] = ASTNode(type='binop', children=[p[1], p[3]], leaf=p[2])
+        if p[2] == '/':
+            p[0] = ASTNode(type='binop', children=[p[1], p[3]], leaf=p[2])  
+    elif len(p) == 2:
+        p[0] = p[1]
+
+def p_factorA(p):
+    '''factorA : NUMBER
+               | LPAREN expressionA RPAREN'''
+    if len(p) == 2:
+        p[0] = ASTNode(type='num', leaf=p[1])
+    else:  # Caso para paréntesis
+        p[0] = p[2]
+
+def p_error(p):
+    print(f"Error de sintaxis en '{p}'")
+    raise SystemExit("Deteniendo la ejecución debido a un error de sintaxis.")
 
 parser = yacc.yacc()
 
@@ -42,4 +112,4 @@ if __name__ == "__main__":
         if not s:
             continue
         result = parser.parse(s)
-        print(result.print())
+        result.imprimir()
