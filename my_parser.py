@@ -28,8 +28,16 @@ def p_factor_expr(p):
     'factor : LPAREN expression RPAREN'
     p[0] = p[2]
 
-def p_error():
+def p_error(p):
     print("Error de sintaxis")
+    
+def p_expression_concat(p):
+    'expression : expression CONCAT expression'
+    p[0] = ASTNode(type='concat', children=[p[1], p[3]])
+
+def p_expression_string(p):
+    'expression : STRING'
+    p[0] = ASTNode(type='string', leaf=p[1])
 
 parser = yacc.yacc()
 
@@ -42,4 +50,4 @@ if __name__ == "__main__":
         if not s:
             continue
         result = parser.parse(s)
-        print(result.print())
+        print(result)

@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'DIVIDE LPAREN MINUS NUMBER PLUS RPAREN TIMESexpression : expression PLUS term\n                  | expression MINUS termexpression : termterm : term TIMES factor\n            | term DIVIDE factorterm : factorfactor : NUMBERfactor : LPAREN expression RPAREN'
+_lr_signature = 'CONCAT DIVIDE LPAREN MINUS NUMBER PLUS RPAREN STRING TIMESexpression : expression PLUS term\n                  | expression MINUS termexpression : termterm : term TIMES factor\n            | term DIVIDE factorterm : factorfactor : NUMBERfactor : LPAREN expression RPARENexpression : expression CONCAT expressionexpression : STRING'
     
-_lr_action_items = {'NUMBER':([0,5,6,7,8,9,],[4,4,4,4,4,4,]),'LPAREN':([0,5,6,7,8,9,],[5,5,5,5,5,5,]),'$end':([1,2,3,4,11,12,13,14,15,],[0,-3,-6,-7,-1,-2,-4,-5,-8,]),'PLUS':([1,2,3,4,10,11,12,13,14,15,],[6,-3,-6,-7,6,-1,-2,-4,-5,-8,]),'MINUS':([1,2,3,4,10,11,12,13,14,15,],[7,-3,-6,-7,7,-1,-2,-4,-5,-8,]),'RPAREN':([2,3,4,10,11,12,13,14,15,],[-3,-6,-7,15,-1,-2,-4,-5,-8,]),'TIMES':([2,3,4,11,12,13,14,15,],[8,-6,-7,8,8,-4,-5,-8,]),'DIVIDE':([2,3,4,11,12,13,14,15,],[9,-6,-7,9,9,-4,-5,-8,]),}
+_lr_action_items = {'STRING':([0,6,9,],[3,3,3,]),'NUMBER':([0,6,7,8,9,10,11,],[5,5,5,5,5,5,5,]),'LPAREN':([0,6,7,8,9,10,11,],[6,6,6,6,6,6,6,]),'$end':([1,2,3,4,5,13,14,15,16,17,18,],[0,-3,-10,-6,-7,-1,-2,-9,-4,-5,-8,]),'PLUS':([1,2,3,4,5,12,13,14,15,16,17,18,],[7,-3,-10,-6,-7,7,-1,-2,7,-4,-5,-8,]),'MINUS':([1,2,3,4,5,12,13,14,15,16,17,18,],[8,-3,-10,-6,-7,8,-1,-2,8,-4,-5,-8,]),'CONCAT':([1,2,3,4,5,12,13,14,15,16,17,18,],[9,-3,-10,-6,-7,9,-1,-2,9,-4,-5,-8,]),'RPAREN':([2,3,4,5,12,13,14,15,16,17,18,],[-3,-10,-6,-7,18,-1,-2,-9,-4,-5,-8,]),'TIMES':([2,4,5,13,14,16,17,18,],[10,-6,-7,10,10,-4,-5,-8,]),'DIVIDE':([2,4,5,13,14,16,17,18,],[11,-6,-7,11,11,-4,-5,-8,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'expression':([0,5,],[1,10,]),'term':([0,5,6,7,],[2,2,11,12,]),'factor':([0,5,6,7,8,9,],[3,3,3,3,13,14,]),}
+_lr_goto_items = {'expression':([0,6,9,],[1,12,15,]),'term':([0,6,7,8,9,],[2,2,13,14,2,]),'factor':([0,6,7,8,9,10,11,],[4,4,4,4,4,16,17,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -27,12 +27,14 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> expression","S'",1,None,None,None),
-  ('expression -> expression PLUS term','expression',3,'p_expression_binop','my_parser.py',8),
-  ('expression -> expression MINUS term','expression',3,'p_expression_binop','my_parser.py',9),
-  ('expression -> term','expression',1,'p_expression_term','my_parser.py',16),
-  ('term -> term TIMES factor','term',3,'p_term_binop','my_parser.py',20),
-  ('term -> term DIVIDE factor','term',3,'p_term_binop','my_parser.py',21),
-  ('term -> factor','term',1,'p_term_factor','my_parser.py',28),
-  ('factor -> NUMBER','factor',1,'p_factor_num','my_parser.py',32),
-  ('factor -> LPAREN expression RPAREN','factor',3,'p_factor_expr','my_parser.py',36),
+  ('expression -> expression PLUS term','expression',3,'p_expression_binop','my_parser.py',6),
+  ('expression -> expression MINUS term','expression',3,'p_expression_binop','my_parser.py',7),
+  ('expression -> term','expression',1,'p_expression_term','my_parser.py',11),
+  ('term -> term TIMES factor','term',3,'p_term_binop','my_parser.py',15),
+  ('term -> term DIVIDE factor','term',3,'p_term_binop','my_parser.py',16),
+  ('term -> factor','term',1,'p_term_factor','my_parser.py',20),
+  ('factor -> NUMBER','factor',1,'p_factor_num','my_parser.py',24),
+  ('factor -> LPAREN expression RPAREN','factor',3,'p_factor_expr','my_parser.py',28),
+  ('expression -> expression CONCAT expression','expression',3,'p_expression_concat','my_parser.py',35),
+  ('expression -> STRING','expression',1,'p_expression_string','my_parser.py',39),
 ]
