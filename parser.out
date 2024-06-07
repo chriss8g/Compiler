@@ -26,11 +26,11 @@ Rule 20    termA -> factorA
 Rule 21    factorA -> NUMBER
 Rule 22    factorA -> PI
 Rule 23    factorA -> E
-Rule 24    factorA -> SIN LPAREN expression RPAREN
-Rule 25    factorA -> COS LPAREN expression RPAREN
-Rule 26    factorA -> SQRT LPAREN expression RPAREN
-Rule 27    factorA -> EXP LPAREN expression RPAREN
-Rule 28    factorA -> LOG LPAREN expression RPAREN
+Rule 24    factorA -> SIN LPAREN expressionA RPAREN
+Rule 25    factorA -> COS LPAREN expressionA RPAREN
+Rule 26    factorA -> SQRT LPAREN expressionA RPAREN
+Rule 27    factorA -> EXP LPAREN expressionA RPAREN
+Rule 28    factorA -> LOG LPAREN expressionA COMA expressionA RPAREN
 Rule 29    factorA -> RAND LPAREN RPAREN
 Rule 30    factorA -> LPAREN expressionA RPAREN
 
@@ -38,6 +38,7 @@ Terminals, with rules where they appear
 
 AND                  : 5
 BOOL                 : 7
+COMA                 : 28
 COS                  : 25
 DIVIDE               : 19
 E                    : 23
@@ -64,8 +65,8 @@ error                :
 
 Nonterminals, with rules where they appear
 
-expression           : 24 25 26 27 28 0
-expressionA          : 2 15 16 30
+expression           : 0
+expressionA          : 2 15 16 24 25 26 27 28 28 30
 expressionL          : 1 3 14
 factorA              : 8 8 9 9 10 10 11 11 12 12 13 13 18 19 20
 factorL              : 5 6
@@ -100,11 +101,11 @@ state 0
     (21) factorA -> . NUMBER
     (22) factorA -> . PI
     (23) factorA -> . E
-    (24) factorA -> . SIN LPAREN expression RPAREN
-    (25) factorA -> . COS LPAREN expression RPAREN
-    (26) factorA -> . SQRT LPAREN expression RPAREN
-    (27) factorA -> . EXP LPAREN expression RPAREN
-    (28) factorA -> . LOG LPAREN expression RPAREN
+    (24) factorA -> . SIN LPAREN expressionA RPAREN
+    (25) factorA -> . COS LPAREN expressionA RPAREN
+    (26) factorA -> . SQRT LPAREN expressionA RPAREN
+    (27) factorA -> . EXP LPAREN expressionA RPAREN
+    (28) factorA -> . LOG LPAREN expressionA COMA expressionA RPAREN
     (29) factorA -> . RAND LPAREN RPAREN
     (30) factorA -> . LPAREN expressionA RPAREN
 
@@ -140,7 +141,6 @@ state 2
     (3) expressionL -> expressionL . OR termL
 
     $end            reduce using rule 1 (expression -> expressionL .)
-    RPAREN          reduce using rule 1 (expression -> expressionL .)
     OR              shift and go to state 19
 
 
@@ -151,7 +151,6 @@ state 3
     (16) expressionA -> expressionA . MINUS termA
 
     $end            reduce using rule 2 (expression -> expressionA .)
-    RPAREN          reduce using rule 2 (expression -> expressionA .)
     PLUS            shift and go to state 20
     MINUS           shift and go to state 21
 
@@ -177,6 +176,7 @@ state 5
     MINUS           reduce using rule 17 (expressionA -> termA .)
     $end            reduce using rule 17 (expressionA -> termA .)
     RPAREN          reduce using rule 17 (expressionA -> termA .)
+    COMA            reduce using rule 17 (expressionA -> termA .)
     TIMES           shift and go to state 23
     DIVIDE          shift and go to state 24
 
@@ -250,11 +250,11 @@ state 9
     (21) factorA -> . NUMBER
     (22) factorA -> . PI
     (23) factorA -> . E
-    (24) factorA -> . SIN LPAREN expression RPAREN
-    (25) factorA -> . COS LPAREN expression RPAREN
-    (26) factorA -> . SQRT LPAREN expression RPAREN
-    (27) factorA -> . EXP LPAREN expression RPAREN
-    (28) factorA -> . LOG LPAREN expression RPAREN
+    (24) factorA -> . SIN LPAREN expressionA RPAREN
+    (25) factorA -> . COS LPAREN expressionA RPAREN
+    (26) factorA -> . SQRT LPAREN expressionA RPAREN
+    (27) factorA -> . EXP LPAREN expressionA RPAREN
+    (28) factorA -> . LOG LPAREN expressionA COMA expressionA RPAREN
     (29) factorA -> . RAND LPAREN RPAREN
     (30) factorA -> . LPAREN expressionA RPAREN
 
@@ -293,6 +293,7 @@ state 10
     MINUS           reduce using rule 21 (factorA -> NUMBER .)
     $end            reduce using rule 21 (factorA -> NUMBER .)
     RPAREN          reduce using rule 21 (factorA -> NUMBER .)
+    COMA            reduce using rule 21 (factorA -> NUMBER .)
     AND             reduce using rule 21 (factorA -> NUMBER .)
     OR              reduce using rule 21 (factorA -> NUMBER .)
 
@@ -313,6 +314,7 @@ state 11
     MINUS           reduce using rule 22 (factorA -> PI .)
     $end            reduce using rule 22 (factorA -> PI .)
     RPAREN          reduce using rule 22 (factorA -> PI .)
+    COMA            reduce using rule 22 (factorA -> PI .)
     AND             reduce using rule 22 (factorA -> PI .)
     OR              reduce using rule 22 (factorA -> PI .)
 
@@ -333,41 +335,42 @@ state 12
     MINUS           reduce using rule 23 (factorA -> E .)
     $end            reduce using rule 23 (factorA -> E .)
     RPAREN          reduce using rule 23 (factorA -> E .)
+    COMA            reduce using rule 23 (factorA -> E .)
     AND             reduce using rule 23 (factorA -> E .)
     OR              reduce using rule 23 (factorA -> E .)
 
 
 state 13
 
-    (24) factorA -> SIN . LPAREN expression RPAREN
+    (24) factorA -> SIN . LPAREN expressionA RPAREN
 
     LPAREN          shift and go to state 33
 
 
 state 14
 
-    (25) factorA -> COS . LPAREN expression RPAREN
+    (25) factorA -> COS . LPAREN expressionA RPAREN
 
     LPAREN          shift and go to state 34
 
 
 state 15
 
-    (26) factorA -> SQRT . LPAREN expression RPAREN
+    (26) factorA -> SQRT . LPAREN expressionA RPAREN
 
     LPAREN          shift and go to state 35
 
 
 state 16
 
-    (27) factorA -> EXP . LPAREN expression RPAREN
+    (27) factorA -> EXP . LPAREN expressionA RPAREN
 
     LPAREN          shift and go to state 36
 
 
 state 17
 
-    (28) factorA -> LOG . LPAREN expression RPAREN
+    (28) factorA -> LOG . LPAREN expressionA COMA expressionA RPAREN
 
     LPAREN          shift and go to state 37
 
@@ -395,11 +398,11 @@ state 19
     (21) factorA -> . NUMBER
     (22) factorA -> . PI
     (23) factorA -> . E
-    (24) factorA -> . SIN LPAREN expression RPAREN
-    (25) factorA -> . COS LPAREN expression RPAREN
-    (26) factorA -> . SQRT LPAREN expression RPAREN
-    (27) factorA -> . EXP LPAREN expression RPAREN
-    (28) factorA -> . LOG LPAREN expression RPAREN
+    (24) factorA -> . SIN LPAREN expressionA RPAREN
+    (25) factorA -> . COS LPAREN expressionA RPAREN
+    (26) factorA -> . SQRT LPAREN expressionA RPAREN
+    (27) factorA -> . EXP LPAREN expressionA RPAREN
+    (28) factorA -> . LOG LPAREN expressionA COMA expressionA RPAREN
     (29) factorA -> . RAND LPAREN RPAREN
     (30) factorA -> . LPAREN expressionA RPAREN
 
@@ -428,11 +431,11 @@ state 20
     (21) factorA -> . NUMBER
     (22) factorA -> . PI
     (23) factorA -> . E
-    (24) factorA -> . SIN LPAREN expression RPAREN
-    (25) factorA -> . COS LPAREN expression RPAREN
-    (26) factorA -> . SQRT LPAREN expression RPAREN
-    (27) factorA -> . EXP LPAREN expression RPAREN
-    (28) factorA -> . LOG LPAREN expression RPAREN
+    (24) factorA -> . SIN LPAREN expressionA RPAREN
+    (25) factorA -> . COS LPAREN expressionA RPAREN
+    (26) factorA -> . SQRT LPAREN expressionA RPAREN
+    (27) factorA -> . EXP LPAREN expressionA RPAREN
+    (28) factorA -> . LOG LPAREN expressionA COMA expressionA RPAREN
     (29) factorA -> . RAND LPAREN RPAREN
     (30) factorA -> . LPAREN expressionA RPAREN
 
@@ -459,11 +462,11 @@ state 21
     (21) factorA -> . NUMBER
     (22) factorA -> . PI
     (23) factorA -> . E
-    (24) factorA -> . SIN LPAREN expression RPAREN
-    (25) factorA -> . COS LPAREN expression RPAREN
-    (26) factorA -> . SQRT LPAREN expression RPAREN
-    (27) factorA -> . EXP LPAREN expression RPAREN
-    (28) factorA -> . LOG LPAREN expression RPAREN
+    (24) factorA -> . SIN LPAREN expressionA RPAREN
+    (25) factorA -> . COS LPAREN expressionA RPAREN
+    (26) factorA -> . SQRT LPAREN expressionA RPAREN
+    (27) factorA -> . EXP LPAREN expressionA RPAREN
+    (28) factorA -> . LOG LPAREN expressionA COMA expressionA RPAREN
     (29) factorA -> . RAND LPAREN RPAREN
     (30) factorA -> . LPAREN expressionA RPAREN
 
@@ -495,11 +498,11 @@ state 22
     (21) factorA -> . NUMBER
     (22) factorA -> . PI
     (23) factorA -> . E
-    (24) factorA -> . SIN LPAREN expression RPAREN
-    (25) factorA -> . COS LPAREN expression RPAREN
-    (26) factorA -> . SQRT LPAREN expression RPAREN
-    (27) factorA -> . EXP LPAREN expression RPAREN
-    (28) factorA -> . LOG LPAREN expression RPAREN
+    (24) factorA -> . SIN LPAREN expressionA RPAREN
+    (25) factorA -> . COS LPAREN expressionA RPAREN
+    (26) factorA -> . SQRT LPAREN expressionA RPAREN
+    (27) factorA -> . EXP LPAREN expressionA RPAREN
+    (28) factorA -> . LOG LPAREN expressionA COMA expressionA RPAREN
     (29) factorA -> . RAND LPAREN RPAREN
     (30) factorA -> . LPAREN expressionA RPAREN
 
@@ -524,11 +527,11 @@ state 23
     (21) factorA -> . NUMBER
     (22) factorA -> . PI
     (23) factorA -> . E
-    (24) factorA -> . SIN LPAREN expression RPAREN
-    (25) factorA -> . COS LPAREN expression RPAREN
-    (26) factorA -> . SQRT LPAREN expression RPAREN
-    (27) factorA -> . EXP LPAREN expression RPAREN
-    (28) factorA -> . LOG LPAREN expression RPAREN
+    (24) factorA -> . SIN LPAREN expressionA RPAREN
+    (25) factorA -> . COS LPAREN expressionA RPAREN
+    (26) factorA -> . SQRT LPAREN expressionA RPAREN
+    (27) factorA -> . EXP LPAREN expressionA RPAREN
+    (28) factorA -> . LOG LPAREN expressionA COMA expressionA RPAREN
     (29) factorA -> . RAND LPAREN RPAREN
     (30) factorA -> . LPAREN expressionA RPAREN
 
@@ -551,11 +554,11 @@ state 24
     (21) factorA -> . NUMBER
     (22) factorA -> . PI
     (23) factorA -> . E
-    (24) factorA -> . SIN LPAREN expression RPAREN
-    (25) factorA -> . COS LPAREN expression RPAREN
-    (26) factorA -> . SQRT LPAREN expression RPAREN
-    (27) factorA -> . EXP LPAREN expression RPAREN
-    (28) factorA -> . LOG LPAREN expression RPAREN
+    (24) factorA -> . SIN LPAREN expressionA RPAREN
+    (25) factorA -> . COS LPAREN expressionA RPAREN
+    (26) factorA -> . SQRT LPAREN expressionA RPAREN
+    (27) factorA -> . EXP LPAREN expressionA RPAREN
+    (28) factorA -> . LOG LPAREN expressionA COMA expressionA RPAREN
     (29) factorA -> . RAND LPAREN RPAREN
     (30) factorA -> . LPAREN expressionA RPAREN
 
@@ -578,11 +581,11 @@ state 25
     (21) factorA -> . NUMBER
     (22) factorA -> . PI
     (23) factorA -> . E
-    (24) factorA -> . SIN LPAREN expression RPAREN
-    (25) factorA -> . COS LPAREN expression RPAREN
-    (26) factorA -> . SQRT LPAREN expression RPAREN
-    (27) factorA -> . EXP LPAREN expression RPAREN
-    (28) factorA -> . LOG LPAREN expression RPAREN
+    (24) factorA -> . SIN LPAREN expressionA RPAREN
+    (25) factorA -> . COS LPAREN expressionA RPAREN
+    (26) factorA -> . SQRT LPAREN expressionA RPAREN
+    (27) factorA -> . EXP LPAREN expressionA RPAREN
+    (28) factorA -> . LOG LPAREN expressionA COMA expressionA RPAREN
     (29) factorA -> . RAND LPAREN RPAREN
     (30) factorA -> . LPAREN expressionA RPAREN
 
@@ -605,11 +608,11 @@ state 26
     (21) factorA -> . NUMBER
     (22) factorA -> . PI
     (23) factorA -> . E
-    (24) factorA -> . SIN LPAREN expression RPAREN
-    (25) factorA -> . COS LPAREN expression RPAREN
-    (26) factorA -> . SQRT LPAREN expression RPAREN
-    (27) factorA -> . EXP LPAREN expression RPAREN
-    (28) factorA -> . LOG LPAREN expression RPAREN
+    (24) factorA -> . SIN LPAREN expressionA RPAREN
+    (25) factorA -> . COS LPAREN expressionA RPAREN
+    (26) factorA -> . SQRT LPAREN expressionA RPAREN
+    (27) factorA -> . EXP LPAREN expressionA RPAREN
+    (28) factorA -> . LOG LPAREN expressionA COMA expressionA RPAREN
     (29) factorA -> . RAND LPAREN RPAREN
     (30) factorA -> . LPAREN expressionA RPAREN
 
@@ -632,11 +635,11 @@ state 27
     (21) factorA -> . NUMBER
     (22) factorA -> . PI
     (23) factorA -> . E
-    (24) factorA -> . SIN LPAREN expression RPAREN
-    (25) factorA -> . COS LPAREN expression RPAREN
-    (26) factorA -> . SQRT LPAREN expression RPAREN
-    (27) factorA -> . EXP LPAREN expression RPAREN
-    (28) factorA -> . LOG LPAREN expression RPAREN
+    (24) factorA -> . SIN LPAREN expressionA RPAREN
+    (25) factorA -> . COS LPAREN expressionA RPAREN
+    (26) factorA -> . SQRT LPAREN expressionA RPAREN
+    (27) factorA -> . EXP LPAREN expressionA RPAREN
+    (28) factorA -> . LOG LPAREN expressionA COMA expressionA RPAREN
     (29) factorA -> . RAND LPAREN RPAREN
     (30) factorA -> . LPAREN expressionA RPAREN
 
@@ -659,11 +662,11 @@ state 28
     (21) factorA -> . NUMBER
     (22) factorA -> . PI
     (23) factorA -> . E
-    (24) factorA -> . SIN LPAREN expression RPAREN
-    (25) factorA -> . COS LPAREN expression RPAREN
-    (26) factorA -> . SQRT LPAREN expression RPAREN
-    (27) factorA -> . EXP LPAREN expression RPAREN
-    (28) factorA -> . LOG LPAREN expression RPAREN
+    (24) factorA -> . SIN LPAREN expressionA RPAREN
+    (25) factorA -> . COS LPAREN expressionA RPAREN
+    (26) factorA -> . SQRT LPAREN expressionA RPAREN
+    (27) factorA -> . EXP LPAREN expressionA RPAREN
+    (28) factorA -> . LOG LPAREN expressionA COMA expressionA RPAREN
     (29) factorA -> . RAND LPAREN RPAREN
     (30) factorA -> . LPAREN expressionA RPAREN
 
@@ -686,11 +689,11 @@ state 29
     (21) factorA -> . NUMBER
     (22) factorA -> . PI
     (23) factorA -> . E
-    (24) factorA -> . SIN LPAREN expression RPAREN
-    (25) factorA -> . COS LPAREN expression RPAREN
-    (26) factorA -> . SQRT LPAREN expression RPAREN
-    (27) factorA -> . EXP LPAREN expression RPAREN
-    (28) factorA -> . LOG LPAREN expression RPAREN
+    (24) factorA -> . SIN LPAREN expressionA RPAREN
+    (25) factorA -> . COS LPAREN expressionA RPAREN
+    (26) factorA -> . SQRT LPAREN expressionA RPAREN
+    (27) factorA -> . EXP LPAREN expressionA RPAREN
+    (28) factorA -> . LOG LPAREN expressionA COMA expressionA RPAREN
     (29) factorA -> . RAND LPAREN RPAREN
     (30) factorA -> . LPAREN expressionA RPAREN
 
@@ -713,11 +716,11 @@ state 30
     (21) factorA -> . NUMBER
     (22) factorA -> . PI
     (23) factorA -> . E
-    (24) factorA -> . SIN LPAREN expression RPAREN
-    (25) factorA -> . COS LPAREN expression RPAREN
-    (26) factorA -> . SQRT LPAREN expression RPAREN
-    (27) factorA -> . EXP LPAREN expression RPAREN
-    (28) factorA -> . LOG LPAREN expression RPAREN
+    (24) factorA -> . SIN LPAREN expressionA RPAREN
+    (25) factorA -> . COS LPAREN expressionA RPAREN
+    (26) factorA -> . SQRT LPAREN expressionA RPAREN
+    (27) factorA -> . EXP LPAREN expressionA RPAREN
+    (28) factorA -> . LOG LPAREN expressionA COMA expressionA RPAREN
     (29) factorA -> . RAND LPAREN RPAREN
     (30) factorA -> . LPAREN expressionA RPAREN
 
@@ -756,40 +759,24 @@ state 32
 
 state 33
 
-    (24) factorA -> SIN LPAREN . expression RPAREN
-    (1) expression -> . expressionL
-    (2) expression -> . expressionA
-    (3) expressionL -> . expressionL OR termL
-    (4) expressionL -> . termL
+    (24) factorA -> SIN LPAREN . expressionA RPAREN
     (15) expressionA -> . expressionA PLUS termA
     (16) expressionA -> . expressionA MINUS termA
     (17) expressionA -> . termA
-    (5) termL -> . termL AND factorL
-    (6) termL -> . factorL
     (18) termA -> . termA TIMES factorA
     (19) termA -> . termA DIVIDE factorA
     (20) termA -> . factorA
-    (7) factorL -> . BOOL
-    (8) factorL -> . factorA EQ factorA
-    (9) factorL -> . factorA GT factorA
-    (10) factorL -> . factorA LT factorA
-    (11) factorL -> . factorA GE factorA
-    (12) factorL -> . factorA LE factorA
-    (13) factorL -> . factorA NE factorA
-    (14) factorL -> . LPAREN expressionL RPAREN
     (21) factorA -> . NUMBER
     (22) factorA -> . PI
     (23) factorA -> . E
-    (24) factorA -> . SIN LPAREN expression RPAREN
-    (25) factorA -> . COS LPAREN expression RPAREN
-    (26) factorA -> . SQRT LPAREN expression RPAREN
-    (27) factorA -> . EXP LPAREN expression RPAREN
-    (28) factorA -> . LOG LPAREN expression RPAREN
+    (24) factorA -> . SIN LPAREN expressionA RPAREN
+    (25) factorA -> . COS LPAREN expressionA RPAREN
+    (26) factorA -> . SQRT LPAREN expressionA RPAREN
+    (27) factorA -> . EXP LPAREN expressionA RPAREN
+    (28) factorA -> . LOG LPAREN expressionA COMA expressionA RPAREN
     (29) factorA -> . RAND LPAREN RPAREN
     (30) factorA -> . LPAREN expressionA RPAREN
 
-    BOOL            shift and go to state 8
-    LPAREN          shift and go to state 9
     NUMBER          shift and go to state 10
     PI              shift and go to state 11
     E               shift and go to state 12
@@ -799,51 +786,32 @@ state 33
     EXP             shift and go to state 16
     LOG             shift and go to state 17
     RAND            shift and go to state 18
+    LPAREN          shift and go to state 43
 
-    expression                     shift and go to state 56
-    expressionL                    shift and go to state 2
-    expressionA                    shift and go to state 3
-    termL                          shift and go to state 4
+    expressionA                    shift and go to state 56
     termA                          shift and go to state 5
-    factorL                        shift and go to state 6
-    factorA                        shift and go to state 7
+    factorA                        shift and go to state 42
 
 state 34
 
-    (25) factorA -> COS LPAREN . expression RPAREN
-    (1) expression -> . expressionL
-    (2) expression -> . expressionA
-    (3) expressionL -> . expressionL OR termL
-    (4) expressionL -> . termL
+    (25) factorA -> COS LPAREN . expressionA RPAREN
     (15) expressionA -> . expressionA PLUS termA
     (16) expressionA -> . expressionA MINUS termA
     (17) expressionA -> . termA
-    (5) termL -> . termL AND factorL
-    (6) termL -> . factorL
     (18) termA -> . termA TIMES factorA
     (19) termA -> . termA DIVIDE factorA
     (20) termA -> . factorA
-    (7) factorL -> . BOOL
-    (8) factorL -> . factorA EQ factorA
-    (9) factorL -> . factorA GT factorA
-    (10) factorL -> . factorA LT factorA
-    (11) factorL -> . factorA GE factorA
-    (12) factorL -> . factorA LE factorA
-    (13) factorL -> . factorA NE factorA
-    (14) factorL -> . LPAREN expressionL RPAREN
     (21) factorA -> . NUMBER
     (22) factorA -> . PI
     (23) factorA -> . E
-    (24) factorA -> . SIN LPAREN expression RPAREN
-    (25) factorA -> . COS LPAREN expression RPAREN
-    (26) factorA -> . SQRT LPAREN expression RPAREN
-    (27) factorA -> . EXP LPAREN expression RPAREN
-    (28) factorA -> . LOG LPAREN expression RPAREN
+    (24) factorA -> . SIN LPAREN expressionA RPAREN
+    (25) factorA -> . COS LPAREN expressionA RPAREN
+    (26) factorA -> . SQRT LPAREN expressionA RPAREN
+    (27) factorA -> . EXP LPAREN expressionA RPAREN
+    (28) factorA -> . LOG LPAREN expressionA COMA expressionA RPAREN
     (29) factorA -> . RAND LPAREN RPAREN
     (30) factorA -> . LPAREN expressionA RPAREN
 
-    BOOL            shift and go to state 8
-    LPAREN          shift and go to state 9
     NUMBER          shift and go to state 10
     PI              shift and go to state 11
     E               shift and go to state 12
@@ -853,51 +821,32 @@ state 34
     EXP             shift and go to state 16
     LOG             shift and go to state 17
     RAND            shift and go to state 18
+    LPAREN          shift and go to state 43
 
-    expression                     shift and go to state 57
-    expressionL                    shift and go to state 2
-    expressionA                    shift and go to state 3
-    termL                          shift and go to state 4
+    expressionA                    shift and go to state 57
     termA                          shift and go to state 5
-    factorL                        shift and go to state 6
-    factorA                        shift and go to state 7
+    factorA                        shift and go to state 42
 
 state 35
 
-    (26) factorA -> SQRT LPAREN . expression RPAREN
-    (1) expression -> . expressionL
-    (2) expression -> . expressionA
-    (3) expressionL -> . expressionL OR termL
-    (4) expressionL -> . termL
+    (26) factorA -> SQRT LPAREN . expressionA RPAREN
     (15) expressionA -> . expressionA PLUS termA
     (16) expressionA -> . expressionA MINUS termA
     (17) expressionA -> . termA
-    (5) termL -> . termL AND factorL
-    (6) termL -> . factorL
     (18) termA -> . termA TIMES factorA
     (19) termA -> . termA DIVIDE factorA
     (20) termA -> . factorA
-    (7) factorL -> . BOOL
-    (8) factorL -> . factorA EQ factorA
-    (9) factorL -> . factorA GT factorA
-    (10) factorL -> . factorA LT factorA
-    (11) factorL -> . factorA GE factorA
-    (12) factorL -> . factorA LE factorA
-    (13) factorL -> . factorA NE factorA
-    (14) factorL -> . LPAREN expressionL RPAREN
     (21) factorA -> . NUMBER
     (22) factorA -> . PI
     (23) factorA -> . E
-    (24) factorA -> . SIN LPAREN expression RPAREN
-    (25) factorA -> . COS LPAREN expression RPAREN
-    (26) factorA -> . SQRT LPAREN expression RPAREN
-    (27) factorA -> . EXP LPAREN expression RPAREN
-    (28) factorA -> . LOG LPAREN expression RPAREN
+    (24) factorA -> . SIN LPAREN expressionA RPAREN
+    (25) factorA -> . COS LPAREN expressionA RPAREN
+    (26) factorA -> . SQRT LPAREN expressionA RPAREN
+    (27) factorA -> . EXP LPAREN expressionA RPAREN
+    (28) factorA -> . LOG LPAREN expressionA COMA expressionA RPAREN
     (29) factorA -> . RAND LPAREN RPAREN
     (30) factorA -> . LPAREN expressionA RPAREN
 
-    BOOL            shift and go to state 8
-    LPAREN          shift and go to state 9
     NUMBER          shift and go to state 10
     PI              shift and go to state 11
     E               shift and go to state 12
@@ -907,51 +856,32 @@ state 35
     EXP             shift and go to state 16
     LOG             shift and go to state 17
     RAND            shift and go to state 18
+    LPAREN          shift and go to state 43
 
-    expression                     shift and go to state 58
-    expressionL                    shift and go to state 2
-    expressionA                    shift and go to state 3
-    termL                          shift and go to state 4
+    expressionA                    shift and go to state 58
     termA                          shift and go to state 5
-    factorL                        shift and go to state 6
-    factorA                        shift and go to state 7
+    factorA                        shift and go to state 42
 
 state 36
 
-    (27) factorA -> EXP LPAREN . expression RPAREN
-    (1) expression -> . expressionL
-    (2) expression -> . expressionA
-    (3) expressionL -> . expressionL OR termL
-    (4) expressionL -> . termL
+    (27) factorA -> EXP LPAREN . expressionA RPAREN
     (15) expressionA -> . expressionA PLUS termA
     (16) expressionA -> . expressionA MINUS termA
     (17) expressionA -> . termA
-    (5) termL -> . termL AND factorL
-    (6) termL -> . factorL
     (18) termA -> . termA TIMES factorA
     (19) termA -> . termA DIVIDE factorA
     (20) termA -> . factorA
-    (7) factorL -> . BOOL
-    (8) factorL -> . factorA EQ factorA
-    (9) factorL -> . factorA GT factorA
-    (10) factorL -> . factorA LT factorA
-    (11) factorL -> . factorA GE factorA
-    (12) factorL -> . factorA LE factorA
-    (13) factorL -> . factorA NE factorA
-    (14) factorL -> . LPAREN expressionL RPAREN
     (21) factorA -> . NUMBER
     (22) factorA -> . PI
     (23) factorA -> . E
-    (24) factorA -> . SIN LPAREN expression RPAREN
-    (25) factorA -> . COS LPAREN expression RPAREN
-    (26) factorA -> . SQRT LPAREN expression RPAREN
-    (27) factorA -> . EXP LPAREN expression RPAREN
-    (28) factorA -> . LOG LPAREN expression RPAREN
+    (24) factorA -> . SIN LPAREN expressionA RPAREN
+    (25) factorA -> . COS LPAREN expressionA RPAREN
+    (26) factorA -> . SQRT LPAREN expressionA RPAREN
+    (27) factorA -> . EXP LPAREN expressionA RPAREN
+    (28) factorA -> . LOG LPAREN expressionA COMA expressionA RPAREN
     (29) factorA -> . RAND LPAREN RPAREN
     (30) factorA -> . LPAREN expressionA RPAREN
 
-    BOOL            shift and go to state 8
-    LPAREN          shift and go to state 9
     NUMBER          shift and go to state 10
     PI              shift and go to state 11
     E               shift and go to state 12
@@ -961,51 +891,32 @@ state 36
     EXP             shift and go to state 16
     LOG             shift and go to state 17
     RAND            shift and go to state 18
+    LPAREN          shift and go to state 43
 
-    expression                     shift and go to state 59
-    expressionL                    shift and go to state 2
-    expressionA                    shift and go to state 3
-    termL                          shift and go to state 4
+    expressionA                    shift and go to state 59
     termA                          shift and go to state 5
-    factorL                        shift and go to state 6
-    factorA                        shift and go to state 7
+    factorA                        shift and go to state 42
 
 state 37
 
-    (28) factorA -> LOG LPAREN . expression RPAREN
-    (1) expression -> . expressionL
-    (2) expression -> . expressionA
-    (3) expressionL -> . expressionL OR termL
-    (4) expressionL -> . termL
+    (28) factorA -> LOG LPAREN . expressionA COMA expressionA RPAREN
     (15) expressionA -> . expressionA PLUS termA
     (16) expressionA -> . expressionA MINUS termA
     (17) expressionA -> . termA
-    (5) termL -> . termL AND factorL
-    (6) termL -> . factorL
     (18) termA -> . termA TIMES factorA
     (19) termA -> . termA DIVIDE factorA
     (20) termA -> . factorA
-    (7) factorL -> . BOOL
-    (8) factorL -> . factorA EQ factorA
-    (9) factorL -> . factorA GT factorA
-    (10) factorL -> . factorA LT factorA
-    (11) factorL -> . factorA GE factorA
-    (12) factorL -> . factorA LE factorA
-    (13) factorL -> . factorA NE factorA
-    (14) factorL -> . LPAREN expressionL RPAREN
     (21) factorA -> . NUMBER
     (22) factorA -> . PI
     (23) factorA -> . E
-    (24) factorA -> . SIN LPAREN expression RPAREN
-    (25) factorA -> . COS LPAREN expression RPAREN
-    (26) factorA -> . SQRT LPAREN expression RPAREN
-    (27) factorA -> . EXP LPAREN expression RPAREN
-    (28) factorA -> . LOG LPAREN expression RPAREN
+    (24) factorA -> . SIN LPAREN expressionA RPAREN
+    (25) factorA -> . COS LPAREN expressionA RPAREN
+    (26) factorA -> . SQRT LPAREN expressionA RPAREN
+    (27) factorA -> . EXP LPAREN expressionA RPAREN
+    (28) factorA -> . LOG LPAREN expressionA COMA expressionA RPAREN
     (29) factorA -> . RAND LPAREN RPAREN
     (30) factorA -> . LPAREN expressionA RPAREN
 
-    BOOL            shift and go to state 8
-    LPAREN          shift and go to state 9
     NUMBER          shift and go to state 10
     PI              shift and go to state 11
     E               shift and go to state 12
@@ -1015,14 +926,11 @@ state 37
     EXP             shift and go to state 16
     LOG             shift and go to state 17
     RAND            shift and go to state 18
+    LPAREN          shift and go to state 43
 
-    expression                     shift and go to state 60
-    expressionL                    shift and go to state 2
-    expressionA                    shift and go to state 3
-    termL                          shift and go to state 4
+    expressionA                    shift and go to state 60
     termA                          shift and go to state 5
-    factorL                        shift and go to state 6
-    factorA                        shift and go to state 7
+    factorA                        shift and go to state 42
 
 state 38
 
@@ -1069,6 +977,7 @@ state 41
     MINUS           reduce using rule 15 (expressionA -> expressionA PLUS termA .)
     $end            reduce using rule 15 (expressionA -> expressionA PLUS termA .)
     RPAREN          reduce using rule 15 (expressionA -> expressionA PLUS termA .)
+    COMA            reduce using rule 15 (expressionA -> expressionA PLUS termA .)
     TIMES           shift and go to state 23
     DIVIDE          shift and go to state 24
 
@@ -1083,6 +992,7 @@ state 42
     MINUS           reduce using rule 20 (termA -> factorA .)
     $end            reduce using rule 20 (termA -> factorA .)
     RPAREN          reduce using rule 20 (termA -> factorA .)
+    COMA            reduce using rule 20 (termA -> factorA .)
 
 
 state 43
@@ -1097,11 +1007,11 @@ state 43
     (21) factorA -> . NUMBER
     (22) factorA -> . PI
     (23) factorA -> . E
-    (24) factorA -> . SIN LPAREN expression RPAREN
-    (25) factorA -> . COS LPAREN expression RPAREN
-    (26) factorA -> . SQRT LPAREN expression RPAREN
-    (27) factorA -> . EXP LPAREN expression RPAREN
-    (28) factorA -> . LOG LPAREN expression RPAREN
+    (24) factorA -> . SIN LPAREN expressionA RPAREN
+    (25) factorA -> . COS LPAREN expressionA RPAREN
+    (26) factorA -> . SQRT LPAREN expressionA RPAREN
+    (27) factorA -> . EXP LPAREN expressionA RPAREN
+    (28) factorA -> . LOG LPAREN expressionA COMA expressionA RPAREN
     (29) factorA -> . RAND LPAREN RPAREN
     (30) factorA -> . LPAREN expressionA RPAREN
 
@@ -1130,6 +1040,7 @@ state 44
     MINUS           reduce using rule 16 (expressionA -> expressionA MINUS termA .)
     $end            reduce using rule 16 (expressionA -> expressionA MINUS termA .)
     RPAREN          reduce using rule 16 (expressionA -> expressionA MINUS termA .)
+    COMA            reduce using rule 16 (expressionA -> expressionA MINUS termA .)
     TIMES           shift and go to state 23
     DIVIDE          shift and go to state 24
 
@@ -1154,6 +1065,7 @@ state 46
     MINUS           reduce using rule 18 (termA -> termA TIMES factorA .)
     $end            reduce using rule 18 (termA -> termA TIMES factorA .)
     RPAREN          reduce using rule 18 (termA -> termA TIMES factorA .)
+    COMA            reduce using rule 18 (termA -> termA TIMES factorA .)
 
 
 state 47
@@ -1166,6 +1078,7 @@ state 47
     MINUS           reduce using rule 19 (termA -> termA DIVIDE factorA .)
     $end            reduce using rule 19 (termA -> termA DIVIDE factorA .)
     RPAREN          reduce using rule 19 (termA -> termA DIVIDE factorA .)
+    COMA            reduce using rule 19 (termA -> termA DIVIDE factorA .)
 
 
 state 48
@@ -1254,43 +1167,64 @@ state 55
     MINUS           reduce using rule 30 (factorA -> LPAREN expressionA RPAREN .)
     $end            reduce using rule 30 (factorA -> LPAREN expressionA RPAREN .)
     RPAREN          reduce using rule 30 (factorA -> LPAREN expressionA RPAREN .)
+    COMA            reduce using rule 30 (factorA -> LPAREN expressionA RPAREN .)
     AND             reduce using rule 30 (factorA -> LPAREN expressionA RPAREN .)
     OR              reduce using rule 30 (factorA -> LPAREN expressionA RPAREN .)
 
 
 state 56
 
-    (24) factorA -> SIN LPAREN expression . RPAREN
+    (24) factorA -> SIN LPAREN expressionA . RPAREN
+    (15) expressionA -> expressionA . PLUS termA
+    (16) expressionA -> expressionA . MINUS termA
 
     RPAREN          shift and go to state 62
+    PLUS            shift and go to state 20
+    MINUS           shift and go to state 21
 
 
 state 57
 
-    (25) factorA -> COS LPAREN expression . RPAREN
+    (25) factorA -> COS LPAREN expressionA . RPAREN
+    (15) expressionA -> expressionA . PLUS termA
+    (16) expressionA -> expressionA . MINUS termA
 
     RPAREN          shift and go to state 63
+    PLUS            shift and go to state 20
+    MINUS           shift and go to state 21
 
 
 state 58
 
-    (26) factorA -> SQRT LPAREN expression . RPAREN
+    (26) factorA -> SQRT LPAREN expressionA . RPAREN
+    (15) expressionA -> expressionA . PLUS termA
+    (16) expressionA -> expressionA . MINUS termA
 
     RPAREN          shift and go to state 64
+    PLUS            shift and go to state 20
+    MINUS           shift and go to state 21
 
 
 state 59
 
-    (27) factorA -> EXP LPAREN expression . RPAREN
+    (27) factorA -> EXP LPAREN expressionA . RPAREN
+    (15) expressionA -> expressionA . PLUS termA
+    (16) expressionA -> expressionA . MINUS termA
 
     RPAREN          shift and go to state 65
+    PLUS            shift and go to state 20
+    MINUS           shift and go to state 21
 
 
 state 60
 
-    (28) factorA -> LOG LPAREN expression . RPAREN
+    (28) factorA -> LOG LPAREN expressionA . COMA expressionA RPAREN
+    (15) expressionA -> expressionA . PLUS termA
+    (16) expressionA -> expressionA . MINUS termA
 
-    RPAREN          shift and go to state 66
+    COMA            shift and go to state 66
+    PLUS            shift and go to state 20
+    MINUS           shift and go to state 21
 
 
 state 61
@@ -1309,106 +1243,158 @@ state 61
     MINUS           reduce using rule 29 (factorA -> RAND LPAREN RPAREN .)
     $end            reduce using rule 29 (factorA -> RAND LPAREN RPAREN .)
     RPAREN          reduce using rule 29 (factorA -> RAND LPAREN RPAREN .)
+    COMA            reduce using rule 29 (factorA -> RAND LPAREN RPAREN .)
     AND             reduce using rule 29 (factorA -> RAND LPAREN RPAREN .)
     OR              reduce using rule 29 (factorA -> RAND LPAREN RPAREN .)
 
 
 state 62
 
-    (24) factorA -> SIN LPAREN expression RPAREN .
+    (24) factorA -> SIN LPAREN expressionA RPAREN .
 
-    EQ              reduce using rule 24 (factorA -> SIN LPAREN expression RPAREN .)
-    GT              reduce using rule 24 (factorA -> SIN LPAREN expression RPAREN .)
-    LT              reduce using rule 24 (factorA -> SIN LPAREN expression RPAREN .)
-    GE              reduce using rule 24 (factorA -> SIN LPAREN expression RPAREN .)
-    LE              reduce using rule 24 (factorA -> SIN LPAREN expression RPAREN .)
-    NE              reduce using rule 24 (factorA -> SIN LPAREN expression RPAREN .)
-    TIMES           reduce using rule 24 (factorA -> SIN LPAREN expression RPAREN .)
-    DIVIDE          reduce using rule 24 (factorA -> SIN LPAREN expression RPAREN .)
-    PLUS            reduce using rule 24 (factorA -> SIN LPAREN expression RPAREN .)
-    MINUS           reduce using rule 24 (factorA -> SIN LPAREN expression RPAREN .)
-    $end            reduce using rule 24 (factorA -> SIN LPAREN expression RPAREN .)
-    RPAREN          reduce using rule 24 (factorA -> SIN LPAREN expression RPAREN .)
-    AND             reduce using rule 24 (factorA -> SIN LPAREN expression RPAREN .)
-    OR              reduce using rule 24 (factorA -> SIN LPAREN expression RPAREN .)
+    EQ              reduce using rule 24 (factorA -> SIN LPAREN expressionA RPAREN .)
+    GT              reduce using rule 24 (factorA -> SIN LPAREN expressionA RPAREN .)
+    LT              reduce using rule 24 (factorA -> SIN LPAREN expressionA RPAREN .)
+    GE              reduce using rule 24 (factorA -> SIN LPAREN expressionA RPAREN .)
+    LE              reduce using rule 24 (factorA -> SIN LPAREN expressionA RPAREN .)
+    NE              reduce using rule 24 (factorA -> SIN LPAREN expressionA RPAREN .)
+    TIMES           reduce using rule 24 (factorA -> SIN LPAREN expressionA RPAREN .)
+    DIVIDE          reduce using rule 24 (factorA -> SIN LPAREN expressionA RPAREN .)
+    PLUS            reduce using rule 24 (factorA -> SIN LPAREN expressionA RPAREN .)
+    MINUS           reduce using rule 24 (factorA -> SIN LPAREN expressionA RPAREN .)
+    $end            reduce using rule 24 (factorA -> SIN LPAREN expressionA RPAREN .)
+    RPAREN          reduce using rule 24 (factorA -> SIN LPAREN expressionA RPAREN .)
+    COMA            reduce using rule 24 (factorA -> SIN LPAREN expressionA RPAREN .)
+    AND             reduce using rule 24 (factorA -> SIN LPAREN expressionA RPAREN .)
+    OR              reduce using rule 24 (factorA -> SIN LPAREN expressionA RPAREN .)
 
 
 state 63
 
-    (25) factorA -> COS LPAREN expression RPAREN .
+    (25) factorA -> COS LPAREN expressionA RPAREN .
 
-    EQ              reduce using rule 25 (factorA -> COS LPAREN expression RPAREN .)
-    GT              reduce using rule 25 (factorA -> COS LPAREN expression RPAREN .)
-    LT              reduce using rule 25 (factorA -> COS LPAREN expression RPAREN .)
-    GE              reduce using rule 25 (factorA -> COS LPAREN expression RPAREN .)
-    LE              reduce using rule 25 (factorA -> COS LPAREN expression RPAREN .)
-    NE              reduce using rule 25 (factorA -> COS LPAREN expression RPAREN .)
-    TIMES           reduce using rule 25 (factorA -> COS LPAREN expression RPAREN .)
-    DIVIDE          reduce using rule 25 (factorA -> COS LPAREN expression RPAREN .)
-    PLUS            reduce using rule 25 (factorA -> COS LPAREN expression RPAREN .)
-    MINUS           reduce using rule 25 (factorA -> COS LPAREN expression RPAREN .)
-    $end            reduce using rule 25 (factorA -> COS LPAREN expression RPAREN .)
-    RPAREN          reduce using rule 25 (factorA -> COS LPAREN expression RPAREN .)
-    AND             reduce using rule 25 (factorA -> COS LPAREN expression RPAREN .)
-    OR              reduce using rule 25 (factorA -> COS LPAREN expression RPAREN .)
+    EQ              reduce using rule 25 (factorA -> COS LPAREN expressionA RPAREN .)
+    GT              reduce using rule 25 (factorA -> COS LPAREN expressionA RPAREN .)
+    LT              reduce using rule 25 (factorA -> COS LPAREN expressionA RPAREN .)
+    GE              reduce using rule 25 (factorA -> COS LPAREN expressionA RPAREN .)
+    LE              reduce using rule 25 (factorA -> COS LPAREN expressionA RPAREN .)
+    NE              reduce using rule 25 (factorA -> COS LPAREN expressionA RPAREN .)
+    TIMES           reduce using rule 25 (factorA -> COS LPAREN expressionA RPAREN .)
+    DIVIDE          reduce using rule 25 (factorA -> COS LPAREN expressionA RPAREN .)
+    PLUS            reduce using rule 25 (factorA -> COS LPAREN expressionA RPAREN .)
+    MINUS           reduce using rule 25 (factorA -> COS LPAREN expressionA RPAREN .)
+    $end            reduce using rule 25 (factorA -> COS LPAREN expressionA RPAREN .)
+    RPAREN          reduce using rule 25 (factorA -> COS LPAREN expressionA RPAREN .)
+    COMA            reduce using rule 25 (factorA -> COS LPAREN expressionA RPAREN .)
+    AND             reduce using rule 25 (factorA -> COS LPAREN expressionA RPAREN .)
+    OR              reduce using rule 25 (factorA -> COS LPAREN expressionA RPAREN .)
 
 
 state 64
 
-    (26) factorA -> SQRT LPAREN expression RPAREN .
+    (26) factorA -> SQRT LPAREN expressionA RPAREN .
 
-    EQ              reduce using rule 26 (factorA -> SQRT LPAREN expression RPAREN .)
-    GT              reduce using rule 26 (factorA -> SQRT LPAREN expression RPAREN .)
-    LT              reduce using rule 26 (factorA -> SQRT LPAREN expression RPAREN .)
-    GE              reduce using rule 26 (factorA -> SQRT LPAREN expression RPAREN .)
-    LE              reduce using rule 26 (factorA -> SQRT LPAREN expression RPAREN .)
-    NE              reduce using rule 26 (factorA -> SQRT LPAREN expression RPAREN .)
-    TIMES           reduce using rule 26 (factorA -> SQRT LPAREN expression RPAREN .)
-    DIVIDE          reduce using rule 26 (factorA -> SQRT LPAREN expression RPAREN .)
-    PLUS            reduce using rule 26 (factorA -> SQRT LPAREN expression RPAREN .)
-    MINUS           reduce using rule 26 (factorA -> SQRT LPAREN expression RPAREN .)
-    $end            reduce using rule 26 (factorA -> SQRT LPAREN expression RPAREN .)
-    RPAREN          reduce using rule 26 (factorA -> SQRT LPAREN expression RPAREN .)
-    AND             reduce using rule 26 (factorA -> SQRT LPAREN expression RPAREN .)
-    OR              reduce using rule 26 (factorA -> SQRT LPAREN expression RPAREN .)
+    EQ              reduce using rule 26 (factorA -> SQRT LPAREN expressionA RPAREN .)
+    GT              reduce using rule 26 (factorA -> SQRT LPAREN expressionA RPAREN .)
+    LT              reduce using rule 26 (factorA -> SQRT LPAREN expressionA RPAREN .)
+    GE              reduce using rule 26 (factorA -> SQRT LPAREN expressionA RPAREN .)
+    LE              reduce using rule 26 (factorA -> SQRT LPAREN expressionA RPAREN .)
+    NE              reduce using rule 26 (factorA -> SQRT LPAREN expressionA RPAREN .)
+    TIMES           reduce using rule 26 (factorA -> SQRT LPAREN expressionA RPAREN .)
+    DIVIDE          reduce using rule 26 (factorA -> SQRT LPAREN expressionA RPAREN .)
+    PLUS            reduce using rule 26 (factorA -> SQRT LPAREN expressionA RPAREN .)
+    MINUS           reduce using rule 26 (factorA -> SQRT LPAREN expressionA RPAREN .)
+    $end            reduce using rule 26 (factorA -> SQRT LPAREN expressionA RPAREN .)
+    RPAREN          reduce using rule 26 (factorA -> SQRT LPAREN expressionA RPAREN .)
+    COMA            reduce using rule 26 (factorA -> SQRT LPAREN expressionA RPAREN .)
+    AND             reduce using rule 26 (factorA -> SQRT LPAREN expressionA RPAREN .)
+    OR              reduce using rule 26 (factorA -> SQRT LPAREN expressionA RPAREN .)
 
 
 state 65
 
-    (27) factorA -> EXP LPAREN expression RPAREN .
+    (27) factorA -> EXP LPAREN expressionA RPAREN .
 
-    EQ              reduce using rule 27 (factorA -> EXP LPAREN expression RPAREN .)
-    GT              reduce using rule 27 (factorA -> EXP LPAREN expression RPAREN .)
-    LT              reduce using rule 27 (factorA -> EXP LPAREN expression RPAREN .)
-    GE              reduce using rule 27 (factorA -> EXP LPAREN expression RPAREN .)
-    LE              reduce using rule 27 (factorA -> EXP LPAREN expression RPAREN .)
-    NE              reduce using rule 27 (factorA -> EXP LPAREN expression RPAREN .)
-    TIMES           reduce using rule 27 (factorA -> EXP LPAREN expression RPAREN .)
-    DIVIDE          reduce using rule 27 (factorA -> EXP LPAREN expression RPAREN .)
-    PLUS            reduce using rule 27 (factorA -> EXP LPAREN expression RPAREN .)
-    MINUS           reduce using rule 27 (factorA -> EXP LPAREN expression RPAREN .)
-    $end            reduce using rule 27 (factorA -> EXP LPAREN expression RPAREN .)
-    RPAREN          reduce using rule 27 (factorA -> EXP LPAREN expression RPAREN .)
-    AND             reduce using rule 27 (factorA -> EXP LPAREN expression RPAREN .)
-    OR              reduce using rule 27 (factorA -> EXP LPAREN expression RPAREN .)
+    EQ              reduce using rule 27 (factorA -> EXP LPAREN expressionA RPAREN .)
+    GT              reduce using rule 27 (factorA -> EXP LPAREN expressionA RPAREN .)
+    LT              reduce using rule 27 (factorA -> EXP LPAREN expressionA RPAREN .)
+    GE              reduce using rule 27 (factorA -> EXP LPAREN expressionA RPAREN .)
+    LE              reduce using rule 27 (factorA -> EXP LPAREN expressionA RPAREN .)
+    NE              reduce using rule 27 (factorA -> EXP LPAREN expressionA RPAREN .)
+    TIMES           reduce using rule 27 (factorA -> EXP LPAREN expressionA RPAREN .)
+    DIVIDE          reduce using rule 27 (factorA -> EXP LPAREN expressionA RPAREN .)
+    PLUS            reduce using rule 27 (factorA -> EXP LPAREN expressionA RPAREN .)
+    MINUS           reduce using rule 27 (factorA -> EXP LPAREN expressionA RPAREN .)
+    $end            reduce using rule 27 (factorA -> EXP LPAREN expressionA RPAREN .)
+    RPAREN          reduce using rule 27 (factorA -> EXP LPAREN expressionA RPAREN .)
+    COMA            reduce using rule 27 (factorA -> EXP LPAREN expressionA RPAREN .)
+    AND             reduce using rule 27 (factorA -> EXP LPAREN expressionA RPAREN .)
+    OR              reduce using rule 27 (factorA -> EXP LPAREN expressionA RPAREN .)
 
 
 state 66
 
-    (28) factorA -> LOG LPAREN expression RPAREN .
+    (28) factorA -> LOG LPAREN expressionA COMA . expressionA RPAREN
+    (15) expressionA -> . expressionA PLUS termA
+    (16) expressionA -> . expressionA MINUS termA
+    (17) expressionA -> . termA
+    (18) termA -> . termA TIMES factorA
+    (19) termA -> . termA DIVIDE factorA
+    (20) termA -> . factorA
+    (21) factorA -> . NUMBER
+    (22) factorA -> . PI
+    (23) factorA -> . E
+    (24) factorA -> . SIN LPAREN expressionA RPAREN
+    (25) factorA -> . COS LPAREN expressionA RPAREN
+    (26) factorA -> . SQRT LPAREN expressionA RPAREN
+    (27) factorA -> . EXP LPAREN expressionA RPAREN
+    (28) factorA -> . LOG LPAREN expressionA COMA expressionA RPAREN
+    (29) factorA -> . RAND LPAREN RPAREN
+    (30) factorA -> . LPAREN expressionA RPAREN
 
-    EQ              reduce using rule 28 (factorA -> LOG LPAREN expression RPAREN .)
-    GT              reduce using rule 28 (factorA -> LOG LPAREN expression RPAREN .)
-    LT              reduce using rule 28 (factorA -> LOG LPAREN expression RPAREN .)
-    GE              reduce using rule 28 (factorA -> LOG LPAREN expression RPAREN .)
-    LE              reduce using rule 28 (factorA -> LOG LPAREN expression RPAREN .)
-    NE              reduce using rule 28 (factorA -> LOG LPAREN expression RPAREN .)
-    TIMES           reduce using rule 28 (factorA -> LOG LPAREN expression RPAREN .)
-    DIVIDE          reduce using rule 28 (factorA -> LOG LPAREN expression RPAREN .)
-    PLUS            reduce using rule 28 (factorA -> LOG LPAREN expression RPAREN .)
-    MINUS           reduce using rule 28 (factorA -> LOG LPAREN expression RPAREN .)
-    $end            reduce using rule 28 (factorA -> LOG LPAREN expression RPAREN .)
-    RPAREN          reduce using rule 28 (factorA -> LOG LPAREN expression RPAREN .)
-    AND             reduce using rule 28 (factorA -> LOG LPAREN expression RPAREN .)
-    OR              reduce using rule 28 (factorA -> LOG LPAREN expression RPAREN .)
+    NUMBER          shift and go to state 10
+    PI              shift and go to state 11
+    E               shift and go to state 12
+    SIN             shift and go to state 13
+    COS             shift and go to state 14
+    SQRT            shift and go to state 15
+    EXP             shift and go to state 16
+    LOG             shift and go to state 17
+    RAND            shift and go to state 18
+    LPAREN          shift and go to state 43
+
+    expressionA                    shift and go to state 67
+    termA                          shift and go to state 5
+    factorA                        shift and go to state 42
+
+state 67
+
+    (28) factorA -> LOG LPAREN expressionA COMA expressionA . RPAREN
+    (15) expressionA -> expressionA . PLUS termA
+    (16) expressionA -> expressionA . MINUS termA
+
+    RPAREN          shift and go to state 68
+    PLUS            shift and go to state 20
+    MINUS           shift and go to state 21
+
+
+state 68
+
+    (28) factorA -> LOG LPAREN expressionA COMA expressionA RPAREN .
+
+    EQ              reduce using rule 28 (factorA -> LOG LPAREN expressionA COMA expressionA RPAREN .)
+    GT              reduce using rule 28 (factorA -> LOG LPAREN expressionA COMA expressionA RPAREN .)
+    LT              reduce using rule 28 (factorA -> LOG LPAREN expressionA COMA expressionA RPAREN .)
+    GE              reduce using rule 28 (factorA -> LOG LPAREN expressionA COMA expressionA RPAREN .)
+    LE              reduce using rule 28 (factorA -> LOG LPAREN expressionA COMA expressionA RPAREN .)
+    NE              reduce using rule 28 (factorA -> LOG LPAREN expressionA COMA expressionA RPAREN .)
+    TIMES           reduce using rule 28 (factorA -> LOG LPAREN expressionA COMA expressionA RPAREN .)
+    DIVIDE          reduce using rule 28 (factorA -> LOG LPAREN expressionA COMA expressionA RPAREN .)
+    PLUS            reduce using rule 28 (factorA -> LOG LPAREN expressionA COMA expressionA RPAREN .)
+    MINUS           reduce using rule 28 (factorA -> LOG LPAREN expressionA COMA expressionA RPAREN .)
+    $end            reduce using rule 28 (factorA -> LOG LPAREN expressionA COMA expressionA RPAREN .)
+    RPAREN          reduce using rule 28 (factorA -> LOG LPAREN expressionA COMA expressionA RPAREN .)
+    COMA            reduce using rule 28 (factorA -> LOG LPAREN expressionA COMA expressionA RPAREN .)
+    AND             reduce using rule 28 (factorA -> LOG LPAREN expressionA COMA expressionA RPAREN .)
+    OR              reduce using rule 28 (factorA -> LOG LPAREN expressionA COMA expressionA RPAREN .)
 

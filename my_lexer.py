@@ -2,6 +2,8 @@ import ply.lex as lex
 
 # Lista de tokens
 tokens = (
+    # Caracteres especiales
+    'COMA',
     'LPAREN',
     'RPAREN',
     # Operadores aritmeticos
@@ -21,8 +23,10 @@ tokens = (
     'GE',
     'LE',
     'NE',
+    # Constantes
     'PI',
     'E',
+    # Funciones
     'SIN',
     'COS',
     'SQRT',
@@ -30,6 +34,9 @@ tokens = (
     'LOG',
     'RAND',
 )
+
+# Expresiones regulares para los caracteres especiales
+t_COMA = r','
 
 # Expresiones regulares para parentesis
 t_LPAREN = r'\('
@@ -87,7 +94,7 @@ lexer = lex.lex()
 
 # Prueba del lexer
 if __name__ == "__main__":
-    data = "3 == 3"
+    data = "log(3,4)"
     lexer.input(data)
     while True:
         tok = lexer.token()
