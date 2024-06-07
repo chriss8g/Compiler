@@ -25,6 +25,10 @@ tokens = (
     'E',
     'SIN',
     'COS',
+    'SQRT',
+    'EXP',
+    'LOG',
+    'RAND',
 )
 
 # Expresiones regulares para parentesis
@@ -57,6 +61,10 @@ t_E = r'E'
 # Funciones predefinidas
 t_SIN = r'sin'
 t_COS = r'cos'
+t_SQRT = r'sqrt'
+t_EXP = r'exp'
+t_LOG = r'log'
+t_RAND = r'rand'
 
 
 

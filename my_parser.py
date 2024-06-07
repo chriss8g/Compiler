@@ -95,16 +95,29 @@ def p_factorA(p):
                | E
                | SIN LPAREN expression RPAREN
                | COS LPAREN expression RPAREN
+               | SQRT LPAREN expression RPAREN
+               | EXP LPAREN expression RPAREN
+               | LOG LPAREN expression RPAREN
+               | RAND LPAREN RPAREN
                | LPAREN expressionA RPAREN'''
     if len(p) == 2:
         p[0] = ASTNode(type='num', leaf=p[1])
+    elif len(p) == 4:
+        if p[1] == 'rand':
+             p[0] = ASTNode(type='func', leaf=p[1])
+        else:
+            p[0] = p[2]
     elif len(p) == 5:
         if p[1] == 'sin':
              p[0] = ASTNode(type='func', children=[p[3]], leaf=p[1])
         elif p[1].lower() == 'cos':
             p[0] = ASTNode(type='func', children=[p[3]], leaf=p[1])
-    else:  # Caso para paréntesis
-        p[0] = p[2]
+        elif p[1].lower() == 'sqrt':
+            p[0] = ASTNode(type='func', children=[p[3]], leaf=p[1])
+        elif p[1].lower() == 'exp':
+            p[0] = ASTNode(type='func', children=[p[3]], leaf=p[1])
+        elif p[1].lower() == 'log':
+            p[0] = ASTNode(type='func', children=[p[3]], leaf=p[1])
 
 def p_error(p):
     print(f"Error de sintaxis en '{p}'")
