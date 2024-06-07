@@ -91,6 +91,8 @@ def p_termA(p):
 
 def p_factorA(p):
     '''factorA : NUMBER
+               | PI
+               | E
                | LPAREN expressionA RPAREN'''
     if len(p) == 2:
         p[0] = ASTNode(type='num', leaf=p[1])

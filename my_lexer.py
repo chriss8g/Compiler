@@ -21,6 +21,8 @@ tokens = (
     'GE',
     'LE',
     'NE',
+    'PI',
+    'E',
 )
 
 # Expresiones regulares para parentesis
@@ -46,6 +48,10 @@ t_GE = r'>='
 t_LE = r'=<'
 t_NE = r'!='
 
+# Constantes
+t_PI = r'PI' 
+t_E = r'E' 
+
 # Regla de expresión regular con acción de código
 def t_NUMBER(t):
     r'\d+(\.\d+)?'
@@ -65,7 +71,7 @@ lexer = lex.lex()
 
 # Prueba del lexer
 if __name__ == "__main__":
-    data = "3 == 4"
+    data = "3 == 3"
     lexer.input(data)
     while True:
         tok = lexer.token()
