@@ -26,19 +26,22 @@ Rule 20    termA -> factorA
 Rule 21    factorA -> NUMBER
 Rule 22    factorA -> PI
 Rule 23    factorA -> E
-Rule 24    factorA -> LPAREN expressionA RPAREN
+Rule 24    factorA -> SIN LPAREN expression RPAREN
+Rule 25    factorA -> COS LPAREN expression RPAREN
+Rule 26    factorA -> LPAREN expressionA RPAREN
 
 Terminals, with rules where they appear
 
 AND                  : 5
 BOOL                 : 7
+COS                  : 25
 DIVIDE               : 19
 E                    : 23
 EQ                   : 8
 GE                   : 11
 GT                   : 9
 LE                   : 12
-LPAREN               : 14 24
+LPAREN               : 14 24 25 26
 LT                   : 10
 MINUS                : 16
 NE                   : 13
@@ -46,14 +49,15 @@ NUMBER               : 21
 OR                   : 3
 PI                   : 22
 PLUS                 : 15
-RPAREN               : 14 24
+RPAREN               : 14 24 25 26
+SIN                  : 24
 TIMES                : 18
 error                : 
 
 Nonterminals, with rules where they appear
 
-expression           : 0
-expressionA          : 2 15 16 24
+expression           : 24 25 0
+expressionA          : 2 15 16 26
 expressionL          : 1 3 14
 factorA              : 8 8 9 9 10 10 11 11 12 12 13 13 18 19 20
 factorL              : 5 6
@@ -88,13 +92,17 @@ state 0
     (21) factorA -> . NUMBER
     (22) factorA -> . PI
     (23) factorA -> . E
-    (24) factorA -> . LPAREN expressionA RPAREN
+    (24) factorA -> . SIN LPAREN expression RPAREN
+    (25) factorA -> . COS LPAREN expression RPAREN
+    (26) factorA -> . LPAREN expressionA RPAREN
 
     BOOL            shift and go to state 8
     LPAREN          shift and go to state 9
     NUMBER          shift and go to state 10
     PI              shift and go to state 11
     E               shift and go to state 12
+    SIN             shift and go to state 13
+    COS             shift and go to state 14
 
     expression                     shift and go to state 1
     expressionL                    shift and go to state 2
@@ -116,7 +124,8 @@ state 2
     (3) expressionL -> expressionL . OR termL
 
     $end            reduce using rule 1 (expression -> expressionL .)
-    OR              shift and go to state 13
+    RPAREN          reduce using rule 1 (expression -> expressionL .)
+    OR              shift and go to state 15
 
 
 state 3
@@ -126,8 +135,9 @@ state 3
     (16) expressionA -> expressionA . MINUS termA
 
     $end            reduce using rule 2 (expression -> expressionA .)
-    PLUS            shift and go to state 14
-    MINUS           shift and go to state 15
+    RPAREN          reduce using rule 2 (expression -> expressionA .)
+    PLUS            shift and go to state 16
+    MINUS           shift and go to state 17
 
 
 state 4
@@ -138,7 +148,7 @@ state 4
     OR              reduce using rule 4 (expressionL -> termL .)
     $end            reduce using rule 4 (expressionL -> termL .)
     RPAREN          reduce using rule 4 (expressionL -> termL .)
-    AND             shift and go to state 16
+    AND             shift and go to state 18
 
 
 state 5
@@ -151,8 +161,8 @@ state 5
     MINUS           reduce using rule 17 (expressionA -> termA .)
     $end            reduce using rule 17 (expressionA -> termA .)
     RPAREN          reduce using rule 17 (expressionA -> termA .)
-    TIMES           shift and go to state 17
-    DIVIDE          shift and go to state 18
+    TIMES           shift and go to state 19
+    DIVIDE          shift and go to state 20
 
 
 state 6
@@ -181,12 +191,12 @@ state 7
     MINUS           reduce using rule 20 (termA -> factorA .)
     $end            reduce using rule 20 (termA -> factorA .)
     RPAREN          reduce using rule 20 (termA -> factorA .)
-    EQ              shift and go to state 19
-    GT              shift and go to state 20
-    LT              shift and go to state 21
-    GE              shift and go to state 22
-    LE              shift and go to state 23
-    NE              shift and go to state 24
+    EQ              shift and go to state 21
+    GT              shift and go to state 22
+    LT              shift and go to state 23
+    GE              shift and go to state 24
+    LE              shift and go to state 25
+    NE              shift and go to state 26
 
 
 state 8
@@ -202,7 +212,7 @@ state 8
 state 9
 
     (14) factorL -> LPAREN . expressionL RPAREN
-    (24) factorA -> LPAREN . expressionA RPAREN
+    (26) factorA -> LPAREN . expressionA RPAREN
     (3) expressionL -> . expressionL OR termL
     (4) expressionL -> . termL
     (15) expressionA -> . expressionA PLUS termA
@@ -224,16 +234,20 @@ state 9
     (21) factorA -> . NUMBER
     (22) factorA -> . PI
     (23) factorA -> . E
-    (24) factorA -> . LPAREN expressionA RPAREN
+    (24) factorA -> . SIN LPAREN expression RPAREN
+    (25) factorA -> . COS LPAREN expression RPAREN
+    (26) factorA -> . LPAREN expressionA RPAREN
 
     BOOL            shift and go to state 8
     LPAREN          shift and go to state 9
     NUMBER          shift and go to state 10
     PI              shift and go to state 11
     E               shift and go to state 12
+    SIN             shift and go to state 13
+    COS             shift and go to state 14
 
-    expressionL                    shift and go to state 25
-    expressionA                    shift and go to state 26
+    expressionL                    shift and go to state 27
+    expressionA                    shift and go to state 28
     termL                          shift and go to state 4
     termA                          shift and go to state 5
     factorL                        shift and go to state 6
@@ -301,6 +315,20 @@ state 12
 
 state 13
 
+    (24) factorA -> SIN . LPAREN expression RPAREN
+
+    LPAREN          shift and go to state 29
+
+
+state 14
+
+    (25) factorA -> COS . LPAREN expression RPAREN
+
+    LPAREN          shift and go to state 30
+
+
+state 15
+
     (3) expressionL -> expressionL OR . termL
     (5) termL -> . termL AND factorL
     (6) termL -> . factorL
@@ -315,19 +343,23 @@ state 13
     (21) factorA -> . NUMBER
     (22) factorA -> . PI
     (23) factorA -> . E
-    (24) factorA -> . LPAREN expressionA RPAREN
+    (24) factorA -> . SIN LPAREN expression RPAREN
+    (25) factorA -> . COS LPAREN expression RPAREN
+    (26) factorA -> . LPAREN expressionA RPAREN
 
     BOOL            shift and go to state 8
     LPAREN          shift and go to state 9
     NUMBER          shift and go to state 10
     PI              shift and go to state 11
     E               shift and go to state 12
+    SIN             shift and go to state 13
+    COS             shift and go to state 14
 
-    termL                          shift and go to state 27
+    termL                          shift and go to state 31
     factorL                        shift and go to state 6
-    factorA                        shift and go to state 28
+    factorA                        shift and go to state 32
 
-state 14
+state 16
 
     (15) expressionA -> expressionA PLUS . termA
     (18) termA -> . termA TIMES factorA
@@ -336,17 +368,21 @@ state 14
     (21) factorA -> . NUMBER
     (22) factorA -> . PI
     (23) factorA -> . E
-    (24) factorA -> . LPAREN expressionA RPAREN
+    (24) factorA -> . SIN LPAREN expression RPAREN
+    (25) factorA -> . COS LPAREN expression RPAREN
+    (26) factorA -> . LPAREN expressionA RPAREN
 
     NUMBER          shift and go to state 10
     PI              shift and go to state 11
     E               shift and go to state 12
-    LPAREN          shift and go to state 31
+    SIN             shift and go to state 13
+    COS             shift and go to state 14
+    LPAREN          shift and go to state 35
 
-    termA                          shift and go to state 29
-    factorA                        shift and go to state 30
+    termA                          shift and go to state 33
+    factorA                        shift and go to state 34
 
-state 15
+state 17
 
     (16) expressionA -> expressionA MINUS . termA
     (18) termA -> . termA TIMES factorA
@@ -355,17 +391,21 @@ state 15
     (21) factorA -> . NUMBER
     (22) factorA -> . PI
     (23) factorA -> . E
-    (24) factorA -> . LPAREN expressionA RPAREN
+    (24) factorA -> . SIN LPAREN expression RPAREN
+    (25) factorA -> . COS LPAREN expression RPAREN
+    (26) factorA -> . LPAREN expressionA RPAREN
 
     NUMBER          shift and go to state 10
     PI              shift and go to state 11
     E               shift and go to state 12
-    LPAREN          shift and go to state 31
+    SIN             shift and go to state 13
+    COS             shift and go to state 14
+    LPAREN          shift and go to state 35
 
-    termA                          shift and go to state 32
-    factorA                        shift and go to state 30
+    termA                          shift and go to state 36
+    factorA                        shift and go to state 34
 
-state 16
+state 18
 
     (5) termL -> termL AND . factorL
     (7) factorL -> . BOOL
@@ -379,158 +419,286 @@ state 16
     (21) factorA -> . NUMBER
     (22) factorA -> . PI
     (23) factorA -> . E
-    (24) factorA -> . LPAREN expressionA RPAREN
+    (24) factorA -> . SIN LPAREN expression RPAREN
+    (25) factorA -> . COS LPAREN expression RPAREN
+    (26) factorA -> . LPAREN expressionA RPAREN
 
     BOOL            shift and go to state 8
     LPAREN          shift and go to state 9
     NUMBER          shift and go to state 10
     PI              shift and go to state 11
     E               shift and go to state 12
+    SIN             shift and go to state 13
+    COS             shift and go to state 14
 
-    factorL                        shift and go to state 33
-    factorA                        shift and go to state 28
+    factorL                        shift and go to state 37
+    factorA                        shift and go to state 32
 
-state 17
+state 19
 
     (18) termA -> termA TIMES . factorA
     (21) factorA -> . NUMBER
     (22) factorA -> . PI
     (23) factorA -> . E
-    (24) factorA -> . LPAREN expressionA RPAREN
+    (24) factorA -> . SIN LPAREN expression RPAREN
+    (25) factorA -> . COS LPAREN expression RPAREN
+    (26) factorA -> . LPAREN expressionA RPAREN
 
     NUMBER          shift and go to state 10
     PI              shift and go to state 11
     E               shift and go to state 12
-    LPAREN          shift and go to state 31
+    SIN             shift and go to state 13
+    COS             shift and go to state 14
+    LPAREN          shift and go to state 35
 
-    factorA                        shift and go to state 34
+    factorA                        shift and go to state 38
 
-state 18
+state 20
 
     (19) termA -> termA DIVIDE . factorA
     (21) factorA -> . NUMBER
     (22) factorA -> . PI
     (23) factorA -> . E
-    (24) factorA -> . LPAREN expressionA RPAREN
+    (24) factorA -> . SIN LPAREN expression RPAREN
+    (25) factorA -> . COS LPAREN expression RPAREN
+    (26) factorA -> . LPAREN expressionA RPAREN
 
     NUMBER          shift and go to state 10
     PI              shift and go to state 11
     E               shift and go to state 12
-    LPAREN          shift and go to state 31
+    SIN             shift and go to state 13
+    COS             shift and go to state 14
+    LPAREN          shift and go to state 35
 
-    factorA                        shift and go to state 35
+    factorA                        shift and go to state 39
 
-state 19
+state 21
 
     (8) factorL -> factorA EQ . factorA
     (21) factorA -> . NUMBER
     (22) factorA -> . PI
     (23) factorA -> . E
-    (24) factorA -> . LPAREN expressionA RPAREN
+    (24) factorA -> . SIN LPAREN expression RPAREN
+    (25) factorA -> . COS LPAREN expression RPAREN
+    (26) factorA -> . LPAREN expressionA RPAREN
 
     NUMBER          shift and go to state 10
     PI              shift and go to state 11
     E               shift and go to state 12
-    LPAREN          shift and go to state 31
+    SIN             shift and go to state 13
+    COS             shift and go to state 14
+    LPAREN          shift and go to state 35
 
-    factorA                        shift and go to state 36
+    factorA                        shift and go to state 40
 
-state 20
+state 22
 
     (9) factorL -> factorA GT . factorA
     (21) factorA -> . NUMBER
     (22) factorA -> . PI
     (23) factorA -> . E
-    (24) factorA -> . LPAREN expressionA RPAREN
+    (24) factorA -> . SIN LPAREN expression RPAREN
+    (25) factorA -> . COS LPAREN expression RPAREN
+    (26) factorA -> . LPAREN expressionA RPAREN
 
     NUMBER          shift and go to state 10
     PI              shift and go to state 11
     E               shift and go to state 12
-    LPAREN          shift and go to state 31
+    SIN             shift and go to state 13
+    COS             shift and go to state 14
+    LPAREN          shift and go to state 35
 
-    factorA                        shift and go to state 37
+    factorA                        shift and go to state 41
 
-state 21
+state 23
 
     (10) factorL -> factorA LT . factorA
     (21) factorA -> . NUMBER
     (22) factorA -> . PI
     (23) factorA -> . E
-    (24) factorA -> . LPAREN expressionA RPAREN
+    (24) factorA -> . SIN LPAREN expression RPAREN
+    (25) factorA -> . COS LPAREN expression RPAREN
+    (26) factorA -> . LPAREN expressionA RPAREN
 
     NUMBER          shift and go to state 10
     PI              shift and go to state 11
     E               shift and go to state 12
-    LPAREN          shift and go to state 31
+    SIN             shift and go to state 13
+    COS             shift and go to state 14
+    LPAREN          shift and go to state 35
 
-    factorA                        shift and go to state 38
+    factorA                        shift and go to state 42
 
-state 22
+state 24
 
     (11) factorL -> factorA GE . factorA
     (21) factorA -> . NUMBER
     (22) factorA -> . PI
     (23) factorA -> . E
-    (24) factorA -> . LPAREN expressionA RPAREN
+    (24) factorA -> . SIN LPAREN expression RPAREN
+    (25) factorA -> . COS LPAREN expression RPAREN
+    (26) factorA -> . LPAREN expressionA RPAREN
 
     NUMBER          shift and go to state 10
     PI              shift and go to state 11
     E               shift and go to state 12
-    LPAREN          shift and go to state 31
+    SIN             shift and go to state 13
+    COS             shift and go to state 14
+    LPAREN          shift and go to state 35
 
-    factorA                        shift and go to state 39
+    factorA                        shift and go to state 43
 
-state 23
+state 25
 
     (12) factorL -> factorA LE . factorA
     (21) factorA -> . NUMBER
     (22) factorA -> . PI
     (23) factorA -> . E
-    (24) factorA -> . LPAREN expressionA RPAREN
+    (24) factorA -> . SIN LPAREN expression RPAREN
+    (25) factorA -> . COS LPAREN expression RPAREN
+    (26) factorA -> . LPAREN expressionA RPAREN
 
     NUMBER          shift and go to state 10
     PI              shift and go to state 11
     E               shift and go to state 12
-    LPAREN          shift and go to state 31
+    SIN             shift and go to state 13
+    COS             shift and go to state 14
+    LPAREN          shift and go to state 35
 
-    factorA                        shift and go to state 40
+    factorA                        shift and go to state 44
 
-state 24
+state 26
 
     (13) factorL -> factorA NE . factorA
     (21) factorA -> . NUMBER
     (22) factorA -> . PI
     (23) factorA -> . E
-    (24) factorA -> . LPAREN expressionA RPAREN
+    (24) factorA -> . SIN LPAREN expression RPAREN
+    (25) factorA -> . COS LPAREN expression RPAREN
+    (26) factorA -> . LPAREN expressionA RPAREN
 
     NUMBER          shift and go to state 10
     PI              shift and go to state 11
     E               shift and go to state 12
-    LPAREN          shift and go to state 31
+    SIN             shift and go to state 13
+    COS             shift and go to state 14
+    LPAREN          shift and go to state 35
 
-    factorA                        shift and go to state 41
+    factorA                        shift and go to state 45
 
-state 25
+state 27
 
     (14) factorL -> LPAREN expressionL . RPAREN
     (3) expressionL -> expressionL . OR termL
 
-    RPAREN          shift and go to state 42
-    OR              shift and go to state 13
+    RPAREN          shift and go to state 46
+    OR              shift and go to state 15
 
 
-state 26
+state 28
 
-    (24) factorA -> LPAREN expressionA . RPAREN
+    (26) factorA -> LPAREN expressionA . RPAREN
     (15) expressionA -> expressionA . PLUS termA
     (16) expressionA -> expressionA . MINUS termA
 
-    RPAREN          shift and go to state 43
-    PLUS            shift and go to state 14
-    MINUS           shift and go to state 15
+    RPAREN          shift and go to state 47
+    PLUS            shift and go to state 16
+    MINUS           shift and go to state 17
 
 
-state 27
+state 29
+
+    (24) factorA -> SIN LPAREN . expression RPAREN
+    (1) expression -> . expressionL
+    (2) expression -> . expressionA
+    (3) expressionL -> . expressionL OR termL
+    (4) expressionL -> . termL
+    (15) expressionA -> . expressionA PLUS termA
+    (16) expressionA -> . expressionA MINUS termA
+    (17) expressionA -> . termA
+    (5) termL -> . termL AND factorL
+    (6) termL -> . factorL
+    (18) termA -> . termA TIMES factorA
+    (19) termA -> . termA DIVIDE factorA
+    (20) termA -> . factorA
+    (7) factorL -> . BOOL
+    (8) factorL -> . factorA EQ factorA
+    (9) factorL -> . factorA GT factorA
+    (10) factorL -> . factorA LT factorA
+    (11) factorL -> . factorA GE factorA
+    (12) factorL -> . factorA LE factorA
+    (13) factorL -> . factorA NE factorA
+    (14) factorL -> . LPAREN expressionL RPAREN
+    (21) factorA -> . NUMBER
+    (22) factorA -> . PI
+    (23) factorA -> . E
+    (24) factorA -> . SIN LPAREN expression RPAREN
+    (25) factorA -> . COS LPAREN expression RPAREN
+    (26) factorA -> . LPAREN expressionA RPAREN
+
+    BOOL            shift and go to state 8
+    LPAREN          shift and go to state 9
+    NUMBER          shift and go to state 10
+    PI              shift and go to state 11
+    E               shift and go to state 12
+    SIN             shift and go to state 13
+    COS             shift and go to state 14
+
+    expression                     shift and go to state 48
+    expressionL                    shift and go to state 2
+    expressionA                    shift and go to state 3
+    termL                          shift and go to state 4
+    termA                          shift and go to state 5
+    factorL                        shift and go to state 6
+    factorA                        shift and go to state 7
+
+state 30
+
+    (25) factorA -> COS LPAREN . expression RPAREN
+    (1) expression -> . expressionL
+    (2) expression -> . expressionA
+    (3) expressionL -> . expressionL OR termL
+    (4) expressionL -> . termL
+    (15) expressionA -> . expressionA PLUS termA
+    (16) expressionA -> . expressionA MINUS termA
+    (17) expressionA -> . termA
+    (5) termL -> . termL AND factorL
+    (6) termL -> . factorL
+    (18) termA -> . termA TIMES factorA
+    (19) termA -> . termA DIVIDE factorA
+    (20) termA -> . factorA
+    (7) factorL -> . BOOL
+    (8) factorL -> . factorA EQ factorA
+    (9) factorL -> . factorA GT factorA
+    (10) factorL -> . factorA LT factorA
+    (11) factorL -> . factorA GE factorA
+    (12) factorL -> . factorA LE factorA
+    (13) factorL -> . factorA NE factorA
+    (14) factorL -> . LPAREN expressionL RPAREN
+    (21) factorA -> . NUMBER
+    (22) factorA -> . PI
+    (23) factorA -> . E
+    (24) factorA -> . SIN LPAREN expression RPAREN
+    (25) factorA -> . COS LPAREN expression RPAREN
+    (26) factorA -> . LPAREN expressionA RPAREN
+
+    BOOL            shift and go to state 8
+    LPAREN          shift and go to state 9
+    NUMBER          shift and go to state 10
+    PI              shift and go to state 11
+    E               shift and go to state 12
+    SIN             shift and go to state 13
+    COS             shift and go to state 14
+
+    expression                     shift and go to state 49
+    expressionL                    shift and go to state 2
+    expressionA                    shift and go to state 3
+    termL                          shift and go to state 4
+    termA                          shift and go to state 5
+    factorL                        shift and go to state 6
+    factorA                        shift and go to state 7
+
+state 31
 
     (3) expressionL -> expressionL OR termL .
     (5) termL -> termL . AND factorL
@@ -538,10 +706,10 @@ state 27
     OR              reduce using rule 3 (expressionL -> expressionL OR termL .)
     $end            reduce using rule 3 (expressionL -> expressionL OR termL .)
     RPAREN          reduce using rule 3 (expressionL -> expressionL OR termL .)
-    AND             shift and go to state 16
+    AND             shift and go to state 18
 
 
-state 28
+state 32
 
     (8) factorL -> factorA . EQ factorA
     (9) factorL -> factorA . GT factorA
@@ -550,15 +718,15 @@ state 28
     (12) factorL -> factorA . LE factorA
     (13) factorL -> factorA . NE factorA
 
-    EQ              shift and go to state 19
-    GT              shift and go to state 20
-    LT              shift and go to state 21
-    GE              shift and go to state 22
-    LE              shift and go to state 23
-    NE              shift and go to state 24
+    EQ              shift and go to state 21
+    GT              shift and go to state 22
+    LT              shift and go to state 23
+    GE              shift and go to state 24
+    LE              shift and go to state 25
+    NE              shift and go to state 26
 
 
-state 29
+state 33
 
     (15) expressionA -> expressionA PLUS termA .
     (18) termA -> termA . TIMES factorA
@@ -568,11 +736,11 @@ state 29
     MINUS           reduce using rule 15 (expressionA -> expressionA PLUS termA .)
     $end            reduce using rule 15 (expressionA -> expressionA PLUS termA .)
     RPAREN          reduce using rule 15 (expressionA -> expressionA PLUS termA .)
-    TIMES           shift and go to state 17
-    DIVIDE          shift and go to state 18
+    TIMES           shift and go to state 19
+    DIVIDE          shift and go to state 20
 
 
-state 30
+state 34
 
     (20) termA -> factorA .
 
@@ -584,9 +752,9 @@ state 30
     RPAREN          reduce using rule 20 (termA -> factorA .)
 
 
-state 31
+state 35
 
-    (24) factorA -> LPAREN . expressionA RPAREN
+    (26) factorA -> LPAREN . expressionA RPAREN
     (15) expressionA -> . expressionA PLUS termA
     (16) expressionA -> . expressionA MINUS termA
     (17) expressionA -> . termA
@@ -596,18 +764,22 @@ state 31
     (21) factorA -> . NUMBER
     (22) factorA -> . PI
     (23) factorA -> . E
-    (24) factorA -> . LPAREN expressionA RPAREN
+    (24) factorA -> . SIN LPAREN expression RPAREN
+    (25) factorA -> . COS LPAREN expression RPAREN
+    (26) factorA -> . LPAREN expressionA RPAREN
 
     NUMBER          shift and go to state 10
     PI              shift and go to state 11
     E               shift and go to state 12
-    LPAREN          shift and go to state 31
+    SIN             shift and go to state 13
+    COS             shift and go to state 14
+    LPAREN          shift and go to state 35
 
-    expressionA                    shift and go to state 26
+    expressionA                    shift and go to state 28
     termA                          shift and go to state 5
-    factorA                        shift and go to state 30
+    factorA                        shift and go to state 34
 
-state 32
+state 36
 
     (16) expressionA -> expressionA MINUS termA .
     (18) termA -> termA . TIMES factorA
@@ -617,11 +789,11 @@ state 32
     MINUS           reduce using rule 16 (expressionA -> expressionA MINUS termA .)
     $end            reduce using rule 16 (expressionA -> expressionA MINUS termA .)
     RPAREN          reduce using rule 16 (expressionA -> expressionA MINUS termA .)
-    TIMES           shift and go to state 17
-    DIVIDE          shift and go to state 18
+    TIMES           shift and go to state 19
+    DIVIDE          shift and go to state 20
 
 
-state 33
+state 37
 
     (5) termL -> termL AND factorL .
 
@@ -631,7 +803,7 @@ state 33
     RPAREN          reduce using rule 5 (termL -> termL AND factorL .)
 
 
-state 34
+state 38
 
     (18) termA -> termA TIMES factorA .
 
@@ -643,7 +815,7 @@ state 34
     RPAREN          reduce using rule 18 (termA -> termA TIMES factorA .)
 
 
-state 35
+state 39
 
     (19) termA -> termA DIVIDE factorA .
 
@@ -655,7 +827,7 @@ state 35
     RPAREN          reduce using rule 19 (termA -> termA DIVIDE factorA .)
 
 
-state 36
+state 40
 
     (8) factorL -> factorA EQ factorA .
 
@@ -665,7 +837,7 @@ state 36
     RPAREN          reduce using rule 8 (factorL -> factorA EQ factorA .)
 
 
-state 37
+state 41
 
     (9) factorL -> factorA GT factorA .
 
@@ -675,7 +847,7 @@ state 37
     RPAREN          reduce using rule 9 (factorL -> factorA GT factorA .)
 
 
-state 38
+state 42
 
     (10) factorL -> factorA LT factorA .
 
@@ -685,7 +857,7 @@ state 38
     RPAREN          reduce using rule 10 (factorL -> factorA LT factorA .)
 
 
-state 39
+state 43
 
     (11) factorL -> factorA GE factorA .
 
@@ -695,7 +867,7 @@ state 39
     RPAREN          reduce using rule 11 (factorL -> factorA GE factorA .)
 
 
-state 40
+state 44
 
     (12) factorL -> factorA LE factorA .
 
@@ -705,7 +877,7 @@ state 40
     RPAREN          reduce using rule 12 (factorL -> factorA LE factorA .)
 
 
-state 41
+state 45
 
     (13) factorL -> factorA NE factorA .
 
@@ -715,7 +887,7 @@ state 41
     RPAREN          reduce using rule 13 (factorL -> factorA NE factorA .)
 
 
-state 42
+state 46
 
     (14) factorL -> LPAREN expressionL RPAREN .
 
@@ -725,22 +897,76 @@ state 42
     RPAREN          reduce using rule 14 (factorL -> LPAREN expressionL RPAREN .)
 
 
-state 43
+state 47
 
-    (24) factorA -> LPAREN expressionA RPAREN .
+    (26) factorA -> LPAREN expressionA RPAREN .
 
-    EQ              reduce using rule 24 (factorA -> LPAREN expressionA RPAREN .)
-    GT              reduce using rule 24 (factorA -> LPAREN expressionA RPAREN .)
-    LT              reduce using rule 24 (factorA -> LPAREN expressionA RPAREN .)
-    GE              reduce using rule 24 (factorA -> LPAREN expressionA RPAREN .)
-    LE              reduce using rule 24 (factorA -> LPAREN expressionA RPAREN .)
-    NE              reduce using rule 24 (factorA -> LPAREN expressionA RPAREN .)
-    TIMES           reduce using rule 24 (factorA -> LPAREN expressionA RPAREN .)
-    DIVIDE          reduce using rule 24 (factorA -> LPAREN expressionA RPAREN .)
-    PLUS            reduce using rule 24 (factorA -> LPAREN expressionA RPAREN .)
-    MINUS           reduce using rule 24 (factorA -> LPAREN expressionA RPAREN .)
-    $end            reduce using rule 24 (factorA -> LPAREN expressionA RPAREN .)
-    RPAREN          reduce using rule 24 (factorA -> LPAREN expressionA RPAREN .)
-    AND             reduce using rule 24 (factorA -> LPAREN expressionA RPAREN .)
-    OR              reduce using rule 24 (factorA -> LPAREN expressionA RPAREN .)
+    EQ              reduce using rule 26 (factorA -> LPAREN expressionA RPAREN .)
+    GT              reduce using rule 26 (factorA -> LPAREN expressionA RPAREN .)
+    LT              reduce using rule 26 (factorA -> LPAREN expressionA RPAREN .)
+    GE              reduce using rule 26 (factorA -> LPAREN expressionA RPAREN .)
+    LE              reduce using rule 26 (factorA -> LPAREN expressionA RPAREN .)
+    NE              reduce using rule 26 (factorA -> LPAREN expressionA RPAREN .)
+    TIMES           reduce using rule 26 (factorA -> LPAREN expressionA RPAREN .)
+    DIVIDE          reduce using rule 26 (factorA -> LPAREN expressionA RPAREN .)
+    PLUS            reduce using rule 26 (factorA -> LPAREN expressionA RPAREN .)
+    MINUS           reduce using rule 26 (factorA -> LPAREN expressionA RPAREN .)
+    $end            reduce using rule 26 (factorA -> LPAREN expressionA RPAREN .)
+    RPAREN          reduce using rule 26 (factorA -> LPAREN expressionA RPAREN .)
+    AND             reduce using rule 26 (factorA -> LPAREN expressionA RPAREN .)
+    OR              reduce using rule 26 (factorA -> LPAREN expressionA RPAREN .)
+
+
+state 48
+
+    (24) factorA -> SIN LPAREN expression . RPAREN
+
+    RPAREN          shift and go to state 50
+
+
+state 49
+
+    (25) factorA -> COS LPAREN expression . RPAREN
+
+    RPAREN          shift and go to state 51
+
+
+state 50
+
+    (24) factorA -> SIN LPAREN expression RPAREN .
+
+    EQ              reduce using rule 24 (factorA -> SIN LPAREN expression RPAREN .)
+    GT              reduce using rule 24 (factorA -> SIN LPAREN expression RPAREN .)
+    LT              reduce using rule 24 (factorA -> SIN LPAREN expression RPAREN .)
+    GE              reduce using rule 24 (factorA -> SIN LPAREN expression RPAREN .)
+    LE              reduce using rule 24 (factorA -> SIN LPAREN expression RPAREN .)
+    NE              reduce using rule 24 (factorA -> SIN LPAREN expression RPAREN .)
+    TIMES           reduce using rule 24 (factorA -> SIN LPAREN expression RPAREN .)
+    DIVIDE          reduce using rule 24 (factorA -> SIN LPAREN expression RPAREN .)
+    PLUS            reduce using rule 24 (factorA -> SIN LPAREN expression RPAREN .)
+    MINUS           reduce using rule 24 (factorA -> SIN LPAREN expression RPAREN .)
+    $end            reduce using rule 24 (factorA -> SIN LPAREN expression RPAREN .)
+    RPAREN          reduce using rule 24 (factorA -> SIN LPAREN expression RPAREN .)
+    AND             reduce using rule 24 (factorA -> SIN LPAREN expression RPAREN .)
+    OR              reduce using rule 24 (factorA -> SIN LPAREN expression RPAREN .)
+
+
+state 51
+
+    (25) factorA -> COS LPAREN expression RPAREN .
+
+    EQ              reduce using rule 25 (factorA -> COS LPAREN expression RPAREN .)
+    GT              reduce using rule 25 (factorA -> COS LPAREN expression RPAREN .)
+    LT              reduce using rule 25 (factorA -> COS LPAREN expression RPAREN .)
+    GE              reduce using rule 25 (factorA -> COS LPAREN expression RPAREN .)
+    LE              reduce using rule 25 (factorA -> COS LPAREN expression RPAREN .)
+    NE              reduce using rule 25 (factorA -> COS LPAREN expression RPAREN .)
+    TIMES           reduce using rule 25 (factorA -> COS LPAREN expression RPAREN .)
+    DIVIDE          reduce using rule 25 (factorA -> COS LPAREN expression RPAREN .)
+    PLUS            reduce using rule 25 (factorA -> COS LPAREN expression RPAREN .)
+    MINUS           reduce using rule 25 (factorA -> COS LPAREN expression RPAREN .)
+    $end            reduce using rule 25 (factorA -> COS LPAREN expression RPAREN .)
+    RPAREN          reduce using rule 25 (factorA -> COS LPAREN expression RPAREN .)
+    AND             reduce using rule 25 (factorA -> COS LPAREN expression RPAREN .)
+    OR              reduce using rule 25 (factorA -> COS LPAREN expression RPAREN .)
 

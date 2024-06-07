@@ -23,6 +23,8 @@ tokens = (
     'NE',
     'PI',
     'E',
+    'SIN',
+    'COS',
 )
 
 # Expresiones regulares para parentesis
@@ -51,6 +53,12 @@ t_NE = r'!='
 # Constantes
 t_PI = r'PI' 
 t_E = r'E' 
+
+# Funciones predefinidas
+t_SIN = r'sin'
+t_COS = r'cos'
+
+
 
 # Regla de expresión regular con acción de código
 def t_NUMBER(t):
