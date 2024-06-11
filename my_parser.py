@@ -59,7 +59,8 @@ def p_factor_func(p):
               | SQRT LPAREN expression RPAREN
               | EXP LPAREN expression RPAREN
               | LOG LPAREN expression COMA expression RPAREN
-              | RAND LPAREN RPAREN'''
+              | RAND LPAREN RPAREN
+              | PRINT LPAREN expression RPAREN'''
     if len(p) == 5:
         p[0] = ASTNode(type='func', children=[p[3]], leaf=p[1])
     elif len(p) == 7:
@@ -95,6 +96,7 @@ parser = yacc.yacc()
 
 if __name__ == "__main__":
     test_data = [
+        'print(5)',
         "PI + E",                       # Constantes
         "sin(PI / 2)",                  # Funciones trigonométricas
         "3 + 4.5 * 10",                 # Operaciones aritméticas con decimales

@@ -61,6 +61,9 @@ def check_semantics(node, expected_type=None):
             node.data_type = FLOAT_TYPE
         elif node.leaf == 'rand':
             node.data_type = FLOAT_TYPE
+        elif node.leaf == 'print':
+            check_semantics(node.children[0])
+            node.data_type = STRING_TYPE
         if expected_type and node.data_type != expected_type:
             raise SemanticError(f"Error semántico: la función {node.leaf} devuelve {node.data_type} pero se esperaba {expected_type}")
 
@@ -96,6 +99,7 @@ if __name__ == "__main__":
     from my_parser import parser
 
     test_data = [
+        'print(5)',
         "PI + E",                       # Constantes
         "sin(PI / 2)",                  # Funciones trigonométricas
         "3 + 4.5 * 10",                 # Operaciones aritméticas con decimales

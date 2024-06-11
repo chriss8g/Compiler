@@ -21,41 +21,43 @@ Rule 15    factor -> SQRT LPAREN expression RPAREN
 Rule 16    factor -> EXP LPAREN expression RPAREN
 Rule 17    factor -> LOG LPAREN expression COMA expression RPAREN
 Rule 18    factor -> RAND LPAREN RPAREN
-Rule 19    factor -> factor EQ factor
-Rule 20    factor -> factor GT factor
-Rule 21    factor -> factor LT factor
-Rule 22    factor -> factor GE factor
-Rule 23    factor -> factor LE factor
-Rule 24    factor -> factor NE factor
-Rule 25    factor -> factor AND factor
-Rule 26    factor -> factor OR factor
-Rule 27    factor -> factor CONCAT factor
+Rule 19    factor -> PRINT LPAREN expression RPAREN
+Rule 20    factor -> factor EQ factor
+Rule 21    factor -> factor GT factor
+Rule 22    factor -> factor LT factor
+Rule 23    factor -> factor GE factor
+Rule 24    factor -> factor LE factor
+Rule 25    factor -> factor NE factor
+Rule 26    factor -> factor AND factor
+Rule 27    factor -> factor OR factor
+Rule 28    factor -> factor CONCAT factor
 
 Terminals, with rules where they appear
 
-AND                  : 25
+AND                  : 26
 BOOL                 : 11
 COMA                 : 17
-CONCAT               : 27
+CONCAT               : 28
 COS                  : 14
 DIVIDE               : 5
 E                    : 10
-EQ                   : 19
+EQ                   : 20
 EXP                  : 16
-GE                   : 22
-GT                   : 20
-LE                   : 23
+GE                   : 23
+GT                   : 21
+LE                   : 24
 LOG                  : 17
-LPAREN               : 7 13 14 15 16 17 18
-LT                   : 21
+LPAREN               : 7 13 14 15 16 17 18 19
+LT                   : 22
 MINUS                : 2
-NE                   : 24
+NE                   : 25
 NUMBER               : 8
-OR                   : 26
+OR                   : 27
 PI                   : 9
 PLUS                 : 1
+PRINT                : 19
 RAND                 : 18
-RPAREN               : 7 13 14 15 16 17 18
+RPAREN               : 7 13 14 15 16 17 18 19
 SIN                  : 13
 SQRT                 : 15
 STRING               : 12
@@ -64,8 +66,8 @@ error                :
 
 Nonterminals, with rules where they appear
 
-expression           : 1 2 7 13 14 15 16 17 17 0
-factor               : 4 5 6 19 19 20 20 21 21 22 22 23 23 24 24 25 25 26 26 27 27
+expression           : 1 2 7 13 14 15 16 17 17 19 0
+factor               : 4 5 6 20 20 21 21 22 22 23 23 24 24 25 25 26 26 27 27 28 28
 term                 : 1 2 3 4 5
 
 Parsing method: LALR
@@ -91,15 +93,16 @@ state 0
     (16) factor -> . EXP LPAREN expression RPAREN
     (17) factor -> . LOG LPAREN expression COMA expression RPAREN
     (18) factor -> . RAND LPAREN RPAREN
-    (19) factor -> . factor EQ factor
-    (20) factor -> . factor GT factor
-    (21) factor -> . factor LT factor
-    (22) factor -> . factor GE factor
-    (23) factor -> . factor LE factor
-    (24) factor -> . factor NE factor
-    (25) factor -> . factor AND factor
-    (26) factor -> . factor OR factor
-    (27) factor -> . factor CONCAT factor
+    (19) factor -> . PRINT LPAREN expression RPAREN
+    (20) factor -> . factor EQ factor
+    (21) factor -> . factor GT factor
+    (22) factor -> . factor LT factor
+    (23) factor -> . factor GE factor
+    (24) factor -> . factor LE factor
+    (25) factor -> . factor NE factor
+    (26) factor -> . factor AND factor
+    (27) factor -> . factor OR factor
+    (28) factor -> . factor CONCAT factor
 
     LPAREN          shift and go to state 4
     NUMBER          shift and go to state 5
@@ -113,6 +116,7 @@ state 0
     EXP             shift and go to state 13
     LOG             shift and go to state 14
     RAND            shift and go to state 15
+    PRINT           shift and go to state 16
 
     expression                     shift and go to state 1
     term                           shift and go to state 2
@@ -124,8 +128,8 @@ state 1
     (1) expression -> expression . PLUS term
     (2) expression -> expression . MINUS term
 
-    PLUS            shift and go to state 16
-    MINUS           shift and go to state 17
+    PLUS            shift and go to state 17
+    MINUS           shift and go to state 18
 
 
 state 2
@@ -139,22 +143,22 @@ state 2
     $end            reduce using rule 3 (expression -> term .)
     RPAREN          reduce using rule 3 (expression -> term .)
     COMA            reduce using rule 3 (expression -> term .)
-    TIMES           shift and go to state 18
-    DIVIDE          shift and go to state 19
+    TIMES           shift and go to state 19
+    DIVIDE          shift and go to state 20
 
 
 state 3
 
     (6) term -> factor .
-    (19) factor -> factor . EQ factor
-    (20) factor -> factor . GT factor
-    (21) factor -> factor . LT factor
-    (22) factor -> factor . GE factor
-    (23) factor -> factor . LE factor
-    (24) factor -> factor . NE factor
-    (25) factor -> factor . AND factor
-    (26) factor -> factor . OR factor
-    (27) factor -> factor . CONCAT factor
+    (20) factor -> factor . EQ factor
+    (21) factor -> factor . GT factor
+    (22) factor -> factor . LT factor
+    (23) factor -> factor . GE factor
+    (24) factor -> factor . LE factor
+    (25) factor -> factor . NE factor
+    (26) factor -> factor . AND factor
+    (27) factor -> factor . OR factor
+    (28) factor -> factor . CONCAT factor
 
     TIMES           reduce using rule 6 (term -> factor .)
     DIVIDE          reduce using rule 6 (term -> factor .)
@@ -163,15 +167,15 @@ state 3
     $end            reduce using rule 6 (term -> factor .)
     RPAREN          reduce using rule 6 (term -> factor .)
     COMA            reduce using rule 6 (term -> factor .)
-    EQ              shift and go to state 20
-    GT              shift and go to state 21
-    LT              shift and go to state 22
-    GE              shift and go to state 23
-    LE              shift and go to state 24
-    NE              shift and go to state 25
-    AND             shift and go to state 26
-    OR              shift and go to state 27
-    CONCAT          shift and go to state 28
+    EQ              shift and go to state 21
+    GT              shift and go to state 22
+    LT              shift and go to state 23
+    GE              shift and go to state 24
+    LE              shift and go to state 25
+    NE              shift and go to state 26
+    AND             shift and go to state 27
+    OR              shift and go to state 28
+    CONCAT          shift and go to state 29
 
 
 state 4
@@ -195,15 +199,16 @@ state 4
     (16) factor -> . EXP LPAREN expression RPAREN
     (17) factor -> . LOG LPAREN expression COMA expression RPAREN
     (18) factor -> . RAND LPAREN RPAREN
-    (19) factor -> . factor EQ factor
-    (20) factor -> . factor GT factor
-    (21) factor -> . factor LT factor
-    (22) factor -> . factor GE factor
-    (23) factor -> . factor LE factor
-    (24) factor -> . factor NE factor
-    (25) factor -> . factor AND factor
-    (26) factor -> . factor OR factor
-    (27) factor -> . factor CONCAT factor
+    (19) factor -> . PRINT LPAREN expression RPAREN
+    (20) factor -> . factor EQ factor
+    (21) factor -> . factor GT factor
+    (22) factor -> . factor LT factor
+    (23) factor -> . factor GE factor
+    (24) factor -> . factor LE factor
+    (25) factor -> . factor NE factor
+    (26) factor -> . factor AND factor
+    (27) factor -> . factor OR factor
+    (28) factor -> . factor CONCAT factor
 
     LPAREN          shift and go to state 4
     NUMBER          shift and go to state 5
@@ -217,8 +222,9 @@ state 4
     EXP             shift and go to state 13
     LOG             shift and go to state 14
     RAND            shift and go to state 15
+    PRINT           shift and go to state 16
 
-    expression                     shift and go to state 29
+    expression                     shift and go to state 30
     term                           shift and go to state 2
     factor                         shift and go to state 3
 
@@ -336,45 +342,52 @@ state 10
 
     (13) factor -> SIN . LPAREN expression RPAREN
 
-    LPAREN          shift and go to state 30
+    LPAREN          shift and go to state 31
 
 
 state 11
 
     (14) factor -> COS . LPAREN expression RPAREN
 
-    LPAREN          shift and go to state 31
+    LPAREN          shift and go to state 32
 
 
 state 12
 
     (15) factor -> SQRT . LPAREN expression RPAREN
 
-    LPAREN          shift and go to state 32
+    LPAREN          shift and go to state 33
 
 
 state 13
 
     (16) factor -> EXP . LPAREN expression RPAREN
 
-    LPAREN          shift and go to state 33
+    LPAREN          shift and go to state 34
 
 
 state 14
 
     (17) factor -> LOG . LPAREN expression COMA expression RPAREN
 
-    LPAREN          shift and go to state 34
+    LPAREN          shift and go to state 35
 
 
 state 15
 
     (18) factor -> RAND . LPAREN RPAREN
 
-    LPAREN          shift and go to state 35
+    LPAREN          shift and go to state 36
 
 
 state 16
+
+    (19) factor -> PRINT . LPAREN expression RPAREN
+
+    LPAREN          shift and go to state 37
+
+
+state 17
 
     (1) expression -> expression PLUS . term
     (4) term -> . term TIMES factor
@@ -392,15 +405,16 @@ state 16
     (16) factor -> . EXP LPAREN expression RPAREN
     (17) factor -> . LOG LPAREN expression COMA expression RPAREN
     (18) factor -> . RAND LPAREN RPAREN
-    (19) factor -> . factor EQ factor
-    (20) factor -> . factor GT factor
-    (21) factor -> . factor LT factor
-    (22) factor -> . factor GE factor
-    (23) factor -> . factor LE factor
-    (24) factor -> . factor NE factor
-    (25) factor -> . factor AND factor
-    (26) factor -> . factor OR factor
-    (27) factor -> . factor CONCAT factor
+    (19) factor -> . PRINT LPAREN expression RPAREN
+    (20) factor -> . factor EQ factor
+    (21) factor -> . factor GT factor
+    (22) factor -> . factor LT factor
+    (23) factor -> . factor GE factor
+    (24) factor -> . factor LE factor
+    (25) factor -> . factor NE factor
+    (26) factor -> . factor AND factor
+    (27) factor -> . factor OR factor
+    (28) factor -> . factor CONCAT factor
 
     LPAREN          shift and go to state 4
     NUMBER          shift and go to state 5
@@ -414,11 +428,12 @@ state 16
     EXP             shift and go to state 13
     LOG             shift and go to state 14
     RAND            shift and go to state 15
+    PRINT           shift and go to state 16
 
-    term                           shift and go to state 36
+    term                           shift and go to state 38
     factor                         shift and go to state 3
 
-state 17
+state 18
 
     (2) expression -> expression MINUS . term
     (4) term -> . term TIMES factor
@@ -436,15 +451,16 @@ state 17
     (16) factor -> . EXP LPAREN expression RPAREN
     (17) factor -> . LOG LPAREN expression COMA expression RPAREN
     (18) factor -> . RAND LPAREN RPAREN
-    (19) factor -> . factor EQ factor
-    (20) factor -> . factor GT factor
-    (21) factor -> . factor LT factor
-    (22) factor -> . factor GE factor
-    (23) factor -> . factor LE factor
-    (24) factor -> . factor NE factor
-    (25) factor -> . factor AND factor
-    (26) factor -> . factor OR factor
-    (27) factor -> . factor CONCAT factor
+    (19) factor -> . PRINT LPAREN expression RPAREN
+    (20) factor -> . factor EQ factor
+    (21) factor -> . factor GT factor
+    (22) factor -> . factor LT factor
+    (23) factor -> . factor GE factor
+    (24) factor -> . factor LE factor
+    (25) factor -> . factor NE factor
+    (26) factor -> . factor AND factor
+    (27) factor -> . factor OR factor
+    (28) factor -> . factor CONCAT factor
 
     LPAREN          shift and go to state 4
     NUMBER          shift and go to state 5
@@ -458,11 +474,12 @@ state 17
     EXP             shift and go to state 13
     LOG             shift and go to state 14
     RAND            shift and go to state 15
+    PRINT           shift and go to state 16
 
-    term                           shift and go to state 37
+    term                           shift and go to state 39
     factor                         shift and go to state 3
 
-state 18
+state 19
 
     (4) term -> term TIMES . factor
     (7) factor -> . LPAREN expression RPAREN
@@ -477,15 +494,16 @@ state 18
     (16) factor -> . EXP LPAREN expression RPAREN
     (17) factor -> . LOG LPAREN expression COMA expression RPAREN
     (18) factor -> . RAND LPAREN RPAREN
-    (19) factor -> . factor EQ factor
-    (20) factor -> . factor GT factor
-    (21) factor -> . factor LT factor
-    (22) factor -> . factor GE factor
-    (23) factor -> . factor LE factor
-    (24) factor -> . factor NE factor
-    (25) factor -> . factor AND factor
-    (26) factor -> . factor OR factor
-    (27) factor -> . factor CONCAT factor
+    (19) factor -> . PRINT LPAREN expression RPAREN
+    (20) factor -> . factor EQ factor
+    (21) factor -> . factor GT factor
+    (22) factor -> . factor LT factor
+    (23) factor -> . factor GE factor
+    (24) factor -> . factor LE factor
+    (25) factor -> . factor NE factor
+    (26) factor -> . factor AND factor
+    (27) factor -> . factor OR factor
+    (28) factor -> . factor CONCAT factor
 
     LPAREN          shift and go to state 4
     NUMBER          shift and go to state 5
@@ -499,10 +517,11 @@ state 18
     EXP             shift and go to state 13
     LOG             shift and go to state 14
     RAND            shift and go to state 15
+    PRINT           shift and go to state 16
 
-    factor                         shift and go to state 38
+    factor                         shift and go to state 40
 
-state 19
+state 20
 
     (5) term -> term DIVIDE . factor
     (7) factor -> . LPAREN expression RPAREN
@@ -517,15 +536,16 @@ state 19
     (16) factor -> . EXP LPAREN expression RPAREN
     (17) factor -> . LOG LPAREN expression COMA expression RPAREN
     (18) factor -> . RAND LPAREN RPAREN
-    (19) factor -> . factor EQ factor
-    (20) factor -> . factor GT factor
-    (21) factor -> . factor LT factor
-    (22) factor -> . factor GE factor
-    (23) factor -> . factor LE factor
-    (24) factor -> . factor NE factor
-    (25) factor -> . factor AND factor
-    (26) factor -> . factor OR factor
-    (27) factor -> . factor CONCAT factor
+    (19) factor -> . PRINT LPAREN expression RPAREN
+    (20) factor -> . factor EQ factor
+    (21) factor -> . factor GT factor
+    (22) factor -> . factor LT factor
+    (23) factor -> . factor GE factor
+    (24) factor -> . factor LE factor
+    (25) factor -> . factor NE factor
+    (26) factor -> . factor AND factor
+    (27) factor -> . factor OR factor
+    (28) factor -> . factor CONCAT factor
 
     LPAREN          shift and go to state 4
     NUMBER          shift and go to state 5
@@ -539,92 +559,13 @@ state 19
     EXP             shift and go to state 13
     LOG             shift and go to state 14
     RAND            shift and go to state 15
-
-    factor                         shift and go to state 39
-
-state 20
-
-    (19) factor -> factor EQ . factor
-    (7) factor -> . LPAREN expression RPAREN
-    (8) factor -> . NUMBER
-    (9) factor -> . PI
-    (10) factor -> . E
-    (11) factor -> . BOOL
-    (12) factor -> . STRING
-    (13) factor -> . SIN LPAREN expression RPAREN
-    (14) factor -> . COS LPAREN expression RPAREN
-    (15) factor -> . SQRT LPAREN expression RPAREN
-    (16) factor -> . EXP LPAREN expression RPAREN
-    (17) factor -> . LOG LPAREN expression COMA expression RPAREN
-    (18) factor -> . RAND LPAREN RPAREN
-    (19) factor -> . factor EQ factor
-    (20) factor -> . factor GT factor
-    (21) factor -> . factor LT factor
-    (22) factor -> . factor GE factor
-    (23) factor -> . factor LE factor
-    (24) factor -> . factor NE factor
-    (25) factor -> . factor AND factor
-    (26) factor -> . factor OR factor
-    (27) factor -> . factor CONCAT factor
-
-    LPAREN          shift and go to state 4
-    NUMBER          shift and go to state 5
-    PI              shift and go to state 6
-    E               shift and go to state 7
-    BOOL            shift and go to state 8
-    STRING          shift and go to state 9
-    SIN             shift and go to state 10
-    COS             shift and go to state 11
-    SQRT            shift and go to state 12
-    EXP             shift and go to state 13
-    LOG             shift and go to state 14
-    RAND            shift and go to state 15
-
-    factor                         shift and go to state 40
-
-state 21
-
-    (20) factor -> factor GT . factor
-    (7) factor -> . LPAREN expression RPAREN
-    (8) factor -> . NUMBER
-    (9) factor -> . PI
-    (10) factor -> . E
-    (11) factor -> . BOOL
-    (12) factor -> . STRING
-    (13) factor -> . SIN LPAREN expression RPAREN
-    (14) factor -> . COS LPAREN expression RPAREN
-    (15) factor -> . SQRT LPAREN expression RPAREN
-    (16) factor -> . EXP LPAREN expression RPAREN
-    (17) factor -> . LOG LPAREN expression COMA expression RPAREN
-    (18) factor -> . RAND LPAREN RPAREN
-    (19) factor -> . factor EQ factor
-    (20) factor -> . factor GT factor
-    (21) factor -> . factor LT factor
-    (22) factor -> . factor GE factor
-    (23) factor -> . factor LE factor
-    (24) factor -> . factor NE factor
-    (25) factor -> . factor AND factor
-    (26) factor -> . factor OR factor
-    (27) factor -> . factor CONCAT factor
-
-    LPAREN          shift and go to state 4
-    NUMBER          shift and go to state 5
-    PI              shift and go to state 6
-    E               shift and go to state 7
-    BOOL            shift and go to state 8
-    STRING          shift and go to state 9
-    SIN             shift and go to state 10
-    COS             shift and go to state 11
-    SQRT            shift and go to state 12
-    EXP             shift and go to state 13
-    LOG             shift and go to state 14
-    RAND            shift and go to state 15
+    PRINT           shift and go to state 16
 
     factor                         shift and go to state 41
 
-state 22
+state 21
 
-    (21) factor -> factor LT . factor
+    (20) factor -> factor EQ . factor
     (7) factor -> . LPAREN expression RPAREN
     (8) factor -> . NUMBER
     (9) factor -> . PI
@@ -637,15 +578,16 @@ state 22
     (16) factor -> . EXP LPAREN expression RPAREN
     (17) factor -> . LOG LPAREN expression COMA expression RPAREN
     (18) factor -> . RAND LPAREN RPAREN
-    (19) factor -> . factor EQ factor
-    (20) factor -> . factor GT factor
-    (21) factor -> . factor LT factor
-    (22) factor -> . factor GE factor
-    (23) factor -> . factor LE factor
-    (24) factor -> . factor NE factor
-    (25) factor -> . factor AND factor
-    (26) factor -> . factor OR factor
-    (27) factor -> . factor CONCAT factor
+    (19) factor -> . PRINT LPAREN expression RPAREN
+    (20) factor -> . factor EQ factor
+    (21) factor -> . factor GT factor
+    (22) factor -> . factor LT factor
+    (23) factor -> . factor GE factor
+    (24) factor -> . factor LE factor
+    (25) factor -> . factor NE factor
+    (26) factor -> . factor AND factor
+    (27) factor -> . factor OR factor
+    (28) factor -> . factor CONCAT factor
 
     LPAREN          shift and go to state 4
     NUMBER          shift and go to state 5
@@ -659,12 +601,13 @@ state 22
     EXP             shift and go to state 13
     LOG             shift and go to state 14
     RAND            shift and go to state 15
+    PRINT           shift and go to state 16
 
     factor                         shift and go to state 42
 
-state 23
+state 22
 
-    (22) factor -> factor GE . factor
+    (21) factor -> factor GT . factor
     (7) factor -> . LPAREN expression RPAREN
     (8) factor -> . NUMBER
     (9) factor -> . PI
@@ -677,15 +620,16 @@ state 23
     (16) factor -> . EXP LPAREN expression RPAREN
     (17) factor -> . LOG LPAREN expression COMA expression RPAREN
     (18) factor -> . RAND LPAREN RPAREN
-    (19) factor -> . factor EQ factor
-    (20) factor -> . factor GT factor
-    (21) factor -> . factor LT factor
-    (22) factor -> . factor GE factor
-    (23) factor -> . factor LE factor
-    (24) factor -> . factor NE factor
-    (25) factor -> . factor AND factor
-    (26) factor -> . factor OR factor
-    (27) factor -> . factor CONCAT factor
+    (19) factor -> . PRINT LPAREN expression RPAREN
+    (20) factor -> . factor EQ factor
+    (21) factor -> . factor GT factor
+    (22) factor -> . factor LT factor
+    (23) factor -> . factor GE factor
+    (24) factor -> . factor LE factor
+    (25) factor -> . factor NE factor
+    (26) factor -> . factor AND factor
+    (27) factor -> . factor OR factor
+    (28) factor -> . factor CONCAT factor
 
     LPAREN          shift and go to state 4
     NUMBER          shift and go to state 5
@@ -699,12 +643,13 @@ state 23
     EXP             shift and go to state 13
     LOG             shift and go to state 14
     RAND            shift and go to state 15
+    PRINT           shift and go to state 16
 
     factor                         shift and go to state 43
 
-state 24
+state 23
 
-    (23) factor -> factor LE . factor
+    (22) factor -> factor LT . factor
     (7) factor -> . LPAREN expression RPAREN
     (8) factor -> . NUMBER
     (9) factor -> . PI
@@ -717,15 +662,16 @@ state 24
     (16) factor -> . EXP LPAREN expression RPAREN
     (17) factor -> . LOG LPAREN expression COMA expression RPAREN
     (18) factor -> . RAND LPAREN RPAREN
-    (19) factor -> . factor EQ factor
-    (20) factor -> . factor GT factor
-    (21) factor -> . factor LT factor
-    (22) factor -> . factor GE factor
-    (23) factor -> . factor LE factor
-    (24) factor -> . factor NE factor
-    (25) factor -> . factor AND factor
-    (26) factor -> . factor OR factor
-    (27) factor -> . factor CONCAT factor
+    (19) factor -> . PRINT LPAREN expression RPAREN
+    (20) factor -> . factor EQ factor
+    (21) factor -> . factor GT factor
+    (22) factor -> . factor LT factor
+    (23) factor -> . factor GE factor
+    (24) factor -> . factor LE factor
+    (25) factor -> . factor NE factor
+    (26) factor -> . factor AND factor
+    (27) factor -> . factor OR factor
+    (28) factor -> . factor CONCAT factor
 
     LPAREN          shift and go to state 4
     NUMBER          shift and go to state 5
@@ -739,12 +685,13 @@ state 24
     EXP             shift and go to state 13
     LOG             shift and go to state 14
     RAND            shift and go to state 15
+    PRINT           shift and go to state 16
 
     factor                         shift and go to state 44
 
-state 25
+state 24
 
-    (24) factor -> factor NE . factor
+    (23) factor -> factor GE . factor
     (7) factor -> . LPAREN expression RPAREN
     (8) factor -> . NUMBER
     (9) factor -> . PI
@@ -757,15 +704,16 @@ state 25
     (16) factor -> . EXP LPAREN expression RPAREN
     (17) factor -> . LOG LPAREN expression COMA expression RPAREN
     (18) factor -> . RAND LPAREN RPAREN
-    (19) factor -> . factor EQ factor
-    (20) factor -> . factor GT factor
-    (21) factor -> . factor LT factor
-    (22) factor -> . factor GE factor
-    (23) factor -> . factor LE factor
-    (24) factor -> . factor NE factor
-    (25) factor -> . factor AND factor
-    (26) factor -> . factor OR factor
-    (27) factor -> . factor CONCAT factor
+    (19) factor -> . PRINT LPAREN expression RPAREN
+    (20) factor -> . factor EQ factor
+    (21) factor -> . factor GT factor
+    (22) factor -> . factor LT factor
+    (23) factor -> . factor GE factor
+    (24) factor -> . factor LE factor
+    (25) factor -> . factor NE factor
+    (26) factor -> . factor AND factor
+    (27) factor -> . factor OR factor
+    (28) factor -> . factor CONCAT factor
 
     LPAREN          shift and go to state 4
     NUMBER          shift and go to state 5
@@ -779,12 +727,13 @@ state 25
     EXP             shift and go to state 13
     LOG             shift and go to state 14
     RAND            shift and go to state 15
+    PRINT           shift and go to state 16
 
     factor                         shift and go to state 45
 
-state 26
+state 25
 
-    (25) factor -> factor AND . factor
+    (24) factor -> factor LE . factor
     (7) factor -> . LPAREN expression RPAREN
     (8) factor -> . NUMBER
     (9) factor -> . PI
@@ -797,15 +746,16 @@ state 26
     (16) factor -> . EXP LPAREN expression RPAREN
     (17) factor -> . LOG LPAREN expression COMA expression RPAREN
     (18) factor -> . RAND LPAREN RPAREN
-    (19) factor -> . factor EQ factor
-    (20) factor -> . factor GT factor
-    (21) factor -> . factor LT factor
-    (22) factor -> . factor GE factor
-    (23) factor -> . factor LE factor
-    (24) factor -> . factor NE factor
-    (25) factor -> . factor AND factor
-    (26) factor -> . factor OR factor
-    (27) factor -> . factor CONCAT factor
+    (19) factor -> . PRINT LPAREN expression RPAREN
+    (20) factor -> . factor EQ factor
+    (21) factor -> . factor GT factor
+    (22) factor -> . factor LT factor
+    (23) factor -> . factor GE factor
+    (24) factor -> . factor LE factor
+    (25) factor -> . factor NE factor
+    (26) factor -> . factor AND factor
+    (27) factor -> . factor OR factor
+    (28) factor -> . factor CONCAT factor
 
     LPAREN          shift and go to state 4
     NUMBER          shift and go to state 5
@@ -819,12 +769,13 @@ state 26
     EXP             shift and go to state 13
     LOG             shift and go to state 14
     RAND            shift and go to state 15
+    PRINT           shift and go to state 16
 
     factor                         shift and go to state 46
 
-state 27
+state 26
 
-    (26) factor -> factor OR . factor
+    (25) factor -> factor NE . factor
     (7) factor -> . LPAREN expression RPAREN
     (8) factor -> . NUMBER
     (9) factor -> . PI
@@ -837,15 +788,16 @@ state 27
     (16) factor -> . EXP LPAREN expression RPAREN
     (17) factor -> . LOG LPAREN expression COMA expression RPAREN
     (18) factor -> . RAND LPAREN RPAREN
-    (19) factor -> . factor EQ factor
-    (20) factor -> . factor GT factor
-    (21) factor -> . factor LT factor
-    (22) factor -> . factor GE factor
-    (23) factor -> . factor LE factor
-    (24) factor -> . factor NE factor
-    (25) factor -> . factor AND factor
-    (26) factor -> . factor OR factor
-    (27) factor -> . factor CONCAT factor
+    (19) factor -> . PRINT LPAREN expression RPAREN
+    (20) factor -> . factor EQ factor
+    (21) factor -> . factor GT factor
+    (22) factor -> . factor LT factor
+    (23) factor -> . factor GE factor
+    (24) factor -> . factor LE factor
+    (25) factor -> . factor NE factor
+    (26) factor -> . factor AND factor
+    (27) factor -> . factor OR factor
+    (28) factor -> . factor CONCAT factor
 
     LPAREN          shift and go to state 4
     NUMBER          shift and go to state 5
@@ -859,12 +811,13 @@ state 27
     EXP             shift and go to state 13
     LOG             shift and go to state 14
     RAND            shift and go to state 15
+    PRINT           shift and go to state 16
 
     factor                         shift and go to state 47
 
-state 28
+state 27
 
-    (27) factor -> factor CONCAT . factor
+    (26) factor -> factor AND . factor
     (7) factor -> . LPAREN expression RPAREN
     (8) factor -> . NUMBER
     (9) factor -> . PI
@@ -877,15 +830,16 @@ state 28
     (16) factor -> . EXP LPAREN expression RPAREN
     (17) factor -> . LOG LPAREN expression COMA expression RPAREN
     (18) factor -> . RAND LPAREN RPAREN
-    (19) factor -> . factor EQ factor
-    (20) factor -> . factor GT factor
-    (21) factor -> . factor LT factor
-    (22) factor -> . factor GE factor
-    (23) factor -> . factor LE factor
-    (24) factor -> . factor NE factor
-    (25) factor -> . factor AND factor
-    (26) factor -> . factor OR factor
-    (27) factor -> . factor CONCAT factor
+    (19) factor -> . PRINT LPAREN expression RPAREN
+    (20) factor -> . factor EQ factor
+    (21) factor -> . factor GT factor
+    (22) factor -> . factor LT factor
+    (23) factor -> . factor GE factor
+    (24) factor -> . factor LE factor
+    (25) factor -> . factor NE factor
+    (26) factor -> . factor AND factor
+    (27) factor -> . factor OR factor
+    (28) factor -> . factor CONCAT factor
 
     LPAREN          shift and go to state 4
     NUMBER          shift and go to state 5
@@ -899,21 +853,106 @@ state 28
     EXP             shift and go to state 13
     LOG             shift and go to state 14
     RAND            shift and go to state 15
+    PRINT           shift and go to state 16
 
     factor                         shift and go to state 48
 
+state 28
+
+    (27) factor -> factor OR . factor
+    (7) factor -> . LPAREN expression RPAREN
+    (8) factor -> . NUMBER
+    (9) factor -> . PI
+    (10) factor -> . E
+    (11) factor -> . BOOL
+    (12) factor -> . STRING
+    (13) factor -> . SIN LPAREN expression RPAREN
+    (14) factor -> . COS LPAREN expression RPAREN
+    (15) factor -> . SQRT LPAREN expression RPAREN
+    (16) factor -> . EXP LPAREN expression RPAREN
+    (17) factor -> . LOG LPAREN expression COMA expression RPAREN
+    (18) factor -> . RAND LPAREN RPAREN
+    (19) factor -> . PRINT LPAREN expression RPAREN
+    (20) factor -> . factor EQ factor
+    (21) factor -> . factor GT factor
+    (22) factor -> . factor LT factor
+    (23) factor -> . factor GE factor
+    (24) factor -> . factor LE factor
+    (25) factor -> . factor NE factor
+    (26) factor -> . factor AND factor
+    (27) factor -> . factor OR factor
+    (28) factor -> . factor CONCAT factor
+
+    LPAREN          shift and go to state 4
+    NUMBER          shift and go to state 5
+    PI              shift and go to state 6
+    E               shift and go to state 7
+    BOOL            shift and go to state 8
+    STRING          shift and go to state 9
+    SIN             shift and go to state 10
+    COS             shift and go to state 11
+    SQRT            shift and go to state 12
+    EXP             shift and go to state 13
+    LOG             shift and go to state 14
+    RAND            shift and go to state 15
+    PRINT           shift and go to state 16
+
+    factor                         shift and go to state 49
+
 state 29
+
+    (28) factor -> factor CONCAT . factor
+    (7) factor -> . LPAREN expression RPAREN
+    (8) factor -> . NUMBER
+    (9) factor -> . PI
+    (10) factor -> . E
+    (11) factor -> . BOOL
+    (12) factor -> . STRING
+    (13) factor -> . SIN LPAREN expression RPAREN
+    (14) factor -> . COS LPAREN expression RPAREN
+    (15) factor -> . SQRT LPAREN expression RPAREN
+    (16) factor -> . EXP LPAREN expression RPAREN
+    (17) factor -> . LOG LPAREN expression COMA expression RPAREN
+    (18) factor -> . RAND LPAREN RPAREN
+    (19) factor -> . PRINT LPAREN expression RPAREN
+    (20) factor -> . factor EQ factor
+    (21) factor -> . factor GT factor
+    (22) factor -> . factor LT factor
+    (23) factor -> . factor GE factor
+    (24) factor -> . factor LE factor
+    (25) factor -> . factor NE factor
+    (26) factor -> . factor AND factor
+    (27) factor -> . factor OR factor
+    (28) factor -> . factor CONCAT factor
+
+    LPAREN          shift and go to state 4
+    NUMBER          shift and go to state 5
+    PI              shift and go to state 6
+    E               shift and go to state 7
+    BOOL            shift and go to state 8
+    STRING          shift and go to state 9
+    SIN             shift and go to state 10
+    COS             shift and go to state 11
+    SQRT            shift and go to state 12
+    EXP             shift and go to state 13
+    LOG             shift and go to state 14
+    RAND            shift and go to state 15
+    PRINT           shift and go to state 16
+
+    factor                         shift and go to state 50
+
+state 30
 
     (7) factor -> LPAREN expression . RPAREN
     (1) expression -> expression . PLUS term
     (2) expression -> expression . MINUS term
 
-    RPAREN          shift and go to state 49
-    PLUS            shift and go to state 16
-    MINUS           shift and go to state 17
+    RPAREN          shift and go to state 51
+    PLUS            shift and go to state 17
+    MINUS           shift and go to state 18
 
 
-state 30
+state 31
 
     (13) factor -> SIN LPAREN . expression RPAREN
     (1) expression -> . expression PLUS term
@@ -934,15 +973,16 @@ state 30
     (16) factor -> . EXP LPAREN expression RPAREN
     (17) factor -> . LOG LPAREN expression COMA expression RPAREN
     (18) factor -> . RAND LPAREN RPAREN
-    (19) factor -> . factor EQ factor
-    (20) factor -> . factor GT factor
-    (21) factor -> . factor LT factor
-    (22) factor -> . factor GE factor
-    (23) factor -> . factor LE factor
-    (24) factor -> . factor NE factor
-    (25) factor -> . factor AND factor
-    (26) factor -> . factor OR factor
-    (27) factor -> . factor CONCAT factor
+    (19) factor -> . PRINT LPAREN expression RPAREN
+    (20) factor -> . factor EQ factor
+    (21) factor -> . factor GT factor
+    (22) factor -> . factor LT factor
+    (23) factor -> . factor GE factor
+    (24) factor -> . factor LE factor
+    (25) factor -> . factor NE factor
+    (26) factor -> . factor AND factor
+    (27) factor -> . factor OR factor
+    (28) factor -> . factor CONCAT factor
 
     LPAREN          shift and go to state 4
     NUMBER          shift and go to state 5
@@ -956,12 +996,13 @@ state 30
     EXP             shift and go to state 13
     LOG             shift and go to state 14
     RAND            shift and go to state 15
+    PRINT           shift and go to state 16
 
-    expression                     shift and go to state 50
+    expression                     shift and go to state 52
     term                           shift and go to state 2
     factor                         shift and go to state 3
 
-state 31
+state 32
 
     (14) factor -> COS LPAREN . expression RPAREN
     (1) expression -> . expression PLUS term
@@ -982,15 +1023,16 @@ state 31
     (16) factor -> . EXP LPAREN expression RPAREN
     (17) factor -> . LOG LPAREN expression COMA expression RPAREN
     (18) factor -> . RAND LPAREN RPAREN
-    (19) factor -> . factor EQ factor
-    (20) factor -> . factor GT factor
-    (21) factor -> . factor LT factor
-    (22) factor -> . factor GE factor
-    (23) factor -> . factor LE factor
-    (24) factor -> . factor NE factor
-    (25) factor -> . factor AND factor
-    (26) factor -> . factor OR factor
-    (27) factor -> . factor CONCAT factor
+    (19) factor -> . PRINT LPAREN expression RPAREN
+    (20) factor -> . factor EQ factor
+    (21) factor -> . factor GT factor
+    (22) factor -> . factor LT factor
+    (23) factor -> . factor GE factor
+    (24) factor -> . factor LE factor
+    (25) factor -> . factor NE factor
+    (26) factor -> . factor AND factor
+    (27) factor -> . factor OR factor
+    (28) factor -> . factor CONCAT factor
 
     LPAREN          shift and go to state 4
     NUMBER          shift and go to state 5
@@ -1004,12 +1046,13 @@ state 31
     EXP             shift and go to state 13
     LOG             shift and go to state 14
     RAND            shift and go to state 15
+    PRINT           shift and go to state 16
 
-    expression                     shift and go to state 51
+    expression                     shift and go to state 53
     term                           shift and go to state 2
     factor                         shift and go to state 3
 
-state 32
+state 33
 
     (15) factor -> SQRT LPAREN . expression RPAREN
     (1) expression -> . expression PLUS term
@@ -1030,15 +1073,16 @@ state 32
     (16) factor -> . EXP LPAREN expression RPAREN
     (17) factor -> . LOG LPAREN expression COMA expression RPAREN
     (18) factor -> . RAND LPAREN RPAREN
-    (19) factor -> . factor EQ factor
-    (20) factor -> . factor GT factor
-    (21) factor -> . factor LT factor
-    (22) factor -> . factor GE factor
-    (23) factor -> . factor LE factor
-    (24) factor -> . factor NE factor
-    (25) factor -> . factor AND factor
-    (26) factor -> . factor OR factor
-    (27) factor -> . factor CONCAT factor
+    (19) factor -> . PRINT LPAREN expression RPAREN
+    (20) factor -> . factor EQ factor
+    (21) factor -> . factor GT factor
+    (22) factor -> . factor LT factor
+    (23) factor -> . factor GE factor
+    (24) factor -> . factor LE factor
+    (25) factor -> . factor NE factor
+    (26) factor -> . factor AND factor
+    (27) factor -> . factor OR factor
+    (28) factor -> . factor CONCAT factor
 
     LPAREN          shift and go to state 4
     NUMBER          shift and go to state 5
@@ -1052,12 +1096,13 @@ state 32
     EXP             shift and go to state 13
     LOG             shift and go to state 14
     RAND            shift and go to state 15
+    PRINT           shift and go to state 16
 
-    expression                     shift and go to state 52
+    expression                     shift and go to state 54
     term                           shift and go to state 2
     factor                         shift and go to state 3
 
-state 33
+state 34
 
     (16) factor -> EXP LPAREN . expression RPAREN
     (1) expression -> . expression PLUS term
@@ -1078,15 +1123,16 @@ state 33
     (16) factor -> . EXP LPAREN expression RPAREN
     (17) factor -> . LOG LPAREN expression COMA expression RPAREN
     (18) factor -> . RAND LPAREN RPAREN
-    (19) factor -> . factor EQ factor
-    (20) factor -> . factor GT factor
-    (21) factor -> . factor LT factor
-    (22) factor -> . factor GE factor
-    (23) factor -> . factor LE factor
-    (24) factor -> . factor NE factor
-    (25) factor -> . factor AND factor
-    (26) factor -> . factor OR factor
-    (27) factor -> . factor CONCAT factor
+    (19) factor -> . PRINT LPAREN expression RPAREN
+    (20) factor -> . factor EQ factor
+    (21) factor -> . factor GT factor
+    (22) factor -> . factor LT factor
+    (23) factor -> . factor GE factor
+    (24) factor -> . factor LE factor
+    (25) factor -> . factor NE factor
+    (26) factor -> . factor AND factor
+    (27) factor -> . factor OR factor
+    (28) factor -> . factor CONCAT factor
 
     LPAREN          shift and go to state 4
     NUMBER          shift and go to state 5
@@ -1100,12 +1146,13 @@ state 33
     EXP             shift and go to state 13
     LOG             shift and go to state 14
     RAND            shift and go to state 15
+    PRINT           shift and go to state 16
 
-    expression                     shift and go to state 53
+    expression                     shift and go to state 55
     term                           shift and go to state 2
     factor                         shift and go to state 3
 
-state 34
+state 35
 
     (17) factor -> LOG LPAREN . expression COMA expression RPAREN
     (1) expression -> . expression PLUS term
@@ -1126,15 +1173,16 @@ state 34
     (16) factor -> . EXP LPAREN expression RPAREN
     (17) factor -> . LOG LPAREN expression COMA expression RPAREN
     (18) factor -> . RAND LPAREN RPAREN
-    (19) factor -> . factor EQ factor
-    (20) factor -> . factor GT factor
-    (21) factor -> . factor LT factor
-    (22) factor -> . factor GE factor
-    (23) factor -> . factor LE factor
-    (24) factor -> . factor NE factor
-    (25) factor -> . factor AND factor
-    (26) factor -> . factor OR factor
-    (27) factor -> . factor CONCAT factor
+    (19) factor -> . PRINT LPAREN expression RPAREN
+    (20) factor -> . factor EQ factor
+    (21) factor -> . factor GT factor
+    (22) factor -> . factor LT factor
+    (23) factor -> . factor GE factor
+    (24) factor -> . factor LE factor
+    (25) factor -> . factor NE factor
+    (26) factor -> . factor AND factor
+    (27) factor -> . factor OR factor
+    (28) factor -> . factor CONCAT factor
 
     LPAREN          shift and go to state 4
     NUMBER          shift and go to state 5
@@ -1148,19 +1196,70 @@ state 34
     EXP             shift and go to state 13
     LOG             shift and go to state 14
     RAND            shift and go to state 15
+    PRINT           shift and go to state 16
 
-    expression                     shift and go to state 54
+    expression                     shift and go to state 56
     term                           shift and go to state 2
     factor                         shift and go to state 3
 
-state 35
+state 36
 
     (18) factor -> RAND LPAREN . RPAREN
 
-    RPAREN          shift and go to state 55
+    RPAREN          shift and go to state 57
 
 
-state 36
+state 37
+
+    (19) factor -> PRINT LPAREN . expression RPAREN
+    (1) expression -> . expression PLUS term
+    (2) expression -> . expression MINUS term
+    (3) expression -> . term
+    (4) term -> . term TIMES factor
+    (5) term -> . term DIVIDE factor
+    (6) term -> . factor
+    (7) factor -> . LPAREN expression RPAREN
+    (8) factor -> . NUMBER
+    (9) factor -> . PI
+    (10) factor -> . E
+    (11) factor -> . BOOL
+    (12) factor -> . STRING
+    (13) factor -> . SIN LPAREN expression RPAREN
+    (14) factor -> . COS LPAREN expression RPAREN
+    (15) factor -> . SQRT LPAREN expression RPAREN
+    (16) factor -> . EXP LPAREN expression RPAREN
+    (17) factor -> . LOG LPAREN expression COMA expression RPAREN
+    (18) factor -> . RAND LPAREN RPAREN
+    (19) factor -> . PRINT LPAREN expression RPAREN
+    (20) factor -> . factor EQ factor
+    (21) factor -> . factor GT factor
+    (22) factor -> . factor LT factor
+    (23) factor -> . factor GE factor
+    (24) factor -> . factor LE factor
+    (25) factor -> . factor NE factor
+    (26) factor -> . factor AND factor
+    (27) factor -> . factor OR factor
+    (28) factor -> . factor CONCAT factor
+
+    LPAREN          shift and go to state 4
+    NUMBER          shift and go to state 5
+    PI              shift and go to state 6
+    E               shift and go to state 7
+    BOOL            shift and go to state 8
+    STRING          shift and go to state 9
+    SIN             shift and go to state 10
+    COS             shift and go to state 11
+    SQRT            shift and go to state 12
+    EXP             shift and go to state 13
+    LOG             shift and go to state 14
+    RAND            shift and go to state 15
+    PRINT           shift and go to state 16
+
+    expression                     shift and go to state 58
+    term                           shift and go to state 2
+    factor                         shift and go to state 3
+
+state 38
 
     (1) expression -> expression PLUS term .
     (4) term -> term . TIMES factor
@@ -1171,11 +1270,11 @@ state 36
     $end            reduce using rule 1 (expression -> expression PLUS term .)
     RPAREN          reduce using rule 1 (expression -> expression PLUS term .)
     COMA            reduce using rule 1 (expression -> expression PLUS term .)
-    TIMES           shift and go to state 18
-    DIVIDE          shift and go to state 19
+    TIMES           shift and go to state 19
+    DIVIDE          shift and go to state 20
 
 
-state 37
+state 39
 
     (2) expression -> expression MINUS term .
     (4) term -> term . TIMES factor
@@ -1186,22 +1285,22 @@ state 37
     $end            reduce using rule 2 (expression -> expression MINUS term .)
     RPAREN          reduce using rule 2 (expression -> expression MINUS term .)
     COMA            reduce using rule 2 (expression -> expression MINUS term .)
-    TIMES           shift and go to state 18
-    DIVIDE          shift and go to state 19
+    TIMES           shift and go to state 19
+    DIVIDE          shift and go to state 20
 
 
-state 38
+state 40
 
     (4) term -> term TIMES factor .
-    (19) factor -> factor . EQ factor
-    (20) factor -> factor . GT factor
-    (21) factor -> factor . LT factor
-    (22) factor -> factor . GE factor
-    (23) factor -> factor . LE factor
-    (24) factor -> factor . NE factor
-    (25) factor -> factor . AND factor
-    (26) factor -> factor . OR factor
-    (27) factor -> factor . CONCAT factor
+    (20) factor -> factor . EQ factor
+    (21) factor -> factor . GT factor
+    (22) factor -> factor . LT factor
+    (23) factor -> factor . GE factor
+    (24) factor -> factor . LE factor
+    (25) factor -> factor . NE factor
+    (26) factor -> factor . AND factor
+    (27) factor -> factor . OR factor
+    (28) factor -> factor . CONCAT factor
 
     TIMES           reduce using rule 4 (term -> term TIMES factor .)
     DIVIDE          reduce using rule 4 (term -> term TIMES factor .)
@@ -1210,29 +1309,29 @@ state 38
     $end            reduce using rule 4 (term -> term TIMES factor .)
     RPAREN          reduce using rule 4 (term -> term TIMES factor .)
     COMA            reduce using rule 4 (term -> term TIMES factor .)
-    EQ              shift and go to state 20
-    GT              shift and go to state 21
-    LT              shift and go to state 22
-    GE              shift and go to state 23
-    LE              shift and go to state 24
-    NE              shift and go to state 25
-    AND             shift and go to state 26
-    OR              shift and go to state 27
-    CONCAT          shift and go to state 28
+    EQ              shift and go to state 21
+    GT              shift and go to state 22
+    LT              shift and go to state 23
+    GE              shift and go to state 24
+    LE              shift and go to state 25
+    NE              shift and go to state 26
+    AND             shift and go to state 27
+    OR              shift and go to state 28
+    CONCAT          shift and go to state 29
 
 
-state 39
+state 41
 
     (5) term -> term DIVIDE factor .
-    (19) factor -> factor . EQ factor
-    (20) factor -> factor . GT factor
-    (21) factor -> factor . LT factor
-    (22) factor -> factor . GE factor
-    (23) factor -> factor . LE factor
-    (24) factor -> factor . NE factor
-    (25) factor -> factor . AND factor
-    (26) factor -> factor . OR factor
-    (27) factor -> factor . CONCAT factor
+    (20) factor -> factor . EQ factor
+    (21) factor -> factor . GT factor
+    (22) factor -> factor . LT factor
+    (23) factor -> factor . GE factor
+    (24) factor -> factor . LE factor
+    (25) factor -> factor . NE factor
+    (26) factor -> factor . AND factor
+    (27) factor -> factor . OR factor
+    (28) factor -> factor . CONCAT factor
 
     TIMES           reduce using rule 5 (term -> term DIVIDE factor .)
     DIVIDE          reduce using rule 5 (term -> term DIVIDE factor .)
@@ -1241,357 +1340,357 @@ state 39
     $end            reduce using rule 5 (term -> term DIVIDE factor .)
     RPAREN          reduce using rule 5 (term -> term DIVIDE factor .)
     COMA            reduce using rule 5 (term -> term DIVIDE factor .)
-    EQ              shift and go to state 20
-    GT              shift and go to state 21
-    LT              shift and go to state 22
-    GE              shift and go to state 23
-    LE              shift and go to state 24
-    NE              shift and go to state 25
-    AND             shift and go to state 26
-    OR              shift and go to state 27
-    CONCAT          shift and go to state 28
-
-
-state 40
-
-    (19) factor -> factor EQ factor .
-    (19) factor -> factor . EQ factor
-    (20) factor -> factor . GT factor
-    (21) factor -> factor . LT factor
-    (22) factor -> factor . GE factor
-    (23) factor -> factor . LE factor
-    (24) factor -> factor . NE factor
-    (25) factor -> factor . AND factor
-    (26) factor -> factor . OR factor
-    (27) factor -> factor . CONCAT factor
-
-    EQ              reduce using rule 19 (factor -> factor EQ factor .)
-    NE              reduce using rule 19 (factor -> factor EQ factor .)
-    AND             reduce using rule 19 (factor -> factor EQ factor .)
-    OR              reduce using rule 19 (factor -> factor EQ factor .)
-    CONCAT          reduce using rule 19 (factor -> factor EQ factor .)
-    TIMES           reduce using rule 19 (factor -> factor EQ factor .)
-    DIVIDE          reduce using rule 19 (factor -> factor EQ factor .)
-    PLUS            reduce using rule 19 (factor -> factor EQ factor .)
-    MINUS           reduce using rule 19 (factor -> factor EQ factor .)
-    $end            reduce using rule 19 (factor -> factor EQ factor .)
-    RPAREN          reduce using rule 19 (factor -> factor EQ factor .)
-    COMA            reduce using rule 19 (factor -> factor EQ factor .)
-    GT              shift and go to state 21
-    LT              shift and go to state 22
-    GE              shift and go to state 23
-    LE              shift and go to state 24
-
-  ! GT              [ reduce using rule 19 (factor -> factor EQ factor .) ]
-  ! LT              [ reduce using rule 19 (factor -> factor EQ factor .) ]
-  ! GE              [ reduce using rule 19 (factor -> factor EQ factor .) ]
-  ! LE              [ reduce using rule 19 (factor -> factor EQ factor .) ]
-  ! EQ              [ shift and go to state 20 ]
-  ! NE              [ shift and go to state 25 ]
-  ! AND             [ shift and go to state 26 ]
-  ! OR              [ shift and go to state 27 ]
-  ! CONCAT          [ shift and go to state 28 ]
-
-
-state 41
-
-    (20) factor -> factor GT factor .
-    (19) factor -> factor . EQ factor
-    (20) factor -> factor . GT factor
-    (21) factor -> factor . LT factor
-    (22) factor -> factor . GE factor
-    (23) factor -> factor . LE factor
-    (24) factor -> factor . NE factor
-    (25) factor -> factor . AND factor
-    (26) factor -> factor . OR factor
-    (27) factor -> factor . CONCAT factor
-
-    EQ              reduce using rule 20 (factor -> factor GT factor .)
-    GT              reduce using rule 20 (factor -> factor GT factor .)
-    LT              reduce using rule 20 (factor -> factor GT factor .)
-    GE              reduce using rule 20 (factor -> factor GT factor .)
-    LE              reduce using rule 20 (factor -> factor GT factor .)
-    NE              reduce using rule 20 (factor -> factor GT factor .)
-    AND             reduce using rule 20 (factor -> factor GT factor .)
-    OR              reduce using rule 20 (factor -> factor GT factor .)
-    CONCAT          reduce using rule 20 (factor -> factor GT factor .)
-    TIMES           reduce using rule 20 (factor -> factor GT factor .)
-    DIVIDE          reduce using rule 20 (factor -> factor GT factor .)
-    PLUS            reduce using rule 20 (factor -> factor GT factor .)
-    MINUS           reduce using rule 20 (factor -> factor GT factor .)
-    $end            reduce using rule 20 (factor -> factor GT factor .)
-    RPAREN          reduce using rule 20 (factor -> factor GT factor .)
-    COMA            reduce using rule 20 (factor -> factor GT factor .)
-
-  ! EQ              [ shift and go to state 20 ]
-  ! GT              [ shift and go to state 21 ]
-  ! LT              [ shift and go to state 22 ]
-  ! GE              [ shift and go to state 23 ]
-  ! LE              [ shift and go to state 24 ]
-  ! NE              [ shift and go to state 25 ]
-  ! AND             [ shift and go to state 26 ]
-  ! OR              [ shift and go to state 27 ]
-  ! CONCAT          [ shift and go to state 28 ]
+    EQ              shift and go to state 21
+    GT              shift and go to state 22
+    LT              shift and go to state 23
+    GE              shift and go to state 24
+    LE              shift and go to state 25
+    NE              shift and go to state 26
+    AND             shift and go to state 27
+    OR              shift and go to state 28
+    CONCAT          shift and go to state 29
 
 
 state 42
 
-    (21) factor -> factor LT factor .
-    (19) factor -> factor . EQ factor
-    (20) factor -> factor . GT factor
-    (21) factor -> factor . LT factor
-    (22) factor -> factor . GE factor
-    (23) factor -> factor . LE factor
-    (24) factor -> factor . NE factor
-    (25) factor -> factor . AND factor
-    (26) factor -> factor . OR factor
-    (27) factor -> factor . CONCAT factor
+    (20) factor -> factor EQ factor .
+    (20) factor -> factor . EQ factor
+    (21) factor -> factor . GT factor
+    (22) factor -> factor . LT factor
+    (23) factor -> factor . GE factor
+    (24) factor -> factor . LE factor
+    (25) factor -> factor . NE factor
+    (26) factor -> factor . AND factor
+    (27) factor -> factor . OR factor
+    (28) factor -> factor . CONCAT factor
 
-    EQ              reduce using rule 21 (factor -> factor LT factor .)
-    GT              reduce using rule 21 (factor -> factor LT factor .)
-    LT              reduce using rule 21 (factor -> factor LT factor .)
-    GE              reduce using rule 21 (factor -> factor LT factor .)
-    LE              reduce using rule 21 (factor -> factor LT factor .)
-    NE              reduce using rule 21 (factor -> factor LT factor .)
-    AND             reduce using rule 21 (factor -> factor LT factor .)
-    OR              reduce using rule 21 (factor -> factor LT factor .)
-    CONCAT          reduce using rule 21 (factor -> factor LT factor .)
-    TIMES           reduce using rule 21 (factor -> factor LT factor .)
-    DIVIDE          reduce using rule 21 (factor -> factor LT factor .)
-    PLUS            reduce using rule 21 (factor -> factor LT factor .)
-    MINUS           reduce using rule 21 (factor -> factor LT factor .)
-    $end            reduce using rule 21 (factor -> factor LT factor .)
-    RPAREN          reduce using rule 21 (factor -> factor LT factor .)
-    COMA            reduce using rule 21 (factor -> factor LT factor .)
+    EQ              reduce using rule 20 (factor -> factor EQ factor .)
+    NE              reduce using rule 20 (factor -> factor EQ factor .)
+    AND             reduce using rule 20 (factor -> factor EQ factor .)
+    OR              reduce using rule 20 (factor -> factor EQ factor .)
+    CONCAT          reduce using rule 20 (factor -> factor EQ factor .)
+    TIMES           reduce using rule 20 (factor -> factor EQ factor .)
+    DIVIDE          reduce using rule 20 (factor -> factor EQ factor .)
+    PLUS            reduce using rule 20 (factor -> factor EQ factor .)
+    MINUS           reduce using rule 20 (factor -> factor EQ factor .)
+    $end            reduce using rule 20 (factor -> factor EQ factor .)
+    RPAREN          reduce using rule 20 (factor -> factor EQ factor .)
+    COMA            reduce using rule 20 (factor -> factor EQ factor .)
+    GT              shift and go to state 22
+    LT              shift and go to state 23
+    GE              shift and go to state 24
+    LE              shift and go to state 25
 
-  ! EQ              [ shift and go to state 20 ]
-  ! GT              [ shift and go to state 21 ]
-  ! LT              [ shift and go to state 22 ]
-  ! GE              [ shift and go to state 23 ]
-  ! LE              [ shift and go to state 24 ]
-  ! NE              [ shift and go to state 25 ]
-  ! AND             [ shift and go to state 26 ]
-  ! OR              [ shift and go to state 27 ]
-  ! CONCAT          [ shift and go to state 28 ]
+  ! GT              [ reduce using rule 20 (factor -> factor EQ factor .) ]
+  ! LT              [ reduce using rule 20 (factor -> factor EQ factor .) ]
+  ! GE              [ reduce using rule 20 (factor -> factor EQ factor .) ]
+  ! LE              [ reduce using rule 20 (factor -> factor EQ factor .) ]
+  ! EQ              [ shift and go to state 21 ]
+  ! NE              [ shift and go to state 26 ]
+  ! AND             [ shift and go to state 27 ]
+  ! OR              [ shift and go to state 28 ]
+  ! CONCAT          [ shift and go to state 29 ]
 
 
 state 43
 
-    (22) factor -> factor GE factor .
-    (19) factor -> factor . EQ factor
-    (20) factor -> factor . GT factor
-    (21) factor -> factor . LT factor
-    (22) factor -> factor . GE factor
-    (23) factor -> factor . LE factor
-    (24) factor -> factor . NE factor
-    (25) factor -> factor . AND factor
-    (26) factor -> factor . OR factor
-    (27) factor -> factor . CONCAT factor
+    (21) factor -> factor GT factor .
+    (20) factor -> factor . EQ factor
+    (21) factor -> factor . GT factor
+    (22) factor -> factor . LT factor
+    (23) factor -> factor . GE factor
+    (24) factor -> factor . LE factor
+    (25) factor -> factor . NE factor
+    (26) factor -> factor . AND factor
+    (27) factor -> factor . OR factor
+    (28) factor -> factor . CONCAT factor
 
-    EQ              reduce using rule 22 (factor -> factor GE factor .)
-    GT              reduce using rule 22 (factor -> factor GE factor .)
-    LT              reduce using rule 22 (factor -> factor GE factor .)
-    GE              reduce using rule 22 (factor -> factor GE factor .)
-    LE              reduce using rule 22 (factor -> factor GE factor .)
-    NE              reduce using rule 22 (factor -> factor GE factor .)
-    AND             reduce using rule 22 (factor -> factor GE factor .)
-    OR              reduce using rule 22 (factor -> factor GE factor .)
-    CONCAT          reduce using rule 22 (factor -> factor GE factor .)
-    TIMES           reduce using rule 22 (factor -> factor GE factor .)
-    DIVIDE          reduce using rule 22 (factor -> factor GE factor .)
-    PLUS            reduce using rule 22 (factor -> factor GE factor .)
-    MINUS           reduce using rule 22 (factor -> factor GE factor .)
-    $end            reduce using rule 22 (factor -> factor GE factor .)
-    RPAREN          reduce using rule 22 (factor -> factor GE factor .)
-    COMA            reduce using rule 22 (factor -> factor GE factor .)
+    EQ              reduce using rule 21 (factor -> factor GT factor .)
+    GT              reduce using rule 21 (factor -> factor GT factor .)
+    LT              reduce using rule 21 (factor -> factor GT factor .)
+    GE              reduce using rule 21 (factor -> factor GT factor .)
+    LE              reduce using rule 21 (factor -> factor GT factor .)
+    NE              reduce using rule 21 (factor -> factor GT factor .)
+    AND             reduce using rule 21 (factor -> factor GT factor .)
+    OR              reduce using rule 21 (factor -> factor GT factor .)
+    CONCAT          reduce using rule 21 (factor -> factor GT factor .)
+    TIMES           reduce using rule 21 (factor -> factor GT factor .)
+    DIVIDE          reduce using rule 21 (factor -> factor GT factor .)
+    PLUS            reduce using rule 21 (factor -> factor GT factor .)
+    MINUS           reduce using rule 21 (factor -> factor GT factor .)
+    $end            reduce using rule 21 (factor -> factor GT factor .)
+    RPAREN          reduce using rule 21 (factor -> factor GT factor .)
+    COMA            reduce using rule 21 (factor -> factor GT factor .)
 
-  ! EQ              [ shift and go to state 20 ]
-  ! GT              [ shift and go to state 21 ]
-  ! LT              [ shift and go to state 22 ]
-  ! GE              [ shift and go to state 23 ]
-  ! LE              [ shift and go to state 24 ]
-  ! NE              [ shift and go to state 25 ]
-  ! AND             [ shift and go to state 26 ]
-  ! OR              [ shift and go to state 27 ]
-  ! CONCAT          [ shift and go to state 28 ]
+  ! EQ              [ shift and go to state 21 ]
+  ! GT              [ shift and go to state 22 ]
+  ! LT              [ shift and go to state 23 ]
+  ! GE              [ shift and go to state 24 ]
+  ! LE              [ shift and go to state 25 ]
+  ! NE              [ shift and go to state 26 ]
+  ! AND             [ shift and go to state 27 ]
+  ! OR              [ shift and go to state 28 ]
+  ! CONCAT          [ shift and go to state 29 ]
 
 
 state 44
 
-    (23) factor -> factor LE factor .
-    (19) factor -> factor . EQ factor
-    (20) factor -> factor . GT factor
-    (21) factor -> factor . LT factor
-    (22) factor -> factor . GE factor
-    (23) factor -> factor . LE factor
-    (24) factor -> factor . NE factor
-    (25) factor -> factor . AND factor
-    (26) factor -> factor . OR factor
-    (27) factor -> factor . CONCAT factor
+    (22) factor -> factor LT factor .
+    (20) factor -> factor . EQ factor
+    (21) factor -> factor . GT factor
+    (22) factor -> factor . LT factor
+    (23) factor -> factor . GE factor
+    (24) factor -> factor . LE factor
+    (25) factor -> factor . NE factor
+    (26) factor -> factor . AND factor
+    (27) factor -> factor . OR factor
+    (28) factor -> factor . CONCAT factor
 
-    EQ              reduce using rule 23 (factor -> factor LE factor .)
-    GT              reduce using rule 23 (factor -> factor LE factor .)
-    LT              reduce using rule 23 (factor -> factor LE factor .)
-    GE              reduce using rule 23 (factor -> factor LE factor .)
-    LE              reduce using rule 23 (factor -> factor LE factor .)
-    NE              reduce using rule 23 (factor -> factor LE factor .)
-    AND             reduce using rule 23 (factor -> factor LE factor .)
-    OR              reduce using rule 23 (factor -> factor LE factor .)
-    CONCAT          reduce using rule 23 (factor -> factor LE factor .)
-    TIMES           reduce using rule 23 (factor -> factor LE factor .)
-    DIVIDE          reduce using rule 23 (factor -> factor LE factor .)
-    PLUS            reduce using rule 23 (factor -> factor LE factor .)
-    MINUS           reduce using rule 23 (factor -> factor LE factor .)
-    $end            reduce using rule 23 (factor -> factor LE factor .)
-    RPAREN          reduce using rule 23 (factor -> factor LE factor .)
-    COMA            reduce using rule 23 (factor -> factor LE factor .)
+    EQ              reduce using rule 22 (factor -> factor LT factor .)
+    GT              reduce using rule 22 (factor -> factor LT factor .)
+    LT              reduce using rule 22 (factor -> factor LT factor .)
+    GE              reduce using rule 22 (factor -> factor LT factor .)
+    LE              reduce using rule 22 (factor -> factor LT factor .)
+    NE              reduce using rule 22 (factor -> factor LT factor .)
+    AND             reduce using rule 22 (factor -> factor LT factor .)
+    OR              reduce using rule 22 (factor -> factor LT factor .)
+    CONCAT          reduce using rule 22 (factor -> factor LT factor .)
+    TIMES           reduce using rule 22 (factor -> factor LT factor .)
+    DIVIDE          reduce using rule 22 (factor -> factor LT factor .)
+    PLUS            reduce using rule 22 (factor -> factor LT factor .)
+    MINUS           reduce using rule 22 (factor -> factor LT factor .)
+    $end            reduce using rule 22 (factor -> factor LT factor .)
+    RPAREN          reduce using rule 22 (factor -> factor LT factor .)
+    COMA            reduce using rule 22 (factor -> factor LT factor .)
 
-  ! EQ              [ shift and go to state 20 ]
-  ! GT              [ shift and go to state 21 ]
-  ! LT              [ shift and go to state 22 ]
-  ! GE              [ shift and go to state 23 ]
-  ! LE              [ shift and go to state 24 ]
-  ! NE              [ shift and go to state 25 ]
-  ! AND             [ shift and go to state 26 ]
-  ! OR              [ shift and go to state 27 ]
-  ! CONCAT          [ shift and go to state 28 ]
+  ! EQ              [ shift and go to state 21 ]
+  ! GT              [ shift and go to state 22 ]
+  ! LT              [ shift and go to state 23 ]
+  ! GE              [ shift and go to state 24 ]
+  ! LE              [ shift and go to state 25 ]
+  ! NE              [ shift and go to state 26 ]
+  ! AND             [ shift and go to state 27 ]
+  ! OR              [ shift and go to state 28 ]
+  ! CONCAT          [ shift and go to state 29 ]
 
 
 state 45
 
-    (24) factor -> factor NE factor .
-    (19) factor -> factor . EQ factor
-    (20) factor -> factor . GT factor
-    (21) factor -> factor . LT factor
-    (22) factor -> factor . GE factor
-    (23) factor -> factor . LE factor
-    (24) factor -> factor . NE factor
-    (25) factor -> factor . AND factor
-    (26) factor -> factor . OR factor
-    (27) factor -> factor . CONCAT factor
+    (23) factor -> factor GE factor .
+    (20) factor -> factor . EQ factor
+    (21) factor -> factor . GT factor
+    (22) factor -> factor . LT factor
+    (23) factor -> factor . GE factor
+    (24) factor -> factor . LE factor
+    (25) factor -> factor . NE factor
+    (26) factor -> factor . AND factor
+    (27) factor -> factor . OR factor
+    (28) factor -> factor . CONCAT factor
 
-    EQ              reduce using rule 24 (factor -> factor NE factor .)
-    NE              reduce using rule 24 (factor -> factor NE factor .)
-    AND             reduce using rule 24 (factor -> factor NE factor .)
-    OR              reduce using rule 24 (factor -> factor NE factor .)
-    CONCAT          reduce using rule 24 (factor -> factor NE factor .)
-    TIMES           reduce using rule 24 (factor -> factor NE factor .)
-    DIVIDE          reduce using rule 24 (factor -> factor NE factor .)
-    PLUS            reduce using rule 24 (factor -> factor NE factor .)
-    MINUS           reduce using rule 24 (factor -> factor NE factor .)
-    $end            reduce using rule 24 (factor -> factor NE factor .)
-    RPAREN          reduce using rule 24 (factor -> factor NE factor .)
-    COMA            reduce using rule 24 (factor -> factor NE factor .)
-    GT              shift and go to state 21
-    LT              shift and go to state 22
-    GE              shift and go to state 23
-    LE              shift and go to state 24
+    EQ              reduce using rule 23 (factor -> factor GE factor .)
+    GT              reduce using rule 23 (factor -> factor GE factor .)
+    LT              reduce using rule 23 (factor -> factor GE factor .)
+    GE              reduce using rule 23 (factor -> factor GE factor .)
+    LE              reduce using rule 23 (factor -> factor GE factor .)
+    NE              reduce using rule 23 (factor -> factor GE factor .)
+    AND             reduce using rule 23 (factor -> factor GE factor .)
+    OR              reduce using rule 23 (factor -> factor GE factor .)
+    CONCAT          reduce using rule 23 (factor -> factor GE factor .)
+    TIMES           reduce using rule 23 (factor -> factor GE factor .)
+    DIVIDE          reduce using rule 23 (factor -> factor GE factor .)
+    PLUS            reduce using rule 23 (factor -> factor GE factor .)
+    MINUS           reduce using rule 23 (factor -> factor GE factor .)
+    $end            reduce using rule 23 (factor -> factor GE factor .)
+    RPAREN          reduce using rule 23 (factor -> factor GE factor .)
+    COMA            reduce using rule 23 (factor -> factor GE factor .)
 
-  ! GT              [ reduce using rule 24 (factor -> factor NE factor .) ]
-  ! LT              [ reduce using rule 24 (factor -> factor NE factor .) ]
-  ! GE              [ reduce using rule 24 (factor -> factor NE factor .) ]
-  ! LE              [ reduce using rule 24 (factor -> factor NE factor .) ]
-  ! EQ              [ shift and go to state 20 ]
-  ! NE              [ shift and go to state 25 ]
-  ! AND             [ shift and go to state 26 ]
-  ! OR              [ shift and go to state 27 ]
-  ! CONCAT          [ shift and go to state 28 ]
+  ! EQ              [ shift and go to state 21 ]
+  ! GT              [ shift and go to state 22 ]
+  ! LT              [ shift and go to state 23 ]
+  ! GE              [ shift and go to state 24 ]
+  ! LE              [ shift and go to state 25 ]
+  ! NE              [ shift and go to state 26 ]
+  ! AND             [ shift and go to state 27 ]
+  ! OR              [ shift and go to state 28 ]
+  ! CONCAT          [ shift and go to state 29 ]
 
 
 state 46
 
-    (25) factor -> factor AND factor .
-    (19) factor -> factor . EQ factor
-    (20) factor -> factor . GT factor
-    (21) factor -> factor . LT factor
-    (22) factor -> factor . GE factor
-    (23) factor -> factor . LE factor
-    (24) factor -> factor . NE factor
-    (25) factor -> factor . AND factor
-    (26) factor -> factor . OR factor
-    (27) factor -> factor . CONCAT factor
+    (24) factor -> factor LE factor .
+    (20) factor -> factor . EQ factor
+    (21) factor -> factor . GT factor
+    (22) factor -> factor . LT factor
+    (23) factor -> factor . GE factor
+    (24) factor -> factor . LE factor
+    (25) factor -> factor . NE factor
+    (26) factor -> factor . AND factor
+    (27) factor -> factor . OR factor
+    (28) factor -> factor . CONCAT factor
 
-    AND             reduce using rule 25 (factor -> factor AND factor .)
-    OR              reduce using rule 25 (factor -> factor AND factor .)
-    CONCAT          reduce using rule 25 (factor -> factor AND factor .)
-    TIMES           reduce using rule 25 (factor -> factor AND factor .)
-    DIVIDE          reduce using rule 25 (factor -> factor AND factor .)
-    PLUS            reduce using rule 25 (factor -> factor AND factor .)
-    MINUS           reduce using rule 25 (factor -> factor AND factor .)
-    $end            reduce using rule 25 (factor -> factor AND factor .)
-    RPAREN          reduce using rule 25 (factor -> factor AND factor .)
-    COMA            reduce using rule 25 (factor -> factor AND factor .)
-    EQ              shift and go to state 20
-    GT              shift and go to state 21
-    LT              shift and go to state 22
-    GE              shift and go to state 23
-    LE              shift and go to state 24
-    NE              shift and go to state 25
+    EQ              reduce using rule 24 (factor -> factor LE factor .)
+    GT              reduce using rule 24 (factor -> factor LE factor .)
+    LT              reduce using rule 24 (factor -> factor LE factor .)
+    GE              reduce using rule 24 (factor -> factor LE factor .)
+    LE              reduce using rule 24 (factor -> factor LE factor .)
+    NE              reduce using rule 24 (factor -> factor LE factor .)
+    AND             reduce using rule 24 (factor -> factor LE factor .)
+    OR              reduce using rule 24 (factor -> factor LE factor .)
+    CONCAT          reduce using rule 24 (factor -> factor LE factor .)
+    TIMES           reduce using rule 24 (factor -> factor LE factor .)
+    DIVIDE          reduce using rule 24 (factor -> factor LE factor .)
+    PLUS            reduce using rule 24 (factor -> factor LE factor .)
+    MINUS           reduce using rule 24 (factor -> factor LE factor .)
+    $end            reduce using rule 24 (factor -> factor LE factor .)
+    RPAREN          reduce using rule 24 (factor -> factor LE factor .)
+    COMA            reduce using rule 24 (factor -> factor LE factor .)
 
-  ! EQ              [ reduce using rule 25 (factor -> factor AND factor .) ]
-  ! GT              [ reduce using rule 25 (factor -> factor AND factor .) ]
-  ! LT              [ reduce using rule 25 (factor -> factor AND factor .) ]
-  ! GE              [ reduce using rule 25 (factor -> factor AND factor .) ]
-  ! LE              [ reduce using rule 25 (factor -> factor AND factor .) ]
-  ! NE              [ reduce using rule 25 (factor -> factor AND factor .) ]
-  ! AND             [ shift and go to state 26 ]
-  ! OR              [ shift and go to state 27 ]
-  ! CONCAT          [ shift and go to state 28 ]
+  ! EQ              [ shift and go to state 21 ]
+  ! GT              [ shift and go to state 22 ]
+  ! LT              [ shift and go to state 23 ]
+  ! GE              [ shift and go to state 24 ]
+  ! LE              [ shift and go to state 25 ]
+  ! NE              [ shift and go to state 26 ]
+  ! AND             [ shift and go to state 27 ]
+  ! OR              [ shift and go to state 28 ]
+  ! CONCAT          [ shift and go to state 29 ]
 
 
 state 47
 
-    (26) factor -> factor OR factor .
-    (19) factor -> factor . EQ factor
-    (20) factor -> factor . GT factor
-    (21) factor -> factor . LT factor
-    (22) factor -> factor . GE factor
-    (23) factor -> factor . LE factor
-    (24) factor -> factor . NE factor
-    (25) factor -> factor . AND factor
-    (26) factor -> factor . OR factor
-    (27) factor -> factor . CONCAT factor
+    (25) factor -> factor NE factor .
+    (20) factor -> factor . EQ factor
+    (21) factor -> factor . GT factor
+    (22) factor -> factor . LT factor
+    (23) factor -> factor . GE factor
+    (24) factor -> factor . LE factor
+    (25) factor -> factor . NE factor
+    (26) factor -> factor . AND factor
+    (27) factor -> factor . OR factor
+    (28) factor -> factor . CONCAT factor
 
-    OR              reduce using rule 26 (factor -> factor OR factor .)
-    CONCAT          reduce using rule 26 (factor -> factor OR factor .)
-    TIMES           reduce using rule 26 (factor -> factor OR factor .)
-    DIVIDE          reduce using rule 26 (factor -> factor OR factor .)
-    PLUS            reduce using rule 26 (factor -> factor OR factor .)
-    MINUS           reduce using rule 26 (factor -> factor OR factor .)
-    $end            reduce using rule 26 (factor -> factor OR factor .)
-    RPAREN          reduce using rule 26 (factor -> factor OR factor .)
-    COMA            reduce using rule 26 (factor -> factor OR factor .)
-    EQ              shift and go to state 20
-    GT              shift and go to state 21
-    LT              shift and go to state 22
-    GE              shift and go to state 23
-    LE              shift and go to state 24
-    NE              shift and go to state 25
-    AND             shift and go to state 26
+    EQ              reduce using rule 25 (factor -> factor NE factor .)
+    NE              reduce using rule 25 (factor -> factor NE factor .)
+    AND             reduce using rule 25 (factor -> factor NE factor .)
+    OR              reduce using rule 25 (factor -> factor NE factor .)
+    CONCAT          reduce using rule 25 (factor -> factor NE factor .)
+    TIMES           reduce using rule 25 (factor -> factor NE factor .)
+    DIVIDE          reduce using rule 25 (factor -> factor NE factor .)
+    PLUS            reduce using rule 25 (factor -> factor NE factor .)
+    MINUS           reduce using rule 25 (factor -> factor NE factor .)
+    $end            reduce using rule 25 (factor -> factor NE factor .)
+    RPAREN          reduce using rule 25 (factor -> factor NE factor .)
+    COMA            reduce using rule 25 (factor -> factor NE factor .)
+    GT              shift and go to state 22
+    LT              shift and go to state 23
+    GE              shift and go to state 24
+    LE              shift and go to state 25
 
-  ! EQ              [ reduce using rule 26 (factor -> factor OR factor .) ]
-  ! GT              [ reduce using rule 26 (factor -> factor OR factor .) ]
-  ! LT              [ reduce using rule 26 (factor -> factor OR factor .) ]
-  ! GE              [ reduce using rule 26 (factor -> factor OR factor .) ]
-  ! LE              [ reduce using rule 26 (factor -> factor OR factor .) ]
-  ! NE              [ reduce using rule 26 (factor -> factor OR factor .) ]
-  ! AND             [ reduce using rule 26 (factor -> factor OR factor .) ]
-  ! OR              [ shift and go to state 27 ]
-  ! CONCAT          [ shift and go to state 28 ]
+  ! GT              [ reduce using rule 25 (factor -> factor NE factor .) ]
+  ! LT              [ reduce using rule 25 (factor -> factor NE factor .) ]
+  ! GE              [ reduce using rule 25 (factor -> factor NE factor .) ]
+  ! LE              [ reduce using rule 25 (factor -> factor NE factor .) ]
+  ! EQ              [ shift and go to state 21 ]
+  ! NE              [ shift and go to state 26 ]
+  ! AND             [ shift and go to state 27 ]
+  ! OR              [ shift and go to state 28 ]
+  ! CONCAT          [ shift and go to state 29 ]
 
 
 state 48
 
-    (27) factor -> factor CONCAT factor .
-    (19) factor -> factor . EQ factor
-    (20) factor -> factor . GT factor
-    (21) factor -> factor . LT factor
-    (22) factor -> factor . GE factor
-    (23) factor -> factor . LE factor
-    (24) factor -> factor . NE factor
-    (25) factor -> factor . AND factor
-    (26) factor -> factor . OR factor
-    (27) factor -> factor . CONCAT factor
+    (26) factor -> factor AND factor .
+    (20) factor -> factor . EQ factor
+    (21) factor -> factor . GT factor
+    (22) factor -> factor . LT factor
+    (23) factor -> factor . GE factor
+    (24) factor -> factor . LE factor
+    (25) factor -> factor . NE factor
+    (26) factor -> factor . AND factor
+    (27) factor -> factor . OR factor
+    (28) factor -> factor . CONCAT factor
+
+    AND             reduce using rule 26 (factor -> factor AND factor .)
+    OR              reduce using rule 26 (factor -> factor AND factor .)
+    CONCAT          reduce using rule 26 (factor -> factor AND factor .)
+    TIMES           reduce using rule 26 (factor -> factor AND factor .)
+    DIVIDE          reduce using rule 26 (factor -> factor AND factor .)
+    PLUS            reduce using rule 26 (factor -> factor AND factor .)
+    MINUS           reduce using rule 26 (factor -> factor AND factor .)
+    $end            reduce using rule 26 (factor -> factor AND factor .)
+    RPAREN          reduce using rule 26 (factor -> factor AND factor .)
+    COMA            reduce using rule 26 (factor -> factor AND factor .)
+    EQ              shift and go to state 21
+    GT              shift and go to state 22
+    LT              shift and go to state 23
+    GE              shift and go to state 24
+    LE              shift and go to state 25
+    NE              shift and go to state 26
+
+  ! EQ              [ reduce using rule 26 (factor -> factor AND factor .) ]
+  ! GT              [ reduce using rule 26 (factor -> factor AND factor .) ]
+  ! LT              [ reduce using rule 26 (factor -> factor AND factor .) ]
+  ! GE              [ reduce using rule 26 (factor -> factor AND factor .) ]
+  ! LE              [ reduce using rule 26 (factor -> factor AND factor .) ]
+  ! NE              [ reduce using rule 26 (factor -> factor AND factor .) ]
+  ! AND             [ shift and go to state 27 ]
+  ! OR              [ shift and go to state 28 ]
+  ! CONCAT          [ shift and go to state 29 ]
+
+
+state 49
+
+    (27) factor -> factor OR factor .
+    (20) factor -> factor . EQ factor
+    (21) factor -> factor . GT factor
+    (22) factor -> factor . LT factor
+    (23) factor -> factor . GE factor
+    (24) factor -> factor . LE factor
+    (25) factor -> factor . NE factor
+    (26) factor -> factor . AND factor
+    (27) factor -> factor . OR factor
+    (28) factor -> factor . CONCAT factor
+
+    OR              reduce using rule 27 (factor -> factor OR factor .)
+    CONCAT          reduce using rule 27 (factor -> factor OR factor .)
+    TIMES           reduce using rule 27 (factor -> factor OR factor .)
+    DIVIDE          reduce using rule 27 (factor -> factor OR factor .)
+    PLUS            reduce using rule 27 (factor -> factor OR factor .)
+    MINUS           reduce using rule 27 (factor -> factor OR factor .)
+    $end            reduce using rule 27 (factor -> factor OR factor .)
+    RPAREN          reduce using rule 27 (factor -> factor OR factor .)
+    COMA            reduce using rule 27 (factor -> factor OR factor .)
+    EQ              shift and go to state 21
+    GT              shift and go to state 22
+    LT              shift and go to state 23
+    GE              shift and go to state 24
+    LE              shift and go to state 25
+    NE              shift and go to state 26
+    AND             shift and go to state 27
+
+  ! EQ              [ reduce using rule 27 (factor -> factor OR factor .) ]
+  ! GT              [ reduce using rule 27 (factor -> factor OR factor .) ]
+  ! LT              [ reduce using rule 27 (factor -> factor OR factor .) ]
+  ! GE              [ reduce using rule 27 (factor -> factor OR factor .) ]
+  ! LE              [ reduce using rule 27 (factor -> factor OR factor .) ]
+  ! NE              [ reduce using rule 27 (factor -> factor OR factor .) ]
+  ! AND             [ reduce using rule 27 (factor -> factor OR factor .) ]
+  ! OR              [ shift and go to state 28 ]
+  ! CONCAT          [ shift and go to state 29 ]
+
+
+state 50
+
+    (28) factor -> factor CONCAT factor .
+    (20) factor -> factor . EQ factor
+    (21) factor -> factor . GT factor
+    (22) factor -> factor . LT factor
+    (23) factor -> factor . GE factor
+    (24) factor -> factor . LE factor
+    (25) factor -> factor . NE factor
+    (26) factor -> factor . AND factor
+    (27) factor -> factor . OR factor
+    (28) factor -> factor . CONCAT factor
 
   ! shift/reduce conflict for EQ resolved as shift
   ! shift/reduce conflict for GT resolved as shift
@@ -1602,35 +1701,35 @@ state 48
   ! shift/reduce conflict for AND resolved as shift
   ! shift/reduce conflict for OR resolved as shift
   ! shift/reduce conflict for CONCAT resolved as shift
-    TIMES           reduce using rule 27 (factor -> factor CONCAT factor .)
-    DIVIDE          reduce using rule 27 (factor -> factor CONCAT factor .)
-    PLUS            reduce using rule 27 (factor -> factor CONCAT factor .)
-    MINUS           reduce using rule 27 (factor -> factor CONCAT factor .)
-    $end            reduce using rule 27 (factor -> factor CONCAT factor .)
-    RPAREN          reduce using rule 27 (factor -> factor CONCAT factor .)
-    COMA            reduce using rule 27 (factor -> factor CONCAT factor .)
-    EQ              shift and go to state 20
-    GT              shift and go to state 21
-    LT              shift and go to state 22
-    GE              shift and go to state 23
-    LE              shift and go to state 24
-    NE              shift and go to state 25
-    AND             shift and go to state 26
-    OR              shift and go to state 27
-    CONCAT          shift and go to state 28
+    TIMES           reduce using rule 28 (factor -> factor CONCAT factor .)
+    DIVIDE          reduce using rule 28 (factor -> factor CONCAT factor .)
+    PLUS            reduce using rule 28 (factor -> factor CONCAT factor .)
+    MINUS           reduce using rule 28 (factor -> factor CONCAT factor .)
+    $end            reduce using rule 28 (factor -> factor CONCAT factor .)
+    RPAREN          reduce using rule 28 (factor -> factor CONCAT factor .)
+    COMA            reduce using rule 28 (factor -> factor CONCAT factor .)
+    EQ              shift and go to state 21
+    GT              shift and go to state 22
+    LT              shift and go to state 23
+    GE              shift and go to state 24
+    LE              shift and go to state 25
+    NE              shift and go to state 26
+    AND             shift and go to state 27
+    OR              shift and go to state 28
+    CONCAT          shift and go to state 29
 
-  ! EQ              [ reduce using rule 27 (factor -> factor CONCAT factor .) ]
-  ! GT              [ reduce using rule 27 (factor -> factor CONCAT factor .) ]
-  ! LT              [ reduce using rule 27 (factor -> factor CONCAT factor .) ]
-  ! GE              [ reduce using rule 27 (factor -> factor CONCAT factor .) ]
-  ! LE              [ reduce using rule 27 (factor -> factor CONCAT factor .) ]
-  ! NE              [ reduce using rule 27 (factor -> factor CONCAT factor .) ]
-  ! AND             [ reduce using rule 27 (factor -> factor CONCAT factor .) ]
-  ! OR              [ reduce using rule 27 (factor -> factor CONCAT factor .) ]
-  ! CONCAT          [ reduce using rule 27 (factor -> factor CONCAT factor .) ]
+  ! EQ              [ reduce using rule 28 (factor -> factor CONCAT factor .) ]
+  ! GT              [ reduce using rule 28 (factor -> factor CONCAT factor .) ]
+  ! LT              [ reduce using rule 28 (factor -> factor CONCAT factor .) ]
+  ! GE              [ reduce using rule 28 (factor -> factor CONCAT factor .) ]
+  ! LE              [ reduce using rule 28 (factor -> factor CONCAT factor .) ]
+  ! NE              [ reduce using rule 28 (factor -> factor CONCAT factor .) ]
+  ! AND             [ reduce using rule 28 (factor -> factor CONCAT factor .) ]
+  ! OR              [ reduce using rule 28 (factor -> factor CONCAT factor .) ]
+  ! CONCAT          [ reduce using rule 28 (factor -> factor CONCAT factor .) ]
 
 
-state 49
+state 51
 
     (7) factor -> LPAREN expression RPAREN .
 
@@ -1652,62 +1751,62 @@ state 49
     COMA            reduce using rule 7 (factor -> LPAREN expression RPAREN .)
 
 
-state 50
+state 52
 
     (13) factor -> SIN LPAREN expression . RPAREN
     (1) expression -> expression . PLUS term
     (2) expression -> expression . MINUS term
 
-    RPAREN          shift and go to state 56
-    PLUS            shift and go to state 16
-    MINUS           shift and go to state 17
+    RPAREN          shift and go to state 59
+    PLUS            shift and go to state 17
+    MINUS           shift and go to state 18
 
 
-state 51
+state 53
 
     (14) factor -> COS LPAREN expression . RPAREN
     (1) expression -> expression . PLUS term
     (2) expression -> expression . MINUS term
 
-    RPAREN          shift and go to state 57
-    PLUS            shift and go to state 16
-    MINUS           shift and go to state 17
+    RPAREN          shift and go to state 60
+    PLUS            shift and go to state 17
+    MINUS           shift and go to state 18
 
 
-state 52
+state 54
 
     (15) factor -> SQRT LPAREN expression . RPAREN
     (1) expression -> expression . PLUS term
     (2) expression -> expression . MINUS term
 
-    RPAREN          shift and go to state 58
-    PLUS            shift and go to state 16
-    MINUS           shift and go to state 17
+    RPAREN          shift and go to state 61
+    PLUS            shift and go to state 17
+    MINUS           shift and go to state 18
 
 
-state 53
+state 55
 
     (16) factor -> EXP LPAREN expression . RPAREN
     (1) expression -> expression . PLUS term
     (2) expression -> expression . MINUS term
 
-    RPAREN          shift and go to state 59
-    PLUS            shift and go to state 16
-    MINUS           shift and go to state 17
+    RPAREN          shift and go to state 62
+    PLUS            shift and go to state 17
+    MINUS           shift and go to state 18
 
 
-state 54
+state 56
 
     (17) factor -> LOG LPAREN expression . COMA expression RPAREN
     (1) expression -> expression . PLUS term
     (2) expression -> expression . MINUS term
 
-    COMA            shift and go to state 60
-    PLUS            shift and go to state 16
-    MINUS           shift and go to state 17
+    COMA            shift and go to state 63
+    PLUS            shift and go to state 17
+    MINUS           shift and go to state 18
 
 
-state 55
+state 57
 
     (18) factor -> RAND LPAREN RPAREN .
 
@@ -1729,7 +1828,18 @@ state 55
     COMA            reduce using rule 18 (factor -> RAND LPAREN RPAREN .)
 
 
-state 56
+state 58
+
+    (19) factor -> PRINT LPAREN expression . RPAREN
+    (1) expression -> expression . PLUS term
+    (2) expression -> expression . MINUS term
+
+    RPAREN          shift and go to state 64
+    PLUS            shift and go to state 17
+    MINUS           shift and go to state 18
+
+
+state 59
 
     (13) factor -> SIN LPAREN expression RPAREN .
 
@@ -1751,7 +1861,7 @@ state 56
     COMA            reduce using rule 13 (factor -> SIN LPAREN expression RPAREN .)
 
 
-state 57
+state 60
 
     (14) factor -> COS LPAREN expression RPAREN .
 
@@ -1773,7 +1883,7 @@ state 57
     COMA            reduce using rule 14 (factor -> COS LPAREN expression RPAREN .)
 
 
-state 58
+state 61
 
     (15) factor -> SQRT LPAREN expression RPAREN .
 
@@ -1795,7 +1905,7 @@ state 58
     COMA            reduce using rule 15 (factor -> SQRT LPAREN expression RPAREN .)
 
 
-state 59
+state 62
 
     (16) factor -> EXP LPAREN expression RPAREN .
 
@@ -1817,7 +1927,7 @@ state 59
     COMA            reduce using rule 16 (factor -> EXP LPAREN expression RPAREN .)
 
 
-state 60
+state 63
 
     (17) factor -> LOG LPAREN expression COMA . expression RPAREN
     (1) expression -> . expression PLUS term
@@ -1838,15 +1948,16 @@ state 60
     (16) factor -> . EXP LPAREN expression RPAREN
     (17) factor -> . LOG LPAREN expression COMA expression RPAREN
     (18) factor -> . RAND LPAREN RPAREN
-    (19) factor -> . factor EQ factor
-    (20) factor -> . factor GT factor
-    (21) factor -> . factor LT factor
-    (22) factor -> . factor GE factor
-    (23) factor -> . factor LE factor
-    (24) factor -> . factor NE factor
-    (25) factor -> . factor AND factor
-    (26) factor -> . factor OR factor
-    (27) factor -> . factor CONCAT factor
+    (19) factor -> . PRINT LPAREN expression RPAREN
+    (20) factor -> . factor EQ factor
+    (21) factor -> . factor GT factor
+    (22) factor -> . factor LT factor
+    (23) factor -> . factor GE factor
+    (24) factor -> . factor LE factor
+    (25) factor -> . factor NE factor
+    (26) factor -> . factor AND factor
+    (27) factor -> . factor OR factor
+    (28) factor -> . factor CONCAT factor
 
     LPAREN          shift and go to state 4
     NUMBER          shift and go to state 5
@@ -1860,23 +1971,46 @@ state 60
     EXP             shift and go to state 13
     LOG             shift and go to state 14
     RAND            shift and go to state 15
+    PRINT           shift and go to state 16
 
-    expression                     shift and go to state 61
+    expression                     shift and go to state 65
     term                           shift and go to state 2
     factor                         shift and go to state 3
 
-state 61
+state 64
+
+    (19) factor -> PRINT LPAREN expression RPAREN .
+
+    EQ              reduce using rule 19 (factor -> PRINT LPAREN expression RPAREN .)
+    GT              reduce using rule 19 (factor -> PRINT LPAREN expression RPAREN .)
+    LT              reduce using rule 19 (factor -> PRINT LPAREN expression RPAREN .)
+    GE              reduce using rule 19 (factor -> PRINT LPAREN expression RPAREN .)
+    LE              reduce using rule 19 (factor -> PRINT LPAREN expression RPAREN .)
+    NE              reduce using rule 19 (factor -> PRINT LPAREN expression RPAREN .)
+    AND             reduce using rule 19 (factor -> PRINT LPAREN expression RPAREN .)
+    OR              reduce using rule 19 (factor -> PRINT LPAREN expression RPAREN .)
+    CONCAT          reduce using rule 19 (factor -> PRINT LPAREN expression RPAREN .)
+    TIMES           reduce using rule 19 (factor -> PRINT LPAREN expression RPAREN .)
+    DIVIDE          reduce using rule 19 (factor -> PRINT LPAREN expression RPAREN .)
+    PLUS            reduce using rule 19 (factor -> PRINT LPAREN expression RPAREN .)
+    MINUS           reduce using rule 19 (factor -> PRINT LPAREN expression RPAREN .)
+    $end            reduce using rule 19 (factor -> PRINT LPAREN expression RPAREN .)
+    RPAREN          reduce using rule 19 (factor -> PRINT LPAREN expression RPAREN .)
+    COMA            reduce using rule 19 (factor -> PRINT LPAREN expression RPAREN .)
+
+
+state 65
 
     (17) factor -> LOG LPAREN expression COMA expression . RPAREN
     (1) expression -> expression . PLUS term
     (2) expression -> expression . MINUS term
 
-    RPAREN          shift and go to state 62
-    PLUS            shift and go to state 16
-    MINUS           shift and go to state 17
+    RPAREN          shift and go to state 66
+    PLUS            shift and go to state 17
+    MINUS           shift and go to state 18
 
 
-state 62
+state 66
 
     (17) factor -> LOG LPAREN expression COMA expression RPAREN .
 
@@ -1900,12 +2034,12 @@ state 62
 WARNING: 
 WARNING: Conflicts:
 WARNING: 
-WARNING: shift/reduce conflict for EQ in state 48 resolved as shift
-WARNING: shift/reduce conflict for GT in state 48 resolved as shift
-WARNING: shift/reduce conflict for LT in state 48 resolved as shift
-WARNING: shift/reduce conflict for GE in state 48 resolved as shift
-WARNING: shift/reduce conflict for LE in state 48 resolved as shift
-WARNING: shift/reduce conflict for NE in state 48 resolved as shift
-WARNING: shift/reduce conflict for AND in state 48 resolved as shift
-WARNING: shift/reduce conflict for OR in state 48 resolved as shift
-WARNING: shift/reduce conflict for CONCAT in state 48 resolved as shift
+WARNING: shift/reduce conflict for EQ in state 50 resolved as shift
+WARNING: shift/reduce conflict for GT in state 50 resolved as shift
+WARNING: shift/reduce conflict for LT in state 50 resolved as shift
+WARNING: shift/reduce conflict for GE in state 50 resolved as shift
+WARNING: shift/reduce conflict for LE in state 50 resolved as shift
+WARNING: shift/reduce conflict for NE in state 50 resolved as shift
+WARNING: shift/reduce conflict for AND in state 50 resolved as shift
+WARNING: shift/reduce conflict for OR in state 50 resolved as shift
+WARNING: shift/reduce conflict for CONCAT in state 50 resolved as shift

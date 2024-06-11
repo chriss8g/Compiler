@@ -33,6 +33,7 @@ tokens = (
     'EXP',
     'LOG',
     'RAND',
+    'PRINT',
     # Strings
     'CONCAT',
     'STRING',
@@ -75,6 +76,7 @@ t_SQRT = r'\bsqrt\b'
 t_EXP = r'\bexp\b'
 t_LOG = r'\blog\b'
 t_RAND = r'\brand\b'
+t_PRINT = r'\bprint\b'
 
 # Strings
 t_CONCAT = r'@'
@@ -106,6 +108,7 @@ lexer = lex.lex()
 if __name__ == "__main__":
     # Datos de prueba para varios casos de uso
     test_data = [
+        'print(5)',
         "PI + E",                       # Constantes
         "sin(PI / 2)",                  # Funciones trigonométricas
         "3 + 4 * 10",                   # Operaciones aritméticas

@@ -1,10 +1,12 @@
 from my_parser import parser
 from semantic_checker import check_semantics, SemanticError
-from code_generator import CodeGenerator
+from intermediate_code_generator import IntermediateCodeGenerator
+from mips_code_generator import MipsCodeGenerator
 
 if __name__ == "__main__":
 
-    generator = CodeGenerator()
+    intermediateGenerator = IntermediateCodeGenerator()
+    mipsGenerator = MipsCodeGenerator()
 
     with open('script.uh', 'r') as file:
         lines = file.readlines()
@@ -18,7 +20,7 @@ if __name__ == "__main__":
                 if result:
                     try:
                         check_semantics(result)
-                        generator.generate_intermediate_code(result)
+                        intermediateGenerator.generate_intermediate_code(result)
                     except SemanticError as e:
                         print(f"Semantic error in line {line_number}: {e}")
                         output_file.close()
@@ -26,11 +28,11 @@ if __name__ == "__main__":
                         os.remove('script.asm')
                         break
             
-            mips_code = generator.generate_mips_code()
+            mips_code = mipsGenerator.generate_mips_code(intermediateGenerator.tac_code)
             for asm_line in mips_code:
                 output_file.write(asm_line + '\n')
-            generator.tac_code = []
-            generator.temp_count = 0
+            intermediateGenerator.tac_code = []
+            intermediateGenerator.temp_count = 0
 
     except Exception as e:
         print(f"Compilation error: {e}")
