@@ -36,14 +36,22 @@ def p_term_binop(p):
 def p_factor_group(p):
     '''factor : LPAREN expression RPAREN'''
     p[0] = p[2]
-
+    
 def p_factor_num_const(p):
     '''factor : NUMBER
               | PI
               | E
               | BOOL
               | STRING'''
-    p[0] = ASTNode(type='const', leaf=p[1])
+    if p.slice[1].type == 'NUMBER':
+        p[0] = ASTNode(type='num', leaf=p[1])
+    elif p.slice[1].type in ('PI', 'E'):
+        p[0] = ASTNode(type='const', leaf=p[1])
+    elif p.slice[1].type == 'BOOL':
+        p[0] = ASTNode(type='bool', leaf=p[1])
+    elif p.slice[1].type == 'STRING':
+        p[0] = ASTNode(type='string', leaf=p[1])
+
 
 def p_factor_func(p):
     '''factor : SIN LPAREN expression RPAREN
@@ -65,10 +73,14 @@ def p_factor_binop(p):
               | factor LT factor
               | factor GE factor
               | factor LE factor
-              | factor NE factor
-              | factor AND factor
+              | factor NE factor'''
+    p[0] = ASTNode(type='binco', children=[p[1], p[3]], leaf=p[2])
+
+def p_factor_logicop(p):
+    '''factor : factor AND factor
               | factor OR factor'''
-    p[0] = ASTNode(type='binop', children=[p[1], p[3]], leaf=p[2])
+    p[0] = ASTNode(type='binlo', children=[p[1], p[3]], leaf=p[2])
+
 
 def p_factor_concat(p):
     '''factor : factor CONCAT factor'''
@@ -85,23 +97,26 @@ if __name__ == "__main__":
     test_data = [
         "PI + E",                       # Constantes
         "sin(PI / 2)",                  # Funciones trigonométricas
-        "3 + 4 * 10",                   # Operaciones aritméticas
-        "(3 + 4) * 10",                 # Uso de paréntesis
+        "3 + 4.5 * 10",                 # Operaciones aritméticas con decimales
+        "(3 + 4) * 10.5",               # Uso de paréntesis con decimales
         "true && false || true",        # Operadores lógicos
-        "3 >= 2",                       # Operadores comparativos
+        "3.0 >= 2",                     # Operadores comparativos con decimales
         '"Hello" @ " World!"',          # Concatenación de cadenas
-        'log(10, 100)',                     # Función logarítmica
+        'log(100, 10)',                 # Función logarítmica
         'rand()',                       # Función random
         "3.14 + 2.71",                  # Números flotantes
         "5 == 5",                       # Comparación de igualdad
         "10 != 20",                     # Comparación de desigualdad
         "sqrt(4)",                      # Función raíz cuadrada
         "exp(1)",                       # Función exponencial
-        "4 / 2",                        # División
+        "4 / 2.0",                      # División con decimales
         "10 - 5",                       # Resta
         "true",                         # Booleano true
         "false",                        # Booleano false
-        "sin(PI) + cos(E)"              # Combinación de funciones y constantes
+        "sin(PI) + cos(E)",             # Combinación de funciones y constantes
+        "3.0 + true",                   # Error: combinación inválida de tipos
+        'log("hello", 10)',             # Error: tipo incorrecto en función logarítmica
+        'PI + "hello"',                 # Error: combinación inválida de tipos
     ]
 
     for data in test_data:
