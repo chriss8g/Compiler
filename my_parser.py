@@ -8,7 +8,7 @@ precedence = (
     ('left', 'AND'), 
     ('left', 'EQ', 'GT', 'LT', 'GE', 'LE', 'NE'),
     ('left', 'PLUS', 'MINUS'), 
-    ('left', 'TIMES', 'DIVIDE'), 
+    ('left', 'TIMES', 'DIVIDE'),
 )
 
 def p_expression(p):
@@ -91,9 +91,18 @@ def p_termA(p):
 
 def p_factorA(p):
     '''factorA : NUMBER
+               | PI
+               | E
+               | SIN LPAREN expression RPAREN
+               | COS LPAREN expression RPAREN
                | LPAREN expressionA RPAREN'''
     if len(p) == 2:
         p[0] = ASTNode(type='num', leaf=p[1])
+    elif len(p) == 5:
+        if p[1] == 'sin':
+             p[0] = ASTNode(type='func', children=[p[3]], leaf=p[1])
+        elif p[1].lower() == 'cos':
+            p[0] = ASTNode(type='func', children=[p[3]], leaf=p[1])
     else:  # Caso para paréntesis
         p[0] = p[2]
 
