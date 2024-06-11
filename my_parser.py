@@ -12,9 +12,12 @@ precedence = (
 )
 
 def p_expression(p):
-    '''expression : expressionL
-                  | expressionA'''
-    if len(p) == 2:
+    '''expression : expression SUMA term
+                  | expression RESTA term
+                  | term'''
+    if len(p) == 4:
+        p[0] = (p[2], p[1], p[3])
+    elif len(p) == 2:
         p[0] = p[1]
 
 def p_expressionL(p):
@@ -23,6 +26,16 @@ def p_expressionL(p):
     if len(p) == 4:
         if p[2] == '||':
             p[0] = ASTNode(type='binlo', children=[p[1], p[3]], leaf=p[2])
+    elif len(p) == 2:
+        p[0] = p[1]
+
+def p_term(p):
+    '''term : term MULTIPLICACION factor
+            | term DIVISION factor
+            | factor '''
+    
+    if len(p) == 4:
+        p[0] = (p[2], p[1], p[3])
     elif len(p) == 2:
         p[0] = p[1]
 
@@ -36,6 +49,15 @@ def p_termL(p):
     elif len(p) == 2:
         p[0] = p[1]
 
+
+def p_factor(p):
+    '''factor : NUMERO
+              | LPAREN expression RPAREN'''
+    if len(p) == 2:
+        p[0] = p[1]
+    else:  # Caso para paréntesis
+        p[0] = p[2]
+        
 def p_factorL(p):
     '''factorL : BOOL
                | factorA EQ factorA
@@ -124,6 +146,14 @@ def p_factorA(p):
 def p_error(p):
     print(f"Error de sintaxis en '{p}'")
     raise SystemExit("Deteniendo la ejecución debido a un error de sintaxis.")
+    
+def p_expression_concat(p):
+    'expression : expression CONCAT expression'
+    p[0] = ASTNode(type='concat', children=[p[1], p[3]])
+
+def p_expression_string(p):
+    'expression : STRING'
+    p[0] = ASTNode(type='string', leaf=p[1])
 
 parser = yacc.yacc()
 
@@ -136,47 +166,5 @@ if __name__ == "__main__":
         if not s:
             continue
         result = parser.parse(s)
-        result.imprimir()
-=======
-import ply.yacc as yacc
-from my_lexer import tokens
-    
-# Precedencia de operaciones
-precedence = (
-    ('left', 'SUMA', 'RESTA'), 
-    ('left', 'MULTIPLICACION', 'DIVISION'), 
-)
 
-# Reglas de la gramática
-def p_expression(p):
-    '''expression : expression SUMA term
-                  | expression RESTA term
-                  | term'''
-    if len(p) == 4:
-        p[0] = (p[2], p[1], p[3])
-    elif len(p) == 2:
-        p[0] = p[1]
 
-def p_term(p):
-    '''term : term MULTIPLICACION factor
-            | term DIVISION factor
-            | factor '''
-    
-    if len(p) == 4:
-        p[0] = (p[2], p[1], p[3])
-    elif len(p) == 2:
-        p[0] = p[1]
-
-def p_factor(p):
-    '''factor : NUMERO
-              | LPAREN expression RPAREN'''
-    if len(p) == 2:
-        p[0] = p[1]
-    else:  # Caso para paréntesis
-        p[0] = p[2]
-
-def p_error(p):
-    print(f"Syntax error at '{p.value}'")
-
-# Construir el parser
-parser = yacc.yacc()

@@ -5,9 +5,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'leftORleftANDleftEQGTLTGELENEleftPLUSMINUSleftTIMESDIVIDEAND BOOL COMA COS DIVIDE E EQ EXP GE GT LE LOG LPAREN LT MINUS NE NUMBER OR PI PLUS RAND RPAREN SIN SQRT TIMESexpression : expressionL\n                  | expressionAexpressionL : expressionL OR termL\n                   | termLtermL : termL AND factorL\n             | factorL factorL : BOOL\n               | factorA EQ factorA\n               | factorA GT factorA\n               | factorA LT factorA\n               | factorA GE factorA\n               | factorA LE factorA\n               | factorA NE factorA\n               | LPAREN expressionL RPARENexpressionA : expressionA PLUS termA\n                   | expressionA MINUS termA\n                   | termAtermA : termA TIMES factorA\n             | termA DIVIDE factorA\n             | factorA factorA : NUMBER\n               | PI\n               | E\n               | SIN LPAREN expressionA RPAREN\n               | COS LPAREN expressionA RPAREN\n               | SQRT LPAREN expressionA RPAREN\n               | EXP LPAREN expressionA RPAREN\n               | LOG LPAREN expressionA COMA expressionA RPAREN\n               | RAND LPAREN RPAREN\n               | LPAREN expressionA RPAREN'
+_lr_signature = 'CONCAT DIVIDE LPAREN MINUS NUMBER PLUS RPAREN STRING TIMESexpression : expression PLUS term\n                  | expression MINUS termexpression : termterm : term TIMES factor\n            | term DIVIDE factorterm : factorfactor : NUMBERfactor : LPAREN expression RPARENexpression : expression CONCAT expressionexpression : STRING'
     
-_lr_action_items = {'BOOL':([0,9,19,22,],[8,8,8,8,]),'LPAREN':([0,9,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,33,34,35,36,37,43,66,],[9,9,33,34,35,36,37,38,9,43,43,9,43,43,43,43,43,43,43,43,43,43,43,43,43,43,43,]),'NUMBER':([0,9,19,20,21,22,23,24,25,26,27,28,29,30,33,34,35,36,37,43,66,],[10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,10,]),'PI':([0,9,19,20,21,22,23,24,25,26,27,28,29,30,33,34,35,36,37,43,66,],[11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,11,]),'E':([0,9,19,20,21,22,23,24,25,26,27,28,29,30,33,34,35,36,37,43,66,],[12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,12,]),'SIN':([0,9,19,20,21,22,23,24,25,26,27,28,29,30,33,34,35,36,37,43,66,],[13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,13,]),'COS':([0,9,19,20,21,22,23,24,25,26,27,28,29,30,33,34,35,36,37,43,66,],[14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,14,]),'SQRT':([0,9,19,20,21,22,23,24,25,26,27,28,29,30,33,34,35,36,37,43,66,],[15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,15,]),'EXP':([0,9,19,20,21,22,23,24,25,26,27,28,29,30,33,34,35,36,37,43,66,],[16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,16,]),'LOG':([0,9,19,20,21,22,23,24,25,26,27,28,29,30,33,34,35,36,37,43,66,],[17,17,17,17,17,17,17,17,17,17,17,17,17,17,17,17,17,17,17,17,17,]),'RAND':([0,9,19,20,21,22,23,24,25,26,27,28,29,30,33,34,35,36,37,43,66,],[18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,18,]),'$end':([1,2,3,4,5,6,7,8,10,11,12,39,41,42,44,45,46,47,48,49,50,51,52,53,54,55,61,62,63,64,65,68,],[0,-1,-2,-4,-17,-6,-20,-7,-21,-22,-23,-3,-15,-20,-16,-5,-18,-19,-8,-9,-10,-11,-12,-13,-14,-30,-29,-24,-25,-26,-27,-28,]),'OR':([2,4,6,8,10,11,12,31,39,45,48,49,50,51,52,53,54,55,61,62,63,64,65,68,],[19,-4,-6,-7,-21,-22,-23,19,-3,-5,-8,-9,-10,-11,-12,-13,-14,-30,-29,-24,-25,-26,-27,-28,]),'PLUS':([3,5,7,10,11,12,32,41,42,44,46,47,55,56,57,58,59,60,61,62,63,64,65,67,68,],[20,-17,-20,-21,-22,-23,20,-15,-20,-16,-18,-19,-30,20,20,20,20,20,-29,-24,-25,-26,-27,20,-28,]),'MINUS':([3,5,7,10,11,12,32,41,42,44,46,47,55,56,57,58,59,60,61,62,63,64,65,67,68,],[21,-17,-20,-21,-22,-23,21,-15,-20,-16,-18,-19,-30,21,21,21,21,21,-29,-24,-25,-26,-27,21,-28,]),'RPAREN':([4,5,6,7,8,10,11,12,31,32,38,39,41,42,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,61,62,63,64,65,67,68,],[-4,-17,-6,-20,-7,-21,-22,-23,54,55,61,-3,-15,-20,-16,-5,-18,-19,-8,-9,-10,-11,-12,-13,-14,-30,62,63,64,65,-29,-24,-25,-26,-27,68,-28,]),'AND':([4,6,8,10,11,12,39,45,48,49,50,51,52,53,54,55,61,62,63,64,65,68,],[22,-6,-7,-21,-22,-23,22,-5,-8,-9,-10,-11,-12,-13,-14,-30,-29,-24,-25,-26,-27,-28,]),'COMA':([5,10,11,12,41,42,44,46,47,55,60,61,62,63,64,65,68,],[-17,-21,-22,-23,-15,-20,-16,-18,-19,-30,66,-29,-24,-25,-26,-27,-28,]),'TIMES':([5,7,10,11,12,41,42,44,46,47,55,61,62,63,64,65,68,],[23,-20,-21,-22,-23,23,-20,23,-18,-19,-30,-29,-24,-25,-26,-27,-28,]),'DIVIDE':([5,7,10,11,12,41,42,44,46,47,55,61,62,63,64,65,68,],[24,-20,-21,-22,-23,24,-20,24,-18,-19,-30,-29,-24,-25,-26,-27,-28,]),'EQ':([7,10,11,12,40,55,61,62,63,64,65,68,],[25,-21,-22,-23,25,-30,-29,-24,-25,-26,-27,-28,]),'GT':([7,10,11,12,40,55,61,62,63,64,65,68,],[26,-21,-22,-23,26,-30,-29,-24,-25,-26,-27,-28,]),'LT':([7,10,11,12,40,55,61,62,63,64,65,68,],[27,-21,-22,-23,27,-30,-29,-24,-25,-26,-27,-28,]),'GE':([7,10,11,12,40,55,61,62,63,64,65,68,],[28,-21,-22,-23,28,-30,-29,-24,-25,-26,-27,-28,]),'LE':([7,10,11,12,40,55,61,62,63,64,65,68,],[29,-21,-22,-23,29,-30,-29,-24,-25,-26,-27,-28,]),'NE':([7,10,11,12,40,55,61,62,63,64,65,68,],[30,-21,-22,-23,30,-30,-29,-24,-25,-26,-27,-28,]),}
+_lr_action_items = {'STRING':([0,6,9,],[3,3,3,]),'NUMBER':([0,6,7,8,9,10,11,],[5,5,5,5,5,5,5,]),'LPAREN':([0,6,7,8,9,10,11,],[6,6,6,6,6,6,6,]),'$end':([1,2,3,4,5,13,14,15,16,17,18,],[0,-3,-10,-6,-7,-1,-2,-9,-4,-5,-8,]),'PLUS':([1,2,3,4,5,12,13,14,15,16,17,18,],[7,-3,-10,-6,-7,7,-1,-2,7,-4,-5,-8,]),'MINUS':([1,2,3,4,5,12,13,14,15,16,17,18,],[8,-3,-10,-6,-7,8,-1,-2,8,-4,-5,-8,]),'CONCAT':([1,2,3,4,5,12,13,14,15,16,17,18,],[9,-3,-10,-6,-7,9,-1,-2,9,-4,-5,-8,]),'RPAREN':([2,3,4,5,12,13,14,15,16,17,18,],[-3,-10,-6,-7,18,-1,-2,-9,-4,-5,-8,]),'TIMES':([2,4,5,13,14,16,17,18,],[10,-6,-7,10,10,-4,-5,-8,]),'DIVIDE':([2,4,5,13,14,16,17,18,],[11,-6,-7,11,11,-4,-5,-8,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -16,7 +16,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'expression':([0,],[1,]),'expressionL':([0,9,],[2,31,]),'expressionA':([0,9,33,34,35,36,37,43,66,],[3,32,56,57,58,59,60,32,67,]),'termL':([0,9,19,],[4,4,39,]),'termA':([0,9,20,21,33,34,35,36,37,43,66,],[5,5,41,44,5,5,5,5,5,5,5,]),'factorL':([0,9,19,22,],[6,6,6,45,]),'factorA':([0,9,19,20,21,22,23,24,25,26,27,28,29,30,33,34,35,36,37,43,66,],[7,7,40,42,42,40,46,47,48,49,50,51,52,53,42,42,42,42,42,42,42,]),}
+_lr_goto_items = {'expression':([0,6,9,],[1,12,15,]),'term':([0,6,7,8,9,],[2,2,13,14,2,]),'factor':([0,6,7,8,9,10,11,],[4,4,4,4,4,16,17,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -26,73 +26,14 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> expression","S'",1,None,None,None),
-  ('expression -> expressionL','expression',1,'p_expression','my_parser.py',15),
-  ('expression -> expressionA','expression',1,'p_expression','my_parser.py',16),
-  ('expressionL -> expressionL OR termL','expressionL',3,'p_expressionL','my_parser.py',21),
-  ('expressionL -> termL','expressionL',1,'p_expressionL','my_parser.py',22),
-  ('termL -> termL AND factorL','termL',3,'p_termL','my_parser.py',30),
-  ('termL -> factorL','termL',1,'p_termL','my_parser.py',31),
-  ('factorL -> BOOL','factorL',1,'p_factorL','my_parser.py',40),
-  ('factorL -> factorA EQ factorA','factorL',3,'p_factorL','my_parser.py',41),
-  ('factorL -> factorA GT factorA','factorL',3,'p_factorL','my_parser.py',42),
-  ('factorL -> factorA LT factorA','factorL',3,'p_factorL','my_parser.py',43),
-  ('factorL -> factorA GE factorA','factorL',3,'p_factorL','my_parser.py',44),
-  ('factorL -> factorA LE factorA','factorL',3,'p_factorL','my_parser.py',45),
-  ('factorL -> factorA NE factorA','factorL',3,'p_factorL','my_parser.py',46),
-  ('factorL -> LPAREN expressionL RPAREN','factorL',3,'p_factorL','my_parser.py',47),
-  ('expressionA -> expressionA PLUS termA','expressionA',3,'p_expressionA','my_parser.py',68),
-  ('expressionA -> expressionA MINUS termA','expressionA',3,'p_expressionA','my_parser.py',69),
-  ('expressionA -> termA','expressionA',1,'p_expressionA','my_parser.py',70),
-  ('termA -> termA TIMES factorA','termA',3,'p_termA','my_parser.py',80),
-  ('termA -> termA DIVIDE factorA','termA',3,'p_termA','my_parser.py',81),
-  ('termA -> factorA','termA',1,'p_termA','my_parser.py',82),
-  ('factorA -> NUMBER','factorA',1,'p_factorA','my_parser.py',93),
-  ('factorA -> PI','factorA',1,'p_factorA','my_parser.py',94),
-  ('factorA -> E','factorA',1,'p_factorA','my_parser.py',95),
-  ('factorA -> SIN LPAREN expressionA RPAREN','factorA',4,'p_factorA','my_parser.py',96),
-  ('factorA -> COS LPAREN expressionA RPAREN','factorA',4,'p_factorA','my_parser.py',97),
-  ('factorA -> SQRT LPAREN expressionA RPAREN','factorA',4,'p_factorA','my_parser.py',98),
-  ('factorA -> EXP LPAREN expressionA RPAREN','factorA',4,'p_factorA','my_parser.py',99),
-  ('factorA -> LOG LPAREN expressionA COMA expressionA RPAREN','factorA',6,'p_factorA','my_parser.py',100),
-  ('factorA -> RAND LPAREN RPAREN','factorA',3,'p_factorA','my_parser.py',101),
-  ('factorA -> LPAREN expressionA RPAREN','factorA',3,'p_factorA','my_parser.py',102),
-]
-=======
-
-# parsetab.py
-# This file is automatically generated. Do not edit.
-# pylint: disable=W,C,R
-_tabversion = '3.10'
-
-_lr_method = 'LALR'
-
-_lr_signature = 'leftSUMARESTAleftMULTIPLICACIONDIVISIONDIVISION LPAREN MULTIPLICACION NUMERO RESTA RPAREN SUMAexpression : expression SUMA term\n                  | expression RESTA term\n                  | termterm : term MULTIPLICACION factor\n            | term DIVISION factor\n            | factor factor : NUMERO\n              | LPAREN expression RPAREN'
-    
-_lr_action_items = {'NUMERO':([0,5,6,7,8,9,],[4,4,4,4,4,4,]),'LPAREN':([0,5,6,7,8,9,],[5,5,5,5,5,5,]),'$end':([1,2,3,4,11,12,13,14,15,],[0,-3,-6,-7,-1,-2,-4,-5,-8,]),'SUMA':([1,2,3,4,10,11,12,13,14,15,],[6,-3,-6,-7,6,-1,-2,-4,-5,-8,]),'RESTA':([1,2,3,4,10,11,12,13,14,15,],[7,-3,-6,-7,7,-1,-2,-4,-5,-8,]),'RPAREN':([2,3,4,10,11,12,13,14,15,],[-3,-6,-7,15,-1,-2,-4,-5,-8,]),'MULTIPLICACION':([2,3,4,11,12,13,14,15,],[8,-6,-7,8,8,-4,-5,-8,]),'DIVISION':([2,3,4,11,12,13,14,15,],[9,-6,-7,9,9,-4,-5,-8,]),}
-
-_lr_action = {}
-for _k, _v in _lr_action_items.items():
-   for _x,_y in zip(_v[0],_v[1]):
-      if not _x in _lr_action:  _lr_action[_x] = {}
-      _lr_action[_x][_k] = _y
-del _lr_action_items
-
-_lr_goto_items = {'expression':([0,5,],[1,10,]),'term':([0,5,6,7,],[2,2,11,12,]),'factor':([0,5,6,7,8,9,],[3,3,3,3,13,14,]),}
-
-_lr_goto = {}
-for _k, _v in _lr_goto_items.items():
-   for _x, _y in zip(_v[0], _v[1]):
-       if not _x in _lr_goto: _lr_goto[_x] = {}
-       _lr_goto[_x][_k] = _y
-del _lr_goto_items
-_lr_productions = [
-  ("S' -> expression","S'",1,None,None,None),
-  ('expression -> expression SUMA term','expression',3,'p_expression','my_parser.py',12),
-  ('expression -> expression RESTA term','expression',3,'p_expression','my_parser.py',13),
-  ('expression -> term','expression',1,'p_expression','my_parser.py',14),
-  ('term -> term MULTIPLICACION factor','term',3,'p_term','my_parser.py',26),
-  ('term -> term DIVISION factor','term',3,'p_term','my_parser.py',27),
-  ('term -> factor','term',1,'p_term','my_parser.py',28),
-  ('factor -> NUMERO','factor',1,'p_factor','my_parser.py',41),
-  ('factor -> LPAREN expression RPAREN','factor',3,'p_factor','my_parser.py',42),
+  ('expression -> expression PLUS term','expression',3,'p_expression_binop','my_parser.py',6),
+  ('expression -> expression MINUS term','expression',3,'p_expression_binop','my_parser.py',7),
+  ('expression -> term','expression',1,'p_expression_term','my_parser.py',11),
+  ('term -> term TIMES factor','term',3,'p_term_binop','my_parser.py',15),
+  ('term -> term DIVIDE factor','term',3,'p_term_binop','my_parser.py',16),
+  ('term -> factor','term',1,'p_term_factor','my_parser.py',20),
+  ('factor -> NUMBER','factor',1,'p_factor_num','my_parser.py',24),
+  ('factor -> LPAREN expression RPAREN','factor',3,'p_factor_expr','my_parser.py',28),
+  ('expression -> expression CONCAT expression','expression',3,'p_expression_concat','my_parser.py',35),
+  ('expression -> STRING','expression',1,'p_expression_string','my_parser.py',39),
 ]
