@@ -6,13 +6,13 @@ tokens = (
     'COMA',
     'LPAREN',
     'RPAREN',
-    # Operadores aritmeticos
+    # Operadores aritméticos
     'NUMBER',
     'PLUS',
     'MINUS',
     'TIMES',
     'DIVIDE',
-    # Operadores logicos
+    # Operadores lógicos
     'AND',
     'OR',
     'BOOL',
@@ -33,47 +33,57 @@ tokens = (
     'EXP',
     'LOG',
     'RAND',
+    # Strings
+    'CONCAT',
+    'STRING',
 )
 
 # Expresiones regulares para los caracteres especiales
 t_COMA = r','
 
-# Expresiones regulares para parentesis
+# Expresiones regulares para paréntesis
 t_LPAREN = r'\('
 t_RPAREN = r'\)'
 
-# Expresiones regulares para operadores aritmeticos
+# Expresiones regulares para operadores aritméticos
 t_PLUS = r'\+'
 t_MINUS = r'-'
 t_TIMES = r'\*'
 t_DIVIDE = r'/'
 
-# Expresiones regulares para operadores logicos
+# Expresiones regulares para operadores lógicos
 t_AND = r'&&'
 t_OR = r'\|\|'
-t_BOOL = r'(true|false)'
+t_BOOL = r'\b(true|false)\b'
 
 # Expresiones regulares para operadores comparativos
 t_EQ = r'=='
-t_GT = r'>' 
-t_LT = r'<' 
+t_GT = r'>'
+t_LT = r'<'
 t_GE = r'>='
-t_LE = r'=<'
+t_LE = r'<='
 t_NE = r'!='
 
 # Constantes
-t_PI = r'PI' 
-t_E = r'E' 
+t_PI = r'\bPI\b'
+t_E = r'\bE\b'
 
 # Funciones predefinidas
-t_SIN = r'sin'
-t_COS = r'cos'
-t_SQRT = r'sqrt'
-t_EXP = r'exp'
-t_LOG = r'log'
-t_RAND = r'rand'
+t_SIN = r'\bsin\b'
+t_COS = r'\bcos\b'
+t_SQRT = r'\bsqrt\b'
+t_EXP = r'\bexp\b'
+t_LOG = r'\blog\b'
+t_RAND = r'\brand\b'
 
+# Strings
+t_CONCAT = r'@'
 
+# Definición de una cadena
+def t_STRING(t):
+    r'"[^"]*"'  # Expresión regular que coincide con una secuencia de caracteres entre comillas dobles.
+    t.value = t.value[1:-1]  # Elimina las comillas dobles del inicio y final de la cadena.
+    return t  # Devuelve el token procesado.
 
 # Regla de expresión regular con acción de código
 def t_NUMBER(t):
@@ -94,48 +104,35 @@ lexer = lex.lex()
 
 # Prueba del lexer
 if __name__ == "__main__":
-    data = "log(3,4)"
-    lexer.input(data)
-    while True:
-        tok = lexer.token()
-        if not tok:
-            break
-        print(tok)
-=======
-import ply.lex as lex
+    # Datos de prueba para varios casos de uso
+    test_data = [
+        "PI + E",                       # Constantes
+        "sin(PI / 2)",                  # Funciones trigonométricas
+        "3 + 4 * 10",                   # Operaciones aritméticas
+        "(3 + 4) * 10",                 # Uso de paréntesis
+        "true && false || true",        # Operadores lógicos
+        "3 >= 2",                       # Operadores comparativos
+        '"Hello" @ " World!"',          # Concatenación de cadenas
+        'log(100)',                     # Función logarítmica
+        'rand()',                       # Función random
+        "3.14 + 2.71",                  # Números flotantes
+        "5 == 5",                       # Comparación de igualdad
+        "10 != 20",                     # Comparación de desigualdad
+        "sqrt(4)",                      # Función raíz cuadrada
+        "exp(1)",                       # Función exponencial
+        "4 / 2",                        # División
+        "10 - 5",                       # Resta
+        "true",                         # Booleano true
+        "false",                        # Booleano false
+        "a = 3",                        # Variable (este caso no será reconocido)
+        "sin(PI) + cos(E)"              # Combinación de funciones y constantes
+    ]
 
-# Lista de tokens
-tokens = (
-    'NUMERO',
-    'SUMA',
-    'RESTA',
-    'MULTIPLICACION',
-    'DIVISION',
-    'LPAREN',
-    'RPAREN',
-)
-
-# Reglas de expresiones regulares para tokens simples
-t_SUMA = r'\+'
-t_RESTA = r'-'
-t_MULTIPLICACION = r'\*'
-t_DIVISION = r'/'
-t_LPAREN = r'\('
-t_RPAREN = r'\)'
-
-# Regla de expresión regular con acción de código
-def t_NUMERO(t):
-    r'\d+(\.\d+)?'
-    t.value = float(t.value) if '.' in t.value else int(t.value)
-    return t
-
-# Ignoring whitespace
-t_ignore = ' \t'
-
-# Regla para manejar errores
-def t_error(t):
-    print("Carácter ilegal '%s'" % t.value[0])
-    t.lexer.skip(1)
-
-# Construir el lexer
-lexer = lex.lex()
+    for data in test_data:
+        print(f"\nAnalizando: {data}")
+        lexer.input(data)
+        while True:
+            tok = lexer.token()
+            if not tok:
+                break
+            print(tok)

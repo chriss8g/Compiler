@@ -142,6 +142,14 @@ def p_factorA(p):
         if p[1] == 'log':
             p[0] = ASTNode(type='func', children=[p[3],p[5]], leaf=p[1])
         
+def p_expression_concat(p):
+    'expression : expression CONCAT expression'
+    p[0] = ASTNode(type='concat', children=[p[1], p[3]])
+
+def p_expression_string(p):
+    'expression : STRING'
+    p[0] = ASTNode(type='string', leaf=p[1])
+
 
 def p_error(p):
     print(f"Error de sintaxis en '{p}'")
