@@ -1,9 +1,6 @@
 from my_ast import ASTNode
 
-INT_TYPE = 'int'
-FLOAT_TYPE = 'float'
-BOOL_TYPE = 'bool'
-STRING_TYPE = 'string'
+from my_types import INT_TYPE, FLOAT_TYPE, STRING_TYPE, BOOL_TYPE
 
 class SemanticError(Exception):
     pass

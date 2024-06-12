@@ -1,13 +1,5 @@
-
-class TACInstruction:
-    def __init__(self, operation, arg1, arg2, result):
-        self.operation = operation
-        self.arg1 = arg1
-        self.arg2 = arg2
-        self.result = result
-
-    def __str__(self):
-        return f"{self.result} = {self.arg1} {self.operation} {self.arg2}"
+from TAC import TACOperation, TACFunctionCall, TACConcat, TACPrint
+from my_types import STRING_TYPE
 
 class IntermediateCodeGenerator:
     def __init__(self):
@@ -26,34 +18,29 @@ class IntermediateCodeGenerator:
             arg1 = self.generate_intermediate_code(node.children[0])
             arg2 = self.generate_intermediate_code(node.children[1])
             temp_var = self.new_temp()
-            self.tac_code.append(TACInstruction(node.leaf, arg1, arg2, temp_var))
+            self.tac_code.append(TACOperation(node.leaf, arg1, arg2, temp_var, node.data_type))
             node.tac_var = temp_var
             return temp_var
 
         elif node.type == 'func':
             if node.leaf == 'rand':
                 temp_var = self.new_temp()
-                self.tac_code.append(TACInstruction('rand', '', '', temp_var))
+                self.tac_code.append(TACFunctionCall('rand', [], temp_var))
                 return temp_var
             elif node.leaf == 'print':
                 arg = self.generate_intermediate_code(node.children[0])
-                temp_var = self.new_temp()
-                self.tac_code.append(TACInstruction('print', arg, '', temp_var))
-                return temp_var
+                self.tac_code.append(TACPrint(arg, node.children[0].data_type))
+                self.tac_code.append(TACPrint('\n', STRING_TYPE))
+                return None
             else:
-                arg1 = self.generate_intermediate_code(node.children[0])
-                if len(node.children) > 1:
-                    arg2 = self.generate_intermediate_code(node.children[1])
-                    temp_var = self.new_temp()
-                    self.tac_code.append(TACInstruction(node.leaf, arg1, arg2, temp_var))
-                else:
-                    temp_var = self.new_temp()
-                    self.tac_code.append(TACInstruction(node.leaf, arg1, '', temp_var))
+                args = [self.generate_intermediate_code(child) for child in node.children]
+                temp_var = self.new_temp()
+                self.tac_code.append(TACFunctionCall(node.leaf, args, temp_var))
                 return temp_var
 
         elif node.type == 'concat':
             arg1 = self.generate_intermediate_code(node.children[0])
             arg2 = self.generate_intermediate_code(node.children[1])
             temp_var = self.new_temp()
-            self.tac_code.append(TACInstruction('@', arg1, arg2, temp_var))
+            self.tac_code.append(TACConcat(arg1, arg2, temp_var))
             return temp_var

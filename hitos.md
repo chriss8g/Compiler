@@ -2,6 +2,30 @@
 
 ## SuperHito 1: Expresiones
 
+print(5)
+print(PI + E)
+print(sin(PI / 2))
+print(3 + 4.5 * 10)
+print((3 + 4) * 10.5)
+print(true && false || true)
+print(3.0 >= 2)
+print("Hello" @ " World!")
+print(log(100, 10))
+print(rand())
+print(3.14 + 2.71)
+print(5 == 5)
+print(10 != 20)
+print(sqrt(4))
+print(exp(1))
+print(4 / 2.0)
+print(10 - 5)
+print(true)
+print(false)
+print(sin(PI) + cos(E))
+print(3.0 + true)
+print(log("hello", 10))
+print(PI + "hello")
+
 ### hito 1.1
 
 - `print(<string> @ 42)`
@@ -36,12 +60,15 @@
 ### hito 2.1
 
 - Funciones inline
+
 ```js
 function tan(x) => sin(x)/cos(x);
 ```
 
 ### hito 2.1
+
 - Funciones de toda la vida
+
 ```js
 function operate(x,y) {
     print(x+y);
@@ -49,7 +76,7 @@ function operate(x,y) {
     print(x*y);
     print(x/y);
 }
-``` 
+```
 
 ## SuperHito 3: Variables
 
@@ -139,4 +166,6 @@ let a = 0 in {
 
 ### hito 4.1
 
-$$...$$
+$$
+...
+$$
