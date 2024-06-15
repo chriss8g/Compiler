@@ -13,9 +13,7 @@ def check_semantics(node, expected_type=None):
         right_type = check_semantics(node.children[1])
         if left_type not in NUMBER_TYPE or right_type not in NUMBER_TYPE:
             raise SemanticError(f"Error semántico: la operación {node.leaf} solo puede aplicarse a números")
-        node.data_type = FLOAT_TYPE if FLOAT_TYPE in (
-            left_type, right_type) or CONST_TYPE in (
-            left_type, right_type) else INT_TYPE
+        node.data_type = FLOAT_TYPE
         if expected_type and node.data_type != expected_type:
             raise SemanticError(f"Error semántico: la operación {node.leaf} devuelve { node.data_type} pero se esperaba {expected_type}")
 
@@ -83,8 +81,8 @@ def check_semantics(node, expected_type=None):
             raise SemanticError(f"Error semántico: el valor {node.leaf} es {node.data_type} pero se esperaba {expected_type}")
 
     elif node.type == 'concat':
-        check_semantics(node.children[0], expected_type=STRING_TYPE)
-        check_semantics(node.children[1], expected_type=STRING_TYPE)
+        check_semantics(node.children[0])
+        check_semantics(node.children[1])
         node.data_type = STRING_TYPE
         if expected_type and node.data_type != expected_type:
             raise SemanticError(f"Error semántico: la operación {node.leaf} devuelve {node.data_type} pero se esperaba {expected_type}")

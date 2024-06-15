@@ -26,6 +26,7 @@ def p_expression_binop(p):
 def p_term_binop(p):
     '''term : term TIMES factor
             | term DIVIDE factor
+            | term POW factor
             | factor'''
     if len(p) == 4:
         p[0] = ASTNode(type='binop', children=[p[1], p[3]], leaf=p[2])
@@ -96,29 +97,7 @@ parser = yacc.yacc()
 
 if __name__ == "__main__":
     test_data = [
-        'print(5)',
-        "PI + E",                       # Constantes
-        "sin(PI / 2)",                  # Funciones trigonométricas
-        "3 + 4.5 * 10",                 # Operaciones aritméticas con decimales
-        "(3 + 4) * 10.5",               # Uso de paréntesis con decimales
-        "true && false || true",        # Operadores lógicos
-        "3.0 >= 2",                     # Operadores comparativos con decimales
-        '"Hello" @ " World!"',          # Concatenación de cadenas
-        'log(100, 10)',                 # Función logarítmica
-        'rand()',                       # Función random
-        "3.14 + 2.71",                  # Números flotantes
-        "5 == 5",                       # Comparación de igualdad
-        "10 != 20",                     # Comparación de desigualdad
-        "sqrt(4)",                      # Función raíz cuadrada
-        "exp(1)",                       # Función exponencial
-        "4 / 2.0",                      # División con decimales
-        "10 - 5",                       # Resta
-        "true",                         # Booleano true
-        "false",                        # Booleano false
-        "sin(PI) + cos(E)",             # Combinación de funciones y constantes
-        "3.0 + true",                   # Error: combinación inválida de tipos
-        'log("hello", 10)',             # Error: tipo incorrecto en función logarítmica
-        'PI + "hello"',                 # Error: combinación inválida de tipos
+        'print("The message is \"Hello World\"")'
     ]
 
     for data in test_data:

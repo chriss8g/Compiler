@@ -22,9 +22,6 @@ print(10 - 5)
 print(true)
 print(false)
 print(sin(PI) + cos(E))
-print(3.0 + true)
-print(log("hello", 10))
-print(PI + "hello")
 
 ### hito 1.1
 

@@ -44,6 +44,12 @@ class CCodeGenerator:
         elif node.type in ('binop', 'binlo', 'binco'):
             arg1 = self.generate_c_code(node.children[0])
             arg2 = self.generate_c_code(node.children[1])
+            if node.leaf == '^':
+                s = "#include <math.h>\n"
+                if s not in self.headers:
+                    self.headers.append(s)
+
+                return f'pow({arg1}, {arg2})'
             return f"({arg1} {node.leaf} {arg2})"
 
         elif node.type == 'func':
@@ -92,6 +98,10 @@ class CCodeGenerator:
 
             arg1 = self.generate_c_code(node.children[0])
             arg2 = self.generate_c_code(node.children[1])
+
+            arg1 = f'"{arg1}"' if isinstance(arg1, int) else arg1
+            arg2 = f'"{arg2}"' if isinstance(arg2, int) else arg2
+
             s1 = self.new_temp()
             s2 = self.new_temp()
             self.body += f"    char {s1}[{len(arg1) + len(arg2)}] = {arg1};\n"

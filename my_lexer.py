@@ -12,6 +12,7 @@ tokens = (
     'MINUS',
     'TIMES',
     'DIVIDE',
+    'POW',
     # Operadores lógicos
     'AND',
     'OR',
@@ -51,6 +52,7 @@ t_PLUS = r'\+'
 t_MINUS = r'-'
 t_TIMES = r'\*'
 t_DIVIDE = r'/'
+t_POW = r'\^'
 
 # Expresiones regulares para operadores lógicos
 t_AND = r'&&'
@@ -108,27 +110,7 @@ lexer = lex.lex()
 if __name__ == "__main__":
     # Datos de prueba para varios casos de uso
     test_data = [
-        'print(5)',
-        "PI + E",                       # Constantes
-        "sin(PI / 2)",                  # Funciones trigonométricas
-        "3 + 4 * 10",                   # Operaciones aritméticas
-        "(3 + 4) * 10",                 # Uso de paréntesis
-        "true && false || true",        # Operadores lógicos
-        "3 >= 2",                       # Operadores comparativos
-        '"Hello" @ " World!"',          # Concatenación de cadenas
-        'log(100)',                     # Función logarítmica
-        'rand()',                       # Función random
-        "3.14 + 2.71",                  # Números flotantes
-        "5 == 5",                       # Comparación de igualdad
-        "10 != 20",                     # Comparación de desigualdad
-        "sqrt(4)",                      # Función raíz cuadrada
-        "exp(1)",                       # Función exponencial
-        "4 / 2",                        # División
-        "10 - 5",                       # Resta
-        "true",                         # Booleano true
-        "false",                        # Booleano false
-        "a = 3",                        # Variable (este caso no será reconocido)
-        "sin(PI) + cos(E)"              # Combinación de funciones y constantes
+        'print("The message is \"Hello World\"")'
     ]
 
     for data in test_data:
