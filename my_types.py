@@ -2,3 +2,5 @@ INT_TYPE = 'int'
 FLOAT_TYPE = 'float'
 BOOL_TYPE = 'bool'
 STRING_TYPE = 'string'
+CONST_TYPE = 'const'
+NUMBER_TYPE = [INT_TYPE, FLOAT_TYPE, CONST_TYPE]

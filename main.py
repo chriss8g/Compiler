@@ -1,38 +1,18 @@
-from my_parser import parser
-from semantic_checker import check_semantics, SemanticError
-from intermediate_code_generator import IntermediateCodeGenerator
-from mips_code_generator import MipsCodeGenerator
+import argparse
+from c_code_generator import CCodeGenerator
 
-if __name__ == "__main__":
-
-    intermediateGenerator = IntermediateCodeGenerator()
-    mipsGenerator = MipsCodeGenerator()
-
-    with open('script.uh', 'r') as file:
+def main(input_file):
+    with open(input_file, 'r') as file:
         lines = file.readlines()
 
-    try:
-        with open('script.asm', 'w') as output_file:
-            for line_number, line in enumerate(lines, start=1):
-                if not line.strip():
-                    continue
-                result = parser.parse(line.strip())
-                if result:
-                    try:
-                        check_semantics(result)
-                        intermediateGenerator.generate_intermediate_code(result)
-                    except SemanticError as e:
-                        print(f"Semantic error in line {line_number}: {e}")
-                        output_file.close()
-                        import os
-                        os.remove('script.asm')
-                        break
-            
-            mips_code = mipsGenerator.generate_mips_code(intermediateGenerator.tac_code)
-            for asm_line in mips_code:
-                output_file.write(asm_line + '\n')
-            intermediateGenerator.tac_code = []
-            intermediateGenerator.temp_count = 0
+    cGenerator = CCodeGenerator(lines)
 
-    except Exception as e:
-        print(f"Compilation error: {e}")
+    with open('script.c', 'w') as output_file:
+        output_file.write(cGenerator.code)
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Generate C code from custom script")
+    parser.add_argument('input_file', type=str, help='The input file containing the script')
+    args = parser.parse_args()
+
+    main(args.input_file)

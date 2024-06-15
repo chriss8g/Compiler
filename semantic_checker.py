@@ -1,19 +1,23 @@
 from my_ast import ASTNode
 
-from my_types import INT_TYPE, FLOAT_TYPE, STRING_TYPE, BOOL_TYPE
+from my_types import NUMBER_TYPE, CONST_TYPE, INT_TYPE, FLOAT_TYPE, STRING_TYPE, BOOL_TYPE
+
 
 class SemanticError(Exception):
     pass
+
 
 def check_semantics(node, expected_type=None):
     if node.type == 'binop':
         left_type = check_semantics(node.children[0])
         right_type = check_semantics(node.children[1])
-        if left_type not in (INT_TYPE, FLOAT_TYPE) or right_type not in (INT_TYPE, FLOAT_TYPE):
+        if left_type not in NUMBER_TYPE or right_type not in NUMBER_TYPE:
             raise SemanticError(f"Error semántico: la operación {node.leaf} solo puede aplicarse a números")
-        node.data_type = FLOAT_TYPE if FLOAT_TYPE in (left_type, right_type) else INT_TYPE
+        node.data_type = FLOAT_TYPE if FLOAT_TYPE in (
+            left_type, right_type) or CONST_TYPE in (
+            left_type, right_type) else INT_TYPE
         if expected_type and node.data_type != expected_type:
-            raise SemanticError(f"Error semántico: la operación {node.leaf} devuelve {node.data_type} pero se esperaba {expected_type}")
+            raise SemanticError(f"Error semántico: la operación {node.leaf} devuelve { node.data_type} pero se esperaba {expected_type}")
 
     elif node.type == 'binlo':
         check_semantics(node.children[0], BOOL_TYPE)
@@ -21,11 +25,11 @@ def check_semantics(node, expected_type=None):
         node.data_type = BOOL_TYPE
         if expected_type and node.data_type != expected_type:
             raise SemanticError(f"Error semántico: la operación {node.leaf} devuelve {node.data_type} pero se esperaba {expected_type}")
-    
+
     elif node.type == 'binco':
         left_type = check_semantics(node.children[0])
         right_type = check_semantics(node.children[1])
-        if left_type not in (INT_TYPE, FLOAT_TYPE) or right_type not in (INT_TYPE, FLOAT_TYPE):
+        if left_type not in NUMBER_TYPE or right_type not in NUMBER_TYPE:
             raise SemanticError(f"Error semántico: la operación {node.leaf} solo puede aplicarse a números")
         node.data_type = BOOL_TYPE
         if expected_type and node.data_type != expected_type:
@@ -47,13 +51,13 @@ def check_semantics(node, expected_type=None):
     elif node.type == 'func':
         if node.leaf in ('sin', 'cos', 'sqrt', 'exp'):
             arg_type = check_semantics(node.children[0])
-            if arg_type not in (INT_TYPE, FLOAT_TYPE):
+            if arg_type not in NUMBER_TYPE:
                 raise SemanticError(f"Error semántico: el argumento de la función {node.leaf} debe ser numérico")
             node.data_type = FLOAT_TYPE
         elif node.leaf == 'log':
             arg1_type = check_semantics(node.children[0])
             arg2_type = check_semantics(node.children[1])
-            if arg1_type not in (INT_TYPE, FLOAT_TYPE) or arg2_type not in (INT_TYPE, FLOAT_TYPE):
+            if arg1_type not in NUMBER_TYPE or arg2_type not in NUMBER_TYPE:
                 raise SemanticError(f"Error semántico: los argumentos de la función {node.leaf} deben ser numéricos")
             node.data_type = FLOAT_TYPE
         elif node.leaf == 'rand':
@@ -66,9 +70,10 @@ def check_semantics(node, expected_type=None):
 
     elif node.type == 'const':
         if node.leaf in ('PI', 'E'):
-            node.data_type = FLOAT_TYPE
+            node.data_type = CONST_TYPE
         else:
-            raise SemanticError(f"Error semántico: constante desconocida {node.leaf}")
+            raise SemanticError(
+                f"Error semántico: constante desconocida {node.leaf}")
         if expected_type and node.data_type != expected_type:
             raise SemanticError(f"Error semántico: el valor {node.leaf} es {node.data_type} pero se esperaba {expected_type}")
 
@@ -83,14 +88,15 @@ def check_semantics(node, expected_type=None):
         node.data_type = STRING_TYPE
         if expected_type and node.data_type != expected_type:
             raise SemanticError(f"Error semántico: la operación {node.leaf} devuelve {node.data_type} pero se esperaba {expected_type}")
-    
+
     else:
         raise SemanticError(f"Tipo desconocido de nodo: {node.type}")
-    
+
     if expected_type and node.data_type != expected_type:
         raise SemanticError(f"Error semántico: se esperaba {expected_type} pero se encontró {node.data_type}")
 
     return node.data_type
+
 
 if __name__ == "__main__":
     from my_parser import parser
@@ -117,7 +123,8 @@ if __name__ == "__main__":
         "false",                        # Booleano false
         "sin(PI) + cos(E)",             # Combinación de funciones y constantes
         "3.0 + true",                   # Error: combinación inválida de tipos
-        'log("hello", 10)',             # Error: tipo incorrecto en función logarítmica
+        # Error: tipo incorrecto en función logarítmica
+        'log("hello", 10)',
         'PI + "hello"',                 # Error: combinación inválida de tipos
     ]
 
