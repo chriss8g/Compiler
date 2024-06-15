@@ -12,6 +12,22 @@ precedence = (
     ('left', 'TIMES', 'DIVIDE'),
 )
 
+def p_expression_block(p):
+    '''expression : LBRACE statements RBRACE'''
+    p[0] = ASTNode(type='block', children=p[2])
+
+def p_statements(p):
+    '''statements : statements statement
+                  | statement'''
+    if len(p) == 3:
+        p[0] = p[1] + [p[2]]
+    else:
+        p[0] = [p[1]]
+
+def p_statement(p):
+    '''statement : expression SEMICOLON'''
+    p[0] = p[1]
+
 # Expresiones
 def p_expression_binop(p):
     '''expression : expression PLUS term
@@ -97,7 +113,7 @@ parser = yacc.yacc()
 
 if __name__ == "__main__":
     test_data = [
-        'print("The message is \"Hello World\"")'
+        '{ print(42); print(sin(PI/2)); print("Hello World"); }'
     ]
 
     for data in test_data:

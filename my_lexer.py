@@ -38,10 +38,17 @@ tokens = (
     # Strings
     'CONCAT',
     'STRING',
+    'LBRACE',
+    'RBRACE',
+    'SEMICOLON'
 )
+
+t_LBRACE = r'\{'
+t_RBRACE = r'\}'
 
 # Expresiones regulares para los caracteres especiales
 t_COMA = r','
+t_SEMICOLON = r';'
 
 # Expresiones regulares para paréntesis
 t_LPAREN = r'\('

@@ -40,6 +40,12 @@ class CCodeGenerator:
             elif node.type == 'string':
                 return f'"{node.leaf}"'
             return node.leaf
+        
+        elif node.type == 'block':
+            code_block = ""
+            for child in node.children:
+                code_block += self.generate_c_code(child) + ";\n"
+            return "{\n" + code_block + "}"
 
         elif node.type in ('binop', 'binlo', 'binco'):
             arg1 = self.generate_c_code(node.children[0])

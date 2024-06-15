@@ -17,6 +17,10 @@ def check_semantics(node, expected_type=None):
         if expected_type and node.data_type != expected_type:
             raise SemanticError(f"Error semántico: la operación {node.leaf} devuelve { node.data_type} pero se esperaba {expected_type}")
 
+    elif node.type == 'block':
+        for child in node.children:
+            check_semantics(child)
+
     elif node.type == 'binlo':
         check_semantics(node.children[0], BOOL_TYPE)
         check_semantics(node.children[1], BOOL_TYPE)
