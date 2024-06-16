@@ -9,6 +9,7 @@ class CCodeGenerator:
         self.body = "int main() {\n"
         self.code = ""
         semantic = Semantic()
+        dudes = []
 
         try:
             for line_number, line in enumerate(lines, start=1):
@@ -17,13 +18,25 @@ class CCodeGenerator:
                     continue
                 result = parser.parse(line.strip())
                 if result:
+                    
+                    state = semantic.functions.copy() # Para recordar las funciones ya computadas si diera error
                     try:
                         semantic.check_semantics(result)
-                        c_code = self.generate_c_code(result)
-                        self.body += "    " + c_code + ';\n'
                     except SemanticError as e:
-                        print(f"Semantic error in line {line_number}: {e}")
-                        break
+                        dudes.append(result)
+                        semantic.functions = state
+                        continue
+
+                    c_code = self.generate_c_code(result)
+                    self.body += "    " + c_code + ';\n'
+            for line in dudes:
+                try:
+                    semantic.check_semantics(line)
+                except SemanticError as e:
+                    print(f"Semantic error {e}")
+                    break
+                c_code = self.generate_c_code(line)
+                self.body += "    " + c_code + ';\n'
 
         except Exception as e:
             print(f"Compilation error: {e}")
