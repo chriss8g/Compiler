@@ -108,7 +108,7 @@ class CCodeGenerator:
                 arg = self.generate_c_code(node.children[0])
                 if node.leaf == 'log':
                     arg2 = self.generate_c_code(node.children[1])
-                    return f"log({arg2}) / log({arg})"
+                    return f"(log({arg2}) / log({arg}))"
                 return f"{node.leaf}({arg})"
             else:
                 args = ", ".join(self.generate_c_code(child) for child in node.children)
