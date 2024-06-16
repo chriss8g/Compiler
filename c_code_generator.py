@@ -1,12 +1,14 @@
 from my_parser import parser
-from semantic_checker import check_semantics, SemanticError
+from semantic_checker import Semantic, SemanticError
 
 class CCodeGenerator:
     def __init__(self, lines):
+        self.functions = {}
         self.temp_count = 0
         self.headers = []
         self.body = "int main() {\n"
         self.code = ""
+        semantic = Semantic()
 
         try:
             for line_number, line in enumerate(lines, start=1):
@@ -16,9 +18,9 @@ class CCodeGenerator:
                 result = parser.parse(line.strip())
                 if result:
                     try:
-                        check_semantics(result)
+                        semantic.check_semantics(result)
                         c_code = self.generate_c_code(result)
-                        self.body += "    " + c_code + '\n'
+                        self.body += "    " + c_code + ';\n'
                     except SemanticError as e:
                         print(f"Semantic error in line {line_number}: {e}")
                         break
@@ -34,13 +36,29 @@ class CCodeGenerator:
         self.code += self.body
 
     def generate_c_code(self, node):
-        if node.type in ('num', 'bool', 'string'):
+        if node.type in ('num', 'bool', 'string', 'id'):
             if node.type == 'bool':
                 return '1' if node.leaf == 'true' else '0'
             elif node.type == 'string':
                 return f'"{node.leaf}"'
             return node.leaf
         
+        elif node.type == 'functionDef':
+            func_name = node.leaf
+            params_node = node.children[0]
+            body_node = node.children[1]
+            params_code = ", ".join([f"double {arg.leaf}" for arg in params_node])
+            func_code = f"double {func_name}({params_code}) {{\n"
+            func_body_code = self.generate_c_code(body_node)
+            func_code += f"    return {func_body_code};\n}}\n"
+            self.headers.append(func_code)
+            return ""
+        
+        elif node.type == 'function':
+            func_name = node.leaf
+            params_code = ", ".join(f"{self.generate_c_code(arg)}" for arg in node.children)
+            return f"{func_name}({params_code})"
+
         elif node.type == 'block':
             code_block = ""
             for child in node.children:
@@ -120,12 +138,8 @@ class CCodeGenerator:
                 return '3.141592653589793'
             elif node.leaf == 'E':
                 return '2.718281828459045'
-
-        elif node.type == 'block':
-            code_block = ""
-            for child in node.children:
-                code_block += self.generate_c_code(child) + "\n"
-            return f"{{\n{code_block}}}"
+        elif node.type == 'id':
+            return node.leaf
 
         # Add more cases as necessary for other node types
         return ""

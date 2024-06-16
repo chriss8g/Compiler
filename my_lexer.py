@@ -1,7 +1,21 @@
 import ply.lex as lex
 
+# Definir las palabras clave
+keywords = {
+    'function': 'FUNCTION',
+    'sin': 'SIN',
+    'cos': 'COS',
+    'sqrt': 'SQRT',
+    'exp': 'EXP',
+    'log': 'LOG',
+    'rand': 'RAND',
+    'print': 'PRINT',
+    'PI': 'PI',
+    'E': 'E',
+}
+
 # Lista de tokens
-tokens = (
+tokens = [
     # Caracteres especiales
     'COMA',
     'LPAREN',
@@ -24,24 +38,23 @@ tokens = (
     'GE',
     'LE',
     'NE',
-    # Constantes
-    'PI',
-    'E',
-    # Funciones
-    'SIN',
-    'COS',
-    'SQRT',
-    'EXP',
-    'LOG',
-    'RAND',
-    'PRINT',
     # Strings
     'CONCAT',
     'STRING',
     'LBRACE',
     'RBRACE',
-    'SEMICOLON'
-)
+    'SEMICOLON',
+    'ARROW',
+    'ID',
+] + list(keywords.values())
+
+# Definición del token para identificadores (ID)
+def t_ID(t):
+    r'[a-zA-Z_][a-zA-Z_0-9]*'
+    t.type = keywords.get(t.value, 'ID')  # Verificar si es una palabra clave
+    return t
+
+t_ARROW = r'=>'
 
 t_LBRACE = r'\{'
 t_RBRACE = r'\}'
@@ -64,7 +77,6 @@ t_POW = r'\^'
 # Expresiones regulares para operadores lógicos
 t_AND = r'&&'
 t_OR = r'\|\|'
-t_BOOL = r'\b(true|false)\b'
 
 # Expresiones regulares para operadores comparativos
 t_EQ = r'=='
@@ -73,19 +85,7 @@ t_LT = r'<'
 t_GE = r'>='
 t_LE = r'<='
 t_NE = r'!='
-
-# Constantes
-t_PI = r'\bPI\b'
-t_E = r'\bE\b'
-
-# Funciones predefinidas
-t_SIN = r'\bsin\b'
-t_COS = r'\bcos\b'
-t_SQRT = r'\bsqrt\b'
-t_EXP = r'\bexp\b'
-t_LOG = r'\blog\b'
-t_RAND = r'\brand\b'
-t_PRINT = r'\bprint\b'
+t_BOOL = r'\b(true|false)\b'
 
 # Strings
 t_CONCAT = r'@'
@@ -117,7 +117,10 @@ lexer = lex.lex()
 if __name__ == "__main__":
     # Datos de prueba para varios casos de uso
     test_data = [
-        'print("The message is \"Hello World\"")'
+        'function sen(x) => sin(x);',
+        'function cot(x) => 1 / tan(x);',
+        '{ print(tan(PI) * tan(PI) + cot(PI) * cot(PI)); }',
+        # # Otros casos de prueba...
     ]
 
     for data in test_data:
