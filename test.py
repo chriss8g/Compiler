@@ -20,12 +20,9 @@ class CompilerTestCase(unittest.TestCase):
         base_name = os.path.splitext(input_file)[0]
         expected_output_path = os.path.join(self.expected_outputs_dir, expected_output_file)
         actual_output_path = os.path.join(self.actual_outputs_dir, expected_output_file)
-        generated_c_file = f'{base_name}.c'
-        generated_a_out = 'a.out'
         
         # Ejecuta el compilador
         subprocess.run([self.compiler_path, input_path])
-
 
         # Ejecuta el programa generado y guarda la salida
         with open(actual_output_path, 'w') as output_file:
@@ -35,37 +32,30 @@ class CompilerTestCase(unittest.TestCase):
         self.assertTrue(filecmp.cmp(expected_output_path, actual_output_path), 
                         f"Output for {input_file} does not match expected output")
 
-    def test_case_1(self):
-        self.compile_and_compare('test1.uh', 'test1.output')
+    @staticmethod
+    def generate_test_case(input_file, expected_output_file):
+        def test_case(self):
+            self.compile_and_compare(input_file, expected_output_file)
+        return test_case
 
-    def test_case_2(self):
-        self.compile_and_compare('test2.uh', 'test2.output')
+# Lista de tuplas con nombres de archivos de entrada y salida esperada
+test_cases = [
+    ('test1.uh', 'test1.output'),
+    ('test2.uh', 'test2.output'),
+    ('test3.uh', 'test3.output'),
+    # ('test4.uh', 'test4.output'),
+    ('test5.uh', 'test5.output'),
+    ('test6.uh', 'test6.output'),
+    # ('test7.uh', 'test7.output'),
+    ('test8.uh', 'test8.output'),
+    ('test9.uh', 'test9.output'),
+    # ('test10.uh', 'test10.output'),
+]
 
-    def test_case_3(self):
-        self.compile_and_compare('test3.uh', 'test3.output')
-
-    # def test_case_4(self):
-    #     self.compile_and_compare('test4.uh', 'test4.output')
-
-    def test_case_5(self):
-        self.compile_and_compare('test5.uh', 'test5.output')
-
-    def test_case_6(self):
-        self.compile_and_compare('test6.uh', 'test6.output')
-
-    # def test_case_7(self):
-    #     self.compile_and_compare('test7.uh', 'test7.output')
-        
-    def test_case_8(self):
-        self.compile_and_compare('test8.uh', 'test8.output')
-    
-    def test_case_9(self):
-        self.compile_and_compare('test9.uh', 'test9.output')
-    
-    # def test_case_10(self):
-    #     self.compile_and_compare('test10.uh', 'test10.output')
-
-    # Agrega más métodos de prueba para cada caso de prueba adicional
+# Generar dinámicamente los métodos de prueba
+for i, (input_file, expected_output_file) in enumerate(test_cases, start=1):
+    test_method = CompilerTestCase.generate_test_case(input_file, expected_output_file)
+    setattr(CompilerTestCase, f'test_case_{i}', test_method)
 
 if __name__ == '__main__':
     unittest.main()

@@ -2,7 +2,23 @@ import ply.yacc as yacc
 from my_lexer import tokens
 from my_ast import ASTNode
 
-# Precedencia de operaciones
+# Tabla de contenidos:
+# 1. Precedencia de Operaciones
+# 2. Definiciones de Producciones
+#    2.1. Bloques de Expresiones
+#    2.2. Definición de Funciones
+#    2.3. Parámetros de Funciones y Expresiones
+#    2.4. Definición de Statements
+#    2.5. Expresiones Binarias y Términos
+#    2.6. Agrupación de Factores, Constantes y Variables
+#    2.7. Funciones Matemáticas y Otras
+#    2.8. Operadores de Comparación y Lógicos
+#    2.9. Concatenación de Cadenas
+# 3. Manejo de Errores
+# 4. Construcción del Parser
+# 5. Prueba del Parser
+
+# 1. Precedencia de Operaciones
 precedence = (
     ('left', 'OR'),
     ('left', 'AND'),
@@ -12,16 +28,18 @@ precedence = (
     ('left', 'TIMES', 'DIVIDE', 'POW'),
 )
 
-# Definir la regla de producción para los bloques de expresiones
+# 2. Definiciones de Producciones
+
+# 2.1. Bloques de Expresiones
 def p_expression_block(p):
     '''expression : LBRACE statements RBRACE'''
     p[0] = ASTNode(type='block', children=p[2])
 
+# 2.2. Definición de Funciones
 def p_expression_function(p):
     '''factor : ID LPAREN parameters RPAREN'''
     p[0] = ASTNode(type='function', leaf=p[1], children=p[3])
 
-# Definir la regla de producción para las funciones en línea
 def p_function_inline(p):
     '''function : FUNCTION ID LPAREN parameters RPAREN ARROW expression SEMICOLON
                 | FUNCTION ID LPAREN RPAREN ARROW expression SEMICOLON'''
@@ -31,6 +49,7 @@ def p_function_inline(p):
         p[0] = ASTNode(type='functionDef', leaf=p[2], children=[[], p[6]])
 
 
+# 2.3. Parámetros de Funciones y Expresiones
 def p_parameters(p):
     '''parameters : parameters COMA ID
                   | ID
@@ -50,7 +69,7 @@ def p_empty(p):
     'empty :'
     p[0] = []
 
-# Modificar la regla de statements para incluir funciones
+# 2.4. Definición de Statements
 def p_statements(p):
     '''statements : statements statement
                   | statements function
@@ -65,7 +84,7 @@ def p_statement(p):
     '''statement : expression SEMICOLON'''
     p[0] = p[1]
 
-# Expresiones
+# 2.5. Expresiones Binarias y Términos
 def p_expression_binop(p):
     '''expression : expression PLUS term
                   | expression MINUS term
@@ -75,7 +94,6 @@ def p_expression_binop(p):
     else:
         p[0] = p[1]
 
-# Términos
 def p_term_binop(p):
     '''term : term TIMES factor
             | term DIVIDE factor
@@ -86,7 +104,7 @@ def p_term_binop(p):
     else:
         p[0] = p[1]
 
-# Factores
+# 2.6. Agrupación de Factores, Constantes y Variables
 def p_factor_group(p):
     '''factor : LPAREN expression RPAREN'''
     p[0] = p[2]
@@ -109,6 +127,7 @@ def p_factor_num_const(p):
     elif p.slice[1].type == 'ID':
         p[0] = ASTNode(type='id', leaf=p[1])
 
+# 2.7. Funciones Matemáticas y Otras
 def p_factor_func(p):
     '''factor : SIN LPAREN expression RPAREN
               | COS LPAREN expression RPAREN
@@ -124,6 +143,7 @@ def p_factor_func(p):
     else:
         p[0] = ASTNode(type='func', leaf=p[1])
 
+# 2.8. Operadores de Comparación y Lógicos
 def p_factor_binop(p):
     '''factor : factor EQ factor
               | factor GT factor
@@ -138,10 +158,12 @@ def p_factor_logicop(p):
               | factor OR factor'''
     p[0] = ASTNode(type='binlo', children=[p[1], p[3]], leaf=p[2])
 
+# 2.9. Concatenación de Cadenas
 def p_factor_concat(p):
     '''factor : factor CONCAT factor'''
     p[0] = ASTNode(type='concat', children=[p[1], p[3]])
 
+# 3. Manejo de Errores
 def p_error(p):
     if p:
         print(f"Error de sintaxis en el token '{p.value}' en la línea {p.lineno}, columna {p.lexpos}")
@@ -149,9 +171,10 @@ def p_error(p):
         print("Error de sintaxis en EOF")
     raise SystemExit("Deteniendo la ejecución debido a un error de sintaxis.")
 
-# Construir el parser
+# 4. Construcción del Parser
 parser = yacc.yacc(start='statements')
 
+# 5. Prueba del Parser
 if __name__ == "__main__":
     test_data = [
         'function tan(x) => sin(x)/cos(x);',
