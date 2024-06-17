@@ -144,14 +144,17 @@ def p_factor_num_const(p):
     '''factor : NUMBER
               | PI
               | E
-              | BOOL
+              | TRUE
+              | FALSE
               | STRING
               | ID'''
     if p.slice[1].type == 'NUMBER':
         p[0] = ASTNode(type='num', leaf=p[1])
     elif p.slice[1].type in ('PI', 'E'):
         p[0] = ASTNode(type='const', leaf=p[1])
-    elif p.slice[1].type == 'BOOL':
+    elif p.slice[1].type == 'TRUE':
+        p[0] = ASTNode(type='bool', leaf=p[1])
+    elif p.slice[1].type == 'FALSE':
         p[0] = ASTNode(type='bool', leaf=p[1])
     elif p.slice[1].type == 'STRING':
         p[0] = ASTNode(type='string', leaf=p[1])

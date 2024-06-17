@@ -1,0 +1,3 @@
+let a = (let b = 6 in b * 7) in print(a);
+
+print(let b = 6 in b * 7);

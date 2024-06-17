@@ -13,7 +13,9 @@ keywords = {
     'PI': 'PI',
     'E': 'E',
     'let': 'LET',
-    'in': 'IN'
+    'in': 'IN',
+    'true': 'TRUE',
+    'false': 'FALSE'
 }
 
 # Lista de tokens, incluyendo las palabras clave
@@ -42,7 +44,6 @@ t_LT = r'<'
 t_GE = r'>='
 t_LE = r'<='
 t_NE = r'!='
-t_BOOL = r'\b(true|false)\b'
 t_CONCAT = r'@'
 t_LBRACE = r'\{'
 t_RBRACE = r'\}'

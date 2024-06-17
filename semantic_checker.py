@@ -44,6 +44,7 @@ class Semantic:
             self.check_semantics(node.children[0])
             self.check_semantics(node.children[1])
             self.variables = {}
+            node.data_type = node.children[1].data_type
         elif node.type == 'variable':
             self._check_variable(node, expected_type)
         elif node.type == 'variables':
@@ -174,7 +175,7 @@ if __name__ == "__main__":
     from my_parser import parser
 
     test_data = [
-        'let msg = "Hello World" in print(msg);'
+        'let a = (let b = 6 in b * 7) in print(a);'
     ]
     semantic = Semantic()
 
