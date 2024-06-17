@@ -1,13 +1,15 @@
 #include <stdio.h>
+double operate(double x, double y) {
+        printf("%f\n", (x + y));
+    printf("%f\n", (x - y));
+    printf("%f\n", (x * y));
+    printf("%f\n", (x / y));
+;
+}
 int main() {
     {
-{
-int a = 6;
-{
-float b = (a * 7);
-printf("%f\n", b);}
-}
 ;
+operate(6, 3);
 };
     return 0;
 }

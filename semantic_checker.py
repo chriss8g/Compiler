@@ -69,7 +69,8 @@ class Semantic:
         right_type = self.check_semantics(node.children[1])
         if left_type not in NUMBER_TYPE or right_type not in NUMBER_TYPE:
             raise SemanticError(f"Error semántico: la operación {node.leaf} solo puede aplicarse a números")
-        node.data_type = FLOAT_TYPE
+        node.data_type = INT_TYPE if node.children[0].data_type == INT_TYPE and node.children[1].data_type == INT_TYPE else FLOAT_TYPE
+        node.data_type = FLOAT_TYPE if node.leaf == "^" else node.data_type
         self._check_expected_type(node, expected_type)
 
     def _check_function_definition(self, node):
