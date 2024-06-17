@@ -12,6 +12,8 @@ keywords = {
     'print': 'PRINT',
     'PI': 'PI',
     'E': 'E',
+    'let': 'LET',
+    'in': 'IN'
 }
 
 # Lista de tokens, incluyendo las palabras clave
@@ -20,7 +22,7 @@ tokens = [
     'NUMBER', 'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'POW',
     'AND', 'OR', 'BOOL',
     'EQ', 'GT', 'LT', 'GE', 'LE', 'NE',
-    'CONCAT', 'STRING', 'LBRACE', 'RBRACE', 'SEMICOLON', 'ARROW', 'ID'
+    'CONCAT', 'STRING', 'LBRACE', 'RBRACE', 'SEMICOLON', 'ARROW', 'ID', 'ASIGN', 'ASIGN2'
 ] + list(keywords.values())
 
 # Expresiones regulares para tokens simples
@@ -46,6 +48,9 @@ t_LBRACE = r'\{'
 t_RBRACE = r'\}'
 t_SEMICOLON = r';'
 t_ARROW = r'=>'
+t_ASIGN = r'='
+t_ASIGN2 = r':='
+
 
 # Definición del token para identificadores (ID) y palabras clave
 def t_ID(t):
@@ -79,7 +84,7 @@ lexer = lex.lex()
 # Prueba del lexer
 if __name__ == "__main__":
     test_data = [
-        '\n\t{\n\t\tprint(42);\n\t\tprint(sin(PI/2));\n\t\tprint("Hello World");\n\t}\n\t'
+        'let a = 6, b = a * 7 in print(b);'
     ]
 
     for data in test_data:

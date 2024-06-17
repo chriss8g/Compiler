@@ -25,10 +25,30 @@ precedence = (
     ('left', 'EQ', 'NE'),
     ('left', 'GT', 'LT', 'GE', 'LE'),
     ('left', 'PLUS', 'MINUS'),
-    ('left', 'TIMES', 'DIVIDE', 'POW'),
+    ('left', 'TIMES', 'DIVIDE', 'POW')
 )
 
 # 2. Definiciones de Producciones
+
+def p_asig(p):
+    '''asig : ID ASIGN expression'''
+    p[0] = ASTNode(type='variable', leaf=p[1], children=p[3])
+
+def p_asigs(p):
+    '''asigs : asigs COMA asig
+            | asig'''
+    if len(p) == 4:
+        p[0] = ASTNode(type='variables', children=p[1].children + [p[3]])
+    else:
+        p[0] = ASTNode(type='variables', children=[p[1]])
+
+def p_multivariables(p):
+    '''statement : LET asigs IN statement'''
+    p[0] = ASTNode(type='corpus', children=[p[2], p[4]])
+
+def p_multivariables_expression(p):
+    '''expression : LET asigs IN expression'''
+    p[0] = ASTNode(type='corpus', children=[p[2], p[4]])
 
 # 2.1. Bloques de Expresiones
 def p_expression_block(p):
@@ -188,7 +208,7 @@ parser = yacc.yacc(start='statement')
 # 5. Prueba del Parser
 if __name__ == "__main__":
     test_data = [
-        '{function tan(x) => sin(x) / cos(x);\nprint(tan(PI));}'
+        'let a = 6, b = a * 7 in print(b);'
     ]
 
     for data in test_data:

@@ -1,15 +1,17 @@
+from my_ast import ASTNode
 from my_parser import parser
 from semantic_checker import Semantic, SemanticError
 
 class CCodeGenerator:
     def __init__(self, lines):
-        self.functions = {}
+        self.functions = []
+        self.variables = {}
         self.temp_count = 0
         self.headers = []
         self.body = "int main() {\n"
         self.code = ""
         self.semantic = Semantic()
-        self.dudes = []
+        self.contex = ""
 
         self._process_lines(lines)
         self._finalize_code()
@@ -27,11 +29,13 @@ class CCodeGenerator:
     
     def _finalize_code(self):
         self.body += "    return 0;\n}\n"
-        self.code = ''.join(self.headers) + self.body
+        self.code = ''.join(self.headers) + self.contex + self.body
 
     def generate_c_code(self, node):
         """Genera código C a partir de un nodo AST."""
-        if node.type in ('num', 'bool', 'string', 'id'):
+        # print(node)
+        # print(self.variables)
+        if node.type in ('num', 'bool', 'string'):
             return self._generate_literal_code(node)
         elif node.type == 'functionDef':
             return self._generate_function_def_code(node)
@@ -48,7 +52,22 @@ class CCodeGenerator:
         elif node.type == 'const':
             return self._generate_const_code(node)
         elif node.type == 'id':
-            return node.leaf
+            # if node.leaf in self.variables.keys():
+            #     if(self.variables[node.leaf].children.data_type == 'string'):
+            #         return '"' + self.variables[node.leaf].children.leaf + '"'
+            #     else:
+            #         return self.variables[node.leaf].children.leaf
+            # else:
+                return node.leaf
+        elif node.type == 'corpus':
+            return self._generate_corpus_code(node)
+        elif node.type == 'variables':
+            return self._generate_variables_code(node)
+        elif node.type == 'variable':
+            return self._generate_variable_code(node)
+        # elif node.type == 'variableImp':
+        #     return self._generate_variableImp_code(node)
+            
         return ""
 
     def _generate_literal_code(self, node):
@@ -132,24 +151,72 @@ class CCodeGenerator:
 
     def _generate_concat_code(self, node):
         self._add_header("#include <string.h>\n")
+        self._add_header("#include <stdlib.h>\n")
         arg1 = self.generate_c_code(node.children[0])
         arg2 = self.generate_c_code(node.children[1])
-        
-        arg1 = f'"{arg1}"' if isinstance(arg1, int) else arg1
-        arg2 = f'"{arg2}"' if isinstance(arg2, int) else arg2
+        # print(arg1)
+        # print(arg2)
+        if("intToString" not in self.functions):
+            self.contex += "char* intToString(int num) {static char str[50];sprintf(str, \"%d\", num); return str;}"
+            self.functions.append("intToString")
+        if("concat" not in self.functions):
+            self.contex += "char* concat(const char* s1, const char* s2) {char* result = malloc(strlen(s1) + strlen(s2) + 1);strcpy(result, s1);strcat(result, s2);return result;}"
+            self.functions.append("concat")
 
-        s1 = self.new_temp()
-        s2 = self.new_temp()
-        self.body += f"    char {s1}[{len(arg1) + len(arg2)}] = {arg1};\n"
-        self.body += f"    char {s2}[{len(arg2)}] = {arg2};\n"
-        self.body += f"    strcat({s1}, {s2});\n"
-        return s1
+        if node.children[0].data_type == 'int' and node.children[1].data_type == 'int':
+            return f'concat(intToString({arg1}),intToString({arg2}))'
+        elif not node.children[0].data_type == 'int' and node.children[1].data_type == 'int':
+            return f'concat({arg1},intToString({arg2}))'
+        elif node.children[0].data_type == 'int' and not node.children[1].data_type == 'int':
+            return f'concat(intToString({arg1}),{arg2})'
+        elif not node.children[0].data_type == 'int' and not node.children[1].data_type == 'int':
+            return f'concat({arg1},{arg2})'
+        
 
     def _generate_const_code(self, node):
         if node.leaf == 'PI':
             return '3.141592653589793'
         elif node.leaf == 'E':
             return '2.718281828459045'
+    
+    def _generate_corpus_code(self, node):
+        code_block = "{\n"
+        t = ""
+
+        t += self.generate_c_code(node.children[0])
+        t += self.generate_c_code(node.children[1])
+
+        code_block += t + "}\n"
+        self.variables = {}
+        return code_block
+    
+    def _generate_variables_code(self, node):
+        t = ""
+        for nod in node.children:
+            t += self.generate_c_code(nod)
+        return t
+    
+    def _generate_variable_code(self, node):
+        # print(node.data_type)
+        t = ''
+        et = node.leaf
+        arg = self.generate_c_code(node.children)
+        self.variables[et] = node
+        if node.children.data_type == 'int':
+            t = f"int {et} = {arg};\n"
+        elif node.children.data_type == 'float':
+            t = f"float {et} = {arg};\n"
+        elif node.children.data_type == 'string':
+            t = f"char {et}[] = {arg};\n"
+        elif node.children.data_type == 'bool':
+            t = f"int {et} = {arg};\n"
+        return t
+        
+    # def _generate_variableImp_code(self, node):
+    #     temp = ASTNode(type='variable', leaf=node.leaf, children=node.children)
+    #     self.contex += self.generate_c_code(temp)
+    #     temp2 = ASTNode(type='id', leaf=node.leaf, children=node.children)
+    #     return self.generate_c_code(temp2)
 
     def _add_header(self, header):
         if header not in self.headers:

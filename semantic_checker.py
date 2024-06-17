@@ -9,6 +9,7 @@ class Semantic:
     """Clase para la comprobación semántica de un árbol AST."""
     def __init__(self):
         self.functions = {}
+        self.variables = {}
 
     def check_semantics(self, node, expected_type=None):
         """Chequea la semántica de un nodo AST."""
@@ -39,6 +40,19 @@ class Semantic:
             self._check_builtin_function(node, expected_type)
         elif node.type == 'id':
             self._check_identifier(node, expected_type)
+        elif node.type == 'corpus':
+            self.check_semantics(node.children[0])
+            self.check_semantics(node.children[1])
+            self.variables = {}
+        elif node.type == 'variable':
+            self._check_variable(node, expected_type)
+        elif node.type == 'variables':
+            for nod in node.children:
+                self.check_semantics(nod)
+                nod.data_type = nod.children.data_type
+                self.variables[nod.leaf] = nod
+            node.data_type = node.children[-1].data_type
+            self._check_expected_type(node, expected_type)
         elif node.type == 'const':
             self._check_constant(node, expected_type)
         elif node.type == 'string':
@@ -114,7 +128,13 @@ class Semantic:
         self._check_expected_type(node, expected_type)
 
     def _check_identifier(self, node, expected_type):
-        node.data_type = CONST_TYPE
+        node.data_type = self.variables[node.leaf].data_type if node.leaf in self.variables.keys() else CONST_TYPE
+        self._check_expected_type(node, expected_type)
+
+
+    def _check_variable(self, node, expected_type):
+        self.check_semantics(node.children)
+        node.data_type = node.children.data_type
         self._check_expected_type(node, expected_type)
 
     def _check_constant(self, node, expected_type):
@@ -153,7 +173,7 @@ if __name__ == "__main__":
     from my_parser import parser
 
     test_data = [
-        'function tan(x) => sin(x) / cos(x);\nprint(tan(PI));'
+        'let msg = "Hello World" in print(msg);'
     ]
     semantic = Semantic()
 
