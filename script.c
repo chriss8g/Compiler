@@ -7,8 +7,10 @@ double cot(double x) {
 }
 #include <stdio.h>
 int main() {
-    ;
-    ;
-    printf("%f\n", (pow(tan((3.141592653589793 / 4)), 2) + pow(cot((3.141592653589793 / 4)), 2)));;
+    {
+;
+;
+printf("%f\n", (pow(tan((3.141592653589793 / 4)), 2) + pow(cot((3.141592653589793 / 4)), 2)));;
+};
     return 0;
 }

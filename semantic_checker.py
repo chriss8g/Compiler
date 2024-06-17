@@ -12,8 +12,15 @@ class Semantic:
 
     def check_semantics(self, node, expected_type=None):
         """Chequea la semántica de un nodo AST."""
+        if isinstance(node, list):
+            for nod in node:
+                self.check_semantics_per_case(nod)
+        else:
+            return self.check_semantics_per_case(node)
+    
+    def check_semantics_per_case(self, node, expected_type=None):
         if node.type == 'binop':
-            self._check_binop(node, expected_type)
+                self._check_binop(node, expected_type)
         elif node.type == 'functionDef':
             self._check_function_definition(node)
         elif node.type == 'function':
@@ -102,7 +109,7 @@ class Semantic:
         elif node.leaf == 'rand':
             node.data_type = FLOAT_TYPE
         elif node.leaf == 'print':
-            self.check_semantics(node.children[0])
+            self.check_semantics(node.children)
             node.data_type = STRING_TYPE
         self._check_expected_type(node, expected_type)
 
@@ -128,7 +135,7 @@ class Semantic:
         self._check_expected_type(node, expected_type)
 
     def _check_numeric_argument(self, node):
-        arg_type = self.check_semantics(node.children[0])
+        arg_type = self.check_semantics(node.children)
         if arg_type not in NUMBER_TYPE:
             raise SemanticError(f"Error semántico: el argumento de la función {node.leaf} debe ser numérico")
 
@@ -146,9 +153,7 @@ if __name__ == "__main__":
     from my_parser import parser
 
     test_data = [
-        'function tan(x) => sin(x)/cos(x);',
-        'function cot(x) => 1 / tan(x);',
-        'print(tan(PI) * tan(PI) + cot(PI) * cot(PI));',
+        'function tan(x) => sin(x) / cos(x);\nprint(tan(PI));'
     ]
     semantic = Semantic()
 

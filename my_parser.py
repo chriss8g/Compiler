@@ -32,16 +32,16 @@ precedence = (
 
 # 2.1. Bloques de Expresiones
 def p_expression_block(p):
-    '''expression : LBRACE statements RBRACE'''
+    '''statement : LBRACE statements RBRACE'''
     p[0] = ASTNode(type='block', children=p[2])
 
 # 2.2. Definición de Funciones
 def p_expression_function(p):
-    '''factor : ID LPAREN parameters RPAREN'''
+    '''function : ID LPAREN parameters RPAREN'''
     p[0] = ASTNode(type='function', leaf=p[1], children=p[3])
 
 def p_function_inline(p):
-    '''function : FUNCTION ID LPAREN parameters RPAREN ARROW expression SEMICOLON
+    '''functionDef : FUNCTION ID LPAREN parameters RPAREN ARROW expression SEMICOLON
                 | FUNCTION ID LPAREN RPAREN ARROW expression SEMICOLON'''
     if len(p) == 9:
         p[0] = ASTNode(type='functionDef', leaf=p[2], children=[p[4], p[7]])
@@ -52,7 +52,6 @@ def p_function_inline(p):
 # 2.3. Parámetros de Funciones y Expresiones
 def p_parameters(p):
     '''parameters : parameters COMA ID
-                  | ID
                   | empty'''
     if len(p) == 4:
         p[0] = p[1] + [ASTNode(type='id', leaf=p[3])]
@@ -72,33 +71,38 @@ def p_empty(p):
 # 2.4. Definición de Statements
 def p_statements(p):
     '''statements : statements statement
-                  | statements function
-                  | statement
-                  | function'''
+                  | statement'''
     if len(p) == 3:
         p[0] = p[1] + [p[2]]
     else:
-        p[0] = p[1]
+        p[0] = [p[1]]
+
+def p_function(p):
+    '''expression : function'''
+    p[0] = p[1]
 
 def p_statement(p):
-    '''statement : expression SEMICOLON'''
+    '''statement : expression SEMICOLON
+                    | functionDef'''
+    p[0] = p[1]
+
+def p_expression(p):
+    '''expression : factor'''
     p[0] = p[1]
 
 # 2.5. Expresiones Binarias y Términos
 def p_expression_binop(p):
-    '''expression : expression PLUS term
-                  | expression MINUS term
-                  | term'''
+    '''expression : expression PLUS expression
+                  | expression MINUS expression'''
     if len(p) == 4:
         p[0] = ASTNode(type='binop', children=[p[1], p[3]], leaf=p[2])
     else:
         p[0] = p[1]
 
 def p_term_binop(p):
-    '''term : term TIMES factor
-            | term DIVIDE factor
-            | term POW factor
-            | factor'''
+    '''expression : expression TIMES expression
+            | expression DIVIDE expression
+            | expression POW expression'''
     if len(p) == 4:
         p[0] = ASTNode(type='binop', children=[p[1], p[3]], leaf=p[2])
     else:
@@ -106,7 +110,7 @@ def p_term_binop(p):
 
 # 2.6. Agrupación de Factores, Constantes y Variables
 def p_factor_group(p):
-    '''factor : LPAREN expression RPAREN'''
+    '''expression : LPAREN expression RPAREN'''
     p[0] = p[2]
 
 def p_factor_num_const(p):
@@ -129,7 +133,7 @@ def p_factor_num_const(p):
 
 # 2.7. Funciones Matemáticas y Otras
 def p_factor_func(p):
-    '''factor : SIN LPAREN expression RPAREN
+    '''expression : SIN LPAREN expression RPAREN
               | COS LPAREN expression RPAREN
               | SQRT LPAREN expression RPAREN
               | EXP LPAREN expression RPAREN
@@ -137,7 +141,7 @@ def p_factor_func(p):
               | RAND LPAREN RPAREN
               | PRINT LPAREN expression RPAREN'''
     if len(p) == 5:
-        p[0] = ASTNode(type='func', children=[p[3]], leaf=p[1])
+        p[0] = ASTNode(type='func', children=p[3], leaf=p[1])
     elif len(p) == 7:
         p[0] = ASTNode(type='func', children=[p[3], p[5]], leaf=p[1])
     else:
@@ -145,22 +149,22 @@ def p_factor_func(p):
 
 # 2.8. Operadores de Comparación y Lógicos
 def p_factor_binop(p):
-    '''factor : factor EQ factor
-              | factor GT factor
-              | factor LT factor
-              | factor GE factor
-              | factor LE factor
-              | factor NE factor'''
+    '''expression : expression EQ expression
+              | expression GT expression
+              | expression LT expression
+              | expression GE expression
+              | expression LE expression
+              | expression NE expression'''
     p[0] = ASTNode(type='binco', children=[p[1], p[3]], leaf=p[2])
 
 def p_factor_logicop(p):
-    '''factor : factor AND factor
-              | factor OR factor'''
+    '''expression : expression AND expression
+              | expression OR expression'''
     p[0] = ASTNode(type='binlo', children=[p[1], p[3]], leaf=p[2])
 
 # 2.9. Concatenación de Cadenas
 def p_factor_concat(p):
-    '''factor : factor CONCAT factor'''
+    '''expression : expression CONCAT expression'''
     p[0] = ASTNode(type='concat', children=[p[1], p[3]])
 
 # 3. Manejo de Errores
@@ -172,14 +176,12 @@ def p_error(p):
     raise SystemExit("Deteniendo la ejecución debido a un error de sintaxis.")
 
 # 4. Construcción del Parser
-parser = yacc.yacc(start='statements')
+parser = yacc.yacc(start='statement')
 
 # 5. Prueba del Parser
 if __name__ == "__main__":
     test_data = [
-        'function tan(x) => sin(x)/cos(x);',
-        'function cot(x) => 1 / tan(x);',
-        'print(tan(PI) * tan(PI) + cot(PI) * cot(PI));',
+        '{function tan(x) => sin(x) / cos(x);\nprint(tan(PI));}'
     ]
 
     for data in test_data:

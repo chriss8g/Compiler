@@ -14,39 +14,17 @@ class CCodeGenerator:
         self._process_lines(lines)
         self._finalize_code()
 
-    def _process_lines(self, lines):
-        for line_number, line in enumerate(lines, start=1):
-            if not line.strip():
-                continue
-            result = parser.parse(line.strip())
-            if result:
-                state = self.semantic.functions.copy()
-                if not self._check_semantics(result, state):
-                    self.dudes.append(result)
-                    self.semantic.functions = state
-                    continue
-                c_code = self.generate_c_code(result)
-                self.body += f"    {c_code};\n"
-        
-        self._process_dudes()
-
-    def _check_semantics(self, result, state):
-        try:
-            self.semantic.check_semantics(result)
-            return True
-        except SemanticError:
-            return False
-
-    def _process_dudes(self):
-        for line in self.dudes:
+    def _process_lines(self, line):
+        result = parser.parse(line)
+        if result:
             try:
-                self.semantic.check_semantics(line)
+                self.semantic.check_semantics(result)
             except SemanticError as e:
                 print(f"Semantic error: {e}")
-                break
-            c_code = self.generate_c_code(line)
+            c_code = self.generate_c_code(result)
             self.body += f"    {c_code};\n"
 
+    
     def _finalize_code(self):
         self.body += "    return 0;\n}\n"
         self.code = ''.join(self.headers) + self.body
@@ -116,9 +94,13 @@ class CCodeGenerator:
             return "(double)rand() / RAND_MAX"
         elif node.leaf == 'print':
             self._add_header("#include <stdio.h>\n")
-            arg = self.generate_c_code(node.children[0])
+            arg = self.generate_c_code(node.children)
             return self._generate_print_code(node, arg)
-        elif node.leaf in ('sin', 'cos', 'sqrt', 'exp', 'log'):
+        elif node.leaf in ('sin', 'cos', 'sqrt', 'exp'):
+            self._add_header("#include <math.h>\n")
+            arg = self.generate_c_code(node.children)
+            return self._generate_math_func_code(node, arg)
+        elif node.leaf == 'log':
             self._add_header("#include <math.h>\n")
             arg = self.generate_c_code(node.children[0])
             return self._generate_math_func_code(node, arg)
@@ -126,13 +108,13 @@ class CCodeGenerator:
         return f"{node.leaf}({args})"
 
     def _generate_print_code(self, node, arg):
-        if node.children[0].data_type == 'int':
+        if node.children.data_type == 'int':
             return f"printf(\"%d\\n\", {arg});"
-        elif node.children[0].data_type == 'float':
+        elif node.children.data_type == 'float':
             return f"printf(\"%f\\n\", {arg});"
-        elif node.children[0].data_type == 'string':
+        elif node.children.data_type == 'string':
             return f"printf(\"%s\\n\", {arg});"
-        elif node.children[0].data_type == 'bool':
+        elif node.children.data_type == 'bool':
             return f"printf(\"%d\\n\", {arg});"
 
     def _generate_math_func_code(self, node, arg):
@@ -173,9 +155,7 @@ class CCodeGenerator:
 # Main entry point for testing
 if __name__ == "__main__":
     test_data = [
-        'function tan(x) => sin(x)/cos(x);',
-        'function cot(x) => 1 / tan(x);',
-        'print(tan(PI) * tan(PI) + cot(PI) * cot(PI));',
+        'print(42);'
     ]
     c_generator = CCodeGenerator(test_data)
     print(c_generator.code)

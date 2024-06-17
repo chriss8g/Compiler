@@ -3,8 +3,8 @@ from c_code_generator import CCodeGenerator
 
 def main(input_file):
     with open(input_file, 'r') as file:
-        lines = file.readlines()
-
+        lines = '\n'.join(file.readlines())
+    lines = '{' + lines + '}'
     cGenerator = CCodeGenerator(lines)
 
     with open('script.c', 'w') as output_file:

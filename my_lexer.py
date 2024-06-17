@@ -66,7 +66,7 @@ def t_STRING(t):
     return t
 
 # Caracteres a ignorar (espacios en blanco y tabulaciones)
-t_ignore = ' \t'
+t_ignore = ' \t\n\r'
 
 # Manejo de errores
 def t_error(t):
@@ -79,9 +79,7 @@ lexer = lex.lex()
 # Prueba del lexer
 if __name__ == "__main__":
     test_data = [
-        'function sen(x) => sin(x);',
-        'function cot(x) => 1 / tan(x);',
-        '{ print(tan(PI) * tan(PI) + cot(PI) * cot(PI)); }',
+        '\n\t{\n\t\tprint(42);\n\t\tprint(sin(PI/2));\n\t\tprint("Hello World");\n\t}\n\t'
     ]
 
     for data in test_data:
