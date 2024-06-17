@@ -64,14 +64,21 @@ class CCodeGenerator:
         body_node = node.children[1]
         params_code = ", ".join([f"double {arg.leaf}" for arg in params_node])
         func_code = f"double {func_name}({params_code}) {{\n"
-        func_body_code = self.generate_c_code(body_node)
-        func_code += f"    return {func_body_code};\n}}\n"
+        func_body_code = ""
+        if isinstance(body_node, list):
+            for node in body_node:
+                func_body_code += '    ' + self.generate_c_code(node) +'\n'
+            func_code += f"    {func_body_code};\n}}\n"
+        else:
+            func_body_code += self.generate_c_code(body_node)
+            func_code += f"    return {func_body_code};\n}}\n"
         self.headers.append(func_code)
         return ""
 
     def _generate_function_call_code(self, node):
+        args = [self.generate_c_code(arg) for arg in node.children]
         func_name = node.leaf
-        params_code = ", ".join(self.generate_c_code(arg) for arg in node.children)
+        params_code = ", ".join(f'{i}' for i in args)
         return f"{func_name}({params_code})"
 
     def _generate_block_code(self, node):

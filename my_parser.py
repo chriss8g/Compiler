@@ -48,13 +48,20 @@ def p_function_inline(p):
     elif len(p) == 8:
         p[0] = ASTNode(type='functionDef', leaf=p[2], children=[[], p[6]])
 
+def p_function_full(p):
+    '''functionDef : FUNCTION ID LPAREN parameters RPAREN LBRACE statements RBRACE
+                | FUNCTION ID LPAREN RPAREN LBRACE statements RBRACE'''
+    if len(p) == 9:
+        p[0] = ASTNode(type='functionDef', leaf=p[2], children=[p[4], p[7]])
+    elif len(p) == 8:
+        p[0] = ASTNode(type='functionDef', leaf=p[2], children=[[], p[6]])
 
 # 2.3. Parámetros de Funciones y Expresiones
 def p_parameters(p):
-    '''parameters : parameters COMA ID
+    '''parameters : parameters COMA expression
                   | empty'''
     if len(p) == 4:
-        p[0] = p[1] + [ASTNode(type='id', leaf=p[3])]
+        p[0] = p[1] + [p[3]]
     elif len(p) == 2:
         p[0] = [ASTNode(type='id', leaf=p[1])]
     else:
@@ -170,7 +177,7 @@ def p_factor_concat(p):
 # 3. Manejo de Errores
 def p_error(p):
     if p:
-        print(f"Error de sintaxis en el token '{p.value}' en la línea {p.lineno}, columna {p.lexpos}")
+        print(f"Error de sintaxis en el token '{p}'")
     else:
         print("Error de sintaxis en EOF")
     raise SystemExit("Deteniendo la ejecución debido a un error de sintaxis.")

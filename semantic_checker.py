@@ -65,7 +65,7 @@ class Semantic:
         self.functions[func_name] = node
         body_node = node.children[1]
         self.check_semantics(body_node)
-        node.data_type = body_node.data_type
+        node.data_type = body_node.data_type if isinstance(body_node, ASTNode) else None
 
     def _check_function_call(self, node):
         func_name = node.leaf
