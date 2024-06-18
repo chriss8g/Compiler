@@ -26,7 +26,7 @@ class Semantic:
             self._check_function_definition(node)
         elif node.type == 'function':
             self._check_function_call(node)
-        elif node.type == 'condition':
+        elif node.type in ('condition', 'conditionFull'):
             self._check_condition(node)
         elif node.type == 'block':
             self._check_block(node)
@@ -100,8 +100,15 @@ class Semantic:
         self.check_semantics(node.children[0], BOOL_TYPE)
         self.check_semantics(node.children[1])
         self.check_semantics(node.children[2])
-        if node.children[1].data_type != node.children[2].data_type:
-            raise SemanticError("Error semántico: ambas partes de la condicional deben ser del mismo tipo")
+
+        if(len(node.children) > 3):
+            for i in node.children[3]:
+                self.check_semantics(i)
+            for i in node.children[4]:
+                self.check_semantics(i)
+
+        # if node.children[1].data_type != node.children[2].data_type:
+        #     raise SemanticError("Error semántico: ambas partes de la condicional deben ser del mismo tipo")
         node.data_type = node.children[1].data_type
 
     def _check_block(self, node):

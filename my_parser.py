@@ -32,8 +32,34 @@ precedence = (
 # 2. Definiciones de Producciones
 
 def p_conditions(p):
-    '''expression : IF LPAREN expression RPAREN expression ELSE expression'''
-    p[0] = ASTNode(type='condition', leaf=p[1], children=[p[3], p[5], p[7]])
+    '''expression : IF LPAREN expression RPAREN expression elifsExp ELSE expression'''
+    p[0] = ASTNode(type='condition', leaf=p[1], children=[p[3], p[5], p[8], p[6][0], p[6][1]])
+
+def p_conditions_statement(p):
+    '''statement : IF LPAREN expression RPAREN statement elifs ELSE statement'''
+    p[0] = ASTNode(type='conditionFull', leaf=p[1], children=[p[3], p[5], p[8], p[6][0], p[6][1]])
+
+def p_condition_elif(p):
+    '''elifs : empty
+            | ELIF LPAREN expression RPAREN statement
+            | elifs ELIF LPAREN expression RPAREN statement'''
+    if len(p) == 2:
+        p[0] = [[], []]
+    elif len(p) == 6:
+        p[0] = [[p[3]], [p[5]]]
+    else:
+        p[0] = [p[1][0] + [p[4]], p[1][1] + [p[6]]]
+
+def p_condition_elif_expression(p):
+    '''elifsExp : empty
+            | ELIF LPAREN expression RPAREN expression
+            | elifsExp ELIF LPAREN expression RPAREN expression'''
+    if len(p) == 2:
+        p[0] = [[], []]
+    elif len(p) == 6:
+        p[0] = [[p[3]], [p[5]]]
+    else:
+        p[0] = [p[1][0] + [p[4]], p[1][1] + [p[6]]]
 
 def p_asig(p):
     '''asig : ID ASIGN expression'''
@@ -234,7 +260,7 @@ parser = yacc.yacc(start='statement')
 # 5. Prueba del Parser
 if __name__ == "__main__":
     test_data = [
-        'let a = 0 in let b = a := 1 in {print(a);print(b);};'
+        'if (4 % 2 == 0) {print(5);} elif(true) {print(3);} else print("Odd");'
     ]
 
     for data in test_data:

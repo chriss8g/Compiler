@@ -49,6 +49,8 @@ class CCodeGenerator:
             return self._generate_builtin_func_code(node)
         elif node.type == 'condition':
             return self._generate_condition_code(node)
+        elif node.type == 'conditionFull':
+            return self._generate_conditionFull_code(node)
         elif node.type == 'concat':
             return self._generate_concat_code(node)
         elif node.type == 'const':
@@ -118,7 +120,25 @@ class CCodeGenerator:
         arg1 = self.generate_c_code(node.children[0])
         arg2 = self.generate_c_code(node.children[1])
         arg3 = self.generate_c_code(node.children[2])
-        return f"{arg1} ? {arg2} : {arg3}"
+
+        t = ""
+        if(len(node.children) > 3):
+            for i in range(len(node.children[3])):
+                t += f"({self.generate_c_code(node.children[3][i])}) ? " + self.generate_c_code(node.children[4][i]) + ":"
+
+        return f"{arg1} ? {arg2} : {t} {arg3}"
+    
+    def _generate_conditionFull_code(self, node):
+        arg1 = self.generate_c_code(node.children[0])
+        arg2 = self.generate_c_code(node.children[1])
+        arg3 = self.generate_c_code(node.children[2])
+
+        t = ""
+        if(len(node.children) > 3):
+            for i in range(len(node.children[3])):
+                t += f"else if ({self.generate_c_code(node.children[3][i])}){{" + self.generate_c_code(node.children[4][i]) + "}"
+
+        return f" if {arg1} {{ {arg2} }} {t} else {{ {arg3} ;}}"
 
     def _generate_builtin_func_code(self, node):
         if node.leaf == 'rand':
