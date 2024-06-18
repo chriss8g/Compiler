@@ -24,12 +24,16 @@ precedence = (
     ('left', 'AND'),
     ('left', 'EQ', 'NE'),
     ('left', 'GT', 'LT', 'GE', 'LE'),
-    ('left', 'PLUS', 'MINUS'),
+    ('left', 'PLUS', 'MINUS', 'MOD'),
     ('left', 'TIMES', 'DIVIDE', 'POW'),
     ('left', 'ASIGN', 'ASIGN2')
 )
 
 # 2. Definiciones de Producciones
+
+def p_conditions(p):
+    '''expression : IF LPAREN expression RPAREN expression ELSE expression'''
+    p[0] = ASTNode(type='condition', leaf=p[1], children=[p[3], p[5], p[7]])
 
 def p_asig(p):
     '''asig : ID ASIGN expression'''
@@ -143,7 +147,8 @@ def p_expression_binop(p):
 def p_term_binop(p):
     '''expression : expression TIMES expression
             | expression DIVIDE expression
-            | expression POW expression'''
+            | expression POW expression
+            | expression MOD expression'''
     if len(p) == 4:
         p[0] = ASTNode(type='binop', children=[p[1], p[3]], leaf=p[2])
     else:
@@ -205,6 +210,10 @@ def p_factor_logicop(p):
     '''expression : expression AND expression
               | expression OR expression'''
     p[0] = ASTNode(type='binlo', children=[p[1], p[3]], leaf=p[2])
+
+def p_factor_logineg(p):
+    '''expression : NOT expression'''
+    p[0] = ASTNode(type='unilo', children=p[2], leaf=p[1])
 
 # 2.9. Concatenación de Cadenas
 def p_factor_concat(p):

@@ -26,10 +26,14 @@ class Semantic:
             self._check_function_definition(node)
         elif node.type == 'function':
             self._check_function_call(node)
+        elif node.type == 'condition':
+            self._check_condition(node)
         elif node.type == 'block':
             self._check_block(node)
         elif node.type == 'binlo':
             self._check_binlo(node, expected_type)
+        elif node.type == 'unilo':
+            self._check_unilo(node, expected_type)
         elif node.type == 'binco':
             self._check_binco(node, expected_type)
         elif node.type == 'num':
@@ -92,6 +96,14 @@ class Semantic:
             raise SemanticError(f"Error semántico: la función {func_name} no está definida")
         node.data_type = self.functions[func_name].data_type
 
+    def _check_condition(self, node):
+        self.check_semantics(node.children[0], BOOL_TYPE)
+        self.check_semantics(node.children[1])
+        self.check_semantics(node.children[2])
+        if node.children[1].data_type != node.children[2].data_type:
+            raise SemanticError("Error semántico: ambas partes de la condicional deben ser del mismo tipo")
+        node.data_type = node.children[1].data_type
+
     def _check_block(self, node):
         for child in node.children:
             self.check_semantics(child)
@@ -99,6 +111,11 @@ class Semantic:
     def _check_binlo(self, node, expected_type):
         self.check_semantics(node.children[0], BOOL_TYPE)
         self.check_semantics(node.children[1], BOOL_TYPE)
+        node.data_type = BOOL_TYPE
+        self._check_expected_type(node, expected_type)
+
+    def _check_unilo(self, node, expected_type):
+        self.check_semantics(node.children, BOOL_TYPE)
         node.data_type = BOOL_TYPE
         self._check_expected_type(node, expected_type)
 

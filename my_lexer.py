@@ -15,14 +15,17 @@ keywords = {
     'let': 'LET',
     'in': 'IN',
     'true': 'TRUE',
-    'false': 'FALSE'
+    'false': 'FALSE',
+    'if': 'IF', 
+    'else': 'ELSE',
+    'elif': 'ELIF'
 }
 
 # Lista de tokens, incluyendo las palabras clave
 tokens = [
     'COMA', 'LPAREN', 'RPAREN', 
     'NUMBER', 'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'POW',
-    'AND', 'OR',
+    'AND', 'OR', 'MOD', 'NOT',
     'EQ', 'GT', 'LT', 'GE', 'LE', 'NE',
     'CONCAT', 'STRING', 'LBRACE', 'RBRACE', 'SEMICOLON', 'ARROW', 'ID', 'ASIGN', 'ASIGN2'
 ] + list(keywords.values())
@@ -36,8 +39,10 @@ t_MINUS = r'-'
 t_TIMES = r'\*'
 t_DIVIDE = r'/'
 t_POW = r'\^'
-t_AND = r'&&'
-t_OR = r'\|\|'
+t_MOD = r'%'
+t_AND = r'&'
+t_OR = r'\|'
+t_NOT = r'!'
 t_EQ = r'=='
 t_GT = r'>'
 t_LT = r'<'

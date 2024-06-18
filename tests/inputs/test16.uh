@@ -1,0 +1,3 @@
+let a = 47 in if (a % 2 == 0) print("Even") else print("odd");
+
+let a = 42 in print(if (a % 2 == 0) "even" else "odd");

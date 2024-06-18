@@ -43,8 +43,12 @@ class CCodeGenerator:
             return self._generate_block_code(node)
         elif node.type in ('binop', 'binlo', 'binco'):
             return self._generate_binary_op_code(node)
+        elif node.type == 'unilo':
+            return self._generate_unilo_code(node)
         elif node.type == 'func':
             return self._generate_builtin_func_code(node)
+        elif node.type == 'condition':
+            return self._generate_condition_code(node)
         elif node.type == 'concat':
             return self._generate_concat_code(node)
         elif node.type == 'const':
@@ -78,7 +82,7 @@ class CCodeGenerator:
         func_body_code = ""
         if isinstance(body_node, list):
             for node in body_node:
-                func_body_code += '    ' + self.generate_c_code(node) +'\n'
+                func_body_code += '    ' + self.generate_c_code(node) +';\n'
             func_code += f"    {func_body_code};\n}}\n"
         else:
             func_body_code += self.generate_c_code(body_node)
@@ -105,6 +109,16 @@ class CCodeGenerator:
             self._add_header("#include <math.h>\n")
             return f'pow({arg1}, {arg2})'
         return f"({arg1} {node.leaf} {arg2})"
+    
+    def _generate_unilo_code(self, node):
+        arg1 = self.generate_c_code(node.children)
+        return f"({node.leaf} {arg1})"
+    
+    def _generate_condition_code(self, node):
+        arg1 = self.generate_c_code(node.children[0])
+        arg2 = self.generate_c_code(node.children[1])
+        arg3 = self.generate_c_code(node.children[2])
+        return f"{arg1} ? {arg2} : {arg3}"
 
     def _generate_builtin_func_code(self, node):
         if node.leaf == 'rand':
@@ -127,13 +141,13 @@ class CCodeGenerator:
 
     def _generate_print_code(self, node, arg):
         if node.children.data_type == 'int':
-            return f"printf(\"%d\\n\", {arg});"
+            return f"printf(\"%d\\n\", {arg})"
         elif node.children.data_type == 'float':
-            return f"printf(\"%f\\n\", {arg});"
+            return f"printf(\"%f\\n\", {arg})"
         elif node.children.data_type == 'string':
-            return f"printf(\"%s\\n\", {arg});"
+            return f"printf(\"%s\\n\", {arg})"
         elif node.children.data_type == 'bool':
-            return f"printf(\"%d\\n\", {arg});"
+            return f"printf(\"%d\\n\", {arg})"
 
     def _generate_math_func_code(self, node, arg):
         if node.leaf == 'log':
@@ -178,7 +192,7 @@ class CCodeGenerator:
         code_block += self.generate_c_code(node.children[1])
 
         for _ in node.children[0].children:
-            code_block +=  "}\n" #Cierra todos los scopes
+            code_block +=  ";}\n" #Cierra todos los scopes
             
         self.variables = temp
         return code_block
@@ -187,7 +201,7 @@ class CCodeGenerator:
         t = ""
         for nod in node.children:
             t += "{\n" # Crea tantos scopes como asignaciones haya
-            t += self.generate_c_code(nod)
+            t += self.generate_c_code(nod) + ';\n'
         return t
     
     def _generate_variable_code(self, node):
@@ -197,13 +211,13 @@ class CCodeGenerator:
         
         self.variables[et] = node
         if node.children.data_type == 'int':
-            t = f"int {et} = {arg};\n"
+            t = f"int {et} = {arg}\n"
         elif node.children.data_type == 'float':
-            t = f"float {et} = {arg};\n"
+            t = f"float {et} = {arg}\n"
         elif node.children.data_type == 'string':
-            t = f"char {et}[] = {arg};\n"
+            t = f"char {et}[] = {arg}\n"
         elif node.children.data_type == 'bool':
-            t = f"int {et} = {arg};\n"
+            t = f"int {et} = {arg}\n"
 
         return t
     
@@ -214,13 +228,13 @@ class CCodeGenerator:
 
         self.variables[et] = node
         if node.children.data_type == 'int':
-            t = f"{et} = {arg};\n"
+            t = f"{et} = {arg}\n"
         elif node.children.data_type == 'float':
-            t = f"{et} = {arg};\n"
+            t = f"{et} = {arg}\n"
         elif node.children.data_type == 'string':
-            t = f"{et}[] = {arg};\n"
+            t = f"{et}[] = {arg}\n"
         elif node.children.data_type == 'bool':
-            t = f"{et} = {arg};\n"
+            t = f"{et} = {arg}\n"
 
         return t
 

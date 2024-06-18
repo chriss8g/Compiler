@@ -1,1 +1,9 @@
-print(let b = 6 in b * 7);
+print(5);
+print(PI + E);
+print(sin(PI / 2));
+print(3 + 4.5 * 10);
+print((3 + 4) * 10.5);
+print(true & false | true);
+print(3.0 >= 2);
+print("Hello" @ " World!");
+print(log(100, 10));

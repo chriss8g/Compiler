@@ -57,6 +57,7 @@ test_cases = [
     # ('test13.uh', 'test13.output'),
     ('test14.uh', 'test14.output'),
     ('test15.uh', 'test15.output'),
+    ('test16.uh', 'test16.output'),
 ]
 
 # Generar dinámicamente los métodos de prueba
