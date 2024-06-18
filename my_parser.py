@@ -25,7 +25,8 @@ precedence = (
     ('left', 'EQ', 'NE'),
     ('left', 'GT', 'LT', 'GE', 'LE'),
     ('left', 'PLUS', 'MINUS'),
-    ('left', 'TIMES', 'DIVIDE', 'POW')
+    ('left', 'TIMES', 'DIVIDE', 'POW'),
+    ('left', 'ASIGN', 'ASIGN2')
 )
 
 # 2. Definiciones de Producciones
@@ -33,6 +34,18 @@ precedence = (
 def p_asig(p):
     '''asig : ID ASIGN expression'''
     p[0] = ASTNode(type='variable', leaf=p[1], children=p[3])
+
+def p_asig2(p):
+    '''asig2 : ID ASIGN2 expression'''
+    p[0] = ASTNode(type='asign2', leaf=p[1], children=p[3])
+
+def p_asign2_statement(p):
+    '''statement : asig2 SEMICOLON'''
+    p[0] = p[1]
+
+def p_asign2_expression(p):
+    '''expression : asig2'''
+    p[0] = p[1]
 
 def p_asigs(p):
     '''asigs : asigs COMA asig
@@ -52,7 +65,8 @@ def p_multivariables_expression(p):
 
 # 2.1. Bloques de Expresiones
 def p_expression_block(p):
-    '''statement : LBRACE statements RBRACE'''
+    '''statement : LBRACE statements RBRACE
+                | LBRACE statements RBRACE SEMICOLON'''
     p[0] = ASTNode(type='block', children=p[2])
 
 # 2.2. Definición de Funciones
@@ -211,7 +225,7 @@ parser = yacc.yacc(start='statement')
 # 5. Prueba del Parser
 if __name__ == "__main__":
     test_data = [
-        'let a = 6, b = a * 7 in print(b);'
+        'let a = 0 in let b = a := 1 in {print(a);print(b);};'
     ]
 
     for data in test_data:

@@ -33,8 +33,6 @@ class CCodeGenerator:
 
     def generate_c_code(self, node):
         """Genera código C a partir de un nodo AST."""
-        # print(node)
-        # print(self.variables)
         if node.type in ('num', 'bool', 'string'):
             return self._generate_literal_code(node)
         elif node.type == 'functionDef':
@@ -52,21 +50,15 @@ class CCodeGenerator:
         elif node.type == 'const':
             return self._generate_const_code(node)
         elif node.type == 'id':
-            # if node.leaf in self.variables.keys():
-            #     if(self.variables[node.leaf].children.data_type == 'string'):
-            #         return '"' + self.variables[node.leaf].children.leaf + '"'
-            #     else:
-            #         return self.variables[node.leaf].children.leaf
-            # else:
                 return node.leaf
         elif node.type == 'corpus':
             return self._generate_corpus_code(node)
         elif node.type == 'variables':
             return self._generate_variables_code(node)
+        elif node.type == 'asign2':
+            return self._generate_asign2_code(node)
         elif node.type == 'variable':
             return self._generate_variable_code(node)
-        # elif node.type == 'variableImp':
-        #     return self._generate_variableImp_code(node)
             
         return ""
 
@@ -154,8 +146,6 @@ class CCodeGenerator:
         self._add_header("#include <stdlib.h>\n")
         arg1 = self.generate_c_code(node.children[0])
         arg2 = self.generate_c_code(node.children[1])
-        # print(arg1)
-        # print(arg2)
         if("intToString" not in self.functions):
             self.contex += "char* intToString(int num) {static char str[50];sprintf(str, \"%d\", num); return str;}"
             self.functions.append("intToString")
@@ -180,27 +170,31 @@ class CCodeGenerator:
             return '2.718281828459045'
     
     def _generate_corpus_code(self, node):
-        code_block = "{\n"
-        t = ""
+        code_block = ""
+        temp = self.variables.copy()
 
-        t += self.generate_c_code(node.children[0])
-        t += self.generate_c_code(node.children[1])
+        code_block += self.generate_c_code(node.children[0])
 
-        code_block += t + "}\n"
-        self.variables = {}
+        code_block += self.generate_c_code(node.children[1])
+
+        for _ in node.children[0].children:
+            code_block +=  "}\n" #Cierra todos los scopes
+            
+        self.variables = temp
         return code_block
     
     def _generate_variables_code(self, node):
         t = ""
         for nod in node.children:
+            t += "{\n" # Crea tantos scopes como asignaciones haya
             t += self.generate_c_code(nod)
         return t
     
     def _generate_variable_code(self, node):
-        # print(node.data_type)
         t = ''
         et = node.leaf
         arg = self.generate_c_code(node.children)
+        
         self.variables[et] = node
         if node.children.data_type == 'int':
             t = f"int {et} = {arg};\n"
@@ -210,13 +204,25 @@ class CCodeGenerator:
             t = f"char {et}[] = {arg};\n"
         elif node.children.data_type == 'bool':
             t = f"int {et} = {arg};\n"
+
         return t
-        
-    # def _generate_variableImp_code(self, node):
-    #     temp = ASTNode(type='variable', leaf=node.leaf, children=node.children)
-    #     self.contex += self.generate_c_code(temp)
-    #     temp2 = ASTNode(type='id', leaf=node.leaf, children=node.children)
-    #     return self.generate_c_code(temp2)
+    
+    def _generate_asign2_code(self, node):
+        t = ''
+        et = node.leaf
+        arg = self.generate_c_code(node.children)
+
+        self.variables[et] = node
+        if node.children.data_type == 'int':
+            t = f"{et} = {arg};\n"
+        elif node.children.data_type == 'float':
+            t = f"{et} = {arg};\n"
+        elif node.children.data_type == 'string':
+            t = f"{et}[] = {arg};\n"
+        elif node.children.data_type == 'bool':
+            t = f"{et} = {arg};\n"
+
+        return t
 
     def _add_header(self, header):
         if header not in self.headers:

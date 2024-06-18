@@ -22,7 +22,7 @@ keywords = {
 tokens = [
     'COMA', 'LPAREN', 'RPAREN', 
     'NUMBER', 'PLUS', 'MINUS', 'TIMES', 'DIVIDE', 'POW',
-    'AND', 'OR', 'BOOL',
+    'AND', 'OR',
     'EQ', 'GT', 'LT', 'GE', 'LE', 'NE',
     'CONCAT', 'STRING', 'LBRACE', 'RBRACE', 'SEMICOLON', 'ARROW', 'ID', 'ASIGN', 'ASIGN2'
 ] + list(keywords.values())
@@ -85,7 +85,7 @@ lexer = lex.lex()
 # Prueba del lexer
 if __name__ == "__main__":
     test_data = [
-        'let a = 6, b = a * 7 in print(b);'
+        'let a = 0 in let b = a := 1 in {print(a);print(b);};'
     ]
 
     for data in test_data:

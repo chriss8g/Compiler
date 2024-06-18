@@ -41,11 +41,14 @@ class Semantic:
         elif node.type == 'id':
             self._check_identifier(node, expected_type)
         elif node.type == 'corpus':
+            temp = self.variables.copy()
             self.check_semantics(node.children[0])
             self.check_semantics(node.children[1])
-            self.variables = {}
+            self.variables = temp
             node.data_type = node.children[1].data_type
         elif node.type == 'variable':
+            self._check_variable(node, expected_type)
+        elif node.type == 'asign2':
             self._check_variable(node, expected_type)
         elif node.type == 'variables':
             for nod in node.children:

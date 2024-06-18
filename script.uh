@@ -1,1 +1,1 @@
-print(true);
+print(let b = 6 in b * 7);
