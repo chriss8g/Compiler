@@ -67,6 +67,8 @@ class CCodeGenerator:
             return self._generate_variable_code(node)
         elif node.type == 'while':
             return self._generate_while_code(node)
+        elif node.type == 'for':
+            return self._generate_for_code(node)
             
         return ""
 
@@ -123,6 +125,28 @@ class CCodeGenerator:
         arg2 = self.generate_c_code(node.children[1])
 
         return f"while({arg1}) {{ {arg2} }};"
+    
+    def _generate_for_code(self, node):
+        ast = ASTNode(type='corpus', children=[
+                            ASTNode(type='variables', children=[
+                                ASTNode(type='variable', leaf=f'{node.children[0]}', children=ASTNode(type='num', leaf=f'{node.children[1].children[0]}'))
+                            ]),
+                            ASTNode(type='while', children=[
+                                ASTNode(type='binco', children=[
+                                    ASTNode(type='id', leaf=f'{node.children[0]}'),
+                                    ASTNode(type='num', leaf=f'{node.children[1].children[1]}')],
+                                    
+                                    leaf='<')
+                                ,ASTNode(type='block', children=[node.children[2],
+                                                                 ASTNode(type='asign2', leaf=f'{node.children[0]}', children=
+                                                                        ASTNode(type='binop', children=[
+                                                                            ASTNode(type='id', leaf=f'{node.children[0]}'),
+                                                                            ASTNode(type='num', leaf='1')]
+                                                                        ,leaf='+')) ])
+                                ])
+                            ])
+        self.semantic.check_semantics(ast)
+        return self.generate_c_code(ast)
 
     def _generate_condition_code(self, node):
         arg1 = self.generate_c_code(node.children[0])

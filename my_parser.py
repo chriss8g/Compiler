@@ -31,9 +31,17 @@ precedence = (
 
 # 2. Definiciones de Producciones
 
+def p_for(p):
+    '''statement : FOR LPAREN ID IN iterable RPAREN statement'''
+    p[0] = ASTNode(type='for', children=[p[3], p[5], p[7]])
+
+def p_iterable(p):
+    '''iterable : RANGE LPAREN NUMBER COMA NUMBER RPAREN'''
+    p[0] = ASTNode(type='iterable', leaf=p[1], children=[p[3], p[5]])
+
 def p_while_statement(p):
     '''statement : WHILE LPAREN expression RPAREN statement'''
-    p[0] = ASTNode(type='while', leaf=p[1], children=[p[3], p[5]])
+    p[0] = ASTNode(type='while', children=[p[3], p[5]])
 
 def p_conditions(p):
     '''expression : IF LPAREN expression RPAREN expression elifsExp ELSE expression'''
@@ -264,7 +272,7 @@ parser = yacc.yacc(start='statement')
 # 5. Prueba del Parser
 if __name__ == "__main__":
     test_data = [
-        'if (4 % 2 == 0) {print(5);} elif(true) {print(3);} else print("Odd");'
+        'gcd(a, b) => while (a > 0) let m = a % b in {b := a;a := m;};;'
     ]
 
     for data in test_data:

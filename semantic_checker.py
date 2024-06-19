@@ -32,6 +32,8 @@ class Semantic:
             self._check_block(node)
         elif node.type == 'while':
             self._check_while(node)
+        elif node.type == 'for':
+            self._check_for(node)
         elif node.type == 'binlo':
             self._check_binlo(node, expected_type)
         elif node.type == 'unilo':
@@ -194,6 +196,9 @@ class Semantic:
         arg_type = self.check_semantics(node.children)
         if arg_type not in NUMBER_TYPE:
             raise SemanticError(f"Error semántico: el argumento de la función {node.leaf} debe ser numérico")
+
+    def _check_for(self, node):
+        self.check_semantics(node.children[2])
 
     def _check_log_arguments(self, node):
         arg1_type = self.check_semantics(node.children[0])
