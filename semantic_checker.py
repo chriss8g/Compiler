@@ -30,6 +30,8 @@ class Semantic:
             self._check_condition(node)
         elif node.type == 'block':
             self._check_block(node)
+        elif node.type == 'while':
+            self._check_while(node)
         elif node.type == 'binlo':
             self._check_binlo(node, expected_type)
         elif node.type == 'unilo':
@@ -109,6 +111,11 @@ class Semantic:
 
         # if node.children[1].data_type != node.children[2].data_type:
         #     raise SemanticError("Error semántico: ambas partes de la condicional deben ser del mismo tipo")
+        node.data_type = node.children[1].data_type
+
+    def _check_while(self, node):
+        self.check_semantics(node.children[0], BOOL_TYPE)
+        self.check_semantics(node.children[1])
         node.data_type = node.children[1].data_type
 
     def _check_block(self, node):

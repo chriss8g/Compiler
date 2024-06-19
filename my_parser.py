@@ -31,6 +31,10 @@ precedence = (
 
 # 2. Definiciones de Producciones
 
+def p_while_statement(p):
+    '''statement : WHILE LPAREN expression RPAREN statement'''
+    p[0] = ASTNode(type='while', leaf=p[1], children=[p[3], p[5]])
+
 def p_conditions(p):
     '''expression : IF LPAREN expression RPAREN expression elifsExp ELSE expression'''
     p[0] = ASTNode(type='condition', leaf=p[1], children=[p[3], p[5], p[8], p[6][0], p[6][1]])

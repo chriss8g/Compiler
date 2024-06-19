@@ -18,7 +18,8 @@ keywords = {
     'false': 'FALSE',
     'if': 'IF', 
     'else': 'ELSE',
-    'elif': 'ELIF'
+    'elif': 'ELIF',
+    'while': 'WHILE'
 }
 
 # Lista de tokens, incluyendo las palabras clave

@@ -65,6 +65,8 @@ class CCodeGenerator:
             return self._generate_asign2_code(node)
         elif node.type == 'variable':
             return self._generate_variable_code(node)
+        elif node.type == 'while':
+            return self._generate_while_code(node)
             
         return ""
 
@@ -116,6 +118,12 @@ class CCodeGenerator:
         arg1 = self.generate_c_code(node.children)
         return f"({node.leaf} {arg1})"
     
+    def _generate_while_code(self, node):
+        arg1 = self.generate_c_code(node.children[0])
+        arg2 = self.generate_c_code(node.children[1])
+
+        return f"while({arg1}) {{ {arg2} }};"
+
     def _generate_condition_code(self, node):
         arg1 = self.generate_c_code(node.children[0])
         arg2 = self.generate_c_code(node.children[1])
