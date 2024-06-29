@@ -2,3 +2,4 @@ lectures/*
 __pycache__/*
 script.asm
 script.uh
+cmp/*
