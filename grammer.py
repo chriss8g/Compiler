@@ -47,6 +47,7 @@ class CodeToAST:
 
         term %= term + star + factor, lambda h, s: StarNode(s[1], s[3])
         term %= term + div + factor, lambda h, s: DivNode(s[1], s[3])
+        term %= term + pow + factor, lambda h, s: PowNode(s[1], s[3])
         term %= factor, lambda h, s: s[1]
 
         factor %= opar + expr + cpar, lambda h, s: s[2]

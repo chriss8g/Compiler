@@ -47,6 +47,35 @@ class CodeGeneratorVisitor(object):
         left = self.visit(node.left, scope.create_child_scope())
         right = self.visit(node.right, scope.create_child_scope())
         return f'{left} {ans} {right}'
+    
+    @visitor.when(MinusNode)
+    def visit(self, node, scope=None):
+        ans = "-"
+        left = self.visit(node.left, scope.create_child_scope())
+        right = self.visit(node.right, scope.create_child_scope())
+        return f'{left} {ans} {right}'
+    
+    @visitor.when(StarNode)
+    def visit(self, node, scope=None):
+        ans = "*"
+        left = self.visit(node.left, scope.create_child_scope())
+        right = self.visit(node.right, scope.create_child_scope())
+        return f'{left} {ans} {right}'
+    
+    @visitor.when(DivNode)
+    def visit(self, node, scope=None):
+        ans = "/"
+        left = self.visit(node.left, scope.create_child_scope())
+        right = self.visit(node.right, scope.create_child_scope())
+        return f'{left} {ans} {right}'
+    
+    @visitor.when(PowNode)
+    def visit(self, node, scope=None):
+        left = self.visit(node.left, scope.create_child_scope())
+        right = self.visit(node.right, scope.create_child_scope())
+
+        self._add_header("#include <math.h>\n")
+        return f'pow({left}, {right})'
 
     @visitor.when(AtomicNode)
     def visit(self, node, scope=None):
@@ -61,8 +90,8 @@ class CodeGeneratorVisitor(object):
     @visitor.when(PrintNode)
     def visit(self, node, scope=None):
         self._add_header("#include <stdio.h>\n")
-        ans = 'printf("%d\\n",'
         expr = self.visit(node.expr, scope.create_child_scope())
+        ans = 'printf("%f\\n",' if node.expr.type == FLOAT_TYPE else 'printf("%d\\n",'
         return f'{ans} {expr} );'
     
 

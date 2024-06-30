@@ -29,6 +29,7 @@ class SemanticCheckerVisitor(object):
 
         child = scope.create_child_scope()
         self.visit(node.body, child)
+        node.type = node.body.type
         return self.errors
     
     @visitor.when(FuncDeclarationNode)
@@ -40,7 +41,7 @@ class SemanticCheckerVisitor(object):
 
         child = scope.create_child_scope()
         self.visit(node.body, child)
-        
+        node.type = node.body.type
         return self.errors
     
     @visitor.when(PrintNode)
@@ -50,6 +51,7 @@ class SemanticCheckerVisitor(object):
     
     @visitor.when(ConstantNumNode)
     def visit(self, node, scope):
+        node.type = INT_TYPE
         return self.errors
     
     @visitor.when(VariableNode)
@@ -72,4 +74,20 @@ class SemanticCheckerVisitor(object):
     def visit(self, node, scope):
         self.visit(node.left, scope.create_child_scope())
         self.visit(node.right, scope.create_child_scope())
+        node.type = FLOAT_TYPE if node.left.type == FLOAT_TYPE or node.right.type == FLOAT_TYPE else INT_TYPE
+        return self.errors
+
+    @visitor.when(DivNode)
+    def visit(self, node, scope):
+        self.visit(node.left, scope.create_child_scope())
+        if self.visit(node.right, scope.create_child_scope()) == 0:
+            self.errors.append("No puede dividir por cero!!")
+        node.type = FLOAT_TYPE
+        return self.errors
+    
+    @visitor.when(PowNode)
+    def visit(self, node, scope):
+        self.visit(node.left, scope.create_child_scope())
+        self.visit(node.right, scope.create_child_scope())
+        node.type = FLOAT_TYPE
         return self.errors

@@ -10,7 +10,7 @@ def main(input_file):
     
 
     codeToAST = CodeToAST(lines)
-    # print(codeToAST)
+    print(codeToAST)
 
 
     semantic_checker = SemanticCheckerVisitor()

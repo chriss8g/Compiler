@@ -24,7 +24,8 @@ class StatementNode(Node):
 
 
 class ExpressionNode(Node):
-    pass
+    def __init__(self):
+        self.type = None
 
 
 # Nivel 2
