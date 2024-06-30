@@ -101,7 +101,7 @@ class CodeToAST:
         from cmp.evaluation import evaluate_reverse_parse
 
         self.ast = evaluate_reverse_parse(parse, operations, tokens)
-        # print(ast)
+        
 
     def __repr__(self):
         from FormatVisitor import FormatVisitor
