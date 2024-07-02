@@ -1,11 +1,18 @@
 from lexer.tokenizer import *
+from utils.pycompiler import Grammar
+
 
 nonzero_digits = '|'.join(str(n) for n in range(1,10))
-letters = '|'.join(chr(n) for n in range(ord('a'),ord('z')+1))
+lettersLowerCase = '|'.join(chr(n) for n in range(ord('a'),ord('z')+1))
+lettersUpperCase = '|'.join(chr(n) for n in range(ord('A'),ord('Z')+1))
 
 # Expresiones regulares
 regular_expresions = [
     ('function', 'function'),
+    ('type', 'type'),
+    ('return', 'return'),
+    ('new', 'new'),
+    ('dot', '.'),
     ('sin', 'sin'),
     ('cos', 'cos'),
     ('sqrt', 'sqrt'),
@@ -26,14 +33,14 @@ regular_expresions = [
     ('for', 'for'),
     ('range', 'range'),
     ('num', f'0|({nonzero_digits})(0|{nonzero_digits})*'),
-    ('id', f'({letters})({letters}|0|{nonzero_digits})*'),
-    ('string', f'"({letters}|0|{nonzero_digits})*"'),
+    ('id', f'({lettersLowerCase}|{lettersUpperCase}|_)({lettersLowerCase}|{lettersUpperCase}|_|0|{nonzero_digits})*'),
+    ('string', f'"({lettersLowerCase}|{lettersUpperCase}|0|{nonzero_digits})*"'),
     ('let', 'let'),
     ('asign1','='),
     ('asign2',':='),
     ('coma', ','),
-    ('lpar', '#('),
-    ('rpar', '#)'),
+    ('opar', '#('),
+    ('cpar', '#)'),
     ('plus', '+'),
     ('minus', '-'),
     ('times','#*'),
@@ -57,12 +64,13 @@ regular_expresions = [
 ]
 
 class Lexer:
-    def __init__(self, eof):
+    def __init__(self, eof, terminals):
         global regular_expresions
         
         self.eof = eof
         self.regexs = self._build_regexs(regular_expresions)
         self.errors = []
+        self.terminals = terminals
     
     def _build_regexs(self, table):
         automatonMaker = RegexHandler()
@@ -156,7 +164,7 @@ class Lexer:
             self._reset_automs()
             
             lex,tag = self._walk(text)
-            text = text.lstrip(lex)
+            text = text[len(lex):]
             
             if tag is None:
                 self.errors.append(f'Caracter {lex} desconocido')
@@ -166,7 +174,7 @@ class Lexer:
         yield '$', self.eof
     
     def __call__(self, text):
-        return [ Token(lex, ttype) for lex, ttype in self._tokenize(text) ]
+        return [ Token(lex, self.terminals[ttype]) for lex, ttype in self._tokenize(text) ]
     
 
     
@@ -178,20 +186,21 @@ class Lexer:
 if __name__ == "__main__":
 
     nonzero_digits = '|'.join(str(n) for n in range(1,10))
-    letters = '|'.join(chr(n) for n in range(ord('a'),ord('z')+1))
+    lettersUpperCase = '|'.join(chr(n) for n in range(ord('A'),ord('Z')+1))
+
 
     # print('Non-zero digits:', nonzero_digits)
-    # print('Letters:', letters)
+    print('Letters:', lettersUpperCase)
 
-    lexer = Lexer('eof')
+    # lexer = Lexer('eof')
 
-    text = 'let a = 0 in let b #= a := 1 in {print(a);print(b);};'
-    print(f'\n>>> Tokenizando: "{text}"')
-    tokens = lexer(text)
+    # text = 'let a = 0 in let b #= a := 1 in {print(a);print(b);};'
+    # print(f'\n>>> Tokenizando: "{text}"')
+    # tokens = lexer(text)
     
-    if lexer.errors:
-        for e in lexer.errors:
-            print(e)
+    # if lexer.errors:
+    #     for e in lexer.errors:
+    #         print(e)
     
-    print('\n',tokens)
+    # print('\n',tokens)
 

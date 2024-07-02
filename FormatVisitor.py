@@ -1,4 +1,4 @@
-import cmp.visitor as visitor
+import utils.visitor as visitor
 from my_types import *
 
 class FormatVisitor(object):
@@ -175,7 +175,7 @@ class FormatVisitor(object):
     @visitor.when(MethodNode)
     def visit(self, node, tabs=0):
         params = ', '.join(param for param in node.parameters)
-        ans = '\t' * tabs + f'\__MethodNode: function {node.name}({params}) => <body>'
+        ans = '\t' * tabs + f'\\__MethodNode: function {node.name}({params}) => <body>'
         body = '\n'.join(self.visit(child, tabs + 1) for child in node.body)
         return f'{ans}\n{body}'
 

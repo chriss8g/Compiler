@@ -1,5 +1,6 @@
-from cmp.pycompiler import Grammar
+from utils.pycompiler import Grammar
 from my_types import *
+from my_lexer1 import Lexer
 
 class CodeToAST:
 
@@ -90,13 +91,6 @@ class CodeToAST:
         factor %= exp + opar + expr + cpar, lambda h, s: ExpNode(s[3])
         factor %= log + opar + expr + cpar, lambda h, s: LogNode(s[3])
         factor %= rand + opar + cpar, lambda h, s: RandNode()
-        factor %= number, lambda h, s: ConstantNumNode(s[1])
-        factor %= true, lambda h, s: BoolNode(s[1])
-        factor %= false, lambda h, s: BoolNode(s[1])
-        factor %= pi, lambda h, s: ConstantNumNode(s[1])
-        factor %= e, lambda h, s: ConstantNumNode(s[1])
-        factor %= string, lambda h, s: StringNode(s[1])
-        factor %= idx, lambda h, s: VariableNode(s[1])
         factor %= atom, lambda h, s: s[1]
 
         func_call %= idx + opar + expr_list + cpar, lambda h, s: CallNode(s[1], s[3])
@@ -135,37 +129,26 @@ class CodeToAST:
         #############################################################################
 
 
-        from cmp.utils import Token, tokenizer
+        lexer = Lexer('eof')
 
-        fixed_tokens = { t.Name: Token(t.Name, t) for t in self.G.terminals if t not in { idx, number }}
-
-        @tokenizer(self.G, fixed_tokens)
-        def tokenize_text(token):
-            lex = token.lex
-            try:
-                float(lex)
-                return token.transform_to(number)
-            except ValueError:
-                    return token.transform_to(idx)
-
-        tokens = tokenize_text(text)
-
+        tokens = lexer(text)
+        print(tokens)
 
         ###################################################################################
 
 
-        from cmp.tools.parsing import LR1Parser
+        # from cmp.tools.parsing import LR1Parser
 
-        parser = LR1Parser(self.G)
-
-
-        parse, operations = parser([t.token_type for t in tokens], get_shift_reduce=True)
-        # print('\n'.join(repr(x) for x in parse))
+        # parser = LR1Parser(self.G)
 
 
-        from cmp.evaluation import evaluate_reverse_parse
+        # parse, operations = parser([t.token_type for t in tokens], get_shift_reduce=True)
+        # # print('\n'.join(repr(x) for x in parse))
 
-        self.ast = evaluate_reverse_parse(parse, operations, tokens)
+
+        # from cmp.evaluation import evaluate_reverse_parse
+
+        # self.ast = evaluate_reverse_parse(parse, operations, tokens)
         
 
     def __repr__(self):
@@ -179,7 +162,39 @@ class CodeToAST:
 if __name__ == "__main__":
       
       text ='''
-            print 42 ;
+                type MyClass {
+                    x = 0;
+                    y = 0;
+                    
+                    my_method(a, b) => {
+                        let result = a + b;
+                        return result;
+                    }
+                }
+
+                let a = 10, b = 20, c = 30 in {
+                    print(a + b * c);
+                    
+                    if (a > b) {
+                        print(a);
+                    } else {
+                        print(b);
+                    }
+                    
+                    while (a < c) {
+                        print(a);
+                        a := a + 1;
+                    }
+                    
+                    for (i in range(3, 4)) {
+                        print(i);
+                    }
+                    
+                    let d = new MyClass(5, 10) in {
+                        d.x := d.my_method(2, 3);
+                        print(d.x);
+                    }
+                }
             '''
       codeToAST = CodeToAST(text)
       print(codeToAST)
