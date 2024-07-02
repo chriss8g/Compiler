@@ -263,3 +263,44 @@ class ForRangeNode(StatementNode):
         self.init = init
         self.final = final
         self.body = body
+
+class ConcatSpaceNode(BinaryNode):
+    def __init__(self, left, right):
+        super().__init__(left, right)
+
+class SelfNode(AtomicNode):
+    def __init__(self, member=None):
+        self.member = member
+
+class TypeNode(Node):
+    def __init__(self, name, body, base_type=None):
+        self.name = name
+        self.body = body
+        self.base_type = base_type
+
+class TypeBodyNode(Node):
+    def __init__(self, attributes, methods):
+        self.attributes = attributes
+        self.methods = methods
+
+class AttributeNode(Node):
+    def __init__(self, name, value):
+        self.name = name
+        self.value = value
+
+class MethodNode(Node):
+    def __init__(self, name, parameters, body):
+        self.name = name
+        self.parameters = parameters
+        self.body = body
+
+class ObjectCreationNode(ExpressionNode):
+    def __init__(self, type_name, arguments):
+        self.type_name = type_name
+        self.arguments = arguments
+
+class MethodCallNode(ExpressionNode):
+    def __init__(self, object_name, method_name, arguments):
+        self.object_name = object_name
+        self.method_name = method_name
+        self.arguments = arguments
