@@ -24,7 +24,7 @@ class CodeToAST:
         let, functionx, inx = self.G.Terminals('let function in')
         printx, sin, cos, sqrt, exp, log, rand = self.G.Terminals('print sin cos sqrt exp log rand')
         semi, comma, opar, cpar, arrow = self.G.Terminals('; , ( ) =>')
-        asign, plus, minus, star, div = self.G.Terminals('= + - * /')
+        asign1, plus, minus, star, div = self.G.Terminals('= + - * /')
         powx, mod, andx, orx, notx = self.G.Terminals('^ % & | !')
         eq, gt, lt, ge, le = self.G.Terminals('== > < >= <=')
         ne, concat, lbrace, rbrace, asign2 = self.G.Terminals('!= @ { } :=')
@@ -33,7 +33,7 @@ class CodeToAST:
         ifx, elsex, elifx, whilex, forx, rangex = self.G.Terminals('if else elif while for range')
         typex, inherits = self.G.Terminals('type inherits')
         selfx, new = self.G.Terminals('self new')
-        dot, concat_space = self.G.Terminals('. @@')
+        dot, concat_space, returnx = self.G.Terminals('. @@ return')
 
         terminals = {}
         terminals['let'] = let
@@ -51,7 +51,7 @@ class CodeToAST:
         terminals['opar'] = opar
         terminals['cpar'] = cpar
         terminals['arrow'] = arrow
-        terminals['asign'] = asign
+        terminals['asign1'] = asign1
         terminals['plus'] = plus
         terminals['minus'] = minus
         terminals['star'] = star
@@ -75,8 +75,8 @@ class CodeToAST:
         terminals['e'] = e
         terminals['true'] = true
         terminals['false'] = false
-        terminals['idx'] = idx
-        terminals['number'] = number
+        terminals['id'] = idx
+        terminals['num'] = number
         terminals['string'] = string
         terminals['if'] = ifx
         terminals['else'] = elsex
@@ -90,6 +90,9 @@ class CodeToAST:
         terminals['new'] = new
         terminals['dot'] = dot
         terminals['concat_space'] = concat_space
+        terminals['return'] = returnx
+        terminals['eof'] = self.G.EOF
+        
         
         self.terminals = terminals
         
@@ -100,7 +103,7 @@ class CodeToAST:
         stat_list %= stat + semi, lambda h, s: [s[1]]
         stat_list %= stat + semi + stat_list, lambda h, s: [s[1]] + s[3]
 
-        # stat %= let + asig_list + inx + expr, lambda h, s: VarDeclarationNode(s[2][0], s[2][1], s[4])
+        stat %= let + asig_list + inx + expr, lambda h, s: VarDeclarationNode(s[2][0], s[2][1], s[4])
         # stat %= functionx + idx + opar + arg_list + cpar + arrow + expr, lambda h, s: FuncDeclarationNode(s[2], s[4], s[7])
         stat %= printx + opar + expr + cpar, lambda h, s: PrintNode(s[3])
         # stat %= whilex + opar + expr + cpar + stat, lambda h, s: WhileNode(s[3], s[5])
@@ -148,8 +151,8 @@ class CodeToAST:
         # expr_list %= expr, lambda h, s: [s[1]]
         # expr_list %= expr + comma + expr_list, lambda h, s: [s[1]] + s[3]
 
-        # asig_list %= idx + asign + expr, lambda h, s: [[s[1]], [s[3]]]
-        # asig_list %= idx + asign + expr + comma + asig_list, lambda h, s: [[s[1]] + s[5][0], [s[3]] + s[5][1]]
+        asig_list %= idx + asign1 + expr, lambda h, s: [[s[1]], [s[3]]]
+        asig_list %= idx + asign1 + expr + comma + asig_list, lambda h, s: [[s[1]] + s[5][0], [s[3]] + s[5][1]]
 
         atom %= number, lambda h, s: ConstantNumNode(s[1])
         # atom %= true, lambda h, s: BoolNode(s[1])
@@ -168,7 +171,7 @@ class CodeToAST:
         # type_declaration %= typex + idx + inherits + idx + lbrace + type_body + rbrace, lambda h, s: TypeNode(s[2], s[6], s[4])
         # type_body %= attribute_declaration + method_declaration, lambda h, s: TypeBodyNode(s[1], s[2])
 
-        # attribute_declaration %= idx + asign + expr + semi, lambda h, s: AttributeNode(s[1], s[3])
+        # attribute_declaration %= idx + asign1 + expr + semi, lambda h, s: AttributeNode(s[1], s[3])
         # method_declaration %= idx + opar + arg_list + cpar + arrow + expr, lambda h, s: MethodNode(s[1], s[3], s[6])
         # method_declaration %= idx + opar + arg_list + cpar + arrow + lbrace + stat_list + rbrace, lambda h, s: MethodNode(s[1], s[3], s[7])
 
@@ -180,17 +183,14 @@ class CodeToAST:
         lexer = Lexer('eof', self.terminals)
 
         tokens = lexer(text)
-        print(tokens)
         
         
         ###################################################################################
         
         
         parser = LR1Parser(self.G)
-        
-        tokens = [Token('print', printx), Token('(', opar), Token('42', number), Token(')', cpar), Token(';', semi), Token('$', self.G.EOF)]
-        
-        derivations = parser([printx, opar, number,cpar,semi,self.G.EOF])
+                
+        derivations = parser([tok.token_type for tok in tokens])
 
         tokens.reverse()
         derivations.reverse()
@@ -199,8 +199,6 @@ class CodeToAST:
         
         
         gramat = self.G
-        
-        print(gramat.terminals)
         
         
     	
@@ -216,5 +214,5 @@ if __name__ == "__main__":
     text = 'print ( 42 ) ;'
  
     codeToAST = CodeToAST(text)
-    print(codeToAST)
+    print('\n',codeToAST)
     
