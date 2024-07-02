@@ -2,7 +2,7 @@ from cmp.pycompiler import Grammar
 from my_types import *
 
 class CodeToAST:
-    
+
     def __init__(self, text):
         self.G = Grammar()
 
@@ -30,6 +30,20 @@ class CodeToAST:
         selfx, new = self.G.Terminals('self new')
         dot, concat_space = self.G.Terminals('. @@')
 
+        # # Definir las precedencias y asociatividad
+        # self.G.AddOperator(plus, 1, 'left')
+        # self.G.AddOperator(minus, 1, 'left')
+        # self.G.AddOperator(star, 2, 'left')
+        # self.G.AddOperator(div, 2, 'left')
+        # self.G.AddOperator(powx, 3, 'right')
+
+        # self.G.AddOperator(eq, 0, 'nonassoc')
+        # self.G.AddOperator(ne, 0, 'nonassoc')
+        # self.G.AddOperator(gt, 0, 'nonassoc')
+        # self.G.AddOperator(lt, 0, 'nonassoc')
+        # self.G.AddOperator(ge, 0, 'nonassoc')
+        # self.G.AddOperator(le, 0, 'nonassoc')
+
         # Definir las producciones y sus acciones
         program %= stat_list, lambda h, s: ProgramNode(s[1])
 
@@ -38,7 +52,7 @@ class CodeToAST:
 
         stat %= let + asig_list + inx + expr, lambda h, s: VarDeclarationNode(s[2][0], s[2][1], s[4])
         stat %= functionx + idx + opar + arg_list + cpar + arrow + expr, lambda h, s: FuncDeclarationNode(s[2], s[4], s[7])
-        stat %= printx + expr, lambda h, s: PrintNode(s[2])
+        stat %= printx + opar + expr + cpar, lambda h, s: PrintNode(s[2])
         stat %= whilex + opar + expr + cpar + stat, lambda h, s: WhileNode(s[3], s[5])
         stat %= forx + opar + idx + inx + expr + cpar + stat, lambda h, s: ForNode(s[3], s[5], s[7])
         stat %= forx + opar + idx + inx + rangex + opar + expr + comma + expr + cpar + cpar + stat, lambda h, s: ForRangeNode(s[3], s[6], s[8], s[11])
@@ -52,16 +66,16 @@ class CodeToAST:
 
         expr %= expr + plus + term, lambda h, s: PlusNode(s[1], s[3])
         expr %= expr + minus + term, lambda h, s: MinusNode(s[1], s[3])
-        expr %= expr + andx + expr, lambda h, s: AndNode(s[1], s[3])
-        expr %= expr + orx + expr, lambda h, s: OrNode(s[1], s[3])
-        expr %= notx + expr, lambda h, s: NotNode(s[2])
-        expr %= expr + eq + expr, lambda h, s: EqualNode(s[1], s[3])
-        expr %= expr + ne + expr, lambda h, s: NotEqualNode(s[1], s[3])
-        expr %= expr + gt + expr, lambda h, s: GreaterNode(s[1], s[3])
-        expr %= expr + lt + expr, lambda h, s: LessNode(s[1], s[3])
-        expr %= expr + ge + expr, lambda h, s: GreaterEqualNode(s[1], s[3])
-        expr %= expr + le + expr, lambda h, s: LessEqualNode(s[1], s[3])
-        expr %= expr + concat + expr, lambda h, s: ConcatNode(s[1], s[3])
+        expr %= expr + andx + term, lambda h, s: AndNode(s[1], s[3])
+        expr %= expr + orx + term, lambda h, s: OrNode(s[1], s[3])
+        expr %= notx + term, lambda h, s: NotNode(s[2])
+        expr %= expr + eq + term, lambda h, s: EqualNode(s[1], s[3])
+        expr %= expr + ne + term, lambda h, s: NotEqualNode(s[1], s[3])
+        expr %= expr + gt + term, lambda h, s: GreaterNode(s[1], s[3])
+        expr %= expr + lt + term, lambda h, s: LessNode(s[1], s[3])
+        expr %= expr + ge + term, lambda h, s: GreaterEqualNode(s[1], s[3])
+        expr %= expr + le + term, lambda h, s: LessEqualNode(s[1], s[3])
+        expr %= expr + concat + term, lambda h, s: ConcatNode(s[1], s[3])
         expr %= term, lambda h, s: s[1]
 
         term %= term + star + factor, lambda h, s: StarNode(s[1], s[3])
@@ -70,7 +84,6 @@ class CodeToAST:
         term %= term + mod + factor, lambda h, s: ModNode(s[1], s[3])
         term %= factor, lambda h, s: s[1]
 
-        factor %= opar + expr + cpar, lambda h, s: s[2]
         factor %= sin + opar + expr + cpar, lambda h, s: SinNode(s[3])
         factor %= cos + opar + expr + cpar, lambda h, s: CosNode(s[3])
         factor %= sqrt + opar + expr + cpar, lambda h, s: SqrtNode(s[3])
@@ -84,18 +97,16 @@ class CodeToAST:
         factor %= e, lambda h, s: ConstantNumNode(s[1])
         factor %= string, lambda h, s: StringNode(s[1])
         factor %= idx, lambda h, s: VariableNode(s[1])
-        factor %= func_call, lambda h, s: s[1]
+        factor %= atom, lambda h, s: s[1]
 
         func_call %= idx + opar + expr_list + cpar, lambda h, s: CallNode(s[1], s[3])
         func_call %= idx + opar + cpar, lambda h, s: CallNode(s[1], [])
 
         expr_list %= expr, lambda h, s: [s[1]]
         expr_list %= expr + comma + expr_list, lambda h, s: [s[1]] + s[3]
-        expr_list %= lambda h, s: []
 
         asig_list %= idx + asign + expr, lambda h, s: [[s[1]], [s[3]]]
         asig_list %= idx + asign + expr + comma + asig_list, lambda h, s: [[s[1]] + s[5][0], [s[3]] + s[5][1]]
-        asig_list %= lambda h, s: [[], []]
 
         atom %= number, lambda h, s: ConstantNumNode(s[1])
         atom %= true, lambda h, s: BoolNode(s[1])
@@ -107,7 +118,7 @@ class CodeToAST:
         atom %= func_call, lambda h, s: s[1]
         atom %= opar + expr + cpar, lambda h, s: s[2]
 
-        expr %= expr + concat_space + expr, lambda h, s: ConcatSpaceNode(s[1], s[3])
+        expr %= expr + concat_space + term, lambda h, s: ConcatSpaceNode(s[1], s[3])
         factor %= selfx + dot + idx, lambda h, s: SelfNode(s[3])
 
         type_declaration %= typex + idx + lbrace + type_body + rbrace, lambda h, s: TypeNode(s[2], s[4])
@@ -168,10 +179,7 @@ class CodeToAST:
 if __name__ == "__main__":
       
       text ='''
-                print 1 - 1 - 1 ;
-                let x = 58 in x + 1 ;
-                function f ( a , b ) => 5 + 6 ;
-                print F ( 5 + x , 7 + y ) ;
+            print 42 ;
             '''
       codeToAST = CodeToAST(text)
       print(codeToAST)
