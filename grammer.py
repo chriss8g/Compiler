@@ -13,9 +13,7 @@ class CodeToAST:
         arg_list, func_call, expr_list, asig_list = self.G.NonTerminals('<arg_list> <func_call> <expr_list> <asig_list>')
         type_declaration, type_body = self.G.NonTerminals('<type_declaration> <type_body>')
         attribute_declaration, method_declaration = self.G.NonTerminals('<attribute_declaration> <method_declaration>')
-        object_creation = self.G.NonTerminals('<inheritance> <object_creation>')
-        method_call = self.G.NonTerminals('<method_call>')
-
+        object_creation, method_call = self.G.NonTerminals('<object_creation> <method_call>')
 
         # Definir los terminales
         let, functionx, inx = self.G.Terminals('let function in')
@@ -29,12 +27,8 @@ class CodeToAST:
         idx, number, string = self.G.Terminals('id num string')
         ifx, elsex, elifx, whilex, forx, rangex = self.G.Terminals('if else elif while for range')
         typex, inherits = self.G.Terminals('type inherits')
-        let, inx = self.G.Terminals('let in')
         selfx, new = self.G.Terminals('self new')
-        dot, arrow, asign = self.G.Terminals('. => :=')
-        concat, concat_space = self.G.Terminals('@ @@')
-
-
+        dot, concat_space = self.G.Terminals('. @@')
 
         # Definir las producciones y sus acciones
         program %= stat_list, lambda h, s: ProgramNode(s[1])
@@ -115,8 +109,6 @@ class CodeToAST:
 
         expr %= expr + concat_space + expr, lambda h, s: ConcatSpaceNode(s[1], s[3])
         factor %= selfx + dot + idx, lambda h, s: SelfNode(s[3])
-
-
 
         type_declaration %= typex + idx + lbrace + type_body + rbrace, lambda h, s: TypeNode(s[2], s[4])
         type_declaration %= typex + idx + inherits + idx + lbrace + type_body + rbrace, lambda h, s: TypeNode(s[2], s[6], s[4])
