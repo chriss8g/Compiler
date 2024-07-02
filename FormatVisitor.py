@@ -24,8 +24,8 @@ class FormatVisitor(object):
 
     @visitor.when(FuncDeclarationNode)
     def visit(self, node, tabs=0):
-        params = ', '.join(param for param in node.params)
-        ans = '\t' * tabs + f'\\__FuncDeclarationNode: function {node.id}({params}) => <body>'
+        params = ', '.join(param.lex for param in node.params)
+        ans = '\t' * tabs + f'\\__FuncDeclarationNode: function {node.id.lex}({params}) => <body>'
         if isinstance(node.body, list):
             body = '\n'.join(self.visit(child, tabs + 1) for child in node.body)
         else:

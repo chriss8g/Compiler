@@ -18,7 +18,7 @@ class CodeToAST:
         arg_list, func_call, expr_list, asig_list = self.G.NonTerminals('<arg_list> <func_call> <expr_list> <asig_list>')
         type_declaration, type_body = self.G.NonTerminals('<type_declaration> <type_body>')
         attribute_declaration, method_declaration = self.G.NonTerminals('<attribute_declaration> <method_declaration>')
-        object_creation, method_call = self.G.NonTerminals('<object_creation> <method_call>')
+        object_creation, method_call,idnode = self.G.NonTerminals('<object_creation> <method_call> <idnode>')
 
         # Definir los terminales
         let, functionx, inx = self.G.Terminals('let function in')
@@ -100,23 +100,25 @@ class CodeToAST:
         # Definir las producciones y sus acciones
         program %= stat_list, lambda h, s: ProgramNode(s[1])
 
-        stat_list %= stat + semi, lambda h, s: [s[1]]
-        stat_list %= stat + semi + stat_list, lambda h, s: [s[1]] + s[3]
+        stat_list %= stat, lambda h, s: [s[1]]
+        stat_list %= stat + stat_list, lambda h, s: [s[1]] + s[2]
 
         stat %= let + asig_list + inx + expr, lambda h, s: VarDeclarationNode(s[2], s[4])
-        # stat %= functionx + idx + opar + arg_list + cpar + arrow + expr, lambda h, s: FuncDeclarationNode(s[2], s[4], s[7])
+        stat %= functionx + idnode + opar + arg_list + cpar + arrow + stat, lambda h, s: FuncDeclarationNode(s[2], s[4], s[7])
         stat %= printx + opar + expr + cpar, lambda h, s: PrintNode(s[3])
-        # stat %= whilex + opar + expr + cpar + stat, lambda h, s: WhileNode(s[3], s[5])
+        stat %= whilex + opar + expr + cpar + stat, lambda h, s: WhileNode(s[3], s[5])
         # stat %= forx + opar + idx + inx + expr + cpar + stat, lambda h, s: ForNode(s[3], s[5], s[7])
         # stat %= forx + opar + idx + inx + rangex + opar + expr + comma + expr + cpar + cpar + stat, lambda h, s: ForRangeNode(s[3], s[5], s[7], s[9])
         # stat %= ifx + opar + expr + cpar + stat + elsex + stat, lambda h, s: IfNode(s[3], s[5], s[7], [], [])
         # stat %= ifx + opar + expr + cpar + stat + elifx + opar + expr + cpar + stat + elsex + stat, lambda h, s: IfNode(s[3], s[5], s[11], [s[8]], [s[10]])
         # stat %= lbrace + stat_list + rbrace, lambda h, s: BlockNode(s[2])
         # stat %= idx + asign2 + expr, lambda h, s: AsignNode(s[1], s[3])
+        stat %= expr + semi, lambda h,s : s[1]
 
-        # arg_list %= idx, lambda h, s: [s[1]]
-        # arg_list %= idx + comma + arg_list, lambda h, s: [s[1]] + s[3]
+        arg_list %= idnode, lambda h, s: [s[1]]
+        arg_list %= idnode + comma + arg_list, lambda h, s: [s[1]] + s[3]
 
+        expr %= printx + opar + expr + cpar, lambda h, s: PrintNode(s[3])
         expr %= expr + plus + term, lambda h, s: PlusNode(s[1], s[3])
         expr %= expr + minus + term, lambda h, s: MinusNode(s[1], s[3])
         # expr %= expr + andx + term, lambda h, s: AndNode(s[1], s[3])
@@ -151,8 +153,8 @@ class CodeToAST:
         # expr_list %= expr, lambda h, s: [s[1]]
         # expr_list %= expr + comma + expr_list, lambda h, s: [s[1]] + s[3]
 
-        asig_list %= idx + asign1 + expr, lambda h, s: [AsignNode(VariableNode(s[1]),s[3])]
-        asig_list %= idx + asign1 + expr + comma + asig_list, lambda h, s: [AsignNode(VariableNode(s[1]),s[3])] + s[5]
+        asig_list %= idnode + asign1 + expr, lambda h, s: [AsignNode(s[1],s[3])]
+        asig_list %= idnode + asign1 + expr + comma + asig_list, lambda h, s: [AsignNode(s[1],s[3])] + s[5]
 
         atom %= number, lambda h, s: ConstantNumNode(s[1])
         # atom %= true, lambda h, s: BoolNode(s[1])
@@ -163,6 +165,8 @@ class CodeToAST:
         atom %= idx, lambda h, s: VariableNode(s[1])
         # atom %= func_call, lambda h, s: s[1]
         # atom %= opar + expr + cpar, lambda h, s: s[2]
+        idnode %= idx, lambda h, s: VariableNode(s[1])
+        
 
         # expr %= expr + concat_space + term, lambda h, s: ConcatSpaceNode(s[1], s[3])
         # factor %= selfx + dot + idx, lambda h, s: SelfNode(s[3])
@@ -211,7 +215,7 @@ class CodeToAST:
     
 if __name__ == "__main__":
     
-    text = 'let x = 5 in x + 3 ;'
+    text = 'while (x < 10) x = x + 1;'
  
     codeToAST = CodeToAST(text)
     print('\n',codeToAST)
