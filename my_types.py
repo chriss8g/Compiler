@@ -7,26 +7,21 @@ NUMBER_TYPE = [INT_TYPE, FLOAT_TYPE, CONST_TYPE]
 
 # Nivel 0
 
-
 class Node:
     pass
 
 # Nivel 1
 
-
 class ProgramNode(Node):
     def __init__(self, statements):
         self.statements = statements
 
-
 class StatementNode(Node):
     pass
-
 
 class ExpressionNode(Node):
     def __init__(self):
         self.type = None
-
 
 # Nivel 2
 
@@ -36,47 +31,38 @@ class VarDeclarationNode(StatementNode, ExpressionNode):
         self.exprs = exprs
         self.body = body
 
-
 class FuncDeclarationNode(StatementNode, ExpressionNode):
     def __init__(self, idx, params, body):
         self.id = idx
         self.params = params
         self.body = body
 
-
 class PrintNode(ExpressionNode):
     def __init__(self, expr):
         self.expr = expr
-
 
 class SinNode(ExpressionNode):
     def __init__(self, expr):
         self.expr = expr
 
-
 class CosNode(ExpressionNode):
     def __init__(self, expr):
         self.expr = expr
-
 
 class SqrtNode(ExpressionNode):
     def __init__(self, expr):
         self.expr = expr
 
-
 class ExpNode(ExpressionNode):
     def __init__(self, expr):
         self.expr = expr
-
 
 class LogNode(ExpressionNode):
     def __init__(self, expr):
         self.expr = expr
 
-
 class RandNode(ExpressionNode):
     pass
-
 
 class ForNode(StatementNode, ExpressionNode):
     def __init__(self, idx, iterable, expr):
@@ -94,7 +80,6 @@ class WhileNode(StatementNode, ExpressionNode):
         self.condition = condition
         self.expr = expr
 
-
 class IfNode(StatementNode, ExpressionNode):
     def __init__(self, condition, expr, else_expr, elif_conditions, elif_expr):
         self.condition = condition
@@ -103,133 +88,100 @@ class IfNode(StatementNode, ExpressionNode):
         self.elif_conditions = elif_conditions
         self.elif_expr = elif_expr
 
-
 class IterableNode(ExpressionNode):
     def __init__(self, init, final):
         self.init = init
         self.final = final
 
-
 class BlockNode(StatementNode):
     def __init__(self, body):
         self.body = body
 
-
 class AtomicNode(ExpressionNode):
     def __init__(self, lex):
         self.lex = lex
-
 
 class BinaryNode(ExpressionNode):
     def __init__(self, left, right):
         self.left = left
         self.right = right
 
-
 class CallNode(ExpressionNode):
     def __init__(self, idx, args):
         self.id = idx
         self.args = args
-
 
 # Nivel 3
 
 class ConstantNumNode(AtomicNode):
     pass
 
-
 class BoolNode(AtomicNode):
     pass
-
 
 class StringNode(AtomicNode):
     pass
 
-
 class VariableNode(AtomicNode):
     pass
-
 
 class ComparativeNode(BinaryNode):
     pass
 
-
 class LogicNode(BinaryNode, AtomicNode):
     pass
-
 
 class AritmeticNode(BinaryNode):
     pass
 
-
 class StringOpNode(BinaryNode):
     pass
 
-
 # Nivel 4
+
 class PlusNode(AritmeticNode):
     pass
-
 
 class MinusNode(AritmeticNode):
     pass
 
-
 class StarNode(AritmeticNode):
     pass
-
 
 class DivNode(AritmeticNode):
     pass
 
-
 class PowNode(AritmeticNode):
     pass
-
 
 class ModNode(AritmeticNode):
     pass
 
-
 class EQNode(ComparativeNode):
     pass
-
 
 class GTNode(ComparativeNode):
     pass
 
-
 class LTNode(ComparativeNode):
     pass
-
 
 class GENode(ComparativeNode):
     pass
 
-
 class LENode(ComparativeNode):
     pass
-
 
 class NENode(ComparativeNode):
     pass
 
-
 class AndNode(LogicNode):
     pass
 
-
 class OrNode(LogicNode):
     pass
-
 
 class ConcatNode(StringOpNode):
-    pass
-
-class AndNode(LogicNode):
-    pass
-
-class OrNode(LogicNode):
     pass
 
 class NotNode(LogicNode):
