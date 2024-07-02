@@ -15,10 +15,10 @@ class FormatVisitor(object):
     @visitor.when(VarDeclarationNode)
     def visit(self, node, tabs=0):
         ans = '\t' * tabs + f'\\__VarDeclarationNode: let '
-        for i in range(len(node.ids)):
-            ans += f'{node.ids[i]} = <expr>,'
+        for i in range(len(node.args)):
+            ans += f'{node.args[i].id} = <expr>,'
         ans += f' in <expr>'
-        values = '\n'.join(self.visit(child, tabs + 1) for child in node.exprs)
+        values = '\n'.join(self.visit(child, tabs + 1) for child in node.args)
         expr = self.visit(node.body, tabs + 1)
         return f'{ans}\n{values}\n{expr}'
 
@@ -95,9 +95,10 @@ class FormatVisitor(object):
 
     @visitor.when(AsignNode)
     def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__AsignNode: {node.id} := <expr>'
+        ans = '\t' * tabs + f'\\__AsignNode: {node.id.lex} := <expr>'
+        id = self.visit(node.id, tabs + 1)
         expr = self.visit(node.expr, tabs + 1)
-        return f'{ans}\n{expr}'
+        return f'{ans}\n{id}\n{expr}'
 
     @visitor.when(SinNode)
     def visit(self, node, tabs=0):

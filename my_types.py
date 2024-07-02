@@ -26,9 +26,8 @@ class ExpressionNode(Node):
 # Nivel 2
 
 class VarDeclarationNode(StatementNode, ExpressionNode):
-    def __init__(self, idxs, exprs, body):
-        self.ids = idxs
-        self.exprs = exprs
+    def __init__(self, args, body):
+        self.args = args
         self.body = body
 
 class FuncDeclarationNode(StatementNode, ExpressionNode):

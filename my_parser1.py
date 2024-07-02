@@ -103,7 +103,7 @@ class CodeToAST:
         stat_list %= stat + semi, lambda h, s: [s[1]]
         stat_list %= stat + semi + stat_list, lambda h, s: [s[1]] + s[3]
 
-        stat %= let + asig_list + inx + expr, lambda h, s: VarDeclarationNode(s[2][0], s[2][1], s[4])
+        stat %= let + asig_list + inx + expr, lambda h, s: VarDeclarationNode(s[2], s[4])
         # stat %= functionx + idx + opar + arg_list + cpar + arrow + expr, lambda h, s: FuncDeclarationNode(s[2], s[4], s[7])
         stat %= printx + opar + expr + cpar, lambda h, s: PrintNode(s[3])
         # stat %= whilex + opar + expr + cpar + stat, lambda h, s: WhileNode(s[3], s[5])
@@ -117,8 +117,8 @@ class CodeToAST:
         # arg_list %= idx, lambda h, s: [s[1]]
         # arg_list %= idx + comma + arg_list, lambda h, s: [s[1]] + s[3]
 
-        # expr %= expr + plus + term, lambda h, s: PlusNode(s[1], s[3])
-        # expr %= expr + minus + term, lambda h, s: MinusNode(s[1], s[3])
+        expr %= expr + plus + term, lambda h, s: PlusNode(s[1], s[3])
+        expr %= expr + minus + term, lambda h, s: MinusNode(s[1], s[3])
         # expr %= expr + andx + term, lambda h, s: AndNode(s[1], s[3])
         # expr %= expr + orx + term, lambda h, s: OrNode(s[1], s[3])
         # expr %= notx + term, lambda h, s: NotNode(s[2])
@@ -151,8 +151,8 @@ class CodeToAST:
         # expr_list %= expr, lambda h, s: [s[1]]
         # expr_list %= expr + comma + expr_list, lambda h, s: [s[1]] + s[3]
 
-        asig_list %= idx + asign1 + expr, lambda h, s: [[s[1]], [s[3]]]
-        asig_list %= idx + asign1 + expr + comma + asig_list, lambda h, s: [[s[1]] + s[5][0], [s[3]] + s[5][1]]
+        asig_list %= idx + asign1 + expr, lambda h, s: [AsignNode(VariableNode(s[1]),s[3])]
+        asig_list %= idx + asign1 + expr + comma + asig_list, lambda h, s: [AsignNode(VariableNode(s[1]),s[3])] + s[5]
 
         atom %= number, lambda h, s: ConstantNumNode(s[1])
         # atom %= true, lambda h, s: BoolNode(s[1])
@@ -160,7 +160,7 @@ class CodeToAST:
         # atom %= pi, lambda h, s: ConstantNumNode(s[1])
         # atom %= e, lambda h, s: ConstantNumNode(s[1])
         # atom %= string, lambda h, s: StringNode(s[1])
-        # atom %= idx, lambda h, s: VariableNode(s[1])
+        atom %= idx, lambda h, s: VariableNode(s[1])
         # atom %= func_call, lambda h, s: s[1]
         # atom %= opar + expr + cpar, lambda h, s: s[2]
 
@@ -211,7 +211,7 @@ class CodeToAST:
     
 if __name__ == "__main__":
     
-    text = 'print ( 42 ) ;'
+    text = 'let x = 5 in x + 3 ;'
  
     codeToAST = CodeToAST(text)
     print('\n',codeToAST)
