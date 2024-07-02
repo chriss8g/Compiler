@@ -90,6 +90,11 @@ def t_error(t):
 # Construcción del lexer
 lexer = lex.lex()
 
+
+
+
+
+
 # Prueba del lexer
 if __name__ == "__main__":
     test_data = [

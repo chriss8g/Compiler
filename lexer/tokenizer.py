@@ -1,0 +1,208 @@
+from lexer.pycompiler import Grammar
+from lexer.Nodes import *
+from parser.tools import *
+
+
+class Token:
+    """
+    Basic token class.
+
+    Parameters
+    ----------
+    lex : str
+        Token's lexeme.
+    token_type : Enum
+        Token's type.
+    """
+
+    def __init__(self, lex, token_type):
+        self.lex = lex
+        self.token_type = token_type
+
+    def __str__(self):
+        return f'{self.token_type}: {self.lex}'
+
+    def __repr__(self):
+        return str(self)
+
+    @property
+    def is_valid(self):
+        return True
+
+class UnknownToken(Token):
+    def __init__(self, lex):
+        Token.__init__(self, lex, None)
+
+    def transform_to(self, token_type):
+        return Token(self.lex, token_type)
+
+    @property
+    def is_valid(self):
+        return False
+
+
+
+class RegexHandler:
+    def __init__(self):
+        self.grammar = self._build_grammar()
+    
+    def _build_grammar(self):
+        G = Grammar()
+        E = G.NonTerminal('E', True)
+        T, F = G.NonTerminals('T F')
+        self.pipe, self.star, self.opar, self.cpar, self.symbol = G.Terminals('| * ( ) symbol')
+
+        # > PRODUCTIONS??? LR(1) Grammar
+        E %= E + self.pipe + T, lambda h,s: UnionNode(s[1],s[3])
+        E %= T, lambda h,s: s[1]
+
+        T %= T + F, lambda h,s: ConcatNode(s[1],s[2])
+        T %= F, lambda h,s: s[1]
+
+        F %= self.opar + E + self.cpar, lambda h,s: s[2]
+        F %= F + self.star, lambda h,s: ClosureNode(s[1])
+        F %= self.symbol, lambda h,s: SymbolNode(s[1])
+
+        return G
+
+    def _regex_tokenizer(self, text, skip_whitespaces=True):
+        tokens = []
+        tmp = ''
+        text = text + '$'
+        
+        ignore_char = False
+
+        for char in text:
+            if skip_whitespaces and char.isspace():
+                continue
+            
+            if char == '&':
+                ignore_char = True
+                continue
+            if ignore_char:
+                ignore_char = False
+                tokens.append(Token(char,self.symbol))
+                continue
+            
+            if char == '|':
+                tokens.append(Token(char,self.pipe))
+            elif char == '*':
+                tokens.append(Token(char,self.star))
+            elif char == '(':
+                tokens.append(Token(char,self.opar))
+            elif char == ')':
+                tokens.append(Token(char,self.cpar))
+            elif char == '$':
+                tokens.append(Token('$', self.grammar.EOF))
+                break
+            else:
+                tokens.append(Token(char,self.symbol))
+            
+        return tokens
+
+    def _build_automaton(self, text):
+
+        # Obtener los tokens de la expresion regular
+        tokens = self._regex_tokenizer(text)
+
+        parser = LR1Parser(self.grammar)
+        derivations = parser([tok.token_type for tok in tokens])
+
+        tokens.reverse()
+        derivations.reverse()
+
+        result = evaluate_parse(derivations, tokens)
+
+        nfa = result.evaluate()
+
+        dfa = nfa_to_dfa(nfa)
+
+        return dfa
+
+    def __call__(self,text):
+        return self._build_automaton(text)
+
+
+
+
+
+
+# ************************************************
+# ******************** TEST **********************
+# ************************************************
+
+if __name__ == "__main__":
+
+    nonzero_digits = '|'.join(str(n) for n in range(1,10))
+    letters = '|'.join(chr(n) for n in range(ord('a'),ord('z')+1))
+
+    automMaker = RegexHandler()
+
+    dfa1 = automMaker('for')
+    dfa2 = automMaker(f'({nonzero_digits})(0|{nonzero_digits})*')
+    dfa3 = automMaker(f'({letters})({letters}|0|{nonzero_digits})*')
+
+    text = 'fore324 23fd for'
+
+    while text:
+        regexs = [
+            {
+                "tag": "num",
+                "autom":dfa2,
+                "active":True,
+                "state":[0],
+                "count":0
+            },
+            {
+                "tag": "for",
+                "autom":dfa1,
+                "active":True,
+                "state":[0],
+                "count":0
+            },
+            {
+                "tag": "ident",
+                "autom":dfa3,
+                "active":True,
+                "state":[0],
+                "count":0
+            }
+        ]
+
+        count = 0
+
+        for c in text:
+
+            count += 1
+
+            if c == ' ':
+                break
+
+            for regex in regexs:
+                if not regex['active']:
+                    continue
+
+                state = regex['state']
+                new_state = move(regex['autom'],state,c)
+                
+                if new_state == set():
+                    regex['active'] = False
+                    continue
+
+                regex['count'] += 1
+                regex['state'] = new_state
+            
+            accepted = False
+            for r in regexs:
+                accepted = accepted or r['active']
+            
+            if not accepted:
+                count -= 1
+                break
+                
+        tag = getAceptedTag(regexs)
+        
+        print(tag,text[:count])
+
+        text = text[count:]
+        
