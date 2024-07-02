@@ -1,7 +1,7 @@
-from lexer.pycompiler import *
+from utils.pycompiler import *
 from parser.TreeDef import *
 from parser.tools import *
-from lexer.ast import get_printer
+from utils.ast import get_printer
 
 def DefGrammar():
 

@@ -1,5 +1,5 @@
-from lexer.pycompiler import Sentence, Production
-from lexer.utils import ContainerSet, Token, UnknownToken
+from utils.pycompiler import Sentence, Production
+from utils.utils import ContainerSet, Token, UnknownToken
 
 
 class BasicHulk:

@@ -1,9 +1,68 @@
 from lexer.tokenizer import *
 
+nonzero_digits = '|'.join(str(n) for n in range(1,10))
+letters = '|'.join(chr(n) for n in range(ord('a'),ord('z')+1))
+
+# Expresiones regulares
+regular_expresions = [
+    ('function', 'function'),
+    ('sin', 'sin'),
+    ('cos', 'cos'),
+    ('sqrt', 'sqrt'),
+    ('exp', 'exp'),
+    ('log', 'log'),
+    ('rand', 'rand'),
+    ('print', 'print'),
+    ('PI', 'PI'),
+    ('E', 'E'),
+    ('let', 'let'),
+    ('in', 'in'),
+    ('true', 'true'),
+    ('false', 'false'),
+    ('if', 'if'), 
+    ('else', 'else'),
+    ('elif', 'elif'),
+    ('while', 'while'),
+    ('for', 'for'),
+    ('range', 'range'),
+    ('num', f'0|({nonzero_digits})(0|{nonzero_digits})*'),
+    ('id', f'({letters})({letters}|0|{nonzero_digits})*'),
+    ('string', f'"({letters}|0|{nonzero_digits})*"'),
+    ('let', 'let'),
+    ('asign1','='),
+    ('asign2',':='),
+    ('coma', ','),
+    ('lpar', '#('),
+    ('rpar', '#)'),
+    ('plus', '+'),
+    ('minus', '-'),
+    ('times','#*'),
+    ('divide', '/'),
+    ('pow', '^'),
+    ('mod', '%'),
+    ('and', '&'),
+    ('or', '#|'),
+    ('not', '!'),
+    ('eq', '=='),
+    ('neq', '!='),
+    ('gt', '>'),
+    ('ge', '>='),
+    ('lt', '<'),
+    ('le', '<='),
+    ('concat', '@'),
+    ('lbrace', '{'),
+    ('rbrace', '}'),
+    ('semicolon', ';'),
+    ('arrow', '=>')
+]
+
 class Lexer:
-    def __init__(self, table, eof):
+    def __init__(self, eof):
+        global regular_expresions
+        
         self.eof = eof
-        self.regexs = self._build_regexs(table)
+        self.regexs = self._build_regexs(regular_expresions)
+        self.errors = []
     
     def _build_regexs(self, table):
         automatonMaker = RegexHandler()
@@ -79,7 +138,12 @@ class Lexer:
                 head -= 1
                 break
                 
-        tag = self._getAceptedTag(self.regexs)
+        tag = None
+        
+        if head > 0:
+            tag = self._getAceptedTag(self.regexs)
+        else:
+            head = 1
 
         lex = text[:head]
         
@@ -92,14 +156,19 @@ class Lexer:
             self._reset_automs()
             
             lex,tag = self._walk(text)
-            yield lex,tag
             text = text.lstrip(lex)
+            
+            if tag is None:
+                self.errors.append(f'Caracter {lex} desconocido')
+                continue
+            yield lex,tag
+            
         yield '$', self.eof
     
     def __call__(self, text):
         return [ Token(lex, ttype) for lex, ttype in self._tokenize(text) ]
     
-    
+
     
     
     
@@ -114,16 +183,15 @@ if __name__ == "__main__":
     # print('Non-zero digits:', nonzero_digits)
     # print('Letters:', letters)
 
-    lexer = Lexer([
-        ('num', f'({nonzero_digits})(0|{nonzero_digits})*'),
-        ('id', f'({letters})({letters}|0|{nonzero_digits})*'),
-        ('let', 'let'),
-        ('equal','='),
-        ('times','&*')
-    ], 'eof')
+    lexer = Lexer('eof')
 
-    text = 'let five = 1*5'
+    text = 'let a = 0 in let b #= a := 1 in {print(a);print(b);};'
     print(f'\n>>> Tokenizando: "{text}"')
     tokens = lexer(text)
-    print(tokens)
+    
+    if lexer.errors:
+        for e in lexer.errors:
+            print(e)
+    
+    print('\n',tokens)
 

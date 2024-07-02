@@ -1,4 +1,4 @@
-from lexer.pycompiler import Production, Sentence, Symbol, EOF, Epsilon
+from utils.pycompiler import Production, Sentence, Symbol, EOF, Epsilon
 
 
 

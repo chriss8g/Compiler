@@ -1,6 +1,6 @@
-from lexer.pycompiler import Item
-from lexer.automate import State, multiline_formatter
-from lexer.utils import ContainerSet
+from utils.pycompiler import Item
+from utils.automate import State, multiline_formatter
+from utils.utils import ContainerSet
 
 def compute_local_first(firsts, alpha):
     first_alpha = ContainerSet()

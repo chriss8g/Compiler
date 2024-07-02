@@ -1,4 +1,4 @@
-from lexer.pycompiler import Grammar
+from utils.pycompiler import Grammar
 from lexer.Nodes import *
 from parser.tools import *
 
@@ -76,7 +76,7 @@ class RegexHandler:
             if skip_whitespaces and char.isspace():
                 continue
             
-            if char == '&':
+            if char == '#':
                 ignore_char = True
                 continue
             if ignore_char:
@@ -123,86 +123,3 @@ class RegexHandler:
         return self._build_automaton(text)
 
 
-
-
-
-
-# ************************************************
-# ******************** TEST **********************
-# ************************************************
-
-if __name__ == "__main__":
-
-    nonzero_digits = '|'.join(str(n) for n in range(1,10))
-    letters = '|'.join(chr(n) for n in range(ord('a'),ord('z')+1))
-
-    automMaker = RegexHandler()
-
-    dfa1 = automMaker('for')
-    dfa2 = automMaker(f'({nonzero_digits})(0|{nonzero_digits})*')
-    dfa3 = automMaker(f'({letters})({letters}|0|{nonzero_digits})*')
-
-    text = 'fore324 23fd for'
-
-    while text:
-        regexs = [
-            {
-                "tag": "num",
-                "autom":dfa2,
-                "active":True,
-                "state":[0],
-                "count":0
-            },
-            {
-                "tag": "for",
-                "autom":dfa1,
-                "active":True,
-                "state":[0],
-                "count":0
-            },
-            {
-                "tag": "ident",
-                "autom":dfa3,
-                "active":True,
-                "state":[0],
-                "count":0
-            }
-        ]
-
-        count = 0
-
-        for c in text:
-
-            count += 1
-
-            if c == ' ':
-                break
-
-            for regex in regexs:
-                if not regex['active']:
-                    continue
-
-                state = regex['state']
-                new_state = move(regex['autom'],state,c)
-                
-                if new_state == set():
-                    regex['active'] = False
-                    continue
-
-                regex['count'] += 1
-                regex['state'] = new_state
-            
-            accepted = False
-            for r in regexs:
-                accepted = accepted or r['active']
-            
-            if not accepted:
-                count -= 1
-                break
-                
-        tag = getAceptedTag(regexs)
-        
-        print(tag,text[:count])
-
-        text = text[count:]
-        

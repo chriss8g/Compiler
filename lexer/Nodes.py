@@ -1,4 +1,4 @@
-from lexer.automate import *
+from utils.automate import *
 
 class Node:
     def evaluate(self):

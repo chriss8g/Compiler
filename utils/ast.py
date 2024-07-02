@@ -1,4 +1,4 @@
-import lexer.visitor as visitor
+import utils.visitor as visitor
 
 class Node:
     def evaluate(self):
