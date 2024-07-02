@@ -84,6 +84,10 @@ class ForNode(StatementNode, ExpressionNode):
         self.iterable = iterable
         self.expr = expr
 
+class AsignNode(StatementNode, ExpressionNode):
+    def __init__(self, idx, expr):
+        self.id = idx
+        self.expr = expr
 
 class WhileNode(StatementNode, ExpressionNode):
     def __init__(self, condition, expr):
@@ -221,3 +225,41 @@ class OrNode(LogicNode):
 
 class ConcatNode(StringOpNode):
     pass
+
+class AndNode(LogicNode):
+    pass
+
+class OrNode(LogicNode):
+    pass
+
+class NotNode(LogicNode):
+    def __init__(self, expr):
+        self.expr = expr
+
+class EqualNode(ComparativeNode):
+    pass
+
+class NotEqualNode(ComparativeNode):
+    pass
+
+class GreaterNode(ComparativeNode):
+    pass
+
+class LessNode(ComparativeNode):
+    pass
+
+class GreaterEqualNode(ComparativeNode):
+    pass
+
+class LessEqualNode(ComparativeNode):
+    pass
+
+class ConcatNode(StringOpNode):
+    pass
+
+class ForRangeNode(StatementNode):
+    def __init__(self, idx, init, final, body):
+        self.id = idx
+        self.init = init
+        self.final = final
+        self.body = body
