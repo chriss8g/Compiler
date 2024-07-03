@@ -32,52 +32,52 @@ class TestCodeToAST(unittest.TestCase):
         self.assertIsNotNone(ast.ast)
         self.assertIn('WhileNode', repr(ast))
 
-    # def test_for_loop(self):
-    #     code = 'for ( x in range ( 0 , 10 ) ) print x ;'#code = 'for (x in range(0, 10)) print x;'
-    #     ast = CodeToAST(code)
-    #     self.assertIsNotNone(ast.ast)
-    #     self.assertIn('ForRangeNode', repr(ast))
+    def test_for_loop(self):
+        code = 'for (x in range(0, 10)) print (x);'
+        ast = CodeToAST(code)
+        self.assertIsNotNone(ast.ast)
+        self.assertIn('ForRangeNode', repr(ast))
 
-    # def test_if_else(self):
-    #     code = 'if ( x < 10 ) print " less " ; else print " more " ;' #code = 'if (x < 10) print "less"; else print "more";'
-    #     ast = CodeToAST(code)
-    #     self.assertIsNotNone(ast.ast)
-    #     self.assertIn('IfNode', repr(ast))
+    def test_if_else(self):
+        code = 'if (x < 10) print("less"); else print("more");'
+        ast = CodeToAST(code)
+        self.assertIsNotNone(ast.ast)
+        self.assertIn('IfNode', repr(ast))
 
-    # def test_complex_expression(self):
-    #     code = 'let x = 5 in let y = 6 in x + y * ( x - y ) ;' #code = 'let x = 5 in let y = 6 in x + y * (x - y);'
-    #     ast = CodeToAST(code)
-    #     self.assertIsNotNone(ast.ast)
-    #     self.assertIn('VarDeclarationNode', repr(ast))
+    def test_complex_expression(self):
+        code = 'let x = 5 in let y = 6 in x + y * (x - y);'
+        ast = CodeToAST(code)
+        self.assertIsNotNone(ast.ast)
+        self.assertIn('VarDeclarationNode', repr(ast))
 
-    # def test_function_call(self):
-    #     code = 'let x = f ( 5 , 7 ) in x + 1 ;' #code = 'let x = f(5, 7) in x + 1;'
-    #     ast = CodeToAST(code)
-    #     self.assertIsNotNone(ast.ast)
-    #     self.assertIn('CallNode', repr(ast))
+    def test_function_call(self):
+        code = 'let x = f(5, 7) in x + 1;'
+        ast = CodeToAST(code)
+        self.assertIsNotNone(ast.ast)
+        self.assertIn('CallNode', repr(ast))
 
-    # def test_object_creation(self):
-    #     code = 'new MyClass ( 5 , " hello " ) ;' #code = 'new MyClass(5, "hello");'
-    #     ast = CodeToAST(code)
-    #     self.assertIsNotNone(ast.ast)
-    #     self.assertIn('ObjectCreationNode', repr(ast))
+    def test_object_creation(self):
+        code = 'new MyClass(5, "hello");'
+        ast = CodeToAST(code)
+        self.assertIsNotNone(ast.ast)
+        self.assertIn('ObjectCreationNode', repr(ast))
 
-    # def test_method_call(self):
-    #     code = 'obj . method ( 1 , 2 ) ;' #code = 'obj.method(1, 2);'
-    #     ast = CodeToAST(code)
-    #     self.assertIsNotNone(ast.ast)
-    #     self.assertIn('MethodCallNode', repr(ast))
+    def test_method_call(self):
+        code = 'obj.method(1, 2);'
+        ast = CodeToAST(code)
+        self.assertIsNotNone(ast.ast)
+        self.assertIn('MethodCallNode', repr(ast))
 
-    # def test_type_declaration(self):
-    #     code = '''
-    #         type MyClass {
-    #             a = 5 ;
-    #             function method ( x ) => x + self . a ;
-    #         }
-    #     '''
-    #     ast = CodeToAST(code)
-    #     self.assertIsNotNone(ast.ast)
-    #     self.assertIn('TypeNode', repr(ast))
+    def test_type_declaration(self):
+        code = '''
+            type MyClass {
+                a = 5 ;
+                method(x) => x + self.a ;
+            }
+        '''
+        ast = CodeToAST(code)
+        self.assertIsNotNone(ast.ast)
+        self.assertIn('TypeNode', repr(ast))
         
     # def test_super(self):
     #     code = '''
@@ -117,7 +117,6 @@ class TestCodeToAST(unittest.TestCase):
     #     '''
     #     ast = CodeToAST(code)
     #     self.assertIsNotNone(ast.ast)
-    #     self.assertIn('TypeNode', repr(ast))
 
 if __name__ == '__main__':
     unittest.main()

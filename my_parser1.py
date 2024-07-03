@@ -110,10 +110,9 @@ class CodeToAST:
         expr %= whilex + opar + expr + cpar + stat, lambda h, s: WhileNode(s[3], s[5])
         expr %= whilex + opar + expr + cpar + lbrace + stat_list + rbrace, lambda h, s: WhileNode(s[3], s[6])
 
-        # stat %= forx + opar + idx + inx + expr + cpar + stat, lambda h, s: ForNode(s[3], s[5], s[7])
-        # stat %= forx + opar + idx + inx + rangex + opar + expr + comma + expr + cpar + cpar + stat, lambda h, s: ForRangeNode(s[3], s[5], s[7], s[9])
-        # stat %= ifx + opar + expr + cpar + stat + elsex + stat, lambda h, s: IfNode(s[3], s[5], s[7], [], [])
-        # stat %= ifx + opar + expr + cpar + stat + elifx + opar + expr + cpar + stat + elsex + stat, lambda h, s: IfNode(s[3], s[5], s[11], [s[8]], [s[10]])
+        expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + expr + cpar + cpar + expr, lambda h, s: ForRangeNode(s[3], s[7], s[9], s[12])
+        expr %= ifx + opar + expr + cpar + stat + elsex + expr, lambda h, s: IfNode(s[3], s[5], s[7], [], [])
+        expr %= ifx + opar + expr + cpar + stat + elifx + opar + expr + cpar + stat + elsex + expr, lambda h, s: IfNode(s[3], s[5], s[11], [s[8]], [s[10]])
         # stat %= lbrace + stat_list + rbrace, lambda h, s: BlockNode(s[2])
         # stat %= idx + asign2 + expr, lambda h, s: AsignNode(s[1], s[3])
         stat %= expr + semi, lambda h,s : s[1]
@@ -137,25 +136,26 @@ class CodeToAST:
         expr %= subexpr, lambda h, s: s[1]
         subexpr %= term, lambda h, s: s[1]
 
-        # term %= term + star + factor, lambda h, s: StarNode(s[1], s[3])
-        # term %= term + div + factor, lambda h, s: DivNode(s[1], s[3])
-        # term %= term + powx + factor, lambda h, s: PowNode(s[1], s[3])
-        # term %= term + mod + factor, lambda h, s: ModNode(s[1], s[3])
+        term %= term + star + factor, lambda h, s: StarNode(s[1], s[3])
+        term %= term + div + factor, lambda h, s: DivNode(s[1], s[3])
+        term %= term + powx + factor, lambda h, s: PowNode(s[1], s[3])
+        term %= term + mod + factor, lambda h, s: ModNode(s[1], s[3])
         term %= factor, lambda h, s: s[1]
 
-        # factor %= sin + opar + expr + cpar, lambda h, s: SinNode(s[3])
-        # factor %= cos + opar + expr + cpar, lambda h, s: CosNode(s[3])
-        # factor %= sqrt + opar + expr + cpar, lambda h, s: SqrtNode(s[3])
-        # factor %= exp + opar + expr + cpar, lambda h, s: ExpNode(s[3])
-        # factor %= log + opar + expr + cpar, lambda h, s: LogNode(s[3])
-        # factor %= rand + opar + cpar, lambda h, s: RandNode()
+        factor %= sin + opar + expr + cpar, lambda h, s: SinNode(s[3])
+        factor %= cos + opar + expr + cpar, lambda h, s: CosNode(s[3])
+        factor %= sqrt + opar + expr + cpar, lambda h, s: SqrtNode(s[3])
+        factor %= exp + opar + expr + cpar, lambda h, s: ExpNode(s[3])
+        factor %= log + opar + expr + cpar, lambda h, s: LogNode(s[3])
+        factor %= rand + opar + cpar, lambda h, s: RandNode()
         factor %= atom, lambda h, s: s[1]
 
-        # func_call %= idx + opar + expr_list + cpar, lambda h, s: CallNode(s[1], s[3])
-        # func_call %= idx + opar + cpar, lambda h, s: CallNode(s[1], [])
+        func_call %= idnode + opar + expr_list + cpar, lambda h, s: CallNode(s[1], s[3])
+        func_call %= idnode + opar + cpar, lambda h, s: CallNode(s[1], [])
 
-        # expr_list %= expr, lambda h, s: [s[1]]
-        # expr_list %= expr + comma + expr_list, lambda h, s: [s[1]] + s[3]
+        expr_list %= expr, lambda h, s: [s[1]]
+        expr_list %= expr + comma + expr_list, lambda h, s: [s[1]] + s[3]
+        # expr %= func_call, lambda h, s: s[1]
 
         asig %= idnode + asign1 + expr, lambda h, s: AsignNode(s[1],s[3])
         asig2 %= idnode + asign2 + expr, lambda h, s: AsignNode(s[1],s[3])
@@ -166,31 +166,34 @@ class CodeToAST:
         asig_list %= asig + comma + asig_list, lambda h, s: [s[1]] + s[3]
 
         atom %= number, lambda h, s: ConstantNumNode(s[1])
-        # atom %= true, lambda h, s: BoolNode(s[1])
-        # atom %= false, lambda h, s: BoolNode(s[1])
-        # atom %= pi, lambda h, s: ConstantNumNode(s[1])
-        # atom %= e, lambda h, s: ConstantNumNode(s[1])
-        # atom %= string, lambda h, s: StringNode(s[1])
+        atom %= true, lambda h, s: BoolNode(s[1])
+        atom %= false, lambda h, s: BoolNode(s[1])
+        atom %= pi, lambda h, s: ConstantNumNode(s[1])
+        atom %= e, lambda h, s: ConstantNumNode(s[1])
+        atom %= string, lambda h, s: StringNode(s[1])
         atom %= idnode, lambda h, s: s[1]
-        # atom %= func_call, lambda h, s: s[1]
         atom %= opar + expr + cpar, lambda h, s: s[2]
 
         idnode %= idx, lambda h, s: VariableNode(s[1])
         
 
         # expr %= expr + concat_space + term, lambda h, s: ConcatSpaceNode(s[1], s[3])
-        # factor %= selfx + dot + idx, lambda h, s: SelfNode(s[3])
+        atom %= selfx + dot + idnode, lambda h, s: SelfNode(s[3])
 
-        # type_declaration %= typex + idx + lbrace + type_body + rbrace, lambda h, s: TypeNode(s[2], s[4])
-        # type_declaration %= typex + idx + inherits + idx + lbrace + type_body + rbrace, lambda h, s: TypeNode(s[2], s[6], s[4])
-        # type_body %= attribute_declaration + method_declaration, lambda h, s: TypeBodyNode(s[1], s[2])
+        stat %= type_declaration, lambda h, s: s[1]
+        type_declaration %= typex + idnode + lbrace + type_body + rbrace, lambda h, s: TypeNode(s[2], s[4])
+        type_declaration %= typex + idnode + inherits + idnode + lbrace + type_body + rbrace, lambda h, s: TypeNode(s[2], s[6], s[4])
+        type_body %= attribute_declaration + method_declaration, lambda h, s: TypeBodyNode([s[1]], [s[2]])
 
-        # attribute_declaration %= idx + asign1 + expr + semi, lambda h, s: AttributeNode(s[1], s[3])
-        # method_declaration %= idx + opar + arg_list + cpar + arrow + expr, lambda h, s: MethodNode(s[1], s[3], s[6])
-        # method_declaration %= idx + opar + arg_list + cpar + arrow + lbrace + stat_list + rbrace, lambda h, s: MethodNode(s[1], s[3], s[7])
+        attribute_declaration %= idnode + asign1 + expr + semi, lambda h, s: AttributeNode(s[1], s[3])
+        method_declaration %= idnode + opar + arg_list + cpar + arrow + expr + semi, lambda h, s: MethodNode(s[1], s[3], [s[6]])
+        method_declaration %= idnode + opar + arg_list + cpar + arrow + lbrace + stat_list + rbrace, lambda h, s: MethodNode(s[1], s[3], s[7])
 
-        # object_creation %= new + idx + opar + expr_list + cpar, lambda h, s: ObjectCreationNode(s[2], s[4])
-        # method_call %= idx + dot + idx + opar + expr_list + cpar, lambda h, s: MethodCallNode(s[1], s[3], s[5])
+        object_creation %= new + idnode + opar + expr_list + cpar, lambda h, s: ObjectCreationNode(s[2], s[4])
+        expr %= object_creation, lambda h, s: s[1]
+        
+        method_call %= idnode + dot + idnode + opar + expr_list + cpar, lambda h, s: MethodCallNode(s[1], s[3], s[5])
+        expr %= method_call, lambda h, s: s[1]
 
         #############################################################################
 
@@ -226,10 +229,7 @@ class CodeToAST:
 if __name__ == "__main__":
     
     text = '''
-                let a = 10 in while (a >= 0) {
-                        print(a);
-                        a := a - 1;
-                        };
+                let x = f(5, 7) in x + 1;
            '''
  
     codeToAST = CodeToAST(text)

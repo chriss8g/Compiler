@@ -220,8 +220,7 @@ class ConcatSpaceNode(BinaryNode):
         super().__init__(left, right)
 
 class SelfNode(AtomicNode):
-    def __init__(self, member=None):
-        self.member = member
+    pass
 
 class TypeNode(Node):
     def __init__(self, name, body, base_type=None):

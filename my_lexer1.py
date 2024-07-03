@@ -12,6 +12,7 @@ regular_expresions = [
     ('type', 'type'),
     ('return', 'return'),
     ('new', 'new'),
+    ('self', 'self'),
     ('dot', '.'),
     ('sin', 'sin'),
     ('cos', 'cos'),
