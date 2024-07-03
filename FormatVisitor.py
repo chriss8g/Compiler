@@ -19,7 +19,10 @@ class FormatVisitor(object):
             ans += f'{node.args[i].id} = <expr>,'
         ans += f' in <expr>'
         values = '\n'.join(self.visit(child, tabs + 1) for child in node.args)
-        expr = self.visit(node.body, tabs + 1)
+        if(isinstance(node.body, list)):
+            expr = '\n'.join(self.visit(child, tabs + 1) for child in node.body)
+        else:
+            expr = self.visit(node.body, tabs + 1)
         return f'{ans}\n{values}\n{expr}'
 
     @visitor.when(FuncDeclarationNode)

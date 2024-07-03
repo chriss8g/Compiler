@@ -79,44 +79,42 @@ class TestCodeToAST(unittest.TestCase):
         self.assertIsNotNone(ast.ast)
         self.assertIn('TypeNode', repr(ast))
         
-    # def test_super(self):
-    #     code = '''
-    #             type MyClass {
-    #                 x = 0;
-    #                 y = 0;
+    def test_super(self):
+        code = '''
+                type MyClass {
+                    x = 0;
                     
-    #                 my_method(a, b) => {
-    #                     let result = a + b;
-    #                     return result;
-    #                 }
-    #             }
+                    my_method(a, b) => {
+                        a+b;
+                    }
+                }
 
-    #             let a = 10, b = 20, c = 30 in {
-    #                 print(a + b * c);
+                let a = 10, b = 20, c = 30 in {
+                    print(a + b * c);
                     
-    #                 if (a > b) {
-    #                     print(a);
-    #                 } else {
-    #                     print(b);
-    #                 }
+                    if (a > b) {
+                        print(a);
+                    } else {
+                        print(b);
+                    };
                     
-    #                 while (a < c) {
-    #                     print(a);
-    #                     a := a + 1;
-    #                 }
+                    while (a < c) {
+                        print(a);
+                        a := a + 1;
+                    };
                     
-    #                 for (i in range(3, 4)) {
-    #                     print(i);
-    #                 }
+                    for (i in range(3, 4)) {
+                        print(i);
+                    };
                     
-    #                 let d = new MyClass(5, 10) in {
-    #                     d.x := d.my_method(2, 3);
-    #                     print(d.x);
-    #                 }
-    #             }
-    #     '''
-    #     ast = CodeToAST(code)
-    #     self.assertIsNotNone(ast.ast)
+                    let d = new MyClass(5, 10) in {
+                        d.x := d.my_method(2, 3);
+                        print(d.x);
+                    };
+                };
+        '''
+        ast = CodeToAST(code)
+        self.assertIsNotNone(ast.ast)
 
 if __name__ == '__main__':
     unittest.main()

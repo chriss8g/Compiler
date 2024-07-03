@@ -104,15 +104,24 @@ class CodeToAST:
         stat_list %= stat + stat_list, lambda h, s: [s[1]] + s[2]
 
         expr %= let + asig_list + inx + expr, lambda h, s: VarDeclarationNode(s[2], s[4])
+        expr %= let + asig_list + inx + lbrace + stat_list + rbrace, lambda h, s: VarDeclarationNode(s[2], s[5])
 
         
         stat %= functionx + idnode + opar + arg_list + cpar + arrow + stat, lambda h, s: FuncDeclarationNode(s[2], s[4], s[7])
+        
         expr %= whilex + opar + expr + cpar + stat, lambda h, s: WhileNode(s[3], s[5])
         expr %= whilex + opar + expr + cpar + lbrace + stat_list + rbrace, lambda h, s: WhileNode(s[3], s[6])
 
         expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + expr + cpar + cpar + expr, lambda h, s: ForRangeNode(s[3], s[7], s[9], s[12])
+        expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + expr + cpar + cpar + lbrace + stat_list + rbrace, lambda h, s: ForRangeNode(s[3], s[7], s[9], s[13])
+        
         expr %= ifx + opar + expr + cpar + stat + elsex + expr, lambda h, s: IfNode(s[3], s[5], s[7], [], [])
         expr %= ifx + opar + expr + cpar + stat + elifx + opar + expr + cpar + stat + elsex + expr, lambda h, s: IfNode(s[3], s[5], s[11], [s[8]], [s[10]])
+        expr %= ifx + opar + expr + cpar + lbrace + stat_list + rbrace + elsex + lbrace + stat_list + rbrace, lambda h, s: IfNode(s[3], s[6], s[10], [], [])
+        expr %= ifx + opar + expr + cpar + lbrace + stat_list + rbrace + elifx + opar + expr + cpar + lbrace + stat_list + rbrace + elsex + lbrace + stat_list + rbrace, lambda h, s: IfNode(s[3], s[6], s[11], [s[10]], [s[13]])
+        
+        
+        
         # stat %= lbrace + stat_list + rbrace, lambda h, s: BlockNode(s[2])
         # stat %= idx + asign2 + expr, lambda h, s: AsignNode(s[1], s[3])
         stat %= expr + semi, lambda h,s : s[1]
@@ -125,7 +134,7 @@ class CodeToAST:
         subexpr %= subexpr + minus + term, lambda h, s: MinusNode(s[1], s[3])
         subexpr %= subexpr + andx + term, lambda h, s: AndNode(s[1], s[3])
         subexpr %= subexpr + orx + term, lambda h, s: OrNode(s[1], s[3])
-        subexpr %= subexpr + term, lambda h, s: NotNode(s[2])
+        subexpr %= notx + term, lambda h, s: NotNode(s[2])
         subexpr %= subexpr + eq + term, lambda h, s: EqualNode(s[1], s[3])
         subexpr %= subexpr + ne + term, lambda h, s: NotEqualNode(s[1], s[3])
         subexpr %= subexpr + gt + term, lambda h, s: GreaterNode(s[1], s[3])
@@ -155,10 +164,10 @@ class CodeToAST:
 
         expr_list %= expr, lambda h, s: [s[1]]
         expr_list %= expr + comma + expr_list, lambda h, s: [s[1]] + s[3]
-        # expr %= func_call, lambda h, s: s[1]
+        expr %= func_call, lambda h, s: s[1]
 
         asig %= idnode + asign1 + expr, lambda h, s: AsignNode(s[1],s[3])
-        asig2 %= idnode + asign2 + expr, lambda h, s: AsignNode(s[1],s[3])
+        asig2 %= atom + asign2 + expr, lambda h, s: AsignNode(s[1],s[3])
 
         stat %= asig2 + semi, lambda h, s: s[1]
 
@@ -177,8 +186,10 @@ class CodeToAST:
         idnode %= idx, lambda h, s: VariableNode(s[1])
         
 
-        # expr %= expr + concat_space + term, lambda h, s: ConcatSpaceNode(s[1], s[3])
+        subexpr %= subexpr + concat_space + term, lambda h, s: ConcatSpaceNode(s[1], s[3])
         atom %= selfx + dot + idnode, lambda h, s: SelfNode(s[3])
+        atom %= idnode + dot + idnode, lambda h, s: SelfNode(s[3]) #!!!
+
 
         stat %= type_declaration, lambda h, s: s[1]
         type_declaration %= typex + idnode + lbrace + type_body + rbrace, lambda h, s: TypeNode(s[2], s[4])
@@ -229,7 +240,37 @@ class CodeToAST:
 if __name__ == "__main__":
     
     text = '''
-                let x = f(5, 7) in x + 1;
+                type MyClass {
+                    x = 0;
+                    
+                    my_method(a, b) => {
+                        a+b;
+                    }
+                }
+
+                let a = 10, b = 20, c = 30 in {
+                    print(a + b * c);
+                    
+                    if (a > b) {
+                        print(a);
+                    } else {
+                        print(b);
+                    };
+                    
+                    while (a < c) {
+                        print(a);
+                        a := a + 1;
+                    };
+                    
+                    for (i in range(3, 4)) {
+                        print(i);
+                    };
+                    
+                    let d = new MyClass(5, 10) in {
+                        d.x := d.my_method(2, 3);
+                        print(d.x);
+                    };
+                };
            '''
  
     codeToAST = CodeToAST(text)
