@@ -12,22 +12,22 @@ class CodeToAST:
         self.G = Grammar()
 
         # Definir los no terminales
-        program = self.G.NonTerminal('<program>', startSymbol=True)
-        stat_list, stat = self.G.NonTerminals('<stat_list> <stat>')
-        subexpr, expr, term, factor, atom = self.G.NonTerminals('<subexpr> <expr> <term> <factor> <atom>')
-        arg_list, func_call, expr_list, asig_list, asig, asig2 = self.G.NonTerminals('<arg_list> <func_call> <expr_list> <asig_list> <asig> <asig2>')
-        type_declaration, type_body = self.G.NonTerminals('<type_declaration> <type_body>')
-        attribute_declaration, method_declaration = self.G.NonTerminals('<attribute_declaration> <method_declaration>')
-        object_creation, method_call,idnode = self.G.NonTerminals('<object_creation> <method_call> <idnode>')
+        # program = self.G.NonTerminal('<program>', startSymbol=True)
+        # stat_list, stat = self.G.NonTerminals('<stat_list> <stat>')
+        # subexpr, expr, term, factor, atom = self.G.NonTerminals('<subexpr> <expr> <term> <factor> <atom>')
+        # arg_list, func_call, expr_list, asig_list, asig, asig2 = self.G.NonTerminals('<arg_list> <func_call> <expr_list> <asig_list> <asig> <asig2>')
+        # type_declaration, type_body = self.G.NonTerminals('<type_declaration> <type_body>')
+        # attribute_declaration, method_declaration = self.G.NonTerminals('<attribute_declaration> <method_declaration>')
+        # object_creation, method_call,idnode = self.G.NonTerminals('<object_creation> <method_call> <idnode>')
 
         # Definir los terminales
         let, functionx, inx = self.G.Terminals('let function in')
         printx, sin, cos, sqrt, exp, log, rand = self.G.Terminals('print sin cos sqrt exp log rand')
-        semi, comma, opar, cpar, arrow = self.G.Terminals('; , ( ) =>')
+        semicolon, colon, comma, opar, cpar, arrow = self.G.Terminals('; : , ( ) =>')
         asign1, plus, minus, star, div = self.G.Terminals('= + - * /')
         powx, mod, andx, orx, notx = self.G.Terminals('^ % & | !')
         eq, gt, lt, ge, le = self.G.Terminals('== > < >= <=')
-        ne, concat, lbrace, rbrace, asign2 = self.G.Terminals('!= @ { } :=')
+        ne, concat, obrace, cbrace, asign2 = self.G.Terminals('!= @ { } :=')
         pi, e, true, false = self.G.Terminals('PI E true false')
         idx, number, string = self.G.Terminals('id num string')
         ifx, elsex, elifx, whilex, forx, rangex = self.G.Terminals('if else elif while for range')
@@ -35,6 +35,20 @@ class CodeToAST:
         selfx, new = self.G.Terminals('self new')
         dot, concat_space, returnx = self.G.Terminals('. @@ return')
 
+
+        program = self.G.NonTerminal('<program>', startSymbol=True)
+        stats,specialBlock = self.G.NonTerminals('<stats> <specialBlock>')
+        expr,blockExpr= self.G.NonTerminals('<expr> <blockExpr>')
+        asig_list,idx,asig1 = self.G.NonTerminals('<asig_list> <idx> <asig1>')
+        atom,idnode,specialBlock_list = self.G.NonTerminals('<atom> <idnode> <specialBlock_list>')
+        subexpr, expr, term, factor, atom = self.G.NonTerminals('<subexpr> <expr> <term> <factor> <atom>')
+        protocol,idx,extension,protocolBody = self.G.NonTerminals('<protocol> <idx> <extension> <protocolBody>')
+        extends,arg_typed = self.G.NonTerminals('<extends> <arg_typed>')
+        type_body,inherit_item = self.G.NonTerminals('<type_body> <inherit_item>')
+        arg_list,func_body,arg_expr,arg_opt_typed = self.G.NonTerminals('<arg_list> <func_body> <arg_expr> <arg_opt_typed>')
+        attribute_declaration,method_declaration = self.G.NonTerminals('<attribute_declaration> <method_declaration>')
+        item_opt_typed = self.G.NonTerminals('<item_opt_typed>')
+ 
         terminals = {}
         terminals['let'] = let
         terminals['function'] = functionx
@@ -46,7 +60,7 @@ class CodeToAST:
         terminals['exp'] = exp
         terminals['log'] = log
         terminals['rand'] = rand
-        terminals['semi'] = semi
+        terminals['semi'] = semicolon
         terminals['comma'] = comma
         terminals['opar'] = opar
         terminals['cpar'] = cpar
@@ -68,8 +82,8 @@ class CodeToAST:
         terminals['le'] = le
         terminals['ne'] = ne
         terminals['concat'] = concat
-        terminals['lbrace'] = lbrace
-        terminals['rbrace'] = rbrace
+        terminals['lbrace'] = obrace
+        terminals['rbrace'] = cbrace
         terminals['asign2'] = asign2
         terminals['pi'] = pi
         terminals['e'] = e
@@ -98,59 +112,182 @@ class CodeToAST:
         
 
         # Definir las producciones y sus acciones
-        program %= stat_list, lambda h, s: ProgramNode(s[1])
+        # program %= stat_list, lambda h, s: ProgramNode(s[1])
 
-        stat_list %= stat, lambda h, s: [s[1]]
-        stat_list %= stat + stat_list, lambda h, s: [s[1]] + s[2]
+        # stat_list %= stat, lambda h, s: [s[1]]
+        # stat_list %= stat + stat_list, lambda h, s: [s[1]] + s[2]
 
-        expr %= let + asig_list + inx + expr, lambda h, s: VarDeclarationNode(s[2], s[4])
-        expr %= let + asig_list + inx + lbrace + stat_list + rbrace, lambda h, s: VarDeclarationNode(s[2], s[5])
+        # expr %= let + asig_list + inx + expr, lambda h, s: VarDeclarationNode(s[2], s[4])
+        # expr %= let + asig_list + inx + lbrace + stat_list + rbrace, lambda h, s: VarDeclarationNode(s[2], s[5])
 
-        
-        stat %= functionx + idnode + opar + arg_list + cpar + arrow + stat, lambda h, s: FuncDeclarationNode(s[2], s[4], s[7])
-        
-        expr %= whilex + opar + expr + cpar + stat, lambda h, s: WhileNode(s[3], s[5])
-        expr %= whilex + opar + expr + cpar + lbrace + stat_list + rbrace, lambda h, s: WhileNode(s[3], s[6])
+        # expr %= whilex + opar + expr + cpar + stat, lambda h, s: WhileNode(s[3], s[5])
+        # expr %= whilex + opar + expr + cpar + lbrace + stat_list + rbrace, lambda h, s: WhileNode(s[3], s[6])
 
-        expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + expr + cpar + cpar + expr, lambda h, s: ForRangeNode(s[3], s[7], s[9], s[12])
-        expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + expr + cpar + cpar + lbrace + stat_list + rbrace, lambda h, s: ForRangeNode(s[3], s[7], s[9], s[13])
+        # expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + expr + cpar + cpar + expr, lambda h, s: ForRangeNode(s[3], s[7], s[9], s[12])
+        # expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + expr + cpar + cpar + lbrace + stat_list + rbrace, lambda h, s: ForRangeNode(s[3], s[7], s[9], s[13])
         
-        expr %= ifx + opar + expr + cpar + stat + elsex + expr, lambda h, s: IfNode(s[3], s[5], s[7], [], [])
-        expr %= ifx + opar + expr + cpar + stat + elifx + opar + expr + cpar + stat + elsex + expr, lambda h, s: IfNode(s[3], s[5], s[11], [s[8]], [s[10]])
-        expr %= ifx + opar + expr + cpar + lbrace + stat_list + rbrace + elsex + lbrace + stat_list + rbrace, lambda h, s: IfNode(s[3], s[6], s[10], [], [])
-        expr %= ifx + opar + expr + cpar + lbrace + stat_list + rbrace + elifx + opar + expr + cpar + lbrace + stat_list + rbrace + elsex + lbrace + stat_list + rbrace, lambda h, s: IfNode(s[3], s[6], s[11], [s[10]], [s[13]])
+        # expr %= ifx + opar + expr + cpar + stat + elsex + expr, lambda h, s: IfNode(s[3], s[5], s[7], [], [])
+        # expr %= ifx + opar + expr + cpar + stat + elifx + opar + expr + cpar + stat + elsex + expr, lambda h, s: IfNode(s[3], s[5], s[11], [s[8]], [s[10]])
+        # expr %= ifx + opar + expr + cpar + lbrace + stat_list + rbrace + elsex + lbrace + stat_list + rbrace, lambda h, s: IfNode(s[3], s[6], s[10], [], [])
+        # expr %= ifx + opar + expr + cpar + lbrace + stat_list + rbrace + elifx + opar + expr + cpar + lbrace + stat_list + rbrace + elsex + lbrace + stat_list + rbrace, lambda h, s: IfNode(s[3], s[6], s[11], [s[10]], [s[13]])
         
         
         
-        # stat %= lbrace + stat_list + rbrace, lambda h, s: BlockNode(s[2])
-        # stat %= idx + asign2 + expr, lambda h, s: AsignNode(s[1], s[3])
-        stat %= expr + semi, lambda h,s : s[1]
+        # # stat %= lbrace + stat_list + rbrace, lambda h, s: BlockNode(s[2])
+        # # stat %= idx + asign2 + expr, lambda h, s: AsignNode(s[1], s[3])
+        # stat %= expr + semi, lambda h,s : s[1]
 
+        # arg_list %= idnode, lambda h, s: [s[1]]
+        # arg_list %= idnode + comma + arg_list, lambda h, s: [s[1]] + s[3]
+
+        # subexpr %= subexpr + andx + term, lambda h, s: AndNode(s[1], s[3])
+        # subexpr %= subexpr + orx + term, lambda h, s: OrNode(s[1], s[3])
+        # subexpr %= notx + term, lambda h, s: NotNode(s[2])
+        # subexpr %= subexpr + eq + term, lambda h, s: EqualNode(s[1], s[3])
+        # subexpr %= subexpr + ne + term, lambda h, s: NotEqualNode(s[1], s[3])
+        # subexpr %= subexpr + gt + term, lambda h, s: GreaterNode(s[1], s[3])
+        # subexpr %= subexpr + lt + term, lambda h, s: LessNode(s[1], s[3])
+        # subexpr %= subexpr + ge + term, lambda h, s: GreaterEqualNode(s[1], s[3])
+        # subexpr %= subexpr + le + term, lambda h, s: LessEqualNode(s[1], s[3])
+        # subexpr %= subexpr + concat + term, lambda h, s: ConcatNode(s[1], s[3])
+
+
+        # func_call %= idnode + opar + expr_list + cpar, lambda h, s: CallNode(s[1], s[3])
+        # func_call %= idnode + opar + cpar, lambda h, s: CallNode(s[1], [])
+
+        # expr_list %= expr, lambda h, s: [s[1]]
+        # expr_list %= expr + comma + expr_list, lambda h, s: [s[1]] + s[3]
+        # expr %= func_call, lambda h, s: s[1]
+
+        # asig %= idnode + asign1 + expr, lambda h, s: AsignNode(s[1],s[3])
+        # asig2 %= atom + asign2 + expr, lambda h, s: AsignNode(s[1],s[3])
+
+        # stat %= asig2 + semi, lambda h, s: s[1]
+        
+
+        # subexpr %= subexpr + concat_space + term, lambda h, s: ConcatSpaceNode(s[1], s[3])
+        # atom %= selfx + dot + idnode, lambda h, s: SelfNode(s[3])
+        # atom %= idnode + dot + idnode, lambda h, s: SelfNode(s[3]) #!!!
+
+
+        # stat %= type_declaration, lambda h, s: s[1]
+        # type_declaration %= typex + idnode + lbrace + type_body + rbrace, lambda h, s: TypeNode(s[2], s[4])
+        # type_declaration %= typex + idnode + inherits + idnode + lbrace + type_body + rbrace, lambda h, s: TypeNode(s[2], s[6], s[4])
+        # type_body %= attribute_declaration + method_declaration, lambda h, s: TypeBodyNode([s[1]], [s[2]])
+
+        # attribute_declaration %= idnode + asign1 + expr + semi, lambda h, s: AttributeNode(s[1], s[3])
+        # method_declaration %= idnode + opar + arg_list + cpar + arrow + expr + semi, lambda h, s: MethodNode(s[1], s[3], [s[6]])
+        # method_declaration %= idnode + opar + arg_list + cpar + arrow + lbrace + stat_list + rbrace, lambda h, s: MethodNode(s[1], s[3], s[7])
+
+        # object_creation %= new + idnode + opar + expr_list + cpar, lambda h, s: ObjectCreationNode(s[2], s[4])
+        # expr %= object_creation, lambda h, s: s[1]
+        
+        # method_call %= idnode + dot + idnode + opar + expr_list + cpar, lambda h, s: MethodCallNode(s[1], s[3], s[5])
+        # expr %= method_call, lambda h, s: s[1]
+        
+        
+        
+        
+        
+        program %= stats + specialBlock, lambda h,s: ProgramNode(s[1] + [s[2]])
+        program %= specialBlock, lambda h,s: ProgramNode([s[1]])
+        
+        
+        # ************ Producciones de Protocols ************
+        # Protocolo completo
+        stats %= protocol + idx + extension + obrace + protocolBody + cbrace + stats
+        # Protocolo sin herencia
+        stats %= protocol + idx + obrace + protocolBody + cbrace + stats
+        # Protocolo sin cuerpo
+        stats %= protocol + idx + obrace + cbrace + stats
+        # Herencia
+        extension %= extends + idx
+        # Cuerpo de un protocolo
+        protocolBody %= idx + opar + arg_typed + cpar + colon + idx + semicolon + protocolBody
+        
+        
+        # *************** Producciones de Functions ***************
+        # Function sin tipo definido
+        stats %= functionx + idnode + opar + arg_opt_typed + cpar + func_body, lambda h, s: FuncDeclarationNode(s[2], s[4], s[7])
+        # Function con tipo definido
+        stats %= functionx + idnode + opar + arg_opt_typed + cpar + colon + idx + func_body, lambda h, s: FuncDeclarationNode(s[2], s[4], s[7])
+        # Cuerpo de un function
+        func_body %= arrow + expr, lambda h,s: s[2]
+        func_body %= blockExpr, lambda h,s:s[1]
+        
+        
+        # *************** Producciones de Type ****************
+        stats %= typex + idx + opar + arg_opt_typed + cpar + inherit_item + obrace + type_body + cbrace + stats
+        # Manejar la herencia
+        inherit_item %= inherits + idx
+        inherit_item %= inherits + idx + opar + arg_expr + cpar
+        inherit_item %= self.G.Epsilon
+        # Cuerpo de un Type
+        type_body %= attribute_declaration + type_body
+        type_body %= method_declaration + type_body
+        type_body %= self.G.Epsilon
+        # Atributos de Type
+        attribute_declaration %= item_opt_typed + asign1 + expr
+        # Métodos de Type
+        method_declaration %= idx + opar + arg_opt_typed + cpar + func_body
+        method_declaration %= idx + opar + arg_opt_typed + cpar + colon + idx + func_body
+        
+        
+        # Lista de parámetros tipados
+        arg_typed %= idx + colon + idx 
+        arg_typed %= idx + colon + idx + comma + arg_typed
+        
+        # Lista de parámetros opcionalmente tipados
+        arg_opt_typed %= item_opt_typed
+        arg_opt_typed %= item_opt_typed + arg_opt_typed
+        
+        # Elemento opcionalmente tipado
+        item_opt_typed %= idx
+        item_opt_typed %= idx + colon + idx
+        
+        # Lista de Variables
         arg_list %= idnode, lambda h, s: [s[1]]
         arg_list %= idnode + comma + arg_list, lambda h, s: [s[1]] + s[3]
 
+        # Lista de Expresiones
+        arg_expr %= expr, lambda h, s: [s[1]]
+        arg_expr %= expr + comma + arg_expr, lambda h, s: [s[1]] + s[3]
+        
+        
+        # Bloques especiales
+        specialBlock %= expr + semicolon, lambda h,s: BlockNode(s[1])
+        specialBlock %= blockExpr, lambda h, s: s[1]
+        
+        # Lista de bloques especiales
+        specialBlock_list %= specialBlock
+        specialBlock_list %= specialBlock + specialBlock_list
+        
+        
+        # ***************** Expresiones ******************
+        expr %= obrace + specialBlock_list + cbrace, lambda h, s: BlockNode(s[2])
+        expr %= let + asig_list + inx + expr, lambda h, s: VarDeclarationNode(s[2], s[4])
         expr %= printx + opar + expr + cpar, lambda h, s: PrintNode(s[3])
+        expr %= subexpr, lambda h, s: s[1]
+        
+        
+        
+        asig_list %= asig1, lambda h, s: [s[1]]
+        asig_list %= asig1 + comma + asig_list, lambda h, s: [s[1]] + s[3]
+        asig1 %= idnode + asign1 + expr, lambda h, s: AsignNode(s[1],s[3])
+
+
+
+        # Aritmetica
         subexpr %= subexpr + plus + term, lambda h, s: PlusNode(s[1], s[3])
         subexpr %= subexpr + minus + term, lambda h, s: MinusNode(s[1], s[3])
-        subexpr %= subexpr + andx + term, lambda h, s: AndNode(s[1], s[3])
-        subexpr %= subexpr + orx + term, lambda h, s: OrNode(s[1], s[3])
-        subexpr %= notx + term, lambda h, s: NotNode(s[2])
-        subexpr %= subexpr + eq + term, lambda h, s: EqualNode(s[1], s[3])
-        subexpr %= subexpr + ne + term, lambda h, s: NotEqualNode(s[1], s[3])
-        subexpr %= subexpr + gt + term, lambda h, s: GreaterNode(s[1], s[3])
-        subexpr %= subexpr + lt + term, lambda h, s: LessNode(s[1], s[3])
-        subexpr %= subexpr + ge + term, lambda h, s: GreaterEqualNode(s[1], s[3])
-        subexpr %= subexpr + le + term, lambda h, s: LessEqualNode(s[1], s[3])
-        subexpr %= subexpr + concat + term, lambda h, s: ConcatNode(s[1], s[3])
-        expr %= subexpr, lambda h, s: s[1]
         subexpr %= term, lambda h, s: s[1]
-
+        
         term %= term + star + factor, lambda h, s: StarNode(s[1], s[3])
         term %= term + div + factor, lambda h, s: DivNode(s[1], s[3])
         term %= term + powx + factor, lambda h, s: PowNode(s[1], s[3])
         term %= term + mod + factor, lambda h, s: ModNode(s[1], s[3])
         term %= factor, lambda h, s: s[1]
-
+        
         factor %= sin + opar + expr + cpar, lambda h, s: SinNode(s[3])
         factor %= cos + opar + expr + cpar, lambda h, s: CosNode(s[3])
         factor %= sqrt + opar + expr + cpar, lambda h, s: SqrtNode(s[3])
@@ -158,53 +295,19 @@ class CodeToAST:
         factor %= log + opar + expr + cpar, lambda h, s: LogNode(s[3])
         factor %= rand + opar + cpar, lambda h, s: RandNode()
         factor %= atom, lambda h, s: s[1]
-
-        func_call %= idnode + opar + expr_list + cpar, lambda h, s: CallNode(s[1], s[3])
-        func_call %= idnode + opar + cpar, lambda h, s: CallNode(s[1], [])
-
-        expr_list %= expr, lambda h, s: [s[1]]
-        expr_list %= expr + comma + expr_list, lambda h, s: [s[1]] + s[3]
-        expr %= func_call, lambda h, s: s[1]
-
-        asig %= idnode + asign1 + expr, lambda h, s: AsignNode(s[1],s[3])
-        asig2 %= atom + asign2 + expr, lambda h, s: AsignNode(s[1],s[3])
-
-        stat %= asig2 + semi, lambda h, s: s[1]
-
-        asig_list %= asig, lambda h, s: [s[1]]
-        asig_list %= asig + comma + asig_list, lambda h, s: [s[1]] + s[3]
-
+        
         atom %= number, lambda h, s: ConstantNumNode(s[1])
         atom %= true, lambda h, s: BoolNode(s[1])
         atom %= false, lambda h, s: BoolNode(s[1])
         atom %= pi, lambda h, s: ConstantNumNode(s[1])
         atom %= e, lambda h, s: ConstantNumNode(s[1])
         atom %= string, lambda h, s: StringNode(s[1])
-        atom %= idnode, lambda h, s: s[1]
         atom %= opar + expr + cpar, lambda h, s: s[2]
-
+        atom %= idnode, lambda h, s: s[1]
+        
         idnode %= idx, lambda h, s: VariableNode(s[1])
         
-
-        subexpr %= subexpr + concat_space + term, lambda h, s: ConcatSpaceNode(s[1], s[3])
-        atom %= selfx + dot + idnode, lambda h, s: SelfNode(s[3])
-        atom %= idnode + dot + idnode, lambda h, s: SelfNode(s[3]) #!!!
-
-
-        stat %= type_declaration, lambda h, s: s[1]
-        type_declaration %= typex + idnode + lbrace + type_body + rbrace, lambda h, s: TypeNode(s[2], s[4])
-        type_declaration %= typex + idnode + inherits + idnode + lbrace + type_body + rbrace, lambda h, s: TypeNode(s[2], s[6], s[4])
-        type_body %= attribute_declaration + method_declaration, lambda h, s: TypeBodyNode([s[1]], [s[2]])
-
-        attribute_declaration %= idnode + asign1 + expr + semi, lambda h, s: AttributeNode(s[1], s[3])
-        method_declaration %= idnode + opar + arg_list + cpar + arrow + expr + semi, lambda h, s: MethodNode(s[1], s[3], [s[6]])
-        method_declaration %= idnode + opar + arg_list + cpar + arrow + lbrace + stat_list + rbrace, lambda h, s: MethodNode(s[1], s[3], s[7])
-
-        object_creation %= new + idnode + opar + expr_list + cpar, lambda h, s: ObjectCreationNode(s[2], s[4])
-        expr %= object_creation, lambda h, s: s[1]
         
-        method_call %= idnode + dot + idnode + opar + expr_list + cpar, lambda h, s: MethodCallNode(s[1], s[3], s[5])
-        expr %= method_call, lambda h, s: s[1]
 
         #############################################################################
 
