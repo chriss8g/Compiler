@@ -9,11 +9,11 @@ class TestCodeToAST(unittest.TestCase):
         self.assertIsNotNone(ast)
         self.assertIn('PrintNode', repr(ast))
 
-    # def test_var_declaration(self):
-    #     code = 'let x = 5 in x + 3 ;'
-    #     ast = CodeToAST(code)
-    #     self.assertIsNotNone(ast)
-    #     self.assertIn('VarDeclarationNode', repr(ast))
+    def test_var_declaration(self):
+        code = 'let x = 5 in x + 3 ;'
+        ast = CodeToAST(code)
+        self.assertIsNotNone(ast)
+        self.assertIn('VarDeclarationNode', repr(ast))
 
     def test_function_declaration(self):
         code = 'function add(a, b) => a + b;'
@@ -22,7 +22,12 @@ class TestCodeToAST(unittest.TestCase):
         self.assertIn('FuncDeclarationNode', repr(ast))
 
     def test_while_loop(self):
-        code = 'while (x < 10) x = x + 1;'
+        code = '''
+                let a = 10 in while (a >= 0) {
+                        print(a);
+                        a := a - 1;
+                        };
+                '''
         ast = CodeToAST(code)
         self.assertIsNotNone(ast.ast)
         self.assertIn('WhileNode', repr(ast))

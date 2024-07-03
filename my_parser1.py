@@ -14,8 +14,8 @@ class CodeToAST:
         # Definir los no terminales
         program = self.G.NonTerminal('<program>', startSymbol=True)
         stat_list, stat = self.G.NonTerminals('<stat_list> <stat>')
-        expr, term, factor, atom = self.G.NonTerminals('<expr> <term> <factor> <atom>')
-        arg_list, func_call, expr_list, asig_list = self.G.NonTerminals('<arg_list> <func_call> <expr_list> <asig_list>')
+        subexpr, expr, term, factor, atom = self.G.NonTerminals('<subexpr> <expr> <term> <factor> <atom>')
+        arg_list, func_call, expr_list, asig_list, asig, asig2 = self.G.NonTerminals('<arg_list> <func_call> <expr_list> <asig_list> <asig> <asig2>')
         type_declaration, type_body = self.G.NonTerminals('<type_declaration> <type_body>')
         attribute_declaration, method_declaration = self.G.NonTerminals('<attribute_declaration> <method_declaration>')
         object_creation, method_call,idnode = self.G.NonTerminals('<object_creation> <method_call> <idnode>')
@@ -103,10 +103,13 @@ class CodeToAST:
         stat_list %= stat, lambda h, s: [s[1]]
         stat_list %= stat + stat_list, lambda h, s: [s[1]] + s[2]
 
-        stat %= let + asig_list + inx + expr, lambda h, s: VarDeclarationNode(s[2], s[4])
+        expr %= let + asig_list + inx + expr, lambda h, s: VarDeclarationNode(s[2], s[4])
+
+        
         stat %= functionx + idnode + opar + arg_list + cpar + arrow + stat, lambda h, s: FuncDeclarationNode(s[2], s[4], s[7])
-        stat %= printx + opar + expr + cpar, lambda h, s: PrintNode(s[3])
-        stat %= whilex + opar + expr + cpar + stat, lambda h, s: WhileNode(s[3], s[5])
+        expr %= whilex + opar + expr + cpar + stat, lambda h, s: WhileNode(s[3], s[5])
+        expr %= whilex + opar + expr + cpar + lbrace + stat_list + rbrace, lambda h, s: WhileNode(s[3], s[6])
+
         # stat %= forx + opar + idx + inx + expr + cpar + stat, lambda h, s: ForNode(s[3], s[5], s[7])
         # stat %= forx + opar + idx + inx + rangex + opar + expr + comma + expr + cpar + cpar + stat, lambda h, s: ForRangeNode(s[3], s[5], s[7], s[9])
         # stat %= ifx + opar + expr + cpar + stat + elsex + stat, lambda h, s: IfNode(s[3], s[5], s[7], [], [])
@@ -119,19 +122,20 @@ class CodeToAST:
         arg_list %= idnode + comma + arg_list, lambda h, s: [s[1]] + s[3]
 
         expr %= printx + opar + expr + cpar, lambda h, s: PrintNode(s[3])
-        expr %= expr + plus + term, lambda h, s: PlusNode(s[1], s[3])
-        expr %= expr + minus + term, lambda h, s: MinusNode(s[1], s[3])
-        # expr %= expr + andx + term, lambda h, s: AndNode(s[1], s[3])
-        # expr %= expr + orx + term, lambda h, s: OrNode(s[1], s[3])
-        # expr %= notx + term, lambda h, s: NotNode(s[2])
-        # expr %= expr + eq + term, lambda h, s: EqualNode(s[1], s[3])
-        # expr %= expr + ne + term, lambda h, s: NotEqualNode(s[1], s[3])
-        # expr %= expr + gt + term, lambda h, s: GreaterNode(s[1], s[3])
-        # expr %= expr + lt + term, lambda h, s: LessNode(s[1], s[3])
-        # expr %= expr + ge + term, lambda h, s: GreaterEqualNode(s[1], s[3])
-        # expr %= expr + le + term, lambda h, s: LessEqualNode(s[1], s[3])
-        # expr %= expr + concat + term, lambda h, s: ConcatNode(s[1], s[3])
-        expr %= term, lambda h, s: s[1]
+        subexpr %= subexpr + plus + term, lambda h, s: PlusNode(s[1], s[3])
+        subexpr %= subexpr + minus + term, lambda h, s: MinusNode(s[1], s[3])
+        subexpr %= subexpr + andx + term, lambda h, s: AndNode(s[1], s[3])
+        subexpr %= subexpr + orx + term, lambda h, s: OrNode(s[1], s[3])
+        subexpr %= subexpr + term, lambda h, s: NotNode(s[2])
+        subexpr %= subexpr + eq + term, lambda h, s: EqualNode(s[1], s[3])
+        subexpr %= subexpr + ne + term, lambda h, s: NotEqualNode(s[1], s[3])
+        subexpr %= subexpr + gt + term, lambda h, s: GreaterNode(s[1], s[3])
+        subexpr %= subexpr + lt + term, lambda h, s: LessNode(s[1], s[3])
+        subexpr %= subexpr + ge + term, lambda h, s: GreaterEqualNode(s[1], s[3])
+        subexpr %= subexpr + le + term, lambda h, s: LessEqualNode(s[1], s[3])
+        subexpr %= subexpr + concat + term, lambda h, s: ConcatNode(s[1], s[3])
+        expr %= subexpr, lambda h, s: s[1]
+        subexpr %= term, lambda h, s: s[1]
 
         # term %= term + star + factor, lambda h, s: StarNode(s[1], s[3])
         # term %= term + div + factor, lambda h, s: DivNode(s[1], s[3])
@@ -153,8 +157,13 @@ class CodeToAST:
         # expr_list %= expr, lambda h, s: [s[1]]
         # expr_list %= expr + comma + expr_list, lambda h, s: [s[1]] + s[3]
 
-        asig_list %= idnode + asign1 + expr, lambda h, s: [AsignNode(s[1],s[3])]
-        asig_list %= idnode + asign1 + expr + comma + asig_list, lambda h, s: [AsignNode(s[1],s[3])] + s[5]
+        asig %= idnode + asign1 + expr, lambda h, s: AsignNode(s[1],s[3])
+        asig2 %= idnode + asign2 + expr, lambda h, s: AsignNode(s[1],s[3])
+
+        stat %= asig2 + semi, lambda h, s: s[1]
+
+        asig_list %= asig, lambda h, s: [s[1]]
+        asig_list %= asig + comma + asig_list, lambda h, s: [s[1]] + s[3]
 
         atom %= number, lambda h, s: ConstantNumNode(s[1])
         # atom %= true, lambda h, s: BoolNode(s[1])
@@ -162,9 +171,10 @@ class CodeToAST:
         # atom %= pi, lambda h, s: ConstantNumNode(s[1])
         # atom %= e, lambda h, s: ConstantNumNode(s[1])
         # atom %= string, lambda h, s: StringNode(s[1])
-        atom %= idx, lambda h, s: VariableNode(s[1])
+        atom %= idnode, lambda h, s: s[1]
         # atom %= func_call, lambda h, s: s[1]
-        # atom %= opar + expr + cpar, lambda h, s: s[2]
+        atom %= opar + expr + cpar, lambda h, s: s[2]
+
         idnode %= idx, lambda h, s: VariableNode(s[1])
         
 
@@ -215,7 +225,12 @@ class CodeToAST:
     
 if __name__ == "__main__":
     
-    text = 'while (x < 10) x = x + 1;'
+    text = '''
+                let a = 10 in while (a >= 0) {
+                        print(a);
+                        a := a - 1;
+                        };
+           '''
  
     codeToAST = CodeToAST(text)
     print('\n',codeToAST)
