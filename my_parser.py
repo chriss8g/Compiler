@@ -183,13 +183,13 @@ class CodeToAST:
         
         # ***************** Expresiones ******************
         expr %= blockExpr, lambda h,s: s[1]
-        expr %= let + asig_list + inx + expr, lambda h, s: VarDeclarationNode(s[2], s[4])
-        expr %= ifx + opar + expr + cpar + specialBlock + elifx_expr + elsex + superexpr, lambda h,s:IfNode(s[3],s[5],s[8],s[6][0],s[6][1])
-        expr %= whilex + opar + expr + cpar + expr, lambda h,s:WhileNode(s[3],s[5])
-        expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + expr + cpar + cpar + expr, lambda h,s:ForRangeNode(s[3],s[7],s[9],s[12])
-        expr %= printx + opar + expr + cpar, lambda h, s: PrintNode(s[3])
-        expr %= recurrent_object + asign2 + expr, lambda h, s: DestructNode(s[1],s[3])
-        expr %= new + idnode + opar + arg_expr + cpar, lambda h, s: ObjectCreationNode(s[2], s[4])
+        # expr %= let + asig_list + inx + expr, lambda h, s: VarDeclarationNode(s[2], s[4])
+        # expr %= ifx + opar + expr + cpar + specialBlock + elifx_expr + elsex + superexpr, lambda h,s:IfNode(s[3],s[5],s[8],s[6][0],s[6][1])
+        # expr %= whilex + opar + expr + cpar + expr, lambda h,s:WhileNode(s[3],s[5])
+        # expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + expr + cpar + cpar + expr, lambda h,s:ForRangeNode(s[3],s[7],s[9],s[12])
+        # expr %= printx + opar + expr + cpar, lambda h, s: PrintNode(s[3])
+        # expr %= recurrent_object + asign2 + expr, lambda h, s: DestructNode(s[1],s[3])
+        # expr %= new + idnode + opar + arg_expr + cpar, lambda h, s: ObjectCreationNode(s[2], s[4])
         expr %= subexpr, lambda h, s: s[1]
         
         superexpr %= expr, lambda h,s:s[1]
@@ -211,12 +211,12 @@ class CodeToAST:
         # subexpr %= subexpr + andx + term, lambda h, s: AndNode(s[1], s[3])
         # subexpr %= subexpr + orx + term, lambda h, s: OrNode(s[1], s[3])
         # subexpr %= notx + term, lambda h, s: NotNode(s[2])
-        subexpr %= subexpr + eq + term, lambda h, s: EqualNode(s[1], s[3])
-        subexpr %= subexpr + ne + term, lambda h, s: NotEqualNode(s[1], s[3])
-        subexpr %= subexpr + gt + term, lambda h, s: GreaterNode(s[1], s[3])
-        subexpr %= subexpr + lt + term, lambda h, s: LessNode(s[1], s[3])
-        subexpr %= subexpr + ge + term, lambda h, s: GreaterEqualNode(s[1], s[3])
-        subexpr %= subexpr + le + term, lambda h, s: LessEqualNode(s[1], s[3])
+        # subexpr %= subexpr + eq + term, lambda h, s: EqualNode(s[1], s[3])
+        # subexpr %= subexpr + ne + term, lambda h, s: NotEqualNode(s[1], s[3])
+        # subexpr %= subexpr + gt + term, lambda h, s: GreaterNode(s[1], s[3])
+        # subexpr %= subexpr + lt + term, lambda h, s: LessNode(s[1], s[3])
+        # subexpr %= subexpr + ge + term, lambda h, s: GreaterEqualNode(s[1], s[3])
+        # subexpr %= subexpr + le + term, lambda h, s: LessEqualNode(s[1], s[3])
         # subexpr %= subexpr + concat + term, lambda h, s: ConcatNode(s[1], s[3])
         subexpr %= term, lambda h, s: s[1]
         
@@ -226,12 +226,12 @@ class CodeToAST:
         # term %= term + mod + factor, lambda h, s: ModNode(s[1], s[3])
         term %= factor, lambda h, s: s[1]
 
-        factor %= sin + opar + expr + cpar, lambda h, s: SinNode(s[3])
-        factor %= cos + opar + expr + cpar, lambda h, s: CosNode(s[3])
-        factor %= sqrt + opar + expr + cpar, lambda h, s: SqrtNode(s[3])
-        factor %= exp + opar + expr + cpar, lambda h, s: ExpNode(s[3])
-        factor %= log + opar + expr + cpar, lambda h, s: LogNode(s[3])
-        factor %= rand + opar + cpar, lambda h, s: RandNode()
+        # factor %= sin + opar + expr + cpar, lambda h, s: SinNode(s[3])
+        # factor %= cos + opar + expr + cpar, lambda h, s: CosNode(s[3])
+        # factor %= sqrt + opar + expr + cpar, lambda h, s: SqrtNode(s[3])
+        # factor %= exp + opar + expr + cpar, lambda h, s: ExpNode(s[3])
+        # factor %= log + opar + expr + cpar, lambda h, s: LogNode(s[3])
+        # factor %= rand + opar + cpar, lambda h, s: RandNode()
         factor %= atom, lambda h, s: s[1]
         
         atom %= number, lambda h, s: ConstantNumNode(s[1])
@@ -245,9 +245,9 @@ class CodeToAST:
         atom %= recurrent_object, lambda h,s : s[1]
         
         # recurrent_object %= recurrent_object + dot + idnode
-        recurrent_object %= idnode, lambda h,s:VariableNode(s[1])
-        recurrent_object %= recurrent_object + opar + arg_expr + cpar, lambda h,s:CallNode(s[1],s[3])
-        recurrent_object %= recurrent_object + opar + cpar, lambda h,s:CallNode(s[1],[])
+        # recurrent_object %= idnode, lambda h,s:VariableNode(s[1])
+        # recurrent_object %= recurrent_object + opar + arg_expr + cpar, lambda h,s:CallNode(s[1],s[3])
+        # recurrent_object %= recurrent_object + opar + cpar, lambda h,s:CallNode(s[1],[])
         
         
         idnode %= idx, lambda h, s: VariableNode(s[1])

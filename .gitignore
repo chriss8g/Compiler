@@ -3,3 +3,5 @@ __pycache__/*
 script.asm
 script.uh
 cmp/*
+cp14/*
+cp15/*

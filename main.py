@@ -3,6 +3,7 @@ import argparse
 from code_generator_visitor import CodeGeneratorVisitor
 from my_parser import CodeToAST
 from semantic_checker_visitor import SemanticCheckerVisitor
+from type_collector import TypeCollector
 
 def main(input_file):
     with open(input_file, 'r') as file:
@@ -14,7 +15,10 @@ def main(input_file):
 
 
     semantic_checker = SemanticCheckerVisitor()
-    errors = semantic_checker.visit(codeToAST.ast)
+    type_collector = TypeCollector()
+    errors = []
+    errors = errors + semantic_checker.visit(codeToAST.ast)
+    errors = errors + type_collector.visit(codeToAST.ast)
     if(len(errors) > 0):
         for i, error in enumerate(errors, 1):
             print(f'{i}.', error)
@@ -28,10 +32,12 @@ def main(input_file):
 
     # with open('script.c', 'w') as output_file:
     #     output_file.write(output)
+    
+main('script.uh')
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Generate C code from custom script")
-    parser.add_argument('input_file', type=str, help='The input file containing the script')
-    args = parser.parse_args()
+# if __name__ == "__main__":
+#     parser = argparse.ArgumentParser(description="Generate C code from custom script")
+#     parser.add_argument('input_file', type=str, help='The input file containing the script')
+#     args = parser.parse_args()
 
-    main(args.input_file)
+#     main(args.input_file)
