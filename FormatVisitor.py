@@ -62,7 +62,11 @@ class FormatVisitor(object):
     def visit(self, node, tabs=0):
         ans = '\t' * tabs + f'\\__WhileNode'
         condition = self.visit(node.condition, tabs + 1)
-        expr = '\n'.join(self.visit(ex, tabs + 1) for ex in node.expr)
+
+        if(isinstance(node.expr, list)):
+            expr = '\n'.join(self.visit(ex, tabs + 1) for ex in node.body)
+        else:
+            expr = '\n' + self.visit(node.expr, tabs + 1)
 
         return f'{ans}\n{condition}\n{expr}'
 
