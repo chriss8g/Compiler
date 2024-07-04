@@ -12,7 +12,7 @@ class TestCodeToAST(unittest.TestCase):
 
 # work
     def test_var_declaration(self):
-        code = 'let x = 5 in x + 3 ;'
+        code = 'let x = 5 in x + 3;'
         ast = CodeToAST(code)
         self.assertIsNotNone(ast)
         self.assertIn('VarDeclarationNode', repr(ast))
@@ -30,7 +30,7 @@ class TestCodeToAST(unittest.TestCase):
                 let a = 10 in while (a >= 0) {
                         print(a);
                         a := a - 1;
-                        };
+                        }
                 '''
         ast = CodeToAST(code)
         self.assertIsNotNone(ast.ast)
@@ -52,7 +52,9 @@ class TestCodeToAST(unittest.TestCase):
 
 # work
     def test_complex_expression(self):
-        code = 'let x = 5 in let y = 6 in x + y * (x - y);'
+        code = '''let x = 5 in
+                                 let y = 6 in
+                                         x + y * (x - y);'''
         ast = CodeToAST(code)
         self.assertIsNotNone(ast.ast)
         self.assertIn('VarDeclarationNode', repr(ast))
@@ -82,7 +84,7 @@ class TestCodeToAST(unittest.TestCase):
         code = '''
             type MyClass {
                 a = 5 ;
-                method(x) => x + self.a ;
+                method(x) => x + self.a;
             }
             new MyClass(5, "hello");
         '''
@@ -108,16 +110,16 @@ class TestCodeToAST(unittest.TestCase):
                         print(a);
                     } else {
                         print(b);
-                    };
+                    }
                     
                     while (a < c) {
                         print(a);
                         a := a + 1;
-                    };
+                    }
                     
                     for (i in range(3, 4)) {
                         print(i);
-                    };
+                    }
                     
                     let d = new MyClass(5, 10) in {
                         print(d);
