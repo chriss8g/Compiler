@@ -47,7 +47,7 @@ class CodeToAST:
         type_body,inherit_item = self.G.NonTerminals('<type_body> <inherit_item>')
         arg_list,func_body,arg_expr,arg_opt_typed = self.G.NonTerminals('<arg_list> <func_body> <arg_expr> <arg_opt_typed>')
         attribute_declaration,method_declaration = self.G.NonTerminals('<attribute_declaration> <method_declaration>')
-        opt_typed,arg_opt_typed_list = self.G.NonTerminals('<opt_typed> <arg_opt_typed_list>')
+        opt_typed,arg_opt_typed_list,elifx_expr = self.G.NonTerminals('<opt_typed> <arg_opt_typed_list> <elifx_expr>')
  
         terminals = {}
         terminals['let'] = let
@@ -270,9 +270,14 @@ class CodeToAST:
         # ***************** Expresiones ******************
         expr %= blockExpr, lambda h,s: s[1]
         expr %= let + asig_list + inx + expr, lambda h, s: VarDeclarationNode(s[2], s[4])
+        expr %= ifx + opar + expr + cpar + expr + elifx_expr + elsex + expr
+        expr %= whilex + opar + expr + cpar + expr
+        expr %= forx + opar + idx + inx + expr + cpar + expr
         expr %= printx + opar + expr + cpar, lambda h, s: PrintNode(s[3])
         expr %= subexpr, lambda h, s: s[1]
         
+        elifx_expr %= elifx + opar + expr + cpar + expr + elifx_expr
+        elifx_expr %= self.G.Epsilon, lambda h,s: []
         
         
         asig_list %= asig1, lambda h, s: [s[1]]
