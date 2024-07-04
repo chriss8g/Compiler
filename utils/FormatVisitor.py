@@ -1,5 +1,5 @@
 import utils.visitor as visitor
-from my_types import *
+from nodes_types.my_types import *
 
 class FormatVisitor(object):
     @visitor.on('node')

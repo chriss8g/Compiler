@@ -1,7 +1,7 @@
 
 import cmp.visitor as visitor
-from my_types import *
-from scope import Scope
+from types.my_types import *
+from semantic_checker.scope import Scope
 
 class SemanticCheckerVisitor(object):
     def __init__(self):

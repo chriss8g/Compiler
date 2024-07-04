@@ -1,9 +1,8 @@
 from utils.pycompiler import *
 from parser.TreeDef import *
 from parser.tools import *
-from utils.ast import get_printer
-from my_types import *
-from my_lexer1 import Lexer
+from nodes_types.my_types import *
+from my_lexer import Lexer
 
 
 class CodeToAST:
@@ -275,7 +274,7 @@ class CodeToAST:
         
 
     def __repr__(self):
-        from FormatVisitor import FormatVisitor
+        from utils.FormatVisitor import FormatVisitor
 
         formatter = FormatVisitor()
         tree = formatter.visit(self.ast)
