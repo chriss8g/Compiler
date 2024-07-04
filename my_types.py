@@ -31,10 +31,11 @@ class VarDeclarationNode(StatementNode, ExpressionNode):
         self.body = body
 
 class FuncDeclarationNode(StatementNode, ExpressionNode):
-    def __init__(self, idx, params, body):
+    def __init__(self, idx, params, body, type=None):
         self.id = idx
         self.params = params
         self.body = body
+        self.type = type
 
 class PrintNode(ExpressionNode):
     def __init__(self, expr):

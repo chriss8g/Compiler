@@ -207,17 +207,15 @@ class CodeToAST:
         
         
         # *************** Producciones de Functions ***************
-        # # Function sin tipo definido
-        # stats %= functionx + idnode + opar + arg_opt_typed + cpar + func_body, lambda h, s: FuncDeclarationNode(s[2], s[4], s[7])
-        # # Function con tipo definido
-        # stats %= functionx + idnode + opar + arg_opt_typed + cpar + colon + idx + func_body, lambda h, s: FuncDeclarationNode(s[2], s[4], s[7])
+        # Function 
+        stats %= functionx + idx + opar + arg_opt_typed + cpar + opt_typed + func_body + stats, lambda h, s: [FuncDeclarationNode(s[2], s[4], s[7],s[6])] + s[8]
         # Cuerpo de un function
         func_body %= arrow + expr, lambda h,s: s[2]
         func_body %= blockExpr, lambda h,s:s[1]
         
         
         # *************** Producciones de Type ****************
-        stats %= typex + idnode + arg_opt_typed_list + inherit_item + obrace + type_body + cbrace + stats, lambda h,s: [TypeNode(s[2],TypeBodyNode(s[6]),s[4],s[3])]+s[8]
+        stats %= typex + idx + arg_opt_typed_list + inherit_item + obrace + type_body + cbrace + stats, lambda h,s: [TypeNode(s[2],TypeBodyNode(s[6]),s[4],s[3])]+s[8]
         # Manejar la herencia
         inherit_item %= inherits + idx, lambda h,s: (s[2],[])
         inherit_item %= inherits + idx + opar + arg_expr + cpar, lambda h,s: (s[2],s[4])
@@ -356,6 +354,11 @@ if __name__ == "__main__":
                         4+3;
                     }
                 }
+            
+            function operate(x:String, y:Number) : Number {
+                print(x + y);
+                print(x - y);
+            }
                 
             let a = 10 in  {
                         print(a);

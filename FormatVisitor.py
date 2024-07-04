@@ -27,13 +27,14 @@ class FormatVisitor(object):
 
     @visitor.when(FuncDeclarationNode)
     def visit(self, node, tabs=0):
-        params = ', '.join(param.lex for param in node.params)
-        ans = '\t' * tabs + f'\\__FuncDeclarationNode: function {node.id.lex}({params}) => <body>'
+        params = ', '.join(f'{param}' for param in node.params)
+        ans = '\t' * tabs + f'\\__FuncDeclarationNode: function {node.id} : {node.type} => <body>'
         if isinstance(node.body, list):
             body = '\n'.join(self.visit(child, tabs + 1) for child in node.body)
         else:
             body = self.visit(node.body, tabs + 1)
-        return f'{ans}\n{body}'
+        params_info = '\n'.join('\t' * (tabs + 1) + f'Param {i+1}: {param}' for i, param in enumerate(node.params))
+        return f'{ans}\n{params_info}\n{body}'
 
     @visitor.when(BinaryNode)
     def visit(self, node, tabs=0):
