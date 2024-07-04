@@ -47,7 +47,7 @@ class CodeToAST:
         type_body,inherit_item = self.G.NonTerminals('<type_body> <inherit_item>')
         arg_list,func_body,arg_expr,arg_opt_typed = self.G.NonTerminals('<arg_list> <func_body> <arg_expr> <arg_opt_typed>')
         attribute_declaration,method_declaration = self.G.NonTerminals('<attribute_declaration> <method_declaration>')
-        item_opt_typed = self.G.NonTerminals('<item_opt_typed>')
+        opt_typed,arg_opt_typed_list = self.G.NonTerminals('<opt_typed> <arg_opt_typed_list>')
  
         terminals = {}
         terminals['let'] = let
@@ -61,6 +61,7 @@ class CodeToAST:
         terminals['log'] = log
         terminals['rand'] = rand
         terminals['semi'] = semicolon
+        terminals['colon'] = colon
         terminals['comma'] = comma
         terminals['opar'] = opar
         terminals['cpar'] = cpar
@@ -217,11 +218,11 @@ class CodeToAST:
         
         # *************** Producciones de Type ****************
         # stats %= typex + idnode + opar + arg_opt_typed + cpar + inherit_item + obrace + type_body + cbrace + stats, lambda h,s: TypeNode(s[2],s[8],s[6])
-        stats %= typex + idnode + obrace + type_body + cbrace + stats, lambda h,s: [TypeNode(s[2],TypeBodyNode(s[4]))]+s[6]
+        stats %= typex + idnode + arg_opt_typed_list + inherit_item + obrace + type_body + cbrace + stats, lambda h,s: [TypeNode(s[2],TypeBodyNode(s[6]),s[4],s[3])]+s[8]
         # Manejar la herencia
-        # inherit_item %= inherits + idx, lambda h,s: s[2]
-        # inherit_item %= inherits + idx + opar + arg_expr + cpar, lambda h,s: s[2]
-        # inherit_item %= self.G.Epsilon, lambda h,s: None
+        inherit_item %= inherits + idx, lambda h,s: (s[2],[])
+        inherit_item %= inherits + idx + opar + arg_expr + cpar, lambda h,s: (s[2],s[4])
+        inherit_item %= self.G.Epsilon, lambda h,s: None
         # Cuerpo de un Type
         type_body %= attribute_declaration + type_body, lambda h,s: ([s[1]]+s[2][0],s[2][1])
         type_body %= method_declaration + type_body, lambda h,s: (s[2][0],[s[1]]+s[2][1])
@@ -238,21 +239,26 @@ class CodeToAST:
         # arg_typed %= idx + colon + idx 
         # arg_typed %= idx + colon + idx + comma + arg_typed
         
-        # Lista de parámetros opcionalmente tipados
-        # arg_opt_typed %= item_opt_typed, lambda h,s:[s[1]]
-        # arg_opt_typed %= item_opt_typed + comma + arg_opt_typed, lambda h,s:[s[1]]+s[3]
+        # # Lista de parámetros opcionalmente tipados
+        arg_opt_typed_list %= self.G.Epsilon, lambda h,s:[]
+        arg_opt_typed_list %= opar + arg_opt_typed + cpar, lambda h,s:s[2]
+        arg_opt_typed %= idx + opt_typed, lambda h,s:[(s[1],s[2])]
+        arg_opt_typed %= idx + opt_typed + comma + arg_opt_typed, lambda h,s:[(s[1],s[2])] + s[4]
         
-        # Elemento opcionalmente tipado
-        # item_opt_typed %= idnode, lambda h,s: s[1]
-        # item_opt_typed %= idnode + colon + idx, lambda h,s: s[1]
+        opt_typed %= colon + idx, lambda h,s: s[2]
+        opt_typed %= self.G.Epsilon, lambda h,s: None
+        
+        # # Elemento opcionalmente tipado
+        # item_opt_typed %= idx, lambda h,s: VariableNode(s[1])
+        # item_opt_typed %= idx + colon + idx, lambda h,s: TypedVariable(s[1],s[3])
         
         # Lista de Variables
         arg_list %= idnode, lambda h, s: [s[1]]
         arg_list %= idnode + comma + arg_list, lambda h, s: [s[1]] + s[3]
 
         # # Lista de Expresiones
-        # arg_expr %= expr, lambda h, s: [s[1]]
-        # arg_expr %= expr + comma + arg_expr, lambda h, s: [s[1]] + s[3]
+        arg_expr %= expr, lambda h, s: [s[1]]
+        arg_expr %= expr + comma + arg_expr, lambda h, s: [s[1]] + s[3]
         
         
         
@@ -342,11 +348,15 @@ class CodeToAST:
 if __name__ == "__main__":
     
     text = '''
-            type MyClass {
+            type MyClass(a:Number,b:String) inherits OldClass(a+b) {
                     x = 0;
+                    y = 3;
                     
                     my_method(a, b) => {
                         print(a+b);
+                    }
+                    my_method1(a, b) => {
+                        4+3;
                     }
                 }
                 

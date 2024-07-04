@@ -122,9 +122,15 @@ class StringNode(AtomicNode):
     pass
 
 class VariableNode(AtomicNode):
-    pass
+    def __init__(self, name, var_type=None):
+        super().__init__(name)  # Asumiendo que el nombre es el valor léxico de la variable
+        self.name = name
+        self.var_type = var_type  # Esto puede ser None o un tipo específico como 'int', 'float', etc.
 
 class ComparativeNode(BinaryNode):
+    pass
+
+class TypedVariable(BinaryNode):
     pass
 
 class LogicNode(BinaryNode, AtomicNode):
@@ -223,10 +229,11 @@ class SelfNode(AtomicNode):
     pass
 
 class TypeNode(Node):
-    def __init__(self, name, body, base_type=None):
+    def __init__(self, name, body, base_type=None, params=None):
         self.name = name
         self.body = body
-        self.base_type = base_type
+        self.base_type = base_type[0]
+        self.params = params if params is not None else []  # Lista de diccionarios con 'name' y 'type' para cada parámetro
 
 class TypeBodyNode(Node):
     def __init__(self, attributes_and_methods):

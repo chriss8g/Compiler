@@ -157,12 +157,12 @@ class FormatVisitor(object):
 
     @visitor.when(TypeNode)
     def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__TypeNode: {node.name}'
+        inherits = node.base_type
+        ans = '\t' * tabs + f'\\__TypeNode: {node.name},  Inherits from: {inherits}'
         body = self.visit(node.body, tabs + 1)
-        if node.base_type:
-            base_type = self.visit(node.base_type, tabs + 1)
-            return f'{ans}\n{body}\n{base_type}'
-        return f'{ans}\n{body}'
+        params_str = ', '.join([f'{param}' for param in node.params])
+        params_info = '\n'.join('\t' * (tabs + 1) + f'Param {i+1}: {param}' for i, param in enumerate(node.params))
+        return f'{ans}\n{params_info}\n{body}'
 
     @visitor.when(TypeBodyNode)
     def visit(self, node, tabs=0):
