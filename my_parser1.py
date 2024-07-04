@@ -230,7 +230,7 @@ class CodeToAST:
         # Atributos de Type
         attribute_declaration %= idnode + asign1 + expr + semicolon, lambda h,s: AttributeNode(s[1],s[3])
         # Métodos de Type
-        method_declaration %= idnode + opar + arg_list + cpar + func_body, lambda h,s:MethodNode(s[1], s[3], [s[5]])
+        method_declaration %= idnode + opar + arg_opt_typed + cpar + func_body, lambda h,s:MethodNode(s[1], s[3], [s[5]])
         # method_declaration %= idnode + opar + arg_opt_typed + cpar + func_body, lambda h,s:MethodNode(s[1], s[3], [s[5]])
         # method_declaration %= idnode + opar + arg_opt_typed + cpar + colon + idx + func_body, lambda h,s:MethodNode(s[1], s[3], [s[6]])
         
@@ -352,7 +352,7 @@ if __name__ == "__main__":
                     x = 0;
                     y = 3;
                     
-                    my_method(a, b) => {
+                    my_method(a:Number, b) => {
                         print(a+b);
                     }
                     my_method1(a, b) => {
