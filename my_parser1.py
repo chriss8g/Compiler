@@ -211,27 +211,27 @@ class CodeToAST:
         # # Function con tipo definido
         # stats %= functionx + idnode + opar + arg_opt_typed + cpar + colon + idx + func_body, lambda h, s: FuncDeclarationNode(s[2], s[4], s[7])
         # Cuerpo de un function
-        # func_body %= arrow + expr, lambda h,s: s[2]
-        # func_body %= blockExpr, lambda h,s:s[1]
+        func_body %= arrow + expr, lambda h,s: s[2]
+        func_body %= blockExpr, lambda h,s:s[1]
         
         
         # *************** Producciones de Type ****************
-        # # stats %= typex + idnode + opar + arg_opt_typed + cpar + inherit_item + obrace + type_body + cbrace + stats, lambda h,s: TypeNode(s[2],s[8],s[6])
-        # stats %= typex + idnode + obrace + type_body + cbrace + stats, lambda h,s: [TypeNode(s[2],TypeBodyNode(s[4]))]+s[6]
-        # # Manejar la herencia
-        # # inherit_item %= inherits + idx, lambda h,s: s[2]
-        # # inherit_item %= inherits + idx + opar + arg_expr + cpar, lambda h,s: s[2]
-        # # inherit_item %= self.G.Epsilon, lambda h,s: None
-        # # Cuerpo de un Type
-        # type_body %= attribute_declaration + type_body, lambda h,s: ([s[1]]+s[2][0],s[2][1])
-        # type_body %= method_declaration + type_body, lambda h,s: (s[2][0],[s[1]]+s[2][1])
-        # type_body %= self.G.Epsilon, lambda h,s: ([],[])
-        # # Atributos de Type
-        # attribute_declaration %= idnode + asign1 + expr + semicolon, lambda h,s: AttributeNode(s[1],s[3])
-        # # Métodos de Type
-        # method_declaration %= idnode + opar + arg_list + cpar + func_body, lambda h,s:MethodNode(s[1], s[3], [s[5]])
-        # # method_declaration %= idnode + opar + arg_opt_typed + cpar + func_body, lambda h,s:MethodNode(s[1], s[3], [s[5]])
-        # # method_declaration %= idnode + opar + arg_opt_typed + cpar + colon + idx + func_body, lambda h,s:MethodNode(s[1], s[3], [s[6]])
+        # stats %= typex + idnode + opar + arg_opt_typed + cpar + inherit_item + obrace + type_body + cbrace + stats, lambda h,s: TypeNode(s[2],s[8],s[6])
+        stats %= typex + idnode + obrace + type_body + cbrace + stats, lambda h,s: [TypeNode(s[2],TypeBodyNode(s[4]))]+s[6]
+        # Manejar la herencia
+        # inherit_item %= inherits + idx, lambda h,s: s[2]
+        # inherit_item %= inherits + idx + opar + arg_expr + cpar, lambda h,s: s[2]
+        # inherit_item %= self.G.Epsilon, lambda h,s: None
+        # Cuerpo de un Type
+        type_body %= attribute_declaration + type_body, lambda h,s: ([s[1]]+s[2][0],s[2][1])
+        type_body %= method_declaration + type_body, lambda h,s: (s[2][0],[s[1]]+s[2][1])
+        type_body %= self.G.Epsilon, lambda h,s: ([],[])
+        # Atributos de Type
+        attribute_declaration %= idnode + asign1 + expr + semicolon, lambda h,s: AttributeNode(s[1],s[3])
+        # Métodos de Type
+        method_declaration %= idnode + opar + arg_list + cpar + func_body, lambda h,s:MethodNode(s[1], s[3], [s[5]])
+        # method_declaration %= idnode + opar + arg_opt_typed + cpar + func_body, lambda h,s:MethodNode(s[1], s[3], [s[5]])
+        # method_declaration %= idnode + opar + arg_opt_typed + cpar + colon + idx + func_body, lambda h,s:MethodNode(s[1], s[3], [s[6]])
         
         
         # # Lista de parámetros tipados
@@ -247,8 +247,8 @@ class CodeToAST:
         # item_opt_typed %= idnode + colon + idx, lambda h,s: s[1]
         
         # Lista de Variables
-        # arg_list %= idnode, lambda h, s: [s[1]]
-        # arg_list %= idnode + comma + arg_list, lambda h, s: [s[1]] + s[3]
+        arg_list %= idnode, lambda h, s: [s[1]]
+        arg_list %= idnode + comma + arg_list, lambda h, s: [s[1]] + s[3]
 
         # # Lista de Expresiones
         # arg_expr %= expr, lambda h, s: [s[1]]
@@ -281,8 +281,8 @@ class CodeToAST:
 
 
         # Aritmetica
-        # subexpr %= subexpr + plus + term, lambda h, s: PlusNode(s[1], s[3])
-        # subexpr %= subexpr + minus + term, lambda h, s: MinusNode(s[1], s[3])
+        subexpr %= subexpr + plus + term, lambda h, s: PlusNode(s[1], s[3])
+        subexpr %= subexpr + minus + term, lambda h, s: MinusNode(s[1], s[3])
         subexpr %= term, lambda h, s: s[1]
         
         # term %= term + star + factor, lambda h, s: StarNode(s[1], s[3])
@@ -342,6 +342,14 @@ class CodeToAST:
 if __name__ == "__main__":
     
     text = '''
+            type MyClass {
+                    x = 0;
+                    
+                    my_method(a, b) => {
+                        print(a+b);
+                    }
+                }
+                
             let a = 10 in  {
                         print(a);
                         };
