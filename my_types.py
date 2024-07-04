@@ -229,9 +229,9 @@ class TypeNode(Node):
         self.base_type = base_type
 
 class TypeBodyNode(Node):
-    def __init__(self, attributes, methods):
-        self.attributes = attributes
-        self.methods = methods
+    def __init__(self, attributes_and_methods):
+        self.attributes = attributes_and_methods[0]
+        self.methods = attributes_and_methods[1]
 
 class AttributeNode(Node):
     def __init__(self, name, value):

@@ -39,10 +39,10 @@ class CodeToAST:
         program = self.G.NonTerminal('<program>', startSymbol=True)
         stats,specialBlock = self.G.NonTerminals('<stats> <specialBlock>')
         expr,blockExpr= self.G.NonTerminals('<expr> <blockExpr>')
-        asig_list,idx,asig1 = self.G.NonTerminals('<asig_list> <idx> <asig1>')
+        asig_list,asig1 = self.G.NonTerminals('<asig_list> <asig1>')
         atom,idnode,specialBlock_list = self.G.NonTerminals('<atom> <idnode> <specialBlock_list>')
         subexpr, expr, term, factor, atom = self.G.NonTerminals('<subexpr> <expr> <term> <factor> <atom>')
-        protocol,idx,extension,protocolBody = self.G.NonTerminals('<protocol> <idx> <extension> <protocolBody>')
+        protocol,extension,protocolBody = self.G.NonTerminals('<protocol> <extension> <protocolBody>')
         extends,arg_typed = self.G.NonTerminals('<extends> <arg_typed>')
         type_body,inherit_item = self.G.NonTerminals('<type_body> <inherit_item>')
         arg_list,func_body,arg_expr,arg_opt_typed = self.G.NonTerminals('<arg_list> <func_body> <arg_expr> <arg_opt_typed>')
@@ -189,82 +189,85 @@ class CodeToAST:
         
         
         
-        program %= stats + specialBlock, lambda h,s: ProgramNode(s[1] + [s[2]])
-        program %= specialBlock, lambda h,s: ProgramNode([s[1]])
-        
+        program %= stats + specialBlock, lambda h,s: ProgramNode(s[1] + [s[2]])        
+        stats %= self.G.Epsilon, lambda h,s:[]
         
         # ************ Producciones de Protocols ************
-        # Protocolo completo
-        stats %= protocol + idx + extension + obrace + protocolBody + cbrace + stats
-        # Protocolo sin herencia
-        stats %= protocol + idx + obrace + protocolBody + cbrace + stats
-        # Protocolo sin cuerpo
-        stats %= protocol + idx + obrace + cbrace + stats
-        # Herencia
-        extension %= extends + idx
-        # Cuerpo de un protocolo
-        protocolBody %= idx + opar + arg_typed + cpar + colon + idx + semicolon + protocolBody
+        # # Protocolo completo
+        # stats %= protocol + idx + extension + obrace + protocolBody + cbrace + stats
+        # # Protocolo sin herencia
+        # stats %= protocol + idx + obrace + protocolBody + cbrace + stats
+        # # Protocolo sin cuerpo
+        # stats %= protocol + idx + obrace + cbrace + stats
+        # # Herencia
+        # extension %= extends + idx
+        # # Cuerpo de un protocolo
+        # protocolBody %= idx + opar + arg_typed + cpar + colon + idx + semicolon + protocolBody
         
         
         # *************** Producciones de Functions ***************
-        # Function sin tipo definido
-        stats %= functionx + idnode + opar + arg_opt_typed + cpar + func_body, lambda h, s: FuncDeclarationNode(s[2], s[4], s[7])
-        # Function con tipo definido
-        stats %= functionx + idnode + opar + arg_opt_typed + cpar + colon + idx + func_body, lambda h, s: FuncDeclarationNode(s[2], s[4], s[7])
+        # # Function sin tipo definido
+        # stats %= functionx + idnode + opar + arg_opt_typed + cpar + func_body, lambda h, s: FuncDeclarationNode(s[2], s[4], s[7])
+        # # Function con tipo definido
+        # stats %= functionx + idnode + opar + arg_opt_typed + cpar + colon + idx + func_body, lambda h, s: FuncDeclarationNode(s[2], s[4], s[7])
         # Cuerpo de un function
-        func_body %= arrow + expr, lambda h,s: s[2]
-        func_body %= blockExpr, lambda h,s:s[1]
+        # func_body %= arrow + expr, lambda h,s: s[2]
+        # func_body %= blockExpr, lambda h,s:s[1]
         
         
         # *************** Producciones de Type ****************
-        stats %= typex + idx + opar + arg_opt_typed + cpar + inherit_item + obrace + type_body + cbrace + stats
-        # Manejar la herencia
-        inherit_item %= inherits + idx
-        inherit_item %= inherits + idx + opar + arg_expr + cpar
-        inherit_item %= self.G.Epsilon
-        # Cuerpo de un Type
-        type_body %= attribute_declaration + type_body
-        type_body %= method_declaration + type_body
-        type_body %= self.G.Epsilon
-        # Atributos de Type
-        attribute_declaration %= item_opt_typed + asign1 + expr
-        # Métodos de Type
-        method_declaration %= idx + opar + arg_opt_typed + cpar + func_body
-        method_declaration %= idx + opar + arg_opt_typed + cpar + colon + idx + func_body
+        # # stats %= typex + idnode + opar + arg_opt_typed + cpar + inherit_item + obrace + type_body + cbrace + stats, lambda h,s: TypeNode(s[2],s[8],s[6])
+        # stats %= typex + idnode + obrace + type_body + cbrace + stats, lambda h,s: [TypeNode(s[2],TypeBodyNode(s[4]))]+s[6]
+        # # Manejar la herencia
+        # # inherit_item %= inherits + idx, lambda h,s: s[2]
+        # # inherit_item %= inherits + idx + opar + arg_expr + cpar, lambda h,s: s[2]
+        # # inherit_item %= self.G.Epsilon, lambda h,s: None
+        # # Cuerpo de un Type
+        # type_body %= attribute_declaration + type_body, lambda h,s: ([s[1]]+s[2][0],s[2][1])
+        # type_body %= method_declaration + type_body, lambda h,s: (s[2][0],[s[1]]+s[2][1])
+        # type_body %= self.G.Epsilon, lambda h,s: ([],[])
+        # # Atributos de Type
+        # attribute_declaration %= idnode + asign1 + expr + semicolon, lambda h,s: AttributeNode(s[1],s[3])
+        # # Métodos de Type
+        # method_declaration %= idnode + opar + arg_list + cpar + func_body, lambda h,s:MethodNode(s[1], s[3], [s[5]])
+        # # method_declaration %= idnode + opar + arg_opt_typed + cpar + func_body, lambda h,s:MethodNode(s[1], s[3], [s[5]])
+        # # method_declaration %= idnode + opar + arg_opt_typed + cpar + colon + idx + func_body, lambda h,s:MethodNode(s[1], s[3], [s[6]])
         
         
-        # Lista de parámetros tipados
-        arg_typed %= idx + colon + idx 
-        arg_typed %= idx + colon + idx + comma + arg_typed
+        # # Lista de parámetros tipados
+        # arg_typed %= idx + colon + idx 
+        # arg_typed %= idx + colon + idx + comma + arg_typed
         
         # Lista de parámetros opcionalmente tipados
-        arg_opt_typed %= item_opt_typed
-        arg_opt_typed %= item_opt_typed + arg_opt_typed
+        # arg_opt_typed %= item_opt_typed, lambda h,s:[s[1]]
+        # arg_opt_typed %= item_opt_typed + comma + arg_opt_typed, lambda h,s:[s[1]]+s[3]
         
         # Elemento opcionalmente tipado
-        item_opt_typed %= idx
-        item_opt_typed %= idx + colon + idx
+        # item_opt_typed %= idnode, lambda h,s: s[1]
+        # item_opt_typed %= idnode + colon + idx, lambda h,s: s[1]
         
         # Lista de Variables
-        arg_list %= idnode, lambda h, s: [s[1]]
-        arg_list %= idnode + comma + arg_list, lambda h, s: [s[1]] + s[3]
+        # arg_list %= idnode, lambda h, s: [s[1]]
+        # arg_list %= idnode + comma + arg_list, lambda h, s: [s[1]] + s[3]
 
-        # Lista de Expresiones
-        arg_expr %= expr, lambda h, s: [s[1]]
-        arg_expr %= expr + comma + arg_expr, lambda h, s: [s[1]] + s[3]
+        # # Lista de Expresiones
+        # arg_expr %= expr, lambda h, s: [s[1]]
+        # arg_expr %= expr + comma + arg_expr, lambda h, s: [s[1]] + s[3]
+        
         
         
         # Bloques especiales
-        specialBlock %= expr + semicolon, lambda h,s: BlockNode(s[1])
+        specialBlock %= expr + semicolon, lambda h,s: s[1]
         specialBlock %= blockExpr, lambda h, s: s[1]
+        blockExpr %= obrace + specialBlock_list + cbrace, lambda h, s: BlockNode(s[2])
         
         # Lista de bloques especiales
-        specialBlock_list %= specialBlock
-        specialBlock_list %= specialBlock + specialBlock_list
+        specialBlock_list %= specialBlock, lambda h,s:[s[1]]
+        specialBlock_list %= specialBlock + specialBlock_list, lambda h,s:[s[1]] + s[2]
         
         
         # ***************** Expresiones ******************
-        expr %= obrace + specialBlock_list + cbrace, lambda h, s: BlockNode(s[2])
+        expr %= blockExpr, lambda h,s: s[1]
         expr %= let + asig_list + inx + expr, lambda h, s: VarDeclarationNode(s[2], s[4])
         expr %= printx + opar + expr + cpar, lambda h, s: PrintNode(s[3])
         expr %= subexpr, lambda h, s: s[1]
@@ -278,31 +281,31 @@ class CodeToAST:
 
 
         # Aritmetica
-        subexpr %= subexpr + plus + term, lambda h, s: PlusNode(s[1], s[3])
-        subexpr %= subexpr + minus + term, lambda h, s: MinusNode(s[1], s[3])
+        # subexpr %= subexpr + plus + term, lambda h, s: PlusNode(s[1], s[3])
+        # subexpr %= subexpr + minus + term, lambda h, s: MinusNode(s[1], s[3])
         subexpr %= term, lambda h, s: s[1]
         
-        term %= term + star + factor, lambda h, s: StarNode(s[1], s[3])
-        term %= term + div + factor, lambda h, s: DivNode(s[1], s[3])
-        term %= term + powx + factor, lambda h, s: PowNode(s[1], s[3])
-        term %= term + mod + factor, lambda h, s: ModNode(s[1], s[3])
+        # term %= term + star + factor, lambda h, s: StarNode(s[1], s[3])
+        # term %= term + div + factor, lambda h, s: DivNode(s[1], s[3])
+        # term %= term + powx + factor, lambda h, s: PowNode(s[1], s[3])
+        # term %= term + mod + factor, lambda h, s: ModNode(s[1], s[3])
         term %= factor, lambda h, s: s[1]
         
-        factor %= sin + opar + expr + cpar, lambda h, s: SinNode(s[3])
-        factor %= cos + opar + expr + cpar, lambda h, s: CosNode(s[3])
-        factor %= sqrt + opar + expr + cpar, lambda h, s: SqrtNode(s[3])
-        factor %= exp + opar + expr + cpar, lambda h, s: ExpNode(s[3])
-        factor %= log + opar + expr + cpar, lambda h, s: LogNode(s[3])
-        factor %= rand + opar + cpar, lambda h, s: RandNode()
+        # factor %= sin + opar + expr + cpar, lambda h, s: SinNode(s[3])
+        # factor %= cos + opar + expr + cpar, lambda h, s: CosNode(s[3])
+        # factor %= sqrt + opar + expr + cpar, lambda h, s: SqrtNode(s[3])
+        # factor %= exp + opar + expr + cpar, lambda h, s: ExpNode(s[3])
+        # factor %= log + opar + expr + cpar, lambda h, s: LogNode(s[3])
+        # factor %= rand + opar + cpar, lambda h, s: RandNode()
         factor %= atom, lambda h, s: s[1]
         
         atom %= number, lambda h, s: ConstantNumNode(s[1])
-        atom %= true, lambda h, s: BoolNode(s[1])
-        atom %= false, lambda h, s: BoolNode(s[1])
-        atom %= pi, lambda h, s: ConstantNumNode(s[1])
-        atom %= e, lambda h, s: ConstantNumNode(s[1])
-        atom %= string, lambda h, s: StringNode(s[1])
-        atom %= opar + expr + cpar, lambda h, s: s[2]
+        # atom %= true, lambda h, s: BoolNode(s[1])
+        # atom %= false, lambda h, s: BoolNode(s[1])
+        # atom %= pi, lambda h, s: ConstantNumNode(s[1])
+        # atom %= e, lambda h, s: ConstantNumNode(s[1])
+        # atom %= string, lambda h, s: StringNode(s[1])
+        # atom %= opar + expr + cpar, lambda h, s: s[2]
         atom %= idnode, lambda h, s: s[1]
         
         idnode %= idx, lambda h, s: VariableNode(s[1])
@@ -314,7 +317,7 @@ class CodeToAST:
         lexer = Lexer('eof', self.terminals)
 
         tokens = lexer(text)
-        
+        print(tokens)
         
         ###################################################################################
         
@@ -328,11 +331,7 @@ class CodeToAST:
         
         self.ast = evaluate_parse(derivations, tokens)
         
-        
-        gramat = self.G
-        
-        
-    	
+
     def __repr__(self):
         from FormatVisitor import FormatVisitor
 
@@ -343,37 +342,9 @@ class CodeToAST:
 if __name__ == "__main__":
     
     text = '''
-                type MyClass {
-                    x = 0;
-                    
-                    my_method(a, b) => {
-                        a+b;
-                    }
-                }
-
-                let a = 10, b = 20, c = 30 in {
-                    print(a + b * c);
-                    
-                    if (a > b) {
+            let a = 10 in  {
                         print(a);
-                    } else {
-                        print(b);
-                    };
-                    
-                    while (a < c) {
-                        print(a);
-                        a := a + 1;
-                    };
-                    
-                    for (i in range(3, 4)) {
-                        print(i);
-                    };
-                    
-                    let d = new MyClass(5, 10) in {
-                        d.x := d.my_method(2, 3);
-                        print(d.x);
-                    };
-                };
+                        };
            '''
  
     codeToAST = CodeToAST(text)
