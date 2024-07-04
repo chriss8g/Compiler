@@ -180,7 +180,7 @@ class FormatVisitor(object):
     @visitor.when(MethodNode)
     def visit(self, node, tabs=0):
         params = ', '.join(f'({param[0],param[1]})' for param in node.parameters)
-        ans = '\t' * tabs + f'\\__MethodNode: function {node.name}({params}) => <body>'
+        ans = '\t' * tabs + f'\\__MethodNode: function {node.name}({params}) : {node.type} => <body>'
         body = '\n'.join(self.visit(child, tabs + 1) for child in node.body)
         return f'{ans}\n{body}'
 

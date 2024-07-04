@@ -246,10 +246,11 @@ class AttributeNode(Node):
         self.value = value
 
 class MethodNode(Node):
-    def __init__(self, name, parameters, body):
+    def __init__(self, name, parameters, body, type=None):
         self.name = name
         self.parameters = parameters
         self.body = body
+        self.type = type
 
 class ObjectCreationNode(ExpressionNode):
     def __init__(self, type_name, arguments):

@@ -217,7 +217,6 @@ class CodeToAST:
         
         
         # *************** Producciones de Type ****************
-        # stats %= typex + idnode + opar + arg_opt_typed + cpar + inherit_item + obrace + type_body + cbrace + stats, lambda h,s: TypeNode(s[2],s[8],s[6])
         stats %= typex + idnode + arg_opt_typed_list + inherit_item + obrace + type_body + cbrace + stats, lambda h,s: [TypeNode(s[2],TypeBodyNode(s[6]),s[4],s[3])]+s[8]
         # Manejar la herencia
         inherit_item %= inherits + idx, lambda h,s: (s[2],[])
@@ -230,9 +229,7 @@ class CodeToAST:
         # Atributos de Type
         attribute_declaration %= idnode + asign1 + expr + semicolon, lambda h,s: AttributeNode(s[1],s[3])
         # Métodos de Type
-        method_declaration %= idnode + opar + arg_opt_typed + cpar + func_body, lambda h,s:MethodNode(s[1], s[3], [s[5]])
-        # method_declaration %= idnode + opar + arg_opt_typed + cpar + func_body, lambda h,s:MethodNode(s[1], s[3], [s[5]])
-        # method_declaration %= idnode + opar + arg_opt_typed + cpar + colon + idx + func_body, lambda h,s:MethodNode(s[1], s[3], [s[6]])
+        method_declaration %= idnode + opar + arg_opt_typed + cpar + opt_typed + func_body, lambda h,s:MethodNode(s[1], s[3], [s[6]], s[5])
         
         
         # # Lista de parámetros tipados
