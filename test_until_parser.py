@@ -34,7 +34,7 @@ class TestCodeToAST(unittest.TestCase):
                 let a = 10 in while (a >= 0) {
                         print(a);
                         a := a - 1;
-                        }
+                        };
                 '''
         ast = CodeToAST(code)
         self.assertIsNotNone(ast.ast)
@@ -104,7 +104,7 @@ class TestCodeToAST(unittest.TestCase):
                     
                     my_method(a, b) => {
                         a+b;
-                    }
+                    };
                 }
 
                 let a = 10, b = 20, c = 30 in {
