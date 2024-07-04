@@ -19,7 +19,11 @@ class TestCodeToAST(unittest.TestCase):
 
 # work
     def test_function_declaration(self):
-        code = 'function add(a, b) => a + b;'
+        code = '''
+                function add(a, b) => a + b;
+                
+                print(a);
+            '''
         ast = CodeToAST(code)
         self.assertIsNotNone(ast)
         self.assertIn('FuncDeclarationNode', repr(ast))
