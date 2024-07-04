@@ -27,60 +27,73 @@ class ExpressionNode(Node):
 
 class VarDeclarationNode(StatementNode, ExpressionNode):
     def __init__(self, args, body):
+        super().__init__()
         self.args = args
         self.body = body
 
 class FuncDeclarationNode(StatementNode, ExpressionNode):
     def __init__(self, idx, params, body):
+        super().__init__()
         self.id = idx
         self.params = params
         self.body = body
 
 class PrintNode(ExpressionNode):
     def __init__(self, expr):
+        super().__init__()
         self.expr = expr
 
 class SinNode(ExpressionNode):
     def __init__(self, expr):
+        super().__init__()
         self.expr = expr
 
 class CosNode(ExpressionNode):
     def __init__(self, expr):
+        super().__init__()
         self.expr = expr
 
 class SqrtNode(ExpressionNode):
     def __init__(self, expr):
+        super().__init__()
         self.expr = expr
 
 class ExpNode(ExpressionNode):
     def __init__(self, expr):
+        super().__init__()
         self.expr = expr
 
 class LogNode(ExpressionNode):
     def __init__(self, expr):
+        super().__init__()
         self.expr = expr
 
 class RandNode(ExpressionNode):
-    pass
+    def __init__(self):
+        super().__init__()
 
 class ForNode(StatementNode, ExpressionNode):
     def __init__(self, idx, iterable, expr):
+        super().__init__()
         self.id = idx
         self.iterable = iterable
         self.expr = expr
 
 class AsignNode(StatementNode, ExpressionNode):
     def __init__(self, idx, expr):
+        super().__init__()
         self.id = idx
         self.expr = expr
 
 class WhileNode(StatementNode, ExpressionNode):
     def __init__(self, condition, expr):
+        super().__init__()
         self.condition = condition
         self.expr = expr
 
 class IfNode(StatementNode, ExpressionNode):
     def __init__(self, condition, expr, else_expr, elif_conditions, elif_expr):
+        super().__init__()
         self.condition = condition
         self.expr = expr
         self.else_expr = else_expr
@@ -89,6 +102,7 @@ class IfNode(StatementNode, ExpressionNode):
 
 class IterableNode(ExpressionNode):
     def __init__(self, init, final):
+        super().__init__()
         self.init = init
         self.final = final
 
@@ -98,118 +112,154 @@ class BlockNode(StatementNode):
 
 class AtomicNode(ExpressionNode):
     def __init__(self, lex):
+        super().__init__()
         self.lex = lex
 
 class BinaryNode(ExpressionNode):
     def __init__(self, left, right):
+        super().__init__()
         self.left = left
         self.right = right
 
 class CallNode(ExpressionNode):
     def __init__(self, idx, args):
+        super().__init__()
         self.id = idx
         self.args = args
 
 # Nivel 3
 
 class ConstantNumNode(AtomicNode):
-    pass
+    def __init__(self, lex):
+        super().__init__(lex)
 
 class BoolNode(AtomicNode):
-    pass
+    def __init__(self, lex):
+        super().__init__(lex)
 
 class StringNode(AtomicNode):
-    pass
+    def __init__(self, lex):
+        super().__init__(lex)
 
 class VariableNode(AtomicNode):
-    pass
+    def __init__(self, lex):
+        super().__init__(lex)
 
 class ComparativeNode(BinaryNode):
-    pass
+    def __init__(self, left, right):
+        super().__init__(left, right)
 
 class LogicNode(BinaryNode, AtomicNode):
-    pass
+    def __init__(self, left, right):
+        BinaryNode.__init__(self, left, right)
+        AtomicNode.__init__(self, None)
 
 class AritmeticNode(BinaryNode):
-    pass
+    def __init__(self, left, right):
+        super().__init__(left, right)
 
 class StringOpNode(BinaryNode):
-    pass
+    def __init__(self, left, right):
+        super().__init__(left, right)
 
 # Nivel 4
 
 class PlusNode(AritmeticNode):
-    pass
+    def __init__(self, left, right):
+        super().__init__(left, right)
 
 class MinusNode(AritmeticNode):
-    pass
+    def __init__(self, left, right):
+        super().__init__(left, right)
 
 class StarNode(AritmeticNode):
-    pass
+    def __init__(self, left, right):
+        super().__init__(left, right)
 
 class DivNode(AritmeticNode):
-    pass
+    def __init__(self, left, right):
+        super().__init__(left, right)
 
 class PowNode(AritmeticNode):
-    pass
+    def __init__(self, left, right):
+        super().__init__(left, right)
 
 class ModNode(AritmeticNode):
-    pass
+    def __init__(self, left, right):
+        super().__init__(left, right)
 
 class EQNode(ComparativeNode):
-    pass
+    def __init__(self, left, right):
+        super().__init__(left, right)
 
 class GTNode(ComparativeNode):
-    pass
+    def __init__(self, left, right):
+        super().__init__(left, right)
 
 class LTNode(ComparativeNode):
-    pass
+    def __init__(self, left, right):
+        super().__init__(left, right)
 
 class GENode(ComparativeNode):
-    pass
+    def __init__(self, left, right):
+        super().__init__(left, right)
 
 class LENode(ComparativeNode):
-    pass
+    def __init__(self, left, right):
+        super().__init__(left, right)
 
 class NENode(ComparativeNode):
-    pass
+    def __init__(self, left, right):
+        super().__init__(left, right)
 
 class AndNode(LogicNode):
-    pass
+    def __init__(self, left, right):
+        super().__init__(left, right)
 
 class OrNode(LogicNode):
-    pass
+    def __init__(self, left, right):
+        super().__init__(left, right)
 
 class ConcatNode(StringOpNode):
-    pass
+    def __init__(self, left, right):
+        super().__init__(left, right)
 
 class NotNode(LogicNode):
     def __init__(self, expr):
+        super().__init__(None, expr)
         self.expr = expr
 
 class EqualNode(ComparativeNode):
-    pass
+    def __init__(self, left, right):
+        super().__init__(left, right)
 
 class NotEqualNode(ComparativeNode):
-    pass
+    def __init__(self, left, right):
+        super().__init__(left, right)
 
 class GreaterNode(ComparativeNode):
-    pass
+    def __init__(self, left, right):
+        super().__init__(left, right)
 
 class LessNode(ComparativeNode):
-    pass
+    def __init__(self, left, right):
+        super().__init__(left, right)
 
 class GreaterEqualNode(ComparativeNode):
-    pass
+    def __init__(self, left, right):
+        super().__init__(left, right)
 
 class LessEqualNode(ComparativeNode):
-    pass
+    def __init__(self, left, right):
+        super().__init__(left, right)
 
 class ConcatNode(StringOpNode):
-    pass
+    def __init__(self, left, right):
+        super().__init__(left, right)
 
 class ForRangeNode(StatementNode):
     def __init__(self, idx, init, final, body):
+        super().__init__()
         self.id = idx
         self.init = init
         self.final = final
@@ -220,7 +270,8 @@ class ConcatSpaceNode(BinaryNode):
         super().__init__(left, right)
 
 class SelfNode(AtomicNode):
-    pass
+    def __init__(self, lex):
+        super().__init__(lex)
 
 class TypeNode(Node):
     def __init__(self, name, body, base_type=None):
@@ -246,11 +297,13 @@ class MethodNode(Node):
 
 class ObjectCreationNode(ExpressionNode):
     def __init__(self, type_name, arguments):
+        super().__init__()
         self.type_name = type_name
         self.arguments = arguments
 
 class MethodCallNode(ExpressionNode):
     def __init__(self, object_name, method_name, arguments):
+        super().__init__()
         self.object_name = object_name
         self.method_name = method_name
         self.arguments = arguments

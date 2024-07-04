@@ -1,6 +1,7 @@
 class VariableInfo:
-    def __init__(self, name):
+    def __init__(self, name, type=None):
         self.name = name
+        self.type = type
 
 class FunctionInfo:
     def __init__(self, name, params):
@@ -23,8 +24,8 @@ class Scope:
         self.children.append(child_scope)
         return child_scope
 
-    def define_variable(self, vname):
-        variable = VariableInfo(vname)
+    def define_variable(self, vname, type=None):
+        variable = VariableInfo(vname, type)
         self.local_vars.append(variable)
         self.var_index_at_parent += 1
         return variable
@@ -36,6 +37,7 @@ class Scope:
         return my_function
 
     def is_var_defined(self, vname):
+        # print([x.name for x in self.local_vars])
         if vname in [i.name for i in self.local_vars]:
             return True
         elif self.parent:
