@@ -31,10 +31,11 @@ class VarDeclarationNode(StatementNode, ExpressionNode):
         self.body = body
 
 class FuncDeclarationNode(StatementNode, ExpressionNode):
-    def __init__(self, idx, params, body):
+    def __init__(self, idx, params, body, type=None):
         self.id = idx
         self.params = params
         self.body = body
+        self.type = type
 
 class PrintNode(ExpressionNode):
     def __init__(self, expr):
@@ -70,6 +71,11 @@ class ForNode(StatementNode, ExpressionNode):
         self.expr = expr
 
 class AsignNode(StatementNode, ExpressionNode):
+    def __init__(self, idx, expr):
+        self.id = idx
+        self.expr = expr
+
+class DestructNode(StatementNode, ExpressionNode):
     def __init__(self, idx, expr):
         self.id = idx
         self.expr = expr
@@ -122,9 +128,15 @@ class StringNode(AtomicNode):
     pass
 
 class VariableNode(AtomicNode):
-    pass
+    def __init__(self, name, var_type=None):
+        super().__init__(name)  # Asumiendo que el nombre es el valor léxico de la variable
+        self.name = name
+        self.var_type = var_type  # Esto puede ser None o un tipo específico como 'int', 'float', etc.
 
 class ComparativeNode(BinaryNode):
+    pass
+
+class TypedVariable(BinaryNode):
     pass
 
 class LogicNode(BinaryNode, AtomicNode):
@@ -223,13 +235,16 @@ class SelfNode(AtomicNode):
     pass
 
 class TypeNode(Node):
-    def __init__(self, name, body, base_type=None):
+    def __init__(self, name, body, base_type=None, params=None):
         self.name = name
         self.body = body
-        self.base_type = base_type
+        self.base_type = None
+        if base_type is not None:
+            self.base_type = base_type
+        self.params = params if params is not None else []  # Lista de diccionarios con 'name' y 'type' para cada parámetro
 
 class TypeBodyNode(Node):
-    def __init__(self, attributes, methods):
+    def __init__(self, attributes,methods):
         self.attributes = attributes
         self.methods = methods
 
@@ -239,10 +254,11 @@ class AttributeNode(Node):
         self.value = value
 
 class MethodNode(Node):
-    def __init__(self, name, parameters, body):
+    def __init__(self, name, parameters, body, type=None):
         self.name = name
         self.parameters = parameters
         self.body = body
+        self.type = type
 
 class ObjectCreationNode(ExpressionNode):
     def __init__(self, type_name, arguments):
