@@ -123,7 +123,7 @@ class CodeToAST:
 
         # *************** Producciones de Functions ***************
         # Function 
-        # stats %= functionx + idx + opar + arg_opt_typed + cpar + opt_typed + func_body + stats, lambda h, s: [FuncDeclarationNode(s[2], s[4], s[7],s[6])] + s[8]
+        stats %= functionx + idx + opar + arg_opt_typed + cpar + opt_typed + func_body + stats, lambda h, s: [FuncDeclarationNode(s[2], s[4], s[7],s[6])] + s[8]
         # Cuerpo de un function
         func_body %= arrow + expr + semicolon, lambda h,s: s[2]
         func_body %= blockExpr, lambda h,s:s[1]
@@ -284,36 +284,9 @@ class CodeToAST:
 if __name__ == "__main__":
     
     text = '''
-            type MyClass {
-                    x = 0;
-                    
-                    my_method(a, b) => {
-                        a+b;
-                    };
-                }
-
-                let a = 10, b = 20, c = 30 in {
-                    print(a + b * c);
-                    
-                    if (a > b) {
-                        print(a);
-                    } else {
-                        print(b);
-                    };
-                    
-                    while (a < c) {
-                        print(a);
-                        a := a + 1;
-                    };
-                    
-                    for (i in range(3, 4)) {
-                        print(i);
-                    };
-                    
-                    let d = new MyClass(5, 10) in {
-                        print(d);
-                    };
-                };
+            function add(a, b) => a + b;
+            
+            print(a);
         '''
 
  

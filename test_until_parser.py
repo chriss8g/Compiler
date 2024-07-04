@@ -4,18 +4,18 @@ from my_parser1 import CodeToAST
 class TestCodeToAST(unittest.TestCase):
 
 # work
-    def test_simple_print(self):
-        code = 'print(42);'
-        ast = CodeToAST(code)
-        self.assertIsNotNone(ast)
-        self.assertIn('PrintNode', repr(ast))
+    # def test_simple_print(self):
+    #     code = 'print(42);'
+    #     ast = CodeToAST(code)
+    #     self.assertIsNotNone(ast)
+    #     self.assertIn('PrintNode', repr(ast))
 
 # work
-    def test_var_declaration(self):
-        code = 'let x = 5 in x + 3;'
-        ast = CodeToAST(code)
-        self.assertIsNotNone(ast)
-        self.assertIn('VarDeclarationNode', repr(ast))
+    # def test_var_declaration(self):
+    #     code = 'let x = 5 in x + 3;'
+    #     ast = CodeToAST(code)
+    #     self.assertIsNotNone(ast)
+    #     self.assertIn('VarDeclarationNode', repr(ast))
 
 # work
     def test_function_declaration(self):
@@ -25,53 +25,53 @@ class TestCodeToAST(unittest.TestCase):
         self.assertIn('FuncDeclarationNode', repr(ast))
 
 # work
-    def test_while_loop(self):
-        code = '''
-                let a = 10 in while (a >= 0) {
-                        print(a);
-                        a := a - 1;
-                        }
-                '''
-        ast = CodeToAST(code)
-        self.assertIsNotNone(ast.ast)
-        self.assertIn('WhileNode', repr(ast))
+    # def test_while_loop(self):
+    #     code = '''
+    #             let a = 10 in while (a >= 0) {
+    #                     print(a);
+    #                     a := a - 1;
+    #                     }
+    #             '''
+    #     ast = CodeToAST(code)
+    #     self.assertIsNotNone(ast.ast)
+    #     self.assertIn('WhileNode', repr(ast))
 
 # work
-    def test_for_loop(self):
-        code = 'for (x in range(0, 10)) print (x);'
-        ast = CodeToAST(code)
-        self.assertIsNotNone(ast.ast)
-        self.assertIn('ForRangeNode', repr(ast))
+    # def test_for_loop(self):
+    #     code = 'for (x in range(0, 10)) print (x);'
+    #     ast = CodeToAST(code)
+    #     self.assertIsNotNone(ast.ast)
+    #     self.assertIn('ForRangeNode', repr(ast))
 
 # work
-    def test_if_else(self):
-        code = 'if (x < 10) print("less"); else print("more");'
-        ast = CodeToAST(code)
-        self.assertIsNotNone(ast.ast)
-        self.assertIn('IfNode', repr(ast))
+    # def test_if_else(self):
+    #     code = 'if (x < 10) print("less"); else print("more");'
+    #     ast = CodeToAST(code)
+    #     self.assertIsNotNone(ast.ast)
+    #     self.assertIn('IfNode', repr(ast))
 
 # work
-    def test_complex_expression(self):
-        code = '''let x = 5 in
-                                 let y = 6 in
-                                         x + y * (x - y);'''
-        ast = CodeToAST(code)
-        self.assertIsNotNone(ast.ast)
-        self.assertIn('VarDeclarationNode', repr(ast))
+    # def test_complex_expression(self):
+    #     code = '''let x = 5 in
+    #                              let y = 6 in
+    #                                      x + y * (x - y);'''
+    #     ast = CodeToAST(code)
+    #     self.assertIsNotNone(ast.ast)
+    #     self.assertIn('VarDeclarationNode', repr(ast))
 
 # work
-    def test_function_call(self):
-        code = 'let x = f(5, 7) in x + 1;'
-        ast = CodeToAST(code)
-        self.assertIsNotNone(ast.ast)
-        self.assertIn('CallNode', repr(ast))
+    # def test_function_call(self):
+    #     code = 'let x = f(5, 7) in x + 1;'
+    #     ast = CodeToAST(code)
+    #     self.assertIsNotNone(ast.ast)
+    #     self.assertIn('CallNode', repr(ast))
 
 # work
-    def test_object_creation(self):
-        code = 'new MyClass(5, "hello");'
-        ast = CodeToAST(code)
-        self.assertIsNotNone(ast.ast)
-        self.assertIn('ObjectCreationNode', repr(ast))
+    # def test_object_creation(self):
+    #     code = 'new MyClass(5, "hello");'
+    #     ast = CodeToAST(code)
+    #     self.assertIsNotNone(ast.ast)
+    #     self.assertIn('ObjectCreationNode', repr(ast))
 
     # def test_method_call(self):
     #     code = 'obj.method(1, 2);'

@@ -32,7 +32,7 @@ class VarDeclarationNode(StatementNode, ExpressionNode):
         self.body = body
 
 class FuncDeclarationNode(StatementNode, ExpressionNode):
-    def __init__(self, idx, params, body):
+    def __init__(self, idx, params, body, type):
         super().__init__()
         self.id = idx
         self.params = params
