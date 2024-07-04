@@ -48,7 +48,7 @@ class CodeToAST:
         arg_list,func_body,arg_expr,arg_opt_typed = self.G.NonTerminals('<arg_list> <func_body> <arg_expr> <arg_opt_typed>')
         attribute_declaration,method_declaration = self.G.NonTerminals('<attribute_declaration> <method_declaration>')
         opt_typed,arg_opt_typed_list,elifx_expr = self.G.NonTerminals('<opt_typed> <arg_opt_typed_list> <elifx_expr>')
-        recurrent_object = self.G.NonTerminal('<recurrent_object>')
+        recurrent_object,superexpr = self.G.NonTerminals('<recurrent_object> <superexpr>')
         
         terminals = {}
         terminals['let'] = let
@@ -198,26 +198,26 @@ class CodeToAST:
         
         # *************** Producciones de Functions ***************
         # Function 
-        stats %= functionx + idx + opar + arg_opt_typed + cpar + opt_typed + func_body + stats, lambda h, s: [FuncDeclarationNode(s[2], s[4], s[7],s[6])] + s[8]
+        # stats %= functionx + idx + opar + arg_opt_typed + cpar + opt_typed + func_body + stats, lambda h, s: [FuncDeclarationNode(s[2], s[4], s[7],s[6])] + s[8]
         # Cuerpo de un function
-        func_body %= arrow + expr, lambda h,s: s[2]
+        func_body %= arrow + expr + semicolon, lambda h,s: s[2]
         func_body %= blockExpr, lambda h,s:s[1]
         
         
         # *************** Producciones de Type ****************
-        # stats %= typex + idx + arg_opt_typed_list + inherit_item + obrace + type_body + cbrace + stats, lambda h,s: [TypeNode(s[2],TypeBodyNode(s[6]),s[4],s[3])]+s[8]
-        # # Manejar la herencia
-        # inherit_item %= inherits + idx, lambda h,s: (s[2],[])
-        # inherit_item %= inherits + idx + opar + arg_expr + cpar, lambda h,s: (s[2],s[4])
-        # inherit_item %= self.G.Epsilon, lambda h,s: None
-        # # Cuerpo de un Type
-        # type_body %= attribute_declaration + type_body, lambda h,s: ([s[1]]+s[2][0],s[2][1])
-        # type_body %= method_declaration + type_body, lambda h,s: (s[2][0],[s[1]]+s[2][1])
-        # type_body %= self.G.Epsilon, lambda h,s: ([],[])
-        # # Atributos de Type
-        # attribute_declaration %= idnode + asign1 + expr + semicolon, lambda h,s: AttributeNode(s[1],s[3])
-        # # Métodos de Type
-        # method_declaration %= idnode + opar + arg_opt_typed + cpar + opt_typed + func_body, lambda h,s:MethodNode(s[1], s[3], [s[6]], s[5])
+        stats %= typex + idx + arg_opt_typed_list + inherit_item + obrace + type_body + cbrace + stats, lambda h,s: [TypeNode(s[2],TypeBodyNode(s[6][0],s[6][1]),s[4],s[3])]+s[8]
+        # Manejar la herencia
+        inherit_item %= inherits + idx, lambda h,s: (s[2],[])
+        inherit_item %= inherits + idx + opar + arg_expr + cpar, lambda h,s: (s[2],s[4])
+        inherit_item %= self.G.Epsilon, lambda h,s: None
+        # Cuerpo de un Type
+        type_body %= attribute_declaration + type_body, lambda h,s: ([s[1]]+s[2][0],s[2][1])
+        type_body %= method_declaration + type_body, lambda h,s: (s[2][0],[s[1]]+s[2][1])
+        type_body %= self.G.Epsilon, lambda h,s: ([],[])
+        # Atributos de Type
+        attribute_declaration %= idnode + asign1 + expr + semicolon, lambda h,s: AttributeNode(s[1],s[3])
+        # Métodos de Type
+        method_declaration %= idnode + opar + arg_opt_typed + cpar + opt_typed + func_body, lambda h,s:MethodNode(s[1], s[3], [s[6]], s[5])
         
         
         # # Lista de parámetros tipados
@@ -260,12 +260,16 @@ class CodeToAST:
         # ***************** Expresiones ******************
         expr %= blockExpr, lambda h,s: s[1]
         expr %= let + asig_list + inx + expr, lambda h, s: VarDeclarationNode(s[2], s[4])
-        expr %= ifx + opar + expr + cpar + expr + elifx_expr + elsex + expr, lambda h,s:IfNode(s[3],s[5],s[8],s[6][0],s[6][1])
+        expr %= ifx + opar + expr + cpar + specialBlock + elifx_expr + elsex + superexpr, lambda h,s:IfNode(s[3],s[5],s[8],s[6][0],s[6][1])
         expr %= whilex + opar + expr + cpar + expr, lambda h,s:WhileNode(s[3],s[5])
         expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + expr + cpar + cpar + expr, lambda h,s:ForRangeNode(s[3],s[7],s[9],s[12])
         expr %= printx + opar + expr + cpar, lambda h, s: PrintNode(s[3])
         expr %= recurrent_object + asign2 + expr, lambda h, s: DestructNode(s[1],s[3])
+        expr %= new + idnode + opar + arg_expr + cpar, lambda h, s: ObjectCreationNode(s[2], s[4])
         expr %= subexpr, lambda h, s: s[1]
+        
+        superexpr %= expr, lambda h,s:s[1]
+        superexpr %= obrace + cbrace, lambda h,s:None
         
         elifx_expr %= elifx + opar + expr + cpar + expr + elifx_expr, lambda h,s: (s[6][0]+[s[3]],s[6][1]+[s[5]])
         elifx_expr %= self.G.Epsilon, lambda h,s: ([],[])
@@ -318,7 +322,8 @@ class CodeToAST:
         
         # recurrent_object %= recurrent_object + dot + idnode
         recurrent_object %= idnode, lambda h,s:VariableNode(s[1])
-        # recurrent_object %= recurrent_object
+        recurrent_object %= recurrent_object + opar + arg_expr + cpar, lambda h,s:CallNode(s[1],s[3])
+        recurrent_object %= recurrent_object + opar + cpar, lambda h,s:CallNode(s[1],[])
         
         
         idnode %= idx, lambda h, s: VariableNode(s[1])
@@ -355,11 +360,37 @@ class CodeToAST:
 if __name__ == "__main__":
     
     text = '''
-            let a = 10 in while (a >= 0) {
-                    print(a);
-                    a := a - 1;
+            type MyClass {
+                    x = 0;
+                    
+                    my_method(a, b) => {
+                        a+b;
                     };
-            '''
+                }
+
+                let a = 10, b = 20, c = 30 in {
+                    print(a + b * c);
+                    
+                    if (a > b) {
+                        print(a);
+                    } else {
+                        print(b);
+                    };
+                    
+                    while (a < c) {
+                        print(a);
+                        a := a + 1;
+                    };
+                    
+                    for (i in range(3, 4)) {
+                        print(i);
+                    };
+                    
+                    let d = new MyClass(5, 10) in {
+                        print(d);
+                    };
+                };
+        '''
  
     codeToAST = CodeToAST(text)
     print('\n',codeToAST)

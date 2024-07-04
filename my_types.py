@@ -238,13 +238,15 @@ class TypeNode(Node):
     def __init__(self, name, body, base_type=None, params=None):
         self.name = name
         self.body = body
-        self.base_type = base_type[0]
+        self.base_type = None
+        if base_type is not None:
+            self.base_type = base_type
         self.params = params if params is not None else []  # Lista de diccionarios con 'name' y 'type' para cada parámetro
 
 class TypeBodyNode(Node):
-    def __init__(self, attributes_and_methods):
-        self.attributes = attributes_and_methods[0]
-        self.methods = attributes_and_methods[1]
+    def __init__(self, attributes,methods):
+        self.attributes = attributes
+        self.methods = methods
 
 class AttributeNode(Node):
     def __init__(self, name, value):

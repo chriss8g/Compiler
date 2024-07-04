@@ -96,8 +96,9 @@ class FormatVisitor(object):
     @visitor.when(BlockNode)
     def visit(self, node, tabs=0):
         ans = '\t' * tabs + f'\\__BlockNode'
-        print(self.visit(node.body[1],0))
-        body = '\n'.join(self.visit(child, tabs + 1) for child in node.body)
+        body = None
+        if node.body is not None:
+            body = '\n'.join(self.visit(child, tabs + 1) for child in node.body)
         return f'{ans}\n{body}'
 
     @visitor.when(AsignNode)
