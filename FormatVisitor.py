@@ -63,7 +63,7 @@ class FormatVisitor(object):
     def visit(self, node, tabs=0):
         ans = '\t' * tabs + f'\\__WhileNode'
         condition = self.visit(node.condition, tabs + 1)
-        expr = '\n'.join(self.visit(ex, tabs + 1) for ex in node.expr)
+        expr = self.visit(node.expr, tabs + 1)
 
         return f'{ans}\n{condition}\n{expr}'
 
@@ -88,19 +88,28 @@ class FormatVisitor(object):
         condition = self.visit(node.condition, tabs + 1)
         expr = self.visit(node.expr, tabs + 1)
         else_expr = self.visit(node.else_expr, tabs + 1)
+        print(node.elif_conditions)
         elif_conditions = '\n'.join(self.visit(cond, tabs + 1) for cond in node.elif_conditions)
         elif_expr = '\n'.join(self.visit(ex, tabs + 1) for ex in node.elif_expr)
-        return f'{ans}\n{condition}\n{expr}\nelse\n{else_expr}\nelif\n{elif_conditions}\n{elif_expr}'
+        return f'{ans}\n{condition}\n{expr}' + '\n' + '\t' * tabs + f'\\__Elif <expr>:' + f'\n{elif_conditions}\n{elif_expr}' + '\n' + '\t' * tabs + f'\\__Else:' + f'\n{else_expr}'
 
     @visitor.when(BlockNode)
     def visit(self, node, tabs=0):
         ans = '\t' * tabs + f'\\__BlockNode'
+        print(self.visit(node.body[1],0))
         body = '\n'.join(self.visit(child, tabs + 1) for child in node.body)
         return f'{ans}\n{body}'
 
     @visitor.when(AsignNode)
     def visit(self, node, tabs=0):
         ans = '\t' * tabs + f'\\__AsignNode: {node.id.lex} := <expr>'
+        id = self.visit(node.id, tabs + 1)
+        expr = self.visit(node.expr, tabs + 1)
+        return f'{ans}\n{id}\n{expr}'
+    
+    @visitor.when(DestructNode)
+    def visit(self, node, tabs=0):
+        ans = '\t' * tabs + f'\\DestructNode: {node.id.lex} := <expr>'
         id = self.visit(node.id, tabs + 1)
         expr = self.visit(node.expr, tabs + 1)
         return f'{ans}\n{id}\n{expr}'

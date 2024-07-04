@@ -75,6 +75,11 @@ class AsignNode(StatementNode, ExpressionNode):
         self.id = idx
         self.expr = expr
 
+class DestructNode(StatementNode, ExpressionNode):
+    def __init__(self, idx, expr):
+        self.id = idx
+        self.expr = expr
+
 class WhileNode(StatementNode, ExpressionNode):
     def __init__(self, condition, expr):
         self.condition = condition
