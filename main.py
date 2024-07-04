@@ -1,16 +1,16 @@
 import argparse
 
 from code_generator_visitor import CodeGeneratorVisitor
-from grammer import CodeToAST
+from my_parser1 import CodeToAST
 from semantic_checker_visitor import SemanticCheckerVisitor
 
 def main(input_file):
     with open(input_file, 'r') as file:
-        lines = '\n'.join(file.readlines())
+        text = file.read()
     
 
-    codeToAST = CodeToAST(lines)
-    print(codeToAST)
+    codeToAST = CodeToAST(text)
+    print('\n',codeToAST)
 
 
     semantic_checker = SemanticCheckerVisitor()
@@ -20,12 +20,14 @@ def main(input_file):
             print(f'{i}.', error)
 
         return
+    
+    print("✅ Semantic Checked")
 
-    c_generator = CodeGeneratorVisitor()
-    output = c_generator.visit(codeToAST.ast)
+    # c_generator = CodeGeneratorVisitor()
+    # output = c_generator.visit(codeToAST.ast)
 
-    with open('script.c', 'w') as output_file:
-        output_file.write(output)
+    # with open('script.c', 'w') as output_file:
+    #     output_file.write(output)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate C code from custom script")
