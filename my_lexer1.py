@@ -9,6 +9,7 @@ lettersUpperCase = '|'.join(chr(n) for n in range(ord('A'),ord('Z')+1))
 # Expresiones regulares
 regular_expresions = [
     ('function', 'function'),
+    ('inherits', 'inherits'),
     ('type', 'type'),
     ('return', 'return'),
     ('new', 'new'),
@@ -60,6 +61,7 @@ regular_expresions = [
     ('lbrace', '{'),
     ('rbrace', '}'),
     ('semi', ';'),
+    ('colon', ':'),
     ('arrow', '=>')
 ]
 
