@@ -11,15 +11,6 @@ class CodeToAST:
     def __init__(self, text):
         self.G = Grammar()
 
-        # Definir los no terminales
-        # program = self.G.NonTerminal('<program>', startSymbol=True)
-        # stat_list, stat = self.G.NonTerminals('<stat_list> <stat>')
-        # subexpr, expr, term, factor, atom = self.G.NonTerminals('<subexpr> <expr> <term> <factor> <atom>')
-        # arg_list, func_call, expr_list, asig_list, asig, asig2 = self.G.NonTerminals('<arg_list> <func_call> <expr_list> <asig_list> <asig> <asig2>')
-        # type_declaration, type_body = self.G.NonTerminals('<type_declaration> <type_body>')
-        # attribute_declaration, method_declaration = self.G.NonTerminals('<attribute_declaration> <method_declaration>')
-        # object_creation, method_call,idnode = self.G.NonTerminals('<object_creation> <method_call> <idnode>')
-
         # Definir los terminales
         let, functionx, inx = self.G.Terminals('let function in')
         printx, sin, cos, sqrt, exp, log, rand = self.G.Terminals('print sin cos sqrt exp log rand')
@@ -111,74 +102,7 @@ class CodeToAST:
         
         
         self.terminals = terminals
-        
 
-        # Definir las producciones y sus acciones
-        # program %= stat_list, lambda h, s: ProgramNode(s[1])
-
-        # stat_list %= stat, lambda h, s: [s[1]]
-        # stat_list %= stat + stat_list, lambda h, s: [s[1]] + s[2]
-
-        # expr %= let + asig_list + inx + expr, lambda h, s: VarDeclarationNode(s[2], s[4])
-        # expr %= let + asig_list + inx + lbrace + stat_list + rbrace, lambda h, s: VarDeclarationNode(s[2], s[5])
-
-        # expr %= whilex + opar + expr + cpar + stat, lambda h, s: WhileNode(s[3], s[5])
-        # expr %= whilex + opar + expr + cpar + lbrace + stat_list + rbrace, lambda h, s: WhileNode(s[3], s[6])
-
-        # expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + expr + cpar + cpar + expr, lambda h, s: ForRangeNode(s[3], s[7], s[9], s[12])
-        # expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + expr + cpar + cpar + lbrace + stat_list + rbrace, lambda h, s: ForRangeNode(s[3], s[7], s[9], s[13])
-        
-        # expr %= ifx + opar + expr + cpar + stat + elsex + expr, lambda h, s: IfNode(s[3], s[5], s[7], [], [])
-        # expr %= ifx + opar + expr + cpar + stat + elifx + opar + expr + cpar + stat + elsex + expr, lambda h, s: IfNode(s[3], s[5], s[11], [s[8]], [s[10]])
-        # expr %= ifx + opar + expr + cpar + lbrace + stat_list + rbrace + elsex + lbrace + stat_list + rbrace, lambda h, s: IfNode(s[3], s[6], s[10], [], [])
-        # expr %= ifx + opar + expr + cpar + lbrace + stat_list + rbrace + elifx + opar + expr + cpar + lbrace + stat_list + rbrace + elsex + lbrace + stat_list + rbrace, lambda h, s: IfNode(s[3], s[6], s[11], [s[10]], [s[13]])
-        
-        
-        
-        # # stat %= lbrace + stat_list + rbrace, lambda h, s: BlockNode(s[2])
-        # # stat %= idx + asign2 + expr, lambda h, s: AsignNode(s[1], s[3])
-        # stat %= expr + semi, lambda h,s : s[1]
-
-        # arg_list %= idnode, lambda h, s: [s[1]]
-        # arg_list %= idnode + comma + arg_list, lambda h, s: [s[1]] + s[3]
-
-
-        # func_call %= idnode + opar + expr_list + cpar, lambda h, s: CallNode(s[1], s[3])
-        # func_call %= idnode + opar + cpar, lambda h, s: CallNode(s[1], [])
-
-        # expr_list %= expr, lambda h, s: [s[1]]
-        # expr_list %= expr + comma + expr_list, lambda h, s: [s[1]] + s[3]
-        # expr %= func_call, lambda h, s: s[1]
-
-        # asig %= idnode + asign1 + expr, lambda h, s: AsignNode(s[1],s[3])
-        # asig2 %= atom + asign2 + expr, lambda h, s: AsignNode(s[1],s[3])
-
-        # stat %= asig2 + semi, lambda h, s: s[1]
-        
-
-        # subexpr %= subexpr + concat_space + term, lambda h, s: ConcatSpaceNode(s[1], s[3])
-        # atom %= selfx + dot + idnode, lambda h, s: SelfNode(s[3])
-        # atom %= idnode + dot + idnode, lambda h, s: SelfNode(s[3]) #!!!
-
-
-        # stat %= type_declaration, lambda h, s: s[1]
-        # type_declaration %= typex + idnode + lbrace + type_body + rbrace, lambda h, s: TypeNode(s[2], s[4])
-        # type_declaration %= typex + idnode + inherits + idnode + lbrace + type_body + rbrace, lambda h, s: TypeNode(s[2], s[6], s[4])
-        # type_body %= attribute_declaration + method_declaration, lambda h, s: TypeBodyNode([s[1]], [s[2]])
-
-        # attribute_declaration %= idnode + asign1 + expr + semi, lambda h, s: AttributeNode(s[1], s[3])
-        # method_declaration %= idnode + opar + arg_list + cpar + arrow + expr + semi, lambda h, s: MethodNode(s[1], s[3], [s[6]])
-        # method_declaration %= idnode + opar + arg_list + cpar + arrow + lbrace + stat_list + rbrace, lambda h, s: MethodNode(s[1], s[3], s[7])
-
-        # object_creation %= new + idnode + opar + expr_list + cpar, lambda h, s: ObjectCreationNode(s[2], s[4])
-        # expr %= object_creation, lambda h, s: s[1]
-        
-        # method_call %= idnode + dot + idnode + opar + expr_list + cpar, lambda h, s: MethodCallNode(s[1], s[3], s[5])
-        # expr %= method_call, lambda h, s: s[1]
-        
-        
-        
-        
         
         program %= stats + specialBlock, lambda h,s: ProgramNode(s[1] + [s[2]])        
         stats %= self.G.Epsilon, lambda h,s:[]
@@ -391,6 +315,7 @@ if __name__ == "__main__":
                     };
                 };
         '''
+
  
     codeToAST = CodeToAST(text)
     print('\n',codeToAST)
