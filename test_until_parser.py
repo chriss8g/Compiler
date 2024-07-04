@@ -114,16 +114,16 @@ class TestCodeToAST(unittest.TestCase):
                         print(a);
                     } else {
                         print(b);
-                    }
+                    };
                     
                     while (a < c) {
                         print(a);
                         a := a + 1;
-                    }
+                    };
                     
                     for (i in range(3, 4)) {
                         print(i);
-                    }
+                    };
                     
                     let d = new MyClass(5, 10) in {
                         print(d);

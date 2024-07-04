@@ -1,6 +1,6 @@
 import unittest
 from my_parser import CodeToAST
-from semantic_checker.semantic_checker_visitor import SemanticCheckerVisitor
+from semantic_checker_visitor import SemanticCheckerVisitor
 
 class TestSemanticChecker(unittest.TestCase):
 

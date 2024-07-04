@@ -112,8 +112,9 @@ class IterableNode(ExpressionNode):
         self.init = init
         self.final = final
 
-class BlockNode(StatementNode):
+class BlockNode(ExpressionNode):
     def __init__(self, body):
+        super().__init__()
         self.body = body
 
 class AtomicNode(ExpressionNode):

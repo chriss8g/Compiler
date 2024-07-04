@@ -1,5 +1,5 @@
 import cmp.visitor as visitor
-from types.my_types import *
+from nodes_types.my_types import *
 from semantic_checker.scope import Scope
 
 class CodeGeneratorVisitor(object):

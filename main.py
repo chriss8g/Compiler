@@ -1,8 +1,8 @@
 import argparse
 
-from code_generator.code_generator_visitor import CodeGeneratorVisitor
+from code_generator_visitor import CodeGeneratorVisitor
 from my_parser import CodeToAST
-from semantic_checker.semantic_checker_visitor import SemanticCheckerVisitor
+from semantic_checker_visitor import SemanticCheckerVisitor
 
 def main(input_file):
     with open(input_file, 'r') as file:
