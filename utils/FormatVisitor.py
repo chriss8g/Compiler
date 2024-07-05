@@ -1,5 +1,5 @@
 import utils.visitor as visitor
-from nodes_types.my_types import *
+from nodes_types.hulk_types import *
 
 class FormatVisitor(object):
     @visitor.on('node')
@@ -12,7 +12,7 @@ class FormatVisitor(object):
         statements = '\n'.join(self.visit(child, tabs + 1) for child in node.statements)
         return f'{ans}\n{statements}'
 
-    @visitor.when(VarDeclarationNode)
+    @visitor.when(LetNode)
     def visit(self, node, tabs=0):
         ans = '\t' * tabs + f'\\__VarDeclarationNode: let '
         for i in range(len(node.args)):
@@ -28,14 +28,14 @@ class FormatVisitor(object):
     @visitor.when(FuncDeclarationNode)
     def visit(self, node, tabs=0):
         params = ', '.join(f'{param}' for param in node.params)
-        ans = '\t' * tabs + f'\\__FuncDeclarationNode: function {node.id} : {node.type} => <body>'
+        ans = '\t' * tabs + f'\\__FuncDeclarationNode: function {node.name} : {node.type} => <body>'
         if isinstance(node.body, list):
             body = '\n'.join(self.visit(child, tabs + 1) for child in node.body)
         else:
             body = self.visit(node.body, tabs + 1)
         params_info = '\n'.join('\t' * (tabs + 1) + f'Param {i+1}: {param}' for i, param in enumerate(node.params))
         return f'{ans}\n{params_info}\n{body}'
-
+    
     @visitor.when(BinaryNode)
     def visit(self, node, tabs=0):
         ans = '\t' * tabs + f'\\__<expr> {node.__class__.__name__} <expr>'
@@ -49,8 +49,8 @@ class FormatVisitor(object):
 
     @visitor.when(CallNode)
     def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__CallNode: {node.id}(<expr>, ..., <expr>)'
-        args = '\n'.join(self.visit(arg, tabs + 1) for arg in node.args)
+        ans = '\t' * tabs + f'\\__MethodCallNode: {node.object_name}.{node.method_name}(<expr>, ..., <expr>)'
+        args = '\n'.join(self.visit(arg, tabs + 1) for arg in node.arguments)
         return f'{ans}\n{args}'
 
     @visitor.when(PrintNode)
@@ -150,7 +150,7 @@ class FormatVisitor(object):
         ans = '\t' * tabs + f'\\__RandNode'
         return ans
 
-    @visitor.when(ConstantNumNode)
+    @visitor.when(NumberNode)
     def visit(self, node, tabs=0):
         return '\t' * tabs + f'\\__ConstantNumNode: {node.lex}'
 
@@ -162,11 +162,7 @@ class FormatVisitor(object):
     def visit(self, node, tabs=0):
         return '\t' * tabs + f'\\__StringNode: {node.lex}'
 
-    @visitor.when(VariableNode)
-    def visit(self, node, tabs=0):
-        return '\t' * tabs + f'\\__VariableNode: {node.lex}'
-
-    @visitor.when(TypeNode)
+    @visitor.when(TypeDeclarationNode)
     def visit(self, node, tabs=0):
         inherits = node.base_type
         ans = '\t' * tabs + f'\\__TypeNode: {node.name},  Inherits from: {inherits}'
@@ -175,7 +171,7 @@ class FormatVisitor(object):
         params_info = '\n'.join('\t' * (tabs + 1) + f'Param {i+1}: {param}' for i, param in enumerate(node.params))
         return f'{ans}\n{params_info}\n{body}'
 
-    @visitor.when(TypeBodyNode)
+    @visitor.when(TypeBodyDeclarationNode)
     def visit(self, node, tabs=0):
         ans = '\t' * tabs + f'\\__TypeBodyNode'
         attributes = '\n'.join(self.visit(attr, tabs + 1) for attr in node.attributes)
@@ -201,8 +197,8 @@ class FormatVisitor(object):
         args = '\n'.join(self.visit(arg, tabs + 1) for arg in node.arguments)
         return f'{ans}\n{args}'
 
-    @visitor.when(MethodCallNode)
-    def visit(self, node:MethodCallNode, tabs=0):
+    @visitor.when(CallNode)
+    def visit(self, node:CallNode, tabs=0):
         ans = '\t' * tabs + f'\\__MethodCallNode: {node.name} (<expr>, ..., <expr>)'
         args = '\n'.join(self.visit(arg, tabs + 1) for arg in node.arguments)
         return f'{ans}\n{args}'
