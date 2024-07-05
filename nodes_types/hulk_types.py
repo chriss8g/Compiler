@@ -92,7 +92,7 @@ class LetNode(ExpressionNode):
         super().__init__(type)
         self.args = args
         self.body = body
-        
+
 class WhileNode(ExpressionNode):
     def __init__(self, condition, body, type=None):
         super().__init__(type)
@@ -241,10 +241,9 @@ class OrNode(LogicalNode):
     def __init__(self, left, right):
         super().__init__(left, right)
 
-class NotNode(ExpressionNode):
-    def __init__(self, expr):
-        super().__init__(expr, type = BOOL_TYPE)
-        self.expr = expr
+class NotNode(AtomicNode):
+    def __init__(self, lex):
+        super().__init__(lex, type = BOOL_TYPE)
 
 
 # *****************     Operaciones con String     ***************** 
@@ -267,9 +266,10 @@ class ObjectCreationNode(ExpressionNode):
         self.args = args
         
 class IdentifierNode(ExpressionNode):
-    def __init__(self, name,type=None):
+    def __init__(self, name, child=None, type=None):
         super().__init__(type)
         self.name = name
+        self.child = child
         
 class SelfNode(AtomicNode):
     def __init__(self, lex):

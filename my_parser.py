@@ -139,7 +139,7 @@ class CodeToAST:
         type_body %= method_declaration + type_body, lambda h,s: (s[2][0],[s[1]]+s[2][1])
         type_body %= self.G.Epsilon, lambda h,s: ([],[])
         # Atributos de Type
-        attribute_declaration %= idnode + asign1 + expr + semicolon, lambda h,s: AttributeNode(s[1],s[3])
+        attribute_declaration %= idnode + opt_typed + asign1 + expr + semicolon, lambda h,s: AttributeNode(s[1],s[4],s[2])
         # Métodos de Type
         method_declaration %= idx + opar + arg_opt_typed + cpar + opt_typed + func_body, lambda h,s:MethodNode(s[1], [s[6]], s[3], s[5])
         
@@ -190,7 +190,7 @@ class CodeToAST:
         superexpr %= expr, lambda h,s:s[1]
         superexpr %= obrace + cbrace, lambda h,s:None
         
-        elifx_expr %= elifx + opar + expr + cpar + expr + elifx_expr, lambda h,s: (s[6][0]+[s[3]],s[6][1]+[s[5]])
+        elifx_expr %= elifx + opar + expr + cpar + specialBlock + elifx_expr, lambda h,s: (s[6][0]+[s[3]],s[6][1]+[s[5]])
         elifx_expr %= self.G.Epsilon, lambda h,s: ([],[])
         
         
@@ -207,11 +207,11 @@ class CodeToAST:
         # subexpr %= subexpr + orx + term, lambda h, s: OrNode(s[1], s[3])
         # subexpr %= notx + term, lambda h, s: NotNode(s[2])
         subexpr %= subexpr + eq + term, lambda h, s: EQNode(s[1], s[3])
-        # subexpr %= subexpr + ne + term, lambda h, s: NotEqualNode(s[1], s[3])
-        # subexpr %= subexpr + gt + term, lambda h, s: GreaterNode(s[1], s[3])
-        # subexpr %= subexpr + lt + term, lambda h, s: LessNode(s[1], s[3])
-        # subexpr %= subexpr + ge + term, lambda h, s: GreaterEqualNode(s[1], s[3])
-        # subexpr %= subexpr + le + term, lambda h, s: LessEqualNode(s[1], s[3])
+        subexpr %= subexpr + ne + term, lambda h, s: NENode(s[1], s[3])
+        subexpr %= subexpr + gt + term, lambda h, s: GTNode(s[1], s[3])
+        subexpr %= subexpr + lt + term, lambda h, s: LTNode(s[1], s[3])
+        subexpr %= subexpr + ge + term, lambda h, s: GENode(s[1], s[3])
+        subexpr %= subexpr + le + term, lambda h, s: LENode(s[1], s[3])
         # subexpr %= subexpr + concat + term, lambda h, s: ConcatNode(s[1], s[3])
         subexpr %= term, lambda h, s: s[1]
         
@@ -278,7 +278,7 @@ class CodeToAST:
 if __name__ == "__main__":
     
     text = '''
-            if (x == 10) print("less"); else print("more");
+            if (x == 10) print("exactly"); elif(x < 10) print("less"); elif(x >= 10) print("tumadre"); else print("more");
         '''
 
  
