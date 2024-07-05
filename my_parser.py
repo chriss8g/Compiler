@@ -187,7 +187,7 @@ class CodeToAST:
         # expr %= ifx + opar + expr + cpar + specialBlock + elifx_expr + elsex + superexpr, lambda h,s:IfNode(s[3],s[5],s[8],s[6][0],s[6][1])
         # expr %= whilex + opar + expr + cpar + expr, lambda h,s:WhileNode(s[3],s[5])
         # expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + expr + cpar + cpar + expr, lambda h,s:ForRangeNode(s[3],s[7],s[9],s[12])
-        # expr %= printx + opar + expr + cpar, lambda h, s: PrintNode(s[3])
+        expr %= printx + opar + expr + cpar, lambda h, s: PrintNode(s[3])
         # expr %= recurrent_object + asign2 + expr, lambda h, s: DestructNode(s[1],s[3])
         # expr %= new + idnode + opar + arg_expr + cpar, lambda h, s: ObjectCreationNode(s[2], s[4])
         expr %= subexpr, lambda h, s: s[1]
@@ -244,13 +244,13 @@ class CodeToAST:
         atom %= selfx + dot + idnode, lambda h, s: SelfNode(s[3])
         atom %= recurrent_object, lambda h,s : s[1]
         
-        # recurrent_object %= recurrent_object + dot + idnode
-        # recurrent_object %= idnode, lambda h,s:VariableNode(s[1])
-        # recurrent_object %= recurrent_object + opar + arg_expr + cpar, lambda h,s:CallNode(s[1],s[3])
-        # recurrent_object %= recurrent_object + opar + cpar, lambda h,s:CallNode(s[1],[])
+        recurrent_object %= idx + dot + recurrent_object, lambda h,s: IdentifierNode(s[1],s[3])
+        recurrent_object %= idnode, lambda h,s:s[1]
+        recurrent_object %= idx + opar + arg_expr + cpar, lambda h,s:MethodCallNode(s[1],s[3])
+        recurrent_object %= idx + opar + cpar, lambda h,s:MethodCallNode(s[1],[])
         
         
-        idnode %= idx, lambda h, s: VariableNode(s[1])
+        idnode %= idx, lambda h, s: IdentifierNode(s[1])
         
 
         #############################################################################
@@ -285,7 +285,7 @@ if __name__ == "__main__":
     text = '''
             function add(a, b) => a + b;
             
-            print(a);
+            print(a.b.c.d(3+2));
         '''
 
  

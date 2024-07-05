@@ -317,9 +317,14 @@ class ObjectCreationNode(ExpressionNode):
         self.type_name = type_name
         self.arguments = arguments
 
-class MethodCallNode(ExpressionNode):
-    def __init__(self, object_name, method_name, arguments):
+class IdentifierNode(ExpressionNode):
+    def __init__(self, name, child=None):
         super().__init__()
-        self.object_name = object_name
-        self.method_name = method_name
+        self.name = name
+        self.child = child
+        
+class MethodCallNode(ExpressionNode):
+    def __init__(self, name, arguments):
+        super().__init__()
+        self.name = name
         self.arguments = arguments
