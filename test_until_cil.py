@@ -19,13 +19,13 @@ class TestCodeToCIL(unittest.TestCase):
         self.assertIsInstance(cil_ast, cil.ProgramNode)
         self.assertIn('PrintNode', self.formatter.visit(cil_ast))
 
-    # def test_var_declaration(self):
-    #     code = 'let x = 5 in x + 3;'
-    #     ast = CodeToAST(code).ast
-    #     self.assertIsNotNone(ast)
-    #     cil_ast = self.visitor.visit(ast)
-    #     self.assertIsInstance(cil_ast, cil.ProgramNode)
-    #     self.assertIn('AssignNode', self.formatter(cil_ast))
+    def test_var_declaration(self):
+        code = 'let x = 5 in {x + 3;};'
+        ast = CodeToAST(code).ast
+        self.assertIsNotNone(ast)
+        cil_ast = self.visitor.visit(ast)
+        self.assertIsInstance(cil_ast, cil.ProgramNode)
+        self.assertIn('AsignNode', self.formatter.visit(cil_ast))
 
     # def test_function_declaration(self):
     #     code = '''
@@ -73,6 +73,21 @@ class TestCodeToCIL(unittest.TestCase):
         cil_ast = self.visitor.visit(ast, None)
         self.assertIsInstance(cil_ast, cil.ProgramNode)
         self.assertIn('IfNode', self.formatter.visit(cil_ast))
+
+    def test_if_else_let(self):
+        code = '''let x = 10 in {
+                        if(x == 10)
+                            {print(x + 3);}
+                        else
+                        { print(x);};
+                        };'''
+        ast = CodeToAST(code).ast
+        self.assertIsNotNone(ast)
+        cil_ast = self.visitor.visit(ast, None)
+        self.assertIsInstance(cil_ast, cil.ProgramNode)
+        self.assertIn('IfNode', self.formatter.visit(cil_ast))
+        self.assertIn('AsignNode', self.formatter.visit(cil_ast))
+
 
     # def test_complex_expression(self):
     #     code = '''

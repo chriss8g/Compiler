@@ -28,9 +28,26 @@ class CodeGeneratorVisitor(object):
 
         return f'{"\n".join(self.headers)}' + f'{dottypes}\n{dotdata}\n{dotcode}'
 
-    @visitor.when(cil.IfNode)
+    # @visitor.when(cil.IfNode)
+    # def visit(self, node, scope):
+    #     ans = f'if( {node.condition}) \n\t{node.expr}();\n else \n\t{node.else_expr}();\n'
+    #     # condition = self.visit(node.condition, tabs + 1)
+    #     # elif_conditions = '\n'.join(self.visit(cond, tabs + 1) for cond in node.elif_conditions)
+    #     # elif_expr = '\n'.join(self.visit(ex, tabs + 1) for ex in node.elif_expr)
+    #     # return f'{ans}\n{condition}\n{expr}' + '\n' + '\t' * tabs + f'\\__Elif <expr>:' + f'\n{elif_conditions}\n{elif_expr}' + '\n' + '\t' * tabs + f'\\__Else:' + f'\n{else_expr}'
+    #     return f'{ans}'
+
+    @visitor.when(cil.LabelNode)
     def visit(self, node, scope):
-        ans = f'if( {node.condition}) \n\t{node.expr}();\n else \n\t{node.else_expr}();\n'
+        return f'{node.label}:'
+    
+    @visitor.when(cil.GotoNode)
+    def visit(self, node, scope):
+        return f'goto {node.label};'
+    
+    @visitor.when(cil.GotoIfNode)
+    def visit(self, node, scope):
+        ans = f'if( {node.condition}) \n\tgoto {node.label};\n else \n\tgoto {node.label_else};\n'
         # condition = self.visit(node.condition, tabs + 1)
         # elif_conditions = '\n'.join(self.visit(cond, tabs + 1) for cond in node.elif_conditions)
         # elif_expr = '\n'.join(self.visit(ex, tabs + 1) for ex in node.elif_expr)
@@ -58,7 +75,7 @@ class CodeGeneratorVisitor(object):
 
         instructions = ""
         for x in node.instructions:
-            instructions = instructions + self.visit(x, scope.create_child_scope()) + ';\n'
+            instructions = instructions + self.visit(x, scope.create_child_scope()) + '\n'
 
         return f'int {node.name}({params}){{ \n{localvars}\n{instructions} }}'
     
@@ -81,6 +98,6 @@ class CodeGeneratorVisitor(object):
     
     @visitor.when(cil.AssignNode)
     def visit(self, node, scope):
-        ans = f'{node.dest} = {node.source}'
+        ans = f'{node.dest} = {node.source};'
         return ans
     

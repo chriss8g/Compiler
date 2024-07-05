@@ -223,14 +223,14 @@ class FormatVisitor(object):
     #########################################################################################
     #########################################################################################
     
-    @visitor.when(cil.IfNode)
-    def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__IfNode:\n {'\t' * (tabs+1)}\\__condition {node.condition} \n' + '\t' * (tabs+1) 
-        # condition = self.visit(node.condition, tabs + 1)
-        # elif_conditions = '\n'.join(self.visit(cond, tabs + 1) for cond in node.elif_conditions)
-        # elif_expr = '\n'.join(self.visit(ex, tabs + 1) for ex in node.elif_expr)
-        # return f'{ans}\n{condition}\n{expr}' + '\n' + '\t' * tabs + f'\\__Elif <expr>:' + f'\n{elif_conditions}\n{elif_expr}' + '\n' + '\t' * tabs + f'\\__Else:' + f'\n{else_expr}'
-        return f'{ans}\\body: call {node.expr}' + '\n' + '\t' * (tabs+1) + f'\\__else_body: ' + f'call {node.else_expr}'
+    # @visitor.when(cil.IfNode)
+    # def visit(self, node, tabs=0):
+    #     ans = '\t' * tabs + f'\\__IfNode:\n {'\t' * (tabs+1)}\\__condition {node.condition} \n' + '\t' * (tabs+1) 
+    #     # condition = self.visit(node.condition, tabs + 1)
+    #     # elif_conditions = '\n'.join(self.visit(cond, tabs + 1) for cond in node.elif_conditions)
+    #     # elif_expr = '\n'.join(self.visit(ex, tabs + 1) for ex in node.elif_expr)
+    #     # return f'{ans}\n{condition}\n{expr}' + '\n' + '\t' * tabs + f'\\__Elif <expr>:' + f'\n{elif_conditions}\n{elif_expr}' + '\n' + '\t' * tabs + f'\\__Else:' + f'\n{else_expr}'
+    #     return f'{ans}\\body: call {node.expr}' + '\n' + '\t' * (tabs+1) + f'\\__else_body: ' + f'call {node.else_expr}'
         
     @visitor.when(cil.PrintNode)
     def visit(self, node, tabs=0):
@@ -264,6 +264,21 @@ class FormatVisitor(object):
     @visitor.when(cil.LocalNode)
     def visit(self, node, tabs=0):
         return f'{'\t' * tabs}\\__LocalNode {node.name}'
+    
+    @visitor.when(cil.LabelNode)
+    def visit(self, node, tabs=0):
+        return f'{'\t' * tabs}\\__LabelNode {node.label}'
+    
+    @visitor.when(cil.GotoNode)
+    def visit(self, node, tabs=0):
+        return f'{'\t' * tabs}\\GotoNode {node.label}'
+    
+    @visitor.when(cil.GotoIfNode)
+    def visit(self, node, tabs=0):
+        ans = '\t' * tabs + f'\\__GotoIfNode:\n {'\t' * (tabs+1)}\\__condition {node.condition} \n' + '\t' * (tabs+1) 
+        return f'{ans}\\goto: {node.label}' + '\n' + '\t' * (tabs+1) + f'\\__else_goto: ' + f' {node.label_else}'
+        
+    
     
     # @visitor.when(cil.LogicNode)
     # def visit(self, node, tabs=0):

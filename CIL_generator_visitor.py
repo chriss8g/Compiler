@@ -117,15 +117,30 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
     @visitor.when(IfNode)
     def visit(self, node, scope):
         condition = self.visit(node.condition, scope)
-        expr = self.visit(node.expr, scope)
-        else_expr = self.visit(node.else_expr, scope)
 
-        # if node.else_expr:
-        #     self.register_instruction(cil.LabelNode('else_label'))
-        #     self.visit(node.else_expr, scope)
-        self.register_instruction(cil.IfNode(condition, expr, else_expr))
+        self.register_instruction(cil.GotoNode('my_begin'))
+
+        self.register_instruction(cil.LabelNode('my_if'))
+        expr = self.visit(node.expr, scope)
+        self.register_instruction(cil.GotoNode('my_end'))
+
+        self.register_instruction(cil.LabelNode('my_else'))
+        else_expr = self.visit(node.else_expr, scope)
+        self.register_instruction(cil.GotoNode('my_end'))
+
+
+        self.register_instruction(cil.LabelNode('my_begin'))
+        self.register_instruction(cil.GotoIfNode(condition, 'my_if', 'my_else'))
+        self.register_instruction(cil.LabelNode('my_end'))
 
         
+
+        # if node.else_expr:
+            # self.register_instruction(cil.LabelNode('else_label'))
+        #     self.visit(node.else_expr, scope)
+        # self.register_instruction(cil.IfNode(condition, expr, else_expr))
+
+
 
     @visitor.when(WhileNode)
     def visit(self, node, scope):
@@ -146,16 +161,16 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
     @visitor.when(BlockNode)
     def visit(self, node, scope):
         
-        parent = self.current_function
+        # parent = self.current_function
 
-        name = self.to_function_name('block')
+        # name = self.to_function_name('block')
 
-        self.current_function = self.register_function(name)
+        # self.current_function = self.register_function(name)
         for i in node.body:
-            self.visit(i, scope)
-        self.register_instruction(cil.ReturnNode(0))
+            name = self.visit(i, scope)
+        # self.register_instruction(cil.ReturnNode(0))
         
-        self.current_function = parent
+        # self.current_function = parent
 
         return name
     
