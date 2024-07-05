@@ -6,6 +6,7 @@ from semantic_checker_visitor import SemanticCheckerVisitor
 from CIL_generator_visitor import HULKToCILVisitor
 import cil
 import os
+from type_collector import TypeCollector
 
 def main(input_file):
     with open(input_file, 'r') as file:
@@ -18,11 +19,14 @@ def main(input_file):
         output_file.write(str(codeToAST))
 
 
-    # semantic_checker = SemanticCheckerVisitor()
-    # errors = semantic_checker.visit(codeToAST.ast)
-    # if(len(errors) > 0):
-    #     for i, error in enumerate(errors, 1):
-    #         print(f'{i}.', error)
+    semantic_checker = SemanticCheckerVisitor()
+    type_collector = TypeCollector()
+    errors = []
+    errors = errors + semantic_checker.visit(codeToAST.ast)
+    errors = errors + type_collector.visit(codeToAST.ast)
+    if(len(errors) > 0):
+        for i, error in enumerate(errors, 1):
+            print(f'{i}.', error)
 
     #     return
     
@@ -31,7 +35,7 @@ def main(input_file):
     cil_generator = HULKToCILVisitor([])
     output = cil_generator.visit(codeToAST.ast)
 
-    from utils.FormatVisitor import FormatVisitor
+    from utils.my_format_visitor import FormatVisitor
     formatter = FormatVisitor()
 
     with open('script.cil', 'w') as output_file:
