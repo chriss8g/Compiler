@@ -261,7 +261,7 @@ class CodeToAST:
         
 
     def __repr__(self):
-        from utils.FormatVisitor import FormatVisitor
+        from utils.my_format_visitor import FormatVisitor
 
         formatter = FormatVisitor()
         tree = formatter.visit(self.ast)
