@@ -241,8 +241,8 @@ class CodeToAST:
         
         recurrent_object %= idx + dot + recurrent_object, lambda h,s: IdentifierNode(s[1],s[3])
         recurrent_object %= idnode, lambda h,s:s[1]
-        # recurrent_object %= idx + opar + arg_expr + cpar, lambda h,s:CallNode(s[1],s[3])
-        # recurrent_object %= idx + opar + cpar, lambda h,s:CallNode(s[1],[])
+        recurrent_object %= idx + opar + arg_expr + cpar, lambda h,s:CallNode(s[1],s[3])
+        recurrent_object %= idx + opar + cpar, lambda h,s:CallNode(s[1],[])
         
         
         idnode %= idx, lambda h, s: IdentifierNode(s[1])
