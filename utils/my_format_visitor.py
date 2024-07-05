@@ -33,25 +33,26 @@ class FormatVisitor(object):
         ans = '\t' * tabs + f'\\__TypeNode: type {node.name} inherits {inherits} [<statement>]'
         body = self.visit(node.body, tabs + 1)
         params = '\t' * (tabs+1) + 'Params' + '\n' + '\n'.join('\t' * (tabs+2) + f'{param}' for param in node.params)
-        params_base = '\t' * (tabs+1) + 'Params' + '\n' + '\n'.join('\t' * (tabs+2) + f'{param}' for param in node.base_params)
+        params_base = '\t' * (tabs+1) + 'Params BaseType' + '\n' + '\n'.join('\t' * (tabs+2) + f'{param}' for param in node.base_params)
         return f'{ans}\n{params}\n{params_base}\n{body}'
 
     @visitor.when(hulk.TypeBodyDeclarationNode)
     def visit(self, node, tabs=0):
         ans = '\t' * tabs + f'\\__TypeBodyNode'
         attributes = '\t' * (tabs+1) + 'Atributes' + '\n' + '\n'.join(self.visit(attr, tabs + 2) for attr in node.attributes)
-        methods = '\t' * (tabs+1) + 'Methods' + '\n'.join(self.visit(method, tabs + 2) for method in node.methods)
+        methods = '\t' * (tabs+1) + 'Methods' + '\n' + '\n'.join(self.visit(method, tabs + 2) for method in node.methods)
         return f'{ans}\n{attributes}\n{methods}'
     
     @visitor.when(hulk.AttributeNode)
     def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__AttributeNode: {node.name} : {node.type} = <expr>'
+        ans = '\t' * tabs + f'\\__AttributeNode id = <expr>'
+        idx = self.visit(node.name, tabs+1)
         value = self.visit(node.value, tabs + 1)
-        return f'{ans}\n{value}'
+        return f'{ans}\n{idx}\n{value}'
 
     @visitor.when(hulk.MethodNode)
     def visit(self, node, tabs=0):
-        params = ', '.join(f'({param[0],param[1]})' for param in node.parameters)
+        params = ', '.join(f'({param[0],param[1]})' for param in node.params)
         ans = '\t' * tabs + f'\\__MethodNode: function {node.name} : {node.type} => <body>'
         params = '\t' * (tabs+1) + 'Params' + '\n' + '\n'.join('\t' * (tabs+2) + f'{param}' for param in node.params)
         body = '\n'.join(self.visit(child, tabs + 1) for child in node.body)

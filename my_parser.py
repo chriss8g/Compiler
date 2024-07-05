@@ -278,7 +278,12 @@ class CodeToAST:
 if __name__ == "__main__":
     
     text = '''
-            if (x == 10) print("exactly"); elif(x < 10) print("less"); elif(x >= 10) print("tumadre"); else print("more");
+            type MyClass {
+                a = 5 ;
+                b = 32;
+                method(x):Number => x + a;
+            }
+            print("hello");
         '''
 
  
