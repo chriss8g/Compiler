@@ -101,9 +101,50 @@ class FormatVisitor(object):
     def visit(self, node, tabs=0):
         ans = '\t' * tabs + f'\\__ForRangeNode: {node.id.name} in range(<expr>, <expr>)  [<expression>]'
         init = '\t' * (tabs+1) + '\\_Init' + '\n' + self.visit(node.init, tabs + 2)
-        final = self.visit(node.final, tabs + 1)
-        body = self.visit(node.body, tabs + 1)
+        final = '\t' * (tabs+1) + '\\Final' + '\n' + self.visit(node.final, tabs + 2)
+        body = '\t' * (tabs+1) + '\\_ Body' + '\n' + self.visit(node.body, tabs+2)
         return f'{ans}\n{init}\n{final}\n{body}'
+    
+    @visitor.when(hulk.IfNode)
+    def visit(self, node, tabs=0):
+        ans = '\t' * tabs + f'\\__IfNode  [<expression>]'
+        print(node.condition)
+        condition = '\t' * (tabs+1) + '\\_ Condition' + '\n' + self.visit(node.condition, tabs + 2)
+        body = '\t' * (tabs+1) + '\\_ Body' + '\n' + self.visit(node.body, tabs+2)
+        
+        elifs = ''
+        if node.elif_conditions:
+            for i in range(len(node.elif_conditions)):
+                elifs_condition = '\t' * (tabs+1) + f'\\_ Elif Condition {i}' + '\n' + self.visit(node.elif_conditions[i], tabs + 2)
+                elif_body = '\t' * (tabs+1) + f'\\_ Elif Body {i}' + '\n' + self.visit(node.elif_body[i], tabs + 2)
+                elifs += elifs_condition + '\n' + elif_body + '\n'
+        else_body = '\t' * (tabs+1) + '\\_ Else Body' + '\n' + self.visit(node.else_body, tabs + 2)
+        return f'{ans}\n{condition}\n{body}\n{elifs}{else_body}'
+
+    @visitor.when(hulk.DestructNode)
+    def visit(self, node, tabs=0):
+        ans = '\t' * tabs + f'\\DestructNode   [<expression>]'
+        id = self.visit(node.id, tabs + 1)
+        expr = self.visit(node.expr, tabs + 1)
+        return f'{ans}\n{id}\n{expr}'
+    
+    @visitor.when(hulk.CallNode)
+    def visit(self, node, tabs=0):
+        ans = '\t' * tabs + f'\\__CallNode function {node.id}   [<expression>]'
+        args = '\t' * (tabs+1) + '\\_ Arguments' + '\n' + '\n'.join(self.visit(arg, tabs + 2) for arg in node.args)
+        return f'{ans}\n{args}'
+    
+
+    # **********************************************************
+    # *******************    Operaciones  **********************
+    # **********************************************************
+
+    
+    
+    
+    
+    
+
 
     #########################################################################################
     #########################################################################################

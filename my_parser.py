@@ -278,7 +278,7 @@ class CodeToAST:
 if __name__ == "__main__":
     
     text = '''
-            let x = 5 in x + 3;
+            if (x == 10) print("less"); else print("more");
         '''
 
  
