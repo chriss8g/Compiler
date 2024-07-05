@@ -1,0 +1,18 @@
+\__ProgramNode [<program>]
+
+	\__LetNode [<expression>]
+		\__AssignNode:
+[]
+
+		\__BlockNode [<expression>]
+			\__IfNode  [<expression>]
+				\_ Condition
+
+				\_ Body
+					\__BlockNode [<expression>]
+						\__PrintNode [<sentence>]
+[]
+				\_ Else Body
+					\__BlockNode [<expression>]
+						\__PrintNode [<sentence>]
+[]

@@ -1,3 +1,6 @@
-let a = (let b = 6 in b * 7) in print(a);
+let a = 10 in 
+    while (a >= 0) {
 
-print(let b = 6 in b * 7);
+    print(a);
+    a := a - 1;
+};

@@ -54,7 +54,7 @@ test_cases = [
     # ('test10.uh', 'test10.output'),
     # ('test11.uh', 'test11.output'),
     # ('test12.uh', 'test12.output'),
-    # # ('test13.uh', 'test13.output'),
+    ('test13.uh', 'test13.output'),
     ('test14.uh', 'test14.output'),
     # ('test15.uh', 'test15.output'),
     ('test16.uh', 'test16.output'),

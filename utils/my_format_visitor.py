@@ -79,7 +79,7 @@ class FormatVisitor(object):
         ans = '\t' * tabs + f'\\__BlockNode [<expression>]'
         body = None
         if node.body is not None:
-            print(node.body[0])
+            # print(node.body[0])
             body = '\n'.join(self.visit(child, tabs + 1) for child in node.body)
         return f'{ans}\n{body}'
     
@@ -133,6 +133,18 @@ class FormatVisitor(object):
         ans = '\t' * tabs + f'\\__CallNode function {node.id}   [<expression>]'
         args = '\t' * (tabs+1) + '\\_ Arguments' + '\n' + '\n'.join(self.visit(arg, tabs + 2) for arg in node.args)
         return f'{ans}\n{args}'
+    
+    @visitor.when(hulk.NumberNode)
+    def visit(self, node, tabs=0):
+        return ""
+    
+    @visitor.when(hulk.EQNode)
+    def visit(self, node, tabs=0):
+        return ""
+    
+    @visitor.when(hulk.GENode)
+    def visit(self, node, tabs=0):
+        return ""
     
 
     # **********************************************************

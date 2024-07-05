@@ -17,8 +17,28 @@
 		 \__local_vars
 			\__LocalNode local_block_1_internal_0
 			\__LocalNode local_block_1_internal_1
+			\__LocalNode local_block_1_internal_2
+			\__LocalNode local_block_1_internal_3
+			\__LocalNode local_block_1_internal_4
+			\__LocalNode local_block_1_internal_5
 		 \__instructions
-			\__AsignNode: local_block_1_internal_1 = 20
+			\__AsignNode: local_block_1_internal_1 = 10
 			\__AsignNode: local_block_1_internal_0 = local_block_1_internal_1
+			\__AsignNode: local_block_1_internal_2 = 10
+			\__AsignNode: local_block_1_internal_3 = local_block_1_internal_0 == local_block_1_internal_2
+			\GotoNode my_begin
+			\__LabelNode my_if
+			\__AsignNode: local_block_1_internal_4 = 3
+			\__AsignNode: local_block_1_internal_5 = local_block_1_internal_0 + local_block_1_internal_4
+			\__PrintNode local_block_1_internal_5
+			\GotoNode my_end
+			\__LabelNode my_else
 			\__PrintNode local_block_1_internal_0
+			\GotoNode my_end
+			\__LabelNode my_begin
+			\__GotoIfNode:
+ 				\__condition local_block_1_internal_3 
+				\goto: my_if
+				\__else_goto:  my_else
+			\__LabelNode my_end
 			\__ReturnNode return 
