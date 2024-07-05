@@ -278,9 +278,7 @@ class CodeToAST:
 if __name__ == "__main__":
     
     text = '''
-            function add(a, b) => a + b;
-            
-            print(a.b.c.d(3+2));
+            let x = 5 in x + 3;
         '''
 
  

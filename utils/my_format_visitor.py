@@ -70,13 +70,13 @@ class FormatVisitor(object):
 
     @visitor.when(hulk.PrintNode)
     def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__PrintNode: [<sentence>]'
+        ans = '\t' * tabs + f'\\__PrintNode [<sentence>]'
         expr = self.visit(node.expr, tabs + 1)
         return f'{ans}\n{expr}'
     
     @visitor.when(hulk.BlockNode)
     def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__BlockNode: [<expression>]'
+        ans = '\t' * tabs + f'\\__BlockNode [<expression>]'
         body = None
         if node.body is not None:
             print(node.body[0])
@@ -85,20 +85,25 @@ class FormatVisitor(object):
     
     @visitor.when(hulk.LetNode)
     def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__LetNode: let [<expression>]'
-        for i in range(len(node.args)):
-            ans += f'{node.args[i].id} = <expr>,'
-        ans += f' in <expr>'
-        values = '\n'.join(self.visit(child, tabs + 1) for child in node.args)
-        if(isinstance(node.body, list)):
-            expr = '\n'.join(self.visit(child, tabs + 1) for child in node.body)
-        else:
-            expr = self.visit(node.body, tabs + 1)
-        return f'{ans}\n{values}\n{expr}'
+        ans = '\t' * tabs + f'\\__LetNode [<expression>]'
+        args = '\n'.join(self.visit(child, tabs + 1) for child in node.args)
+        body = self.visit(node.body, tabs + 1)
+        return f'{ans}\n{args}\n{body}'
     
-    @visitor.when(hulk.IfNode)
+    @visitor.when(hulk.WhileNode)
     def visit(self, node, tabs=0):
-        return ""
+        ans = '\t' * tabs + f'\\__WhileNode [<expression>]'
+        condition = '\t' * (tabs+1) + '\\_ Condition' + '\n' + self.visit(node.condition, tabs + 2)
+        body = '\t' * (tabs+1) + '\\_ Body' + '\n' + self.visit(node.body, tabs+2)
+        return f'{ans}\n{condition}\n{body}'
+    
+    @visitor.when(hulk.ForRangeNode)
+    def visit(self, node, tabs=0):
+        ans = '\t' * tabs + f'\\__ForRangeNode: {node.id.name} in range(<expr>, <expr>)  [<expression>]'
+        init = '\t' * (tabs+1) + '\\_Init' + '\n' + self.visit(node.init, tabs + 2)
+        final = self.visit(node.final, tabs + 1)
+        body = self.visit(node.body, tabs + 1)
+        return f'{ans}\n{init}\n{final}\n{body}'
 
     #########################################################################################
     #########################################################################################
