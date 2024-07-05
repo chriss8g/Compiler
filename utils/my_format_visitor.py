@@ -139,7 +139,13 @@ class FormatVisitor(object):
     # *******************    Operaciones  **********************
     # **********************************************************
 
-    
+    @visitor.when(hulk.BinaryNode)
+    def visit(self, node, tabs=0):
+        ans = '\t' * tabs + f'\\__{node.__class__.__name__}   [<expression>]'
+        left = self.visit(node.left, tabs + 1)
+        right = self.visit(node.right, tabs + 1)
+        return f'{ans}\n{left}\n{right}'
+
     
     
     
