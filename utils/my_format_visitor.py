@@ -1,5 +1,6 @@
 import utils.visitor as visitor
 from nodes_types import hulk_types as hulk
+import cil
 
 class FormatVisitor(object):
     @visitor.on('node')
