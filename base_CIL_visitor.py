@@ -1,4 +1,4 @@
-from cmp import cil
+import cil
 from semantic_checker.scope import VariableInfo
 
 class BaseHULKToCILVisitor:
@@ -37,8 +37,11 @@ class BaseHULKToCILVisitor:
         self.instructions.append(instruction)
         return instruction
     
-    def to_function_name(self, method_name, type_name):
+    def to_function_name_in_type(self, method_name, type_name):
         return f'function_{method_name}_at_{type_name}'
+
+    def to_function_name(self, method_name):
+        return f'function_{method_name}_{len(self.dotcode)}'
     
     def register_function(self, function_name):
         function_node = cil.FunctionNode(function_name, [], [], [])

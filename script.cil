@@ -1,23 +1,39 @@
-.TYPES
+\__.TYPES
 
+\__.DATA
 
-.DATA
+\__.CODE
+	 \__function <entry>
+		 \__params
 
+		 \__local_vars
+			\__LocalNode local__internal_0
+			\__LocalNode local__internal_1
+			\__LocalNode local__internal_2
+		 \__instructions
+			\__AsignNode: local__internal_0 = 5
+			\__AsignNode: local__internal_1 = 0
+			\__AsignNode: local__internal_2 = local__internal_0 == local__internal_1
+			\__IfNode:
+ 				\__condition local__internal_2 
+				\body: call function_block_1
+				\__else_body: call function_block_2
+			\__RETURN 0 
+	 \__function <function_block_1>
+		 \__params
 
-.CODE
-function entry {
-	
+		 \__local_vars
+			\__LocalNode local_block_1_internal_0
+		 \__instructions
+			\__AsignNode: local_block_1_internal_0 = 2
+			\__PrintNode local_block_1_internal_0
+			\__RETURN 0 
+	 \__function <function_block_2>
+		 \__params
 
-	LOCAL local__internal_0
-
-	local__internal_0 = CALL function_print_at_number
-	RETURN 0
-}
-function function_print_at_number {
-	
-
-	
-
-	PRINT 4
-	RETURN 0
-}
+		 \__local_vars
+			\__LocalNode local_block_2_internal_0
+		 \__instructions
+			\__AsignNode: local_block_2_internal_0 = 5
+			\__PrintNode local_block_2_internal_0
+			\__RETURN 0

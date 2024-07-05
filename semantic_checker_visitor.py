@@ -1,6 +1,6 @@
 
 import cmp.visitor as visitor
-from nodes_types.my_types import *
+from nodes_types.hulk import *
 from semantic_checker.scope import Scope
 
 class SemanticCheckerVisitor(object):

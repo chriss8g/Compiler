@@ -1,7 +1,7 @@
 from utils.pycompiler import *
 from parser.TreeDef import *
 from parser.tools import *
-from nodes_types.my_types import *
+from nodes_types.hulk import *
 from my_lexer import Lexer
 
 
