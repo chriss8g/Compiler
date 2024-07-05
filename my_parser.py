@@ -231,10 +231,10 @@ class CodeToAST:
         atom %= selfx + dot + idnode, lambda h, s: SelfNode(s[3])
         atom %= recurrent_object, lambda h,s : s[1]
         
-        recurrent_object %= recurrent_object + dot + idnode
-        recurrent_object %= idnode, lambda h,s:VariableNode(s[1])
-        recurrent_object %= recurrent_object + opar + arg_expr + cpar, lambda h,s:CallNode(s[1],s[3])
-        recurrent_object %= recurrent_object + opar + cpar, lambda h,s:CallNode(s[1],[])
+        recurrent_object %= idx + dot + recurrent_object, lambda h,s: IdentifierNode(s[1],s[3])
+        recurrent_object %= idnode, lambda h,s:s[1]
+        recurrent_object %= idx + opar + arg_expr + cpar, lambda h,s:MethodCallNode(s[1],s[3])
+        recurrent_object %= idx + opar + cpar, lambda h,s:MethodCallNode(s[1],[])
         
         
         idnode %= idx, lambda h, s: IdentifierNode(s[1])
