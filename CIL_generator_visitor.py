@@ -13,6 +13,9 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
     def visit(self, node, scope=None):
         scope = Scope() if not scope else scope
 
+        for child in node.statements:
+            self.visit(child, scope.create_child_scope())
+
         self.current_function = self.register_function('main')
 
         self.visit(node.main, scope.create_child_scope())
@@ -42,21 +45,27 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
     @visitor.when(hulk.FuncDeclarationNode)
     def visit(self, node, scope):
-        function_name = self.to_function_name_in_type(node.id, self.current_type.name)
-        self.current_function = self.register_function(function_name)
+
+        parent = self.current_function
+            
+
+        # function_name = self.to_function_name_in_type(node.name, node.type)
+        self.current_function = self.register_function(node.name)
 
         for param in node.params:
-            vinfo = scope.find_variable(param)
-            param_node = cil.ParamNode(vinfo.name)
+            # vinfo = scope.find_variable(param)
+            param_node = cil.ParamNode(param[0])
             self.params.append(param_node)
 
-        self.visit(node.body, scope)
+        expr = self.visit(node.body, scope)
 
-        self.current_function = self.dotcode[0]
+        self.register_instruction(cil.ReturnNode(expr))
+        
+        self.current_function = parent
 
     @visitor.when(hulk.PrintNode)
     def visit(self, node, scope):
-
+        # print(node.expr)
         dest = self.visit(node.expr, scope)
         self.register_instruction(cil.PrintNode(dest))
 
@@ -212,6 +221,14 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
     
     @visitor.when(hulk.IdentifierNode)
     def visit(self, node, scope):
-        # print(node.name)
-        x = scope.get_variable_info(node.name)
-        return x
+
+        return scope.get_variable_info(node.name) if scope.get_variable_info(node.name) else node.name
+
+    @visitor.when(hulk.CallNode)
+    def visit(self, node, scope):
+
+        params = []
+        for child in node.args:
+            params.append(self.visit(child, scope.create_child_scope()))
+
+        return f'{node.id}(' + ", ".join(child for child in params) + ")"

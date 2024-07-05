@@ -19,14 +19,14 @@ def main(input_file):
         output_file.write(str(codeToAST))
 
 
-    semantic_checker = SemanticCheckerVisitor()
-    type_collector = TypeCollector()
-    errors = []
-    errors = errors + semantic_checker.visit(codeToAST.ast)
-    errors = errors + type_collector.visit(codeToAST.ast)
-    if(len(errors) > 0):
-        for i, error in enumerate(errors, 1):
-            print(f'{i}.', error)
+    # semantic_checker = SemanticCheckerVisitor()
+    # type_collector = TypeCollector()
+    # errors = []
+    # errors = errors + semantic_checker.visit(codeToAST.ast)
+    # errors = errors + type_collector.visit(codeToAST.ast)
+    # if(len(errors) > 0):
+    #     for i, error in enumerate(errors, 1):
+    #         print(f'{i}.', error)
 
     #     return
     

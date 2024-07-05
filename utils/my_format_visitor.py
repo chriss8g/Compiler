@@ -155,6 +155,10 @@ class FormatVisitor(object):
     def visit(self, node, tabs=0):
         return f'{'\t' * tabs}\\__LocalNode {node.name}'
     
+    @visitor.when(cil.ParamNode)
+    def visit(self, node, tabs=0):
+        return f'{'\t' * tabs}\\__ParamNode {node.name}'
+    
     @visitor.when(cil.LabelNode)
     def visit(self, node, tabs=0):
         return f'{'\t' * tabs}\\__LabelNode {node.label}'
