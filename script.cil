@@ -1,0 +1,26 @@
+.TYPES
+
+
+.DATA
+
+
+.CODE
+function entry {
+	
+
+	LOCAL local__internal_0
+	LOCAL local__internal_1
+
+	local__internal_0 = ALLOCATE Main
+	ARG local__internal_0
+	local__internal_1 = CALL function_main_at_Main
+	RETURN 0
+}
+function function_print_at_number {
+	
+
+	
+
+	PRINT 4
+	RETURN 0
+}
