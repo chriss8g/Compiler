@@ -16,7 +16,7 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
         for _ in range(len(node.statements)):#!!!!
             scope.create_child_scope()
 
-        self.current_function = self.register_function('entry')
+        self.current_function = self.register_function('main')
 
         for declaration, child_scope in zip(node.statements, scope.children):
             self.visit(declaration, child_scope)

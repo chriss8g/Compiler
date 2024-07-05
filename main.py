@@ -5,6 +5,7 @@ from my_parser import CodeToAST
 from semantic_checker_visitor import SemanticCheckerVisitor
 from CIL_generator_visitor import HULKToCILVisitor
 import cil
+import os
 
 def main(input_file):
     with open(input_file, 'r') as file:
@@ -31,11 +32,16 @@ def main(input_file):
     from utils.FormatVisitor import FormatVisitor
     formatter = FormatVisitor()
 
-    # c_generator = CodeGeneratorVisitor()
-    # output = c_generator.visit(codeToAST.ast)
-
     with open('script.cil', 'w') as output_file:
         output_file.write(formatter.visit(output))
+
+    c_generator = CodeGeneratorVisitor()
+    output = c_generator.visit(output, None)
+
+    with open('script.c', 'w') as output_file:
+        output_file.write(output)
+
+    os.system("gcc script.c && ./a.out")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate C code from custom script")

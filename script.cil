@@ -3,7 +3,7 @@
 \__.DATA
 
 \__.CODE
-	 \__function <entry>
+	 \__function <main>
 		 \__params
 
 		 \__local_vars
