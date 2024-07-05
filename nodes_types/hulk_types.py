@@ -68,19 +68,15 @@ class IterableNode(Node):
 # **************************************************
 # ************     Dentro de MAIN     **************
 # **************************************************
- 
 
-class Sentence(Node):
-    pass
-
-class PrintNode(Sentence):
-    def __init__(self,expr) -> None:
-        super().__init__()
-        self.expr = expr
-
-class ExpressionNode(Sentence):
+class ExpressionNode(Node):
     def __init__(self, type=None):
         self.type = type
+        
+class PrintNode(ExpressionNode):
+    def __init__(self,expr):
+        super().__init__(STRING_TYPE)
+        self.expr = expr
 
 class BlockNode(ExpressionNode):
     def __init__(self, body, type=None):
