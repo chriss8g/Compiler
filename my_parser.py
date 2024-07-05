@@ -139,7 +139,7 @@ class CodeToAST:
         type_body %= method_declaration + type_body, lambda h,s: (s[2][0],[s[1]]+s[2][1])
         type_body %= self.G.Epsilon, lambda h,s: ([],[])
         # Atributos de Type
-        attribute_declaration %= idx + asign1 + expr + semicolon, lambda h,s: AttributeNode(s[1],s[3])
+        attribute_declaration %= idnode + asign1 + expr + semicolon, lambda h,s: AttributeNode(s[1],s[3])
         # Métodos de Type
         method_declaration %= idx + opar + arg_opt_typed + cpar + opt_typed + func_body, lambda h,s:MethodNode(s[1], [s[6]], s[3], s[5])
         
@@ -169,14 +169,14 @@ class CodeToAST:
         
         
         # ***************** Expresiones ******************
-        expr %= blockExpr, lambda h,s: s[1]
-        expr %= let + asig_list + inx + expr, lambda h, s: LetNode(s[2], s[4])
-        expr %= ifx + opar + expr + cpar + specialBlock + elifx_expr + elsex + superexpr, lambda h,s:IfNode(s[3],s[5],s[8],s[6][0],s[6][1])
-        expr %= whilex + opar + expr + cpar + specialBlock, lambda h,s:WhileNode(s[3],s[5])
-        expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + expr + cpar + cpar + expr, lambda h,s:ForRangeNode(s[3],s[7],s[9],s[12])
+        # expr %= blockExpr, lambda h,s: s[1]
+        # expr %= let + asig_list + inx + expr, lambda h, s: LetNode(s[2], s[4])
+        # expr %= ifx + opar + expr + cpar + specialBlock + elifx_expr + elsex + superexpr, lambda h,s:IfNode(s[3],s[5],s[8],s[6][0],s[6][1])
+        # expr %= whilex + opar + expr + cpar + specialBlock, lambda h,s:WhileNode(s[3],s[5])
+        # expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + expr + cpar + cpar + expr, lambda h,s:ForRangeNode(s[3],s[7],s[9],s[12])
         expr %= printx + opar + expr + cpar, lambda h, s: PrintNode(s[3])
-        expr %= recurrent_object + asign2 + expr, lambda h, s: DestructNode(s[1],s[3])
-        expr %= new + idx + opar + arg_expr + cpar, lambda h, s: ObjectCreationNode(s[2], s[4])
+        # expr %= recurrent_object + asign2 + expr, lambda h, s: DestructNode(s[1],s[3])
+        # expr %= new + idx + opar + arg_expr + cpar, lambda h, s: ObjectCreationNode(s[2], s[4])
         expr %= subexpr, lambda h, s: s[1]
         
         superexpr %= expr, lambda h,s:s[1]
@@ -233,8 +233,8 @@ class CodeToAST:
         
         recurrent_object %= idx + dot + recurrent_object, lambda h,s: IdentifierNode(s[1],s[3])
         recurrent_object %= idnode, lambda h,s:s[1]
-        recurrent_object %= idx + opar + arg_expr + cpar, lambda h,s:MethodCallNode(s[1],s[3])
-        recurrent_object %= idx + opar + cpar, lambda h,s:MethodCallNode(s[1],[])
+        # recurrent_object %= idx + opar + arg_expr + cpar, lambda h,s:CallNode(s[1],s[3])
+        # recurrent_object %= idx + opar + cpar, lambda h,s:CallNode(s[1],[])
         
         
         idnode %= idx, lambda h, s: IdentifierNode(s[1])

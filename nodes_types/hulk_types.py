@@ -51,10 +51,6 @@ class MethodNode(Node):
         self.body = body
         self.type = type
 
-# **************************************************
-# ************     Dentro de MAIN     **************
-# **************************************************
-
 class AsignNode(Node):
     def __init__(self, idx, expr,type=None):
         self.id = idx
@@ -68,7 +64,11 @@ class IterableNode(Node):
         self.final = final
         
         
-        
+
+# **************************************************
+# ************     Dentro de MAIN     **************
+# **************************************************
+ 
 
 class Sentence(Node):
     pass
