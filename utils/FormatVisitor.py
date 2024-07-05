@@ -202,8 +202,14 @@ class FormatVisitor(object):
         return f'{ans}\n{args}'
 
     @visitor.when(MethodCallNode)
-    def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__MethodCallNode: {node.object_name}.{node.method_name}(<expr>, ..., <expr>)'
+    def visit(self, node:MethodCallNode, tabs=0):
+        ans = '\t' * tabs + f'\\__MethodCallNode: {node.name} (<expr>, ..., <expr>)'
         args = '\n'.join(self.visit(arg, tabs + 1) for arg in node.arguments)
         return f'{ans}\n{args}'
+    
+    @visitor.when(IdentifierNode)
+    def visit(self, node:IdentifierNode, tabs=0):
+        ans = '\t' * tabs + f'\\__IdentifierNode: {node.name}(<expr>, ..., <expr>)'
+        arg = self.visit(node.child, tabs + 1)
+        return f'{ans}\n{arg}'
 
