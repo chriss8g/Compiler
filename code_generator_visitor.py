@@ -1,5 +1,5 @@
 import cmp.visitor as visitor
-from nodes_types.hulk import *
+from nodes_types import hulk_types as hulk
 from semantic_checker.scope import Scope
 import cil
 

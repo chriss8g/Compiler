@@ -1,4 +1,4 @@
-from nodes_types.hulk import *
+from nodes_types import hulk_types as hulk
 import cil as cil
 from base_CIL_visitor import BaseHULKToCILVisitor
 import cmp.visitor as visitor
@@ -9,24 +9,20 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
     def visit(self, node):
         pass
 
-    @visitor.when(ProgramNode)
+    @visitor.when(hulk.ProgramNode)
     def visit(self, node, scope=None):
         scope = Scope() if not scope else scope
 
-        for _ in range(len(node.statements)):#!!!!
-            scope.create_child_scope()
-
         self.current_function = self.register_function('main')
 
-        for declaration, child_scope in zip(node.statements, scope.children):
-            self.visit(declaration, child_scope)
+        self.visit(node.main, scope.create_child_scope())
 
         self.register_instruction(cil.ReturnNode(0))
         self.current_function = None
 
         return cil.ProgramNode(self.dottypes, self.dotdata, self.dotcode)
 
-    @visitor.when(TypeNode)
+    @visitor.when(hulk.TypeDeclarationNode)
     def visit(self, node, scope):
         self.current_type = self.context.get_type(node.id)
         type_node = self.register_type(node.id)
@@ -44,7 +40,7 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
         self.current_type = None
 
-    @visitor.when(FuncDeclarationNode)
+    @visitor.when(hulk.FuncDeclarationNode)
     def visit(self, node, scope):
         function_name = self.to_function_name_in_type(node.id, self.current_type.name)
         self.current_function = self.register_function(function_name)
@@ -58,13 +54,13 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
         self.current_function = self.dotcode[0]
 
-    @visitor.when(PrintNode)
+    @visitor.when(hulk.PrintNode)
     def visit(self, node, scope):
 
         dest = self.visit(node.expr, scope)
         self.register_instruction(cil.PrintNode(dest))
 
-    @visitor.when(AsignNode)
+    @visitor.when(hulk.AssignNode)
     def visit(self, node, scope):
 
         vinfo = scope.find_variable(node.id)
@@ -74,7 +70,7 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
         self.register_instruction(cil.AssignNode(dest, source))
 
 
-    @visitor.when(PlusNode)
+    @visitor.when(hulk.PlusNode)
     def visit(self, node, scope):
         left = self.visit(node.left, scope)
         right = self.visit(node.right, scope)
@@ -82,7 +78,7 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
         self.register_instruction(cil.AssignNode(dest, f"{left} + {right}"))
         return dest
 
-    @visitor.when(MinusNode)
+    @visitor.when(hulk.MinusNode)
     def visit(self, node, scope):
         left = self.visit(node.left, scope)
         right = self.visit(node.right, scope)
@@ -90,7 +86,7 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
         self.register_instruction(cil.MinusNode(dest, left, right))
         return dest
 
-    @visitor.when(StarNode)
+    @visitor.when(hulk.StarNode)
     def visit(self, node, scope):
         left = self.visit(node.left, scope)
         right = self.visit(node.right, scope)
@@ -98,7 +94,7 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
         self.register_instruction(cil.StarNode(dest, left, right))
         return dest
 
-    @visitor.when(DivNode)
+    @visitor.when(hulk.DivNode)
     def visit(self, node, scope):
         left = self.visit(node.left, scope)
         right = self.visit(node.right, scope)
@@ -106,7 +102,7 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
         self.register_instruction(cil.DivNode(dest, left, right))
         return dest
     
-    @visitor.when(EqualNode)
+    @visitor.when(hulk.EQNode)
     def visit(self, node, scope):
         left = self.visit(node.left, scope)
         right = self.visit(node.right, scope)
@@ -114,18 +110,18 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
         self.register_instruction(cil.AssignNode(dest, f"{left} == {right}"))
         return dest
 
-    @visitor.when(IfNode)
+    @visitor.when(hulk.IfNode)
     def visit(self, node, scope):
         condition = self.visit(node.condition, scope)
 
         self.register_instruction(cil.GotoNode('my_begin'))
 
         self.register_instruction(cil.LabelNode('my_if'))
-        expr = self.visit(node.expr, scope)
+        expr = self.visit(node.body, scope)
         self.register_instruction(cil.GotoNode('my_end'))
 
         self.register_instruction(cil.LabelNode('my_else'))
-        else_expr = self.visit(node.else_expr, scope)
+        else_expr = self.visit(node.else_body, scope)
         self.register_instruction(cil.GotoNode('my_end'))
 
 
@@ -142,7 +138,7 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
 
 
-    @visitor.when(WhileNode)
+    @visitor.when(hulk.WhileNode)
     def visit(self, node, scope):
         self.register_instruction(cil.LabelNode('while_label'))
         condition = self.visit(node.condition, scope)
@@ -151,14 +147,14 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
         self.register_instruction(cil.GotoNode('while_label'))
         self.register_instruction(cil.LabelNode('endwhile_label'))
 
-    @visitor.when(ConstantNumNode)
+    @visitor.when(hulk.NumberNode)
     def visit(self, node, scope):
         dest = self.define_internal_local()
         source = node.lex
         self.register_instruction(cil.AssignNode(dest, source))
         return dest
 
-    @visitor.when(BlockNode)
+    @visitor.when(hulk.BlockNode)
     def visit(self, node, scope):
         
         # parent = self.current_function
@@ -176,7 +172,7 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
     
     
     
-    @visitor.when(VarDeclarationNode)
+    @visitor.when(hulk.LetNode)
     def visit(self, node, scope):
 
         parent = self.current_function
@@ -192,12 +188,12 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
         for child in node.args:
             dest = self.define_internal_local()
             local_names.append(dest)
-            scope.dict[child.id.lex] = dest
-            scope.define_variable(child.id.lex)
+            scope.dict[child.id.name] = dest
+            scope.define_variable(child.id.name)
             values = self.visit(child.expr, scope.create_child_scope())
             self.register_instruction(cil.AssignNode(dest, values))
 
-        if(isinstance(node.body, BlockNode)):
+        if(isinstance(node.body, hulk.BlockNode)):
             for child in node.body.body:
                 expr = self.visit(child, scope.create_child_scope()) 
         else:
@@ -214,8 +210,8 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
         return dest
     
-    @visitor.when(VariableNode)
+    @visitor.when(hulk.IdentifierNode)
     def visit(self, node, scope):
-        # print(node.name.name)
-        x = scope.get_variable_info(node.name.name)
+        # print(node.name)
+        x = scope.get_variable_info(node.name)
         return x

@@ -1,6 +1,6 @@
 
 import cmp.visitor as visitor
-from nodes_types.hulk import *
+from nodes_types import hulk_types as hulk
 from semantic_checker.scope import Scope
 
 class SemanticCheckerVisitor(object):
@@ -11,14 +11,14 @@ class SemanticCheckerVisitor(object):
     def visit(self, node, scope):
         pass
 
-    @visitor.when(ProgramNode)
+    @visitor.when(hulk.ProgramNode)
     def visit(self, node, scope=None):
         scope = Scope() if not scope else scope
         for nod in node.statements:
             self.visit(nod, scope.create_child_scope())
         return self.errors
 
-    @visitor.when(AsignNode)
+    @visitor.when(hulk.AssignNode)
     def visit(self, node, scope):
         self.visit(node.expr, scope.create_child_scope())
         # print(node.id)
@@ -27,7 +27,7 @@ class SemanticCheckerVisitor(object):
 
         return self.errors
 
-    @visitor.when(VarDeclarationNode)
+    @visitor.when(hulk.LetNode)
     def visit(self, node, scope):
         for var in node.args:
             if scope.is_local_var(var.id.lex):
@@ -45,7 +45,7 @@ class SemanticCheckerVisitor(object):
         node.type = node.body.type
         return self.errors
 
-    @visitor.when(FuncDeclarationNode)
+    @visitor.when(hulk.FuncDeclarationNode)
     def visit(self, node, scope):
         if scope.is_func_defined(node.id, len(node.params)):
             self.errors.append(f"Funcion {node.id} doblemente declarada!")
@@ -58,23 +58,23 @@ class SemanticCheckerVisitor(object):
         node.type = node.body.type
         return self.errors
 
-    @visitor.when(PrintNode)
+    @visitor.when(hulk.PrintNode)
     def visit(self, node, scope):
         self.visit(node.expr, scope.create_child_scope())
         return self.errors
 
-    @visitor.when(ConstantNumNode)
+    @visitor.when(hulk.NumberNode)
     def visit(self, node, scope):
         node.type = INT_TYPE
         return self.errors
 
-    @visitor.when(VariableNode)
+    @visitor.when(hulk.IdentifierNode)
     def visit(self, node, scope):
         if not scope.is_var_defined(node.lex) :
             self.errors.append(f"Variable {node.lex} no declarada!")
         return self.errors
 
-    @visitor.when(CallNode)
+    @visitor.when(hulk.CallNode)
     def visit(self, node, scope):
         if not scope.is_func_defined(node.id, len(node.args)):
             self.errors.append(f"Funcion {node.id} no declarada!")
@@ -82,7 +82,7 @@ class SemanticCheckerVisitor(object):
             self.visit(arg, scope.create_child_scope())
         return self.errors
 
-    @visitor.when(DivNode)
+    @visitor.when(hulk.DivNode)
     def visit(self, node, scope):
         self.visit(node.left, scope.create_child_scope())
         if self.visit(node.right, scope.create_child_scope()) == 0:
@@ -90,14 +90,14 @@ class SemanticCheckerVisitor(object):
         node.type = FLOAT_TYPE
         return self.errors
 
-    @visitor.when(PowNode)
+    @visitor.when(hulk.PowNode)
     def visit(self, node, scope):
         self.visit(node.left, scope.create_child_scope())
         self.visit(node.right, scope.create_child_scope())
         node.type = FLOAT_TYPE
         return self.errors
 
-    @visitor.when(BinaryNode)
+    @visitor.when(hulk.BinaryNode)
     def visit(self, node, scope):
         self.visit(node.left, scope)
         self.visit(node.right, scope)
@@ -119,7 +119,7 @@ class SemanticCheckerVisitor(object):
             node.type = STRING_TYPE
         return self.errors
 
-    @visitor.when(IfNode)
+    @visitor.when(hulk.IfNode)
     def visit(self, node, scope):
         self.visit(node.condition, scope)
         if node.condition.type != BOOL_TYPE:
@@ -134,7 +134,7 @@ class SemanticCheckerVisitor(object):
             self.visit(expr, scope.create_child_scope())
         return self.errors
 
-    @visitor.when(WhileNode)
+    @visitor.when(hulk.WhileNode)
     def visit(self, node, scope):
         self.visit(node.condition, scope)
         if node.condition.type != BOOL_TYPE:
@@ -142,7 +142,7 @@ class SemanticCheckerVisitor(object):
         self.visit(node.expr, scope.create_child_scope())
         return self.errors
 
-    @visitor.when(ForNode)
+    @visitor.when(hulk.ForNode)
     def visit(self, node, scope):
         self.visit(node.iterable, scope)
         if node.iterable.type not in [INT_TYPE, FLOAT_TYPE]:

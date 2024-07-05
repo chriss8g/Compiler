@@ -177,9 +177,9 @@ class CodeToAST:
         
         
         # ***************** Expresiones ******************
-        # expr %= blockExpr, lambda h,s: s[1]
-        # expr %= let + asig_list + inx + expr, lambda h, s: LetNode(s[2], s[4])
-        # expr %= ifx + opar + expr + cpar + specialBlock + elifx_expr + elsex + superexpr, lambda h,s:IfNode(s[3],s[5],s[8],s[6][0],s[6][1])
+        expr %= blockExpr, lambda h,s: s[1]
+        expr %= let + asig_list + inx + expr, lambda h, s: LetNode(s[2], s[4])
+        expr %= ifx + opar + expr + cpar + specialBlock + elifx_expr + elsex + superexpr, lambda h,s:IfNode(s[3],s[5],s[8],s[6][0],s[6][1])
         # expr %= whilex + opar + expr + cpar + specialBlock, lambda h,s:WhileNode(s[3],s[5])
         # expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + expr + cpar + cpar + expr, lambda h,s:ForRangeNode(s[3],s[7],s[9],s[12])
         expr %= printx + opar + expr + cpar, lambda h, s: PrintNode(s[3])
@@ -196,7 +196,7 @@ class CodeToAST:
         
         asig_list %= asig1, lambda h, s: [s[1]]
         asig_list %= asig1 + comma + asig_list, lambda h, s: [s[1]] + s[3]
-        asig1 %= idx + asign1 + expr, lambda h, s: AsignNode(s[1],s[3])
+        asig1 %= idnode + asign1 + expr, lambda h, s: AssignNode(s[1],s[3])
 
 
 
@@ -206,7 +206,7 @@ class CodeToAST:
         # subexpr %= subexpr + andx + term, lambda h, s: AndNode(s[1], s[3])
         # subexpr %= subexpr + orx + term, lambda h, s: OrNode(s[1], s[3])
         # subexpr %= notx + term, lambda h, s: NotNode(s[2])
-        # subexpr %= subexpr + eq + term, lambda h, s: EqualNode(s[1], s[3])
+        subexpr %= subexpr + eq + term, lambda h, s: EQNode(s[1], s[3])
         # subexpr %= subexpr + ne + term, lambda h, s: NotEqualNode(s[1], s[3])
         # subexpr %= subexpr + gt + term, lambda h, s: GreaterNode(s[1], s[3])
         # subexpr %= subexpr + lt + term, lambda h, s: LessNode(s[1], s[3])

@@ -51,7 +51,7 @@ class MethodNode(Node):
         self.body = body
         self.type = type
 
-class AsignNode(Node):
+class AssignNode(Node):
     def __init__(self, idx, expr,type=None):
         self.id = idx
         self.expr = expr
@@ -85,7 +85,7 @@ class ExpressionNode(Sentence):
 class BlockNode(ExpressionNode):
     def __init__(self, body, type=None):
         super().__init__(type)
-        self.body = body  # es un array de Sentence
+        self.body = body  # es un array de Sentences
 
 class LetNode(ExpressionNode):
     def __init__(self, args, body, type=None):

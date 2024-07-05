@@ -1,5 +1,5 @@
 import cmp.visitor as visitor
-from nodes_types.my_types import *
+from nodes_types import hulk_types as hulk
 from semantic_checker.scope import Scope
 from cmp.semantic import Context
 
@@ -12,14 +12,14 @@ class TypeCollector(object):
     def visit(self, node):
         pass
     
-    @visitor.when(ProgramNode)
+    @visitor.when(hulk.ProgramNode)
     def visit(self, node):
         self.context = Context()
         for statement in node.statements:
             self.visit(statement)
         return self.errors
             
-    @visitor.when(TypeNode)
+    @visitor.when(hulk.TypeDeclarationNode)
     def visit(self, node):
         try:
             self.context.create_type(node.name)
