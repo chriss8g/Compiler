@@ -49,7 +49,7 @@ class TestCodeToAST(unittest.TestCase):
 
 # work
     def test_if_else(self):
-        code = 'if (x < 10) print("less"); else print("more");'
+        code = 'if (x == 10) print("less"); else print("more");'
         ast = CodeToAST(code)
         self.assertIsNotNone(ast.ast)
         self.assertIn('IfNode', repr(ast))

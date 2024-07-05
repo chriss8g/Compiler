@@ -241,9 +241,9 @@ class OrNode(LogicalNode):
     def __init__(self, left, right):
         super().__init__(left, right)
 
-class NotNode(BoolOpNode):
+class NotNode(ExpressionNode):
     def __init__(self, expr):
-        super().__init__(None, expr)
+        super().__init__(expr, type = BOOL_TYPE)
         self.expr = expr
 
 
