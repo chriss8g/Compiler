@@ -65,7 +65,7 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
         self.register_instruction(cil.PrintNode(dest))
 
     @visitor.when(AsignNode)
-    def visit(self, node, scope, parent):
+    def visit(self, node, scope):
 
         vinfo = scope.find_variable(node.id)
         self.visit(node.expr, scope)
@@ -79,7 +79,7 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
         left = self.visit(node.left, scope)
         right = self.visit(node.right, scope)
         dest = self.define_internal_local()
-        self.register_instruction(cil.PlusNode(dest, left, right))
+        self.register_instruction(cil.AssignNode(dest, f"{left} + {right}"))
         return dest
 
     @visitor.when(MinusNode)
@@ -125,6 +125,8 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
         #     self.visit(node.else_expr, scope)
         self.register_instruction(cil.IfNode(condition, expr, else_expr))
 
+        
+
     @visitor.when(WhileNode)
     def visit(self, node, scope):
         self.register_instruction(cil.LabelNode('while_label'))
@@ -156,3 +158,49 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
         self.current_function = parent
 
         return name
+    
+    
+    
+    @visitor.when(VarDeclarationNode)
+    def visit(self, node, scope):
+
+        parent = self.current_function
+
+        name = self.to_function_name('block')
+
+        self.current_function = self.register_function(name)
+        
+
+
+
+        local_names = []
+        for child in node.args:
+            dest = self.define_internal_local()
+            local_names.append(dest)
+            scope.dict[child.id.lex] = dest
+            scope.define_variable(child.id.lex)
+            values = self.visit(child.expr, scope.create_child_scope())
+            self.register_instruction(cil.AssignNode(dest, values))
+
+        if(isinstance(node.body, BlockNode)):
+            for child in node.body.body:
+                expr = self.visit(child, scope.create_child_scope()) 
+        else:
+            # print(scope.dict)
+            expr = self.visit(node.body, scope.create_child_scope())
+
+
+
+        self.register_instruction(cil.ReturnNode(expr))       
+        self.current_function = parent
+
+        dest = self.define_internal_local()
+        self.register_instruction(cil.StaticCallNode(name, dest))
+
+        return dest
+    
+    @visitor.when(VariableNode)
+    def visit(self, node, scope):
+        # print(node.name.name)
+        x = scope.get_variable_info(node.name.name)
+        return x

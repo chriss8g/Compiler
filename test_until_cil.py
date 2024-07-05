@@ -8,7 +8,8 @@ class TestCodeToCIL(unittest.TestCase):
         # Configura el entorno para cada test, como el contexto y el visitante
         self.context = None  # Configurar el contexto adecuado
         self.visitor = HULKToCILVisitor(self.context)
-        self.formatter = cil.get_formatter()
+        from utils.FormatVisitor import FormatVisitor
+        self.formatter = FormatVisitor()
 
     def test_simple_print(self):
         code = 'print(42);'
@@ -16,7 +17,7 @@ class TestCodeToCIL(unittest.TestCase):
         self.assertIsNotNone(ast)
         cil_ast = self.visitor.visit(ast)
         self.assertIsInstance(cil_ast, cil.ProgramNode)
-        self.assertIn('PRINT', self.formatter(cil_ast))
+        self.assertIn('PrintNode', self.formatter.visit(cil_ast))
 
     # def test_var_declaration(self):
     #     code = 'let x = 5 in x + 3;'
@@ -59,13 +60,19 @@ class TestCodeToCIL(unittest.TestCase):
     #     self.assertIsInstance(cil_ast, cil.ProgramNode)
     #     self.assertIn('ForRangeNode', repr(cil_ast))
 
-    # def test_if_else(self):
-    #     code = 'if (x < 10) print("less"); else print("more");'
-    #     ast = CodeToAST(code).ast
-    #     self.assertIsNotNone(ast)
-    #     cil_ast = self.visitor.visit(ast, None)
-    #     self.assertIsInstance(cil_ast, cil.ProgramNode)
-    #     self.assertIn('IfNode', repr(cil_ast))
+    def test_if_else(self):
+        code = '''if (5 == 10)
+          {
+            print(2);
+          } else 
+          {
+            print(5);
+        };'''
+        ast = CodeToAST(code).ast
+        self.assertIsNotNone(ast)
+        cil_ast = self.visitor.visit(ast, None)
+        self.assertIsInstance(cil_ast, cil.ProgramNode)
+        self.assertIn('IfNode', self.formatter.visit(cil_ast))
 
     # def test_complex_expression(self):
     #     code = '''

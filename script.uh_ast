@@ -1,0 +1,22 @@
+\__ProgramNode [<class> ... <class>]
+	\__VarDeclarationNode: let <nodes_types.hulk.VariableNode object at 0x7bde3fff9ca0> = <expr>, in <expr>
+		\__AsignNode: x := <expr>
+			\__VariableNode: x
+			\__ConstantNumNode: 5
+		\__BlockNode
+			\__IfNode: if <expr>
+				\__<expr> EqualNode <expr>
+					\__VariableNode: <nodes_types.hulk.VariableNode object at 0x7bde3fffbfb0>
+					\__ConstantNumNode: 10
+				\__BlockNode
+					\__PrintNode <expr>
+						\__<expr> PlusNode <expr>
+							\__VariableNode: <nodes_types.hulk.VariableNode object at 0x7bde3fffa960>
+							\__ConstantNumNode: 3
+			\__Elif <expr>:
+
+
+			\__Else:
+				\__BlockNode
+					\__PrintNode <expr>
+						\__VariableNode: <nodes_types.hulk.VariableNode object at 0x7bde3fff9e50>

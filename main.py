@@ -13,7 +13,9 @@ def main(input_file):
     
 
     codeToAST = CodeToAST(text)
-    # print('\n',codeToAST)
+
+    with open('script.uh_ast', 'w') as output_file:
+        output_file.write(str(codeToAST))
 
 
     # semantic_checker = SemanticCheckerVisitor()

@@ -37,6 +37,10 @@ class BaseHULKToCILVisitor:
         self.instructions.append(instruction)
         return instruction
     
+    def register_param(self, param):
+        self.params.append(param)
+        return param
+    
     def to_function_name_in_type(self, method_name, type_name):
         return f'function_{method_name}_at_{type_name}'
 

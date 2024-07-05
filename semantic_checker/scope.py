@@ -18,6 +18,7 @@ class Scope:
         self.children = []
         self.var_index_at_parent = 0 if parent is None else len(parent.local_vars)
         self.func_index_at_parent = 0 if parent is None else len(parent.local_funcs)
+        self.dict = {}
         
     def create_child_scope(self):
         child_scope = Scope(parent=self)
@@ -45,6 +46,11 @@ class Scope:
         
         return False
     
+    def get_variable_info(self, vname):
+        # print(self.dict)
+        # print(self.is_local_var(vname))
+        return self.dict[vname] if self.is_local_var(vname) else self.parent.get_variable_info(vname)
+    
     
     def is_func_defined(self, fname, n):
         if (fname, n) in [(i.name, i.params) for i in self.local_funcs]:
@@ -62,7 +68,10 @@ class Scope:
         return self.get_local_function_info(fname, n) is not None
 
     def get_local_variable_info(self, vname):
-        return self.local_vars[vname] if vname in [i.name for i in self.local_vars] else None
+        for i in self.local_vars:
+            if vname == i.name:
+                return i
+        return None
     
     def get_local_function_info(self, fname, n):
         return self.local_funcs[fname] if (fname, n) in [(i.name, i.params) for i in self.local_funcs] else None

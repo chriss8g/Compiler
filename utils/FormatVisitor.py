@@ -251,26 +251,32 @@ class FormatVisitor(object):
         localvars = f'{'\t' * tabs}\t \\__local_vars\n' +  '\n'.join(self.visit(x, tabs + 2) for x in node.localvars)
         instructions = f'{'\t' * tabs}\t \\__instructions\n' +  '\n'.join(self.visit(x, tabs + 2) for x in node.instructions)
 
-        return f'{'\t' * tabs} \\__function <{node.name}>\n{params}\n{localvars}\n{instructions}'
+        return f'{'\t' * tabs} \\__FunctionNode function <{node.name}>\n{params}\n{localvars}\n{instructions}'
     
     @visitor.when(cil.StaticCallNode)
     def visit(self, node, tabs=0):
-        return f'{'\t' * tabs}\\Call {node.dest} = call {node.function}'
+        return f'{'\t' * tabs}\\CallNode {node.dest} = call {node.function}'
     
     @visitor.when(cil.ReturnNode)
     def visit(self, node, tabs=0):
-        return f'{'\t' * tabs}\\__RETURN {node.value if node.value is not None else ""}'
+        return f'{'\t' * tabs}\\__ReturnNode return {node.value if node.value is not None else ""}'
     
     @visitor.when(cil.LocalNode)
     def visit(self, node, tabs=0):
         return f'{'\t' * tabs}\\__LocalNode {node.name}'
     
-    @visitor.when(cil.LogicNode)
-    def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__{node.left} {node.op} {node.right}'
-        return f'{ans}'
+    # @visitor.when(cil.LogicNode)
+    # def visit(self, node, tabs=0):
+    #     ans = '\t' * tabs + f'\\__{node.left} {node.op} {node.right}'
+    #     return f'{ans}'
+    
+    # @visitor.when(cil.ArithmeticNode)
+    # def visit(self, node, tabs=0):
+    #     ans = '\t' * tabs + f'\\__{node.left} {node.op} {node.right}'
+    #     return f'{ans}'
     
     @visitor.when(cil.AssignNode)
     def visit(self, node, tabs=0):
         ans = '\t' * tabs + f'\\__AsignNode: {node.dest} = {node.source}'
         return ans
+    
