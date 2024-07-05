@@ -79,6 +79,10 @@ class CodeGeneratorVisitor(object):
 
         return f'int {node.name}({params}){{ \n{localvars}\n{instructions} }}'
     
+    @visitor.when(cil.ParamNode)
+    def visit(self, node, tabs=0):
+        return f'int {node.name}'
+
     @visitor.when(cil.StaticCallNode)
     def visit(self, node, scope):
         return f'{node.dest} = {node.function}();'

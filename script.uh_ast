@@ -1,7 +1,18 @@
 \__ProgramNode [<program>]
 
-	\__LetNode: let [<expression>]<nodes_types.hulk_types.IdentifierNode object at 0x7921712b04d0> = <expr>, in <expr>
+	\__LetNode [<expression>]
 		\__AssignNode:
 []
+
+		\__BlockNode [<expression>]
+			\__IfNode  [<expression>]
+				\_ Condition
+
+				\_ Body
+					\__BlockNode [<expression>]
+						\__PrintNode [<sentence>]
 []
-		\__BlockNode: [<expression>]
+				\_ Else Body
+					\__BlockNode [<expression>]
+						\__PrintNode [<sentence>]
+[]
