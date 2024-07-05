@@ -9,11 +9,8 @@ function entry {
 	
 
 	LOCAL local__internal_0
-	LOCAL local__internal_1
 
-	local__internal_0 = ALLOCATE Main
-	ARG local__internal_0
-	local__internal_1 = CALL function_main_at_Main
+	local__internal_0 = CALL function_print_at_number
 	RETURN 0
 }
 function function_print_at_number {
