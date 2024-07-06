@@ -2,7 +2,7 @@
 
 	\__LetNode [<expression>]
 		\__AssignNode:
-[]
+			\__IdentifierNode: x
 
 		\__BlockNode [<expression>]
 			\__IfNode  [<expression>]
@@ -11,8 +11,10 @@
 				\_ Body
 					\__BlockNode [<expression>]
 						\__PrintNode [<sentence>]
-[]
+							\__PlusNode [<expression>]
+								\__IdentifierNode: x
+
 				\_ Else Body
 					\__BlockNode [<expression>]
 						\__PrintNode [<sentence>]
-[]
+							\__IdentifierNode: x
