@@ -83,7 +83,7 @@ class FormatVisitor(object):
         ans = '\t' * tabs + f'\\__BlockNode [<expression>]'
         body = None
         if node.body is not None:
-            # print(node.body[0])
+            # print(node.body)
             body = '\n'.join(self.visit(child, tabs + 1) for child in node.body)
         return f'{ans}\n{body}'
     
@@ -193,19 +193,22 @@ class FormatVisitor(object):
     # #########################################################################################
     # #########################################################################################
     
-    # # @visitor.when(cil.IfNode)
-    # # def visit(self, node, tabs=0):
-    # #     ans = '\t' * tabs + f'\\__IfNode:\n {'\t' * (tabs+1)}\\__condition {node.condition} \n' + '\t' * (tabs+1) 
-    # #     # condition = self.visit(node.condition, tabs + 1)
-    # #     # elif_conditions = '\n'.join(self.visit(cond, tabs + 1) for cond in node.elif_conditions)
-    # #     # elif_expr = '\n'.join(self.visit(ex, tabs + 1) for ex in node.elif_expr)
-    # #     # return f'{ans}\n{condition}\n{expr}' + '\n' + '\t' * tabs + f'\\__Elif <expr>:' + f'\n{elif_conditions}\n{elif_expr}' + '\n' + '\t' * tabs + f'\\__Else:' + f'\n{else_expr}'
-    # #     return f'{ans}\\body: call {node.expr}' + '\n' + '\t' * (tabs+1) + f'\\__else_body: ' + f'call {node.else_expr}'
-        
-    # @visitor.when(cil.PrintNode)
-    # def visit(self, node, tabs=0):
-    #     ans = '\t' * tabs + f'\\__PrintNode {node.expr}'
-    #     return f'{ans}'
+    @visitor.when(cil.TypeNode)
+    def visit(self, node, tabs=0):
+        ans = '\t' * tabs + f'\\__TypeNode: type {node.name}\n'
+        ans = ans + '\t' * tabs + f'\t\\__TypeBodyNode'
+        attributes = '\t' * (tabs+2) + 'Atributes' + '\n' + '\n'.join(self.visit(attr, tabs + 2) for attr in node.attributes)
+        methods = '\t' * (tabs+2) + 'Methods' + '\n' + '\n'.join(self.visit(method, tabs + 2) for method in node.methods)
+        return f'{ans}\n{attributes}\n{methods}'
+
+    @visitor.when(cil.AllocateNode)
+    def visit(self, node, tabs=0):
+        return f'{'\t' * tabs}\\CallNode {node.dest} = ALOCATE {node.type.name}'
+    
+    @visitor.when(cil.PrintNode)
+    def visit(self, node, tabs=0):
+        ans = '\t' * tabs + f'\\__PrintNode {node.expr}'
+        return f'{ans}'
     
     # @visitor.when(cil.ProgramNode)
     # def visit(self, node, tabs=0):

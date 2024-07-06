@@ -27,21 +27,32 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
     @visitor.when(hulk.TypeDeclarationNode)
     def visit(self, node, scope):
-        self.current_type = self.context.get_type(node.id)
-        type_node = self.register_type(node.id)
 
-        for attr, xtype in self.current_type.all_attributes():
-            type_node.attributes.append(attr.name)
+        parent_type = self.current_type
 
-        for method, xtype in self.current_type.all_methods():
-            function_name = self.to_function_name_in_type(method.name, xtype.name)
-            type_node.methods.append((method.name, function_name))
+        type_node = self.register_type(node.name)
 
-        func_declarations = (f for f in node.features if isinstance(f, FuncDeclarationNode))
-        for feature, child_scope in zip(func_declarations, scope.children):
-            self.visit(feature, child_scope)
+        self.current_type = type_node
 
-        self.current_type = None
+
+        for attribute in node.body.attributes:
+            izq = attribute.name.name + ".".join(attribute.name.child if attribute.name.child else [])
+            self.current_type.attributes.append(cil.AssignNode(izq, attribute.value.lex))
+
+        # for method in node.body.methods:
+        #     function_name = self.to_function_name_in_type(method.name, method.type)
+        #     self.current_type.methods.append(cil.AssignNode(function_name, attribute.value))
+
+        self.current_type = parent_type
+
+    @visitor.when(hulk.ObjectCreationNode)
+    def visit(self, node, scope):
+        dest = self.define_internal_local()
+        for x in self.dottypes:
+            if x.name == node.type:
+                typex = x
+        self.register_instruction(cil.AllocateNode(typex, dest))
+        return dest
 
     @visitor.when(hulk.FuncDeclarationNode)
     def visit(self, node, scope):
@@ -65,7 +76,6 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
     @visitor.when(hulk.PrintNode)
     def visit(self, node, scope):
-        # print(node.expr)
         dest = self.visit(node.expr, scope)
         self.register_instruction(cil.PrintNode(dest))
 
@@ -73,6 +83,7 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
     def visit(self, node, scope):
 
         vinfo = scope.find_variable(node.id)
+        print(node.expr.name.name)
         self.visit(node.expr, scope)
         dest = self.define_internal_local()
         source = cil.LocalNode(vinfo.name)
@@ -235,9 +246,13 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
     
     @visitor.when(hulk.IdentifierNode)
     def visit(self, node, scope):
-
-        return scope.get_variable_info(node.name) if scope.get_variable_info(node.name) else node.name
-
+        elemt = scope.get_variable_info(node.name) if scope.get_variable_info(node.name) else node.name
+        child = node.child
+        while(child):
+            elemt += "." + child.name
+            child = child.child
+        return elemt
+    
     @visitor.when(hulk.CallNode)
     def visit(self, node, scope):
 
