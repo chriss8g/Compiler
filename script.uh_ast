@@ -1,5 +1,4 @@
 \__ProgramNode [<program>]
-
 	\__LetNode [<expression>]
 		\__AssignNode:
 			\__IdentifierNode: x

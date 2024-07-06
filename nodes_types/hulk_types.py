@@ -3,6 +3,7 @@ FLOAT_TYPE = 'float'
 BOOL_TYPE = 'bool'
 STRING_TYPE = 'string'
 CONST_TYPE = 'const'
+OBJECT_TYPE = 'object'
 NUMBER_TYPE = [INT_TYPE, FLOAT_TYPE, CONST_TYPE]
 
 class Node:
@@ -26,7 +27,7 @@ class FuncDeclarationNode(StatementNode):
         self.type = type
         
 class TypeDeclarationNode(StatementNode):
-    def __init__(self, name, body, params=[], base_type=None, base_params=[]):
+    def __init__(self, name, body, params=[], base_type=OBJECT_TYPE, base_params=[]):
         self.name = name
         self.body = body
         self.params = params
@@ -299,7 +300,7 @@ class LogNode(ExpressionNode):
 
 class RandNode(ExpressionNode):
     def __init__(self):
-        super().__init__()
+        super().__init__(NUMBER_TYPE)
 
 
 #  Literales
