@@ -1,6 +1,5 @@
 import cmp.visitor as visitor
 from nodes_types import hulk_types as hulk
-from semantic_checker.scope import Scope
 from cmp.semantic import Context
 
 class TypeCollector(object):

@@ -200,6 +200,7 @@ class CodeToAST:
         expr %= printx + opar + expr + cpar, lambda h, s: PrintNode(s[3])
         expr %= recurrent_object + asign2 + expr, lambda h, s: DestructNode(s[1],s[3])
         expr %= new + idx + opar + arg_expr + cpar, lambda h, s: ObjectCreationNode(s[2], s[4])
+        expr %= new + idx + opar + cpar, lambda h, s: ObjectCreationNode(s[2], [])
         expr %= subexpr, lambda h, s: s[1]
         
         superexpr %= expr, lambda h,s:s[1]
