@@ -104,7 +104,7 @@ class RegexHandler:
 
         # Obtener los tokens de la expresion regular
         tokens = self._regex_tokenizer(text)
-        # print(tokens)
+        
         parser = LR1Parser(self.grammar)
         derivations = parser([tok.token_type for tok in tokens])
         
