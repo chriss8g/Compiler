@@ -1,7 +1,9 @@
 lectures/*
 __pycache__/*
-script.asm
-script.uh
+script.uh_ast
+script.cil
+script.c
+a.out
 cmp/*
 cp14/*
 cp15/*
