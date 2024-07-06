@@ -1,7 +1,7 @@
 from nodes_types import hulk_types as hulk
-import cil as cil
-from base_CIL_visitor import BaseHULKToCILVisitor
-import cmp.visitor as visitor
+import nodes_types.cil as cil
+from utils.base_CIL_visitor import BaseHULKToCILVisitor
+import utils.visitor as visitor
 from semantic_checker.scope import Scope
 
 class HULKToCILVisitor(BaseHULKToCILVisitor):
@@ -83,14 +83,14 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
     @visitor.when(hulk.SinNode)
     def visit(self, node, scope):
-        source = self.visit(node.lex, scope)
+        source = self.visit(node.expr, scope)
         dest = self.define_internal_local()
         self.register_instruction(cil.OurFunctionNode('sin', dest, source))
         return dest
 
     @visitor.when(hulk.CosNode)
     def visit(self, node, scope):
-        source = self.visit(node.lex, scope)
+        source = self.visit(node.expr, scope)
         dest = self.define_internal_local()
         self.register_instruction(cil.OurFunctionNode('cos', dest, source))
         return dest
@@ -115,7 +115,6 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
     def visit(self, node, scope):
 
         vinfo = scope.find_variable(node.id)
-        print(node.expr.name.name)
         self.visit(node.expr, scope)
         dest = self.define_internal_local()
         source = cil.LocalNode(vinfo.name)
@@ -220,13 +219,6 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
         self.register_instruction(cil.LabelNode('my_begin'))
         self.register_instruction(cil.GotoIfNode(condition, 'my_if', 'my_else'))
         self.register_instruction(cil.LabelNode('my_end'))
-
-        
-
-        # if node.else_expr:
-            # self.register_instruction(cil.LabelNode('else_label'))
-        #     self.visit(node.else_expr, scope)
-        # self.register_instruction(cil.IfNode(condition, expr, else_expr))
 
     @visitor.when(hulk.DestructNode)
     def visit(self, node, scope):

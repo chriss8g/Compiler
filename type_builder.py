@@ -1,6 +1,6 @@
-import cmp.visitor as visitor
+import utils.visitor as visitor
 from nodes_types import hulk_types as hulk
-from cmp.semantic import VariableInfo
+from utils.semantic import VariableInfo
 
 class TypeBuilder:   
     def __init__(self, context, errors=[]):

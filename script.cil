@@ -3,23 +3,44 @@
 \__.DATA
 
 \__.CODE
-	 \__FunctionNode function <next>
-		 \__params
-			\__ParamNode x
-		 \__local_vars
-			\__LocalNode local__internal_0
-			\__LocalNode local__internal_1
-		 \__instructions
-			\__AsignNode: local__internal_0 = 1
-			\__AsignNode: local__internal_1 = x + local__internal_0
-			\__ReturnNode return local__internal_1 
 	 \__FunctionNode function <main>
 		 \__params
 
 		 \__local_vars
 			\__LocalNode local__internal_0
-			\__LocalNode local__internal_1
 		 \__instructions
-			\__AsignNode: local__internal_0 = 8
-			\__OurFunctionNode local__internal_1 = printf next(local__internal_0)
-			\__ReturnNode return 0
+			\CallNode local__internal_0 = call function_block_1
+			\__ReturnNode return 0 
+	 \__FunctionNode function <function_block_1>
+		 \__params
+
+		 \__local_vars
+			\__LocalNode local_block_1_internal_0
+			\__LocalNode local_block_1_internal_1
+			\__LocalNode local_block_1_internal_2
+			\__LocalNode local_block_1_internal_3
+			\__LocalNode local_block_1_internal_4
+			\__LocalNode local_block_1_internal_5
+			\__LocalNode local_block_1_internal_6
+			\__LocalNode local_block_1_internal_7
+		 \__instructions
+			\__AsignNode: local_block_1_internal_1 = 10
+			\__AsignNode: local_block_1_internal_0 = local_block_1_internal_1
+			\__AsignNode: local_block_1_internal_2 = 10
+			\__AsignNode: local_block_1_internal_3 = local_block_1_internal_0 == local_block_1_internal_2
+			\GotoNode my_begin
+			\__LabelNode my_if
+			\__AsignNode: local_block_1_internal_4 = 3
+			\__AsignNode: local_block_1_internal_5 = local_block_1_internal_0 + local_block_1_internal_4
+			\__OurFunctionNode local_block_1_internal_6 = printf local_block_1_internal_5
+			\GotoNode my_end
+			\__LabelNode my_else
+			\__OurFunctionNode local_block_1_internal_7 = printf local_block_1_internal_0
+			\GotoNode my_end
+			\__LabelNode my_begin
+			\__GotoIfNode:
+ 				\__condition local_block_1_internal_3 
+				\goto: my_if
+				\__else_goto:  my_else
+			\__LabelNode my_end
+			\__ReturnNode return 

@@ -1,7 +1,7 @@
-import cmp.visitor as visitor
+import utils.visitor as visitor
 from nodes_types import hulk_types as hulk
 from semantic_checker.scope import Scope
-import cil
+import nodes_types.cil as cil
 
 class CodeGeneratorVisitor(object):
 
@@ -51,7 +51,7 @@ class CodeGeneratorVisitor(object):
             if(header not in self.headers):
                 self.headers.append(header)
 
-            ans = f'{node.dest} = printf("%d\\n", {node.source});\n'
+            ans = f'{node.dest} = printf("%f\\n", {node.source});\n'
             return f'{ans}'
         elif(node.name == 'cos'):
             header = "#include <math.h>"
@@ -104,7 +104,7 @@ class CodeGeneratorVisitor(object):
     
     @visitor.when(cil.LocalNode)
     def visit(self, node, scope):
-        return f'double {node.name}'
+        return f'float {node.name}'
     
     @visitor.when(cil.LogicNode)
     def visit(self, node, scope):
