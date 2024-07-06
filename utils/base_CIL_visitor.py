@@ -1,4 +1,4 @@
-import cil
+import nodes_types.cil as cil
 from semantic_checker.scope import VariableInfo
 
 class BaseHULKToCILVisitor:

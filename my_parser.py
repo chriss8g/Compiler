@@ -91,8 +91,8 @@ class CodeToAST:
         terminals['lbrace'] = obrace
         terminals['rbrace'] = cbrace
         terminals['asign2'] = asign2
-        terminals['pi'] = pi
-        terminals['e'] = e
+        terminals['PI'] = pi
+        terminals['E'] = e
         terminals['true'] = true
         terminals['false'] = false
         terminals['id'] = idx

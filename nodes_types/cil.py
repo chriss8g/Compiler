@@ -154,6 +154,9 @@ class ReadNode(InstructionNode):
     def __init__(self, dest):
         self.dest = dest
 
-class PrintNode(InstructionNode):
-    def __init__(self, expr):
-        self.expr = expr
+class OurFunctionNode(InstructionNode):
+    def __init__(self, name, dest, source):
+        self.name = name
+        self.dest = dest
+        self.source = source
+

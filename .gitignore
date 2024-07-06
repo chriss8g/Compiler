@@ -1,9 +1,5 @@
-lectures/*
 __pycache__/*
 script.uh_ast
 script.cil
 script.c
 a.out
-cmp/*
-cp14/*
-cp15/*
