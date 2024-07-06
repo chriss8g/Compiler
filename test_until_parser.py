@@ -70,20 +70,21 @@ class TestCodeToAST(unittest.TestCase):
         self.assertIsNotNone(ast.ast)
         self.assertIn('CallNode', repr(ast))
 
-# work
+# work 9
     def test_object_creation(self):
         code = 'new MyClass(5, "hello");'
         ast = CodeToAST(code)
         self.assertIsNotNone(ast.ast)
         self.assertIn('ObjectCreationNode', repr(ast))
 
-    # def test_method_call(self):
-    #     code = 'obj.method(1, 2);'
-    #     ast = CodeToAST(code)
-    #     self.assertIsNotNone(ast.ast)
-    #     self.assertIn('MethodCallNode', repr(ast))
+# work 10
+    def test_method_call(self):
+        code = 'obj.method(1, 2);'
+        ast = CodeToAST(code)
+        self.assertIsNotNone(ast.ast)
+        self.assertIn('MethodCallNode', repr(ast))
 
-# work
+# work 11
     def test_type_declaration_simple(self):
         code = '''
             type MyClass {
@@ -96,7 +97,7 @@ class TestCodeToAST(unittest.TestCase):
         self.assertIsNotNone(ast.ast)
         self.assertIn('TypeNode', repr(ast))
 
-# work
+# work 12
     def test_type_declaration(self):
         code = '''
             type MyClass {
@@ -109,7 +110,7 @@ class TestCodeToAST(unittest.TestCase):
         self.assertIsNotNone(ast.ast)
         self.assertIn('TypeNode', repr(ast))
         
-# work
+# work 13
     def test_super(self):
         code = '''
                 type MyClass {

@@ -278,7 +278,36 @@ class CodeToAST:
 if __name__ == "__main__":
     
     text = '''
-            let x = f(5, 7) in x + 1;
+            type MyClass {
+                    x = 0;
+                    
+                    my_method(a, b) => {
+                        a+b;
+                    };
+                }
+
+                let a = 10, b = 20, c = 30 in {
+                    print(a + b * c);
+                    
+                    if (a > b) {
+                        print(a);
+                    } else {
+                        print(b);
+                    };
+                    
+                    while (a < c) {
+                        print(a);
+                        a := a + 1;
+                    };
+                    
+                    for (i in range(3, 4)) {
+                        print(i);
+                    };
+                    
+                    let d = new MyClass(5, 10) in {
+                        print(d);
+                    };
+                };
         '''
 
  

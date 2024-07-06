@@ -268,8 +268,9 @@ class IdentifierNode(ExpressionNode):
         self.child = child
         
 class SelfNode(ExpressionNode):
-    def __init__(self, lex):
-        super().__init__(lex)
+    def __init__(self, lex,type=None):
+        super().__init__(type)
+        self.lex = lex
 
 class SinNode(ExpressionNode):
     def __init__(self, expr):
