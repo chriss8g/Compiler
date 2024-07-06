@@ -181,7 +181,7 @@ class CodeToAST:
         expr %= let + asig_list + inx + expr, lambda h, s: LetNode(s[2], s[4])
         expr %= ifx + opar + expr + cpar + specialBlock + elifx_expr + elsex + superexpr, lambda h,s:IfNode(s[3],s[5],s[8],s[6][0],s[6][1])
         expr %= whilex + opar + expr + cpar + expr, lambda h,s:WhileNode(s[3],s[5])
-        # expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + expr + cpar + cpar + expr, lambda h,s:ForRangeNode(s[3],s[7],s[9],s[12])
+        expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + expr + cpar + cpar + expr, lambda h,s:ForRangeNode(s[3],s[7],s[9],s[12])
         expr %= printx + opar + expr + cpar, lambda h, s: PrintNode(s[3])
         expr %= recurrent_object + asign2 + expr, lambda h, s: DestructNode(s[1],s[3])
         expr %= new + idx + opar + arg_expr + cpar, lambda h, s: ObjectCreationNode(s[2], s[4])
@@ -280,11 +280,35 @@ if __name__ == "__main__":
     
     text = '''
             type MyClass {
-                a = 5 ;
-                b = 32;
-                method(x):Number => x + a;
-            }
-            print("hello");
+                    x = 0;
+                    
+                    my_method(a, b) => {
+                        a+b;
+                    };
+                }
+
+                let a = 10, b = 20, c = 30 in {
+                    print(a + b * c);
+                    
+                    if (a > b) {
+                        print(a);
+                    } else {
+                        print(b);
+                    };
+                    
+                    while (a < c) {
+                        print(a);
+                        a := a + 1;
+                    };
+                    
+                    for (i in range(3, 4)) {
+                        print(i);
+                    };
+                    
+                    let d = new MyClass(5, 10) in {
+                        print(d);
+                    };
+                };
         '''
 
  
