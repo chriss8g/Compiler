@@ -294,11 +294,7 @@ class CodeToAST:
 if __name__ == "__main__":
     
     text = '''
-            for (x in range(0, 10)) {
-                print(3/4 + 3*88);
-                print (sin(x)/cos(y));
-                print (log(3,4) + rand());
-            };
+            print("Hola Mundo");
         '''
 
  
