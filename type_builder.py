@@ -1,11 +1,13 @@
 import cmp.visitor as visitor
 from nodes_types import hulk_types as hulk
+from cmp.semantic import VariableInfo
 
 class TypeBuilder:   
     def __init__(self, context, errors=[]):
         self.context = context
         self.current_type = None
         self.errors = errors
+        self.var = []
     
     @visitor.on('node')
     def visit(self, node):
@@ -14,9 +16,8 @@ class TypeBuilder:
     @visitor.when(hulk.ProgramNode)
     def visit(self, node):
         for statement in node.statements:
-            self.visit(node)
-        for sentence in node.main:
-            self.visit(sentence)
+            self.visit(statement)
+        self.visit(node.main)
         return self.errors
     
     @visitor.when(hulk.FuncDeclarationNode)
@@ -67,23 +68,33 @@ class TypeBuilder:
     
     @visitor.when(hulk.AssignNode)
     def visit(self, node):
-        self.visit(node.body)
-        if node.type:
-            if node.type != node.expr.type:
-                self.errors.append(f"No se puede asignar un '{node.expr.type}' a un '{node.type}'")
+        self.visit(node.expr)
+        if node.id.type:
+            if node.id.type != node.expr.type:
+                self.errors.append(f"No se puede asignar un '{node.expr.type}' a un '{node.id.type}'")
         else:
+            node.id.type = node.expr.type
             node.type = node.expr.type
+            self.var.append(VariableInfo(node.id.name, node.id.type))
         return self.errors
     
     @visitor.when(hulk.BlockNode)
-    # 
     def visit(self,node):
+        for expr in node.body:
+            self.visit(expr)
         return self.errors
     
     @visitor.when(hulk.LetNode)
     def visit(self,node):
-        for arg in args:
+        for arg in node.args:
             self.visit(arg)
+        self.visit(node.body)
+        node.type = node.body.type
+        return self.errors
+    
+    @visitor.when(hulk.WhileNode)
+    def visit(self,node):
+        self.visit(node.condition)
         self.visit(node.body)
         node.type = node.body.type
         return self.errors
@@ -248,6 +259,15 @@ class TypeBuilder:
         self.visit(node.right)
         if node.left.type != hulk.STRING_TYPE or node.right.type != hulk.STRING_TYPE:
             self.errors.append(f"La operación @@ solo esta definida entre cadenas")
+        return self.errors
+    
+    @visitor.when(hulk.IdentifierNode)
+    def visit(self,node):
+        for var in self.var:
+            if var.name == node.name:
+                node.type = var.type
+                return self.errors
+        self.errors.append(f"No existe la variable'{node.name}'")
         return self.errors
     
     # self
