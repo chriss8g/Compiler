@@ -305,8 +305,8 @@ class RandNode(ExpressionNode):
 #  Literales
 
 class NumberNode(AtomicNode):
-    def __init__(self, lex, type=NUMBER_TYPE):
-        super().__init__(lex, type)
+    def __init__(self, lex):
+        super().__init__(lex, NUMBER_TYPE)
 
 class StringNode(AtomicNode):
     def __init__(self, lex, type=STRING_TYPE):

@@ -4,6 +4,20 @@ from parser.tools import *
 from nodes_types.hulk_types import *
 from my_lexer import Lexer
 
+def ForToWhile(s):
+    count = s[3]
+    start = s[7]
+    end = s[9]
+    body = []
+    for expr in s[12].body:
+        body.append(expr)
+    increase_count = DestructNode(count,PlusNode(count,NumberNode(1)))
+    body.append(increase_count)
+    assign = AssignNode(count,start)
+    while_term = WhileNode(LTNode(count,end),BlockNode(body))
+    let_term = LetNode([assign],while_term)
+    return let_term
+    
 
 class CodeToAST:
 
@@ -181,7 +195,8 @@ class CodeToAST:
         expr %= let + asig_list + inx + expr, lambda h, s: LetNode(s[2], s[4])
         expr %= ifx + opar + expr + cpar + specialBlock + elifx_expr + elsex + superexpr, lambda h,s:IfNode(s[3],s[5],s[8],s[6][0],s[6][1])
         expr %= whilex + opar + expr + cpar + expr, lambda h,s:WhileNode(s[3],s[5])
-        expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + expr + cpar + cpar + expr, lambda h,s:ForRangeNode(s[3],s[7],s[9],s[12])
+        expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + expr + cpar + cpar + expr, lambda h,s:ForToWhile(s)
+        # expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + expr + cpar + cpar + expr, lambda h,s:ForRangeNode(s[3],s[7],s[9],s[12])
         expr %= printx + opar + expr + cpar, lambda h, s: PrintNode(s[3])
         expr %= recurrent_object + asign2 + expr, lambda h, s: DestructNode(s[1],s[3])
         expr %= new + idx + opar + arg_expr + cpar, lambda h, s: ObjectCreationNode(s[2], s[4])
@@ -278,36 +293,10 @@ class CodeToAST:
 if __name__ == "__main__":
     
     text = '''
-            type MyClass {
-                    x = 0;
-                    
-                    my_method(a, b) => {
-                        a+b;
-                    };
-                }
-
-                let a = 10, b = 20, c = 30 in {
-                    print(a + b * c);
-                    
-                    if (a > b) {
-                        print(a);
-                    } else {
-                        print(b);
-                    };
-                    
-                    while (a < c) {
-                        print(a);
-                        a := a + 1;
-                    };
-                    
-                    for (i in range(3, 4)) {
-                        print(i);
-                    };
-                    
-                    let d = new MyClass(5, 10) in {
-                        print(d);
-                    };
-                };
+            for (x in range(0, 10)) {
+                print(3);
+                print (x);
+            };
         '''
 
  
