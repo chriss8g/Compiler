@@ -76,8 +76,40 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
     @visitor.when(hulk.PrintNode)
     def visit(self, node, scope):
-        dest = self.visit(node.expr, scope)
-        self.register_instruction(cil.PrintNode(dest))
+        source = self.visit(node.expr, scope)
+        dest = self.define_internal_local()
+        self.register_instruction(cil.OurFunctionNode('printf', dest, source))
+        return dest
+
+    @visitor.when(hulk.SinNode)
+    def visit(self, node, scope):
+        source = self.visit(node.lex, scope)
+        dest = self.define_internal_local()
+        self.register_instruction(cil.OurFunctionNode('sin', dest, source))
+        return dest
+
+    @visitor.when(hulk.CosNode)
+    def visit(self, node, scope):
+        source = self.visit(node.lex, scope)
+        dest = self.define_internal_local()
+        self.register_instruction(cil.OurFunctionNode('cos', dest, source))
+        return dest
+
+    @visitor.when(hulk.ExpNode)
+    def visit(self, node, scope):
+        source = self.visit(node.expr, scope)
+        dest = self.define_internal_local()
+        self.register_instruction(cil.OurFunctionNode('exp', dest, source))
+        return dest
+    
+    @visitor.when(hulk.SqrtNode)
+    def visit(self, node, scope):
+        source = self.visit(node.expr, scope)
+        dest = self.define_internal_local()
+        self.register_instruction(cil.OurFunctionNode('sqrt', dest, source))
+        return dest
+
+    
 
     @visitor.when(hulk.AssignNode)
     def visit(self, node, scope):
@@ -111,7 +143,7 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
         left = self.visit(node.left, scope.create_child_scope())
         right = self.visit(node.right, scope.create_child_scope())
         dest = self.define_internal_local()
-        self.register_instruction(cil.StarNode(dest, left, right))
+        self.register_instruction(cil.AssignNode(dest, f"{left} * {right}"))
         return dest
 
     @visitor.when(hulk.DivNode)
@@ -119,7 +151,15 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
         left = self.visit(node.left, scope.create_child_scope())
         right = self.visit(node.right, scope.create_child_scope())
         dest = self.define_internal_local()
-        self.register_instruction(cil.DivNode(dest, left, right))
+        self.register_instruction(cil.AssignNode(dest, f"{left} / {right}"))
+        return dest
+    
+    @visitor.when(hulk.ModNode)
+    def visit(self, node, scope):
+        left = self.visit(node.left, scope.create_child_scope())
+        right = self.visit(node.right, scope.create_child_scope())
+        dest = self.define_internal_local()
+        self.register_instruction(cil.AssignNode(dest, f"{left} % {right}"))
         return dest
     
     @visitor.when(hulk.EQNode)
@@ -136,6 +176,30 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
         right = self.visit(node.right, scope.create_child_scope())
         dest = self.define_internal_local()
         self.register_instruction(cil.AssignNode(dest, f"{left} >= {right}"))
+        return dest
+    
+    @visitor.when(hulk.GTNode)
+    def visit(self, node, scope):
+        left = self.visit(node.left, scope.create_child_scope())
+        right = self.visit(node.right, scope.create_child_scope())
+        dest = self.define_internal_local()
+        self.register_instruction(cil.AssignNode(dest, f"{left} < {right}"))
+        return dest
+    
+    @visitor.when(hulk.LENode)
+    def visit(self, node, scope):
+        left = self.visit(node.left, scope.create_child_scope())
+        right = self.visit(node.right, scope.create_child_scope())
+        dest = self.define_internal_local()
+        self.register_instruction(cil.AssignNode(dest, f"{left} >= {right}"))
+        return dest
+    
+    @visitor.when(hulk.LTNode)
+    def visit(self, node, scope):
+        left = self.visit(node.left, scope.create_child_scope())
+        right = self.visit(node.right, scope.create_child_scope())
+        dest = self.define_internal_local()
+        self.register_instruction(cil.AssignNode(dest, f"{left} > {right}"))
         return dest
 
     @visitor.when(hulk.IfNode)

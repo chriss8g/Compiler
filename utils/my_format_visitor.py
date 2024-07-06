@@ -74,7 +74,6 @@ class FormatVisitor(object):
     @visitor.when(hulk.PrintNode)
     def visit(self, node, tabs=0):
         ans = '\t' * tabs + f'\\__PrintNode [<sentence>]'
-        print(node.expr)
         expr = self.visit(node.expr, tabs + 1)
         return f'{ans}\n{expr}'
     
@@ -205,9 +204,9 @@ class FormatVisitor(object):
     def visit(self, node, tabs=0):
         return f'{'\t' * tabs}\\CallNode {node.dest} = ALOCATE {node.type.name}'
     
-    @visitor.when(cil.PrintNode)
+    @visitor.when(cil.OurFunctionNode)
     def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__PrintNode {node.expr}'
+        ans = '\t' * tabs + f'\\__{node.__class__.__name__} {node.dest} = {node.name} {node.source}'
         return f'{ans}'
     
     @visitor.when(cil.ProgramNode)
@@ -255,18 +254,6 @@ class FormatVisitor(object):
         ans = '\t' * tabs + f'\\__GotoIfNode:\n {'\t' * (tabs+1)}\\__condition {node.condition} \n' + '\t' * (tabs+1) 
         return f'{ans}\\goto: {node.label}' + '\n' + '\t' * (tabs+1) + f'\\__else_goto: ' + f' {node.label_else}'
         
-    
-    
-    # @visitor.when(cil.LogicNode)
-    # def visit(self, node, tabs=0):
-    #     ans = '\t' * tabs + f'\\__{node.left} {node.op} {node.right}'
-    #     return f'{ans}'
-    
-    # @visitor.when(cil.ArithmeticNode)
-    # def visit(self, node, tabs=0):
-    #     ans = '\t' * tabs + f'\\__{node.left} {node.op} {node.right}'
-    #     return f'{ans}'
-    
     @visitor.when(cil.AssignNode)
     def visit(self, node, tabs=0):
         ans = '\t' * tabs + f'\\__AsignNode: {node.dest} = {node.source}'

@@ -61,7 +61,7 @@ class CodeToAST:
         terminals['plus'] = plus
         terminals['minus'] = minus
         terminals['star'] = star
-        terminals['div'] = div
+        terminals['divide'] = div
         terminals['pow'] = powx
         terminals['mod'] = mod
         terminals['and'] = andx
@@ -77,8 +77,8 @@ class CodeToAST:
         terminals['lbrace'] = obrace
         terminals['rbrace'] = cbrace
         terminals['asign2'] = asign2
-        terminals['pi'] = pi
-        terminals['e'] = e
+        terminals['PI'] = pi
+        terminals['E'] = e
         terminals['true'] = true
         terminals['false'] = false
         terminals['id'] = idx
@@ -204,37 +204,37 @@ class CodeToAST:
         # Aritmetica
         subexpr %= subexpr + plus + term, lambda h, s: PlusNode(s[1], s[3])
         subexpr %= subexpr + minus + term, lambda h, s: MinusNode(s[1], s[3])
-        # subexpr %= subexpr + andx + term, lambda h, s: AndNode(s[1], s[3])
-        # subexpr %= subexpr + orx + term, lambda h, s: OrNode(s[1], s[3])
-        # subexpr %= notx + term, lambda h, s: NotNode(s[2])
+        subexpr %= subexpr + andx + term, lambda h, s: AndNode(s[1], s[3])
+        subexpr %= subexpr + orx + term, lambda h, s: OrNode(s[1], s[3])
+        subexpr %= notx + term, lambda h, s: NotNode(s[2])
         subexpr %= subexpr + eq + term, lambda h, s: EQNode(s[1], s[3])
         subexpr %= subexpr + ne + term, lambda h, s: NENode(s[1], s[3])
         subexpr %= subexpr + gt + term, lambda h, s: GTNode(s[1], s[3])
         subexpr %= subexpr + lt + term, lambda h, s: LTNode(s[1], s[3])
         subexpr %= subexpr + ge + term, lambda h, s: GENode(s[1], s[3])
         subexpr %= subexpr + le + term, lambda h, s: LENode(s[1], s[3])
-        # subexpr %= subexpr + concat + term, lambda h, s: ConcatNode(s[1], s[3])
+        subexpr %= subexpr + concat + term, lambda h, s: ConcatNode(s[1], s[3])
         subexpr %= term, lambda h, s: s[1]
         
         term %= term + star + factor, lambda h, s: StarNode(s[1], s[3])
-        # term %= term + div + factor, lambda h, s: DivNode(s[1], s[3])
-        # term %= term + powx + factor, lambda h, s: PowNode(s[1], s[3])
-        # term %= term + mod + factor, lambda h, s: ModNode(s[1], s[3])
+        term %= term + div + factor, lambda h, s: DivNode(s[1], s[3])
+        term %= term + powx + factor, lambda h, s: PowNode(s[1], s[3])
+        term %= term + mod + factor, lambda h, s: ModNode(s[1], s[3])
         term %= factor, lambda h, s: s[1]
 
-        # factor %= sin + opar + expr + cpar, lambda h, s: SinNode(s[3])
-        # factor %= cos + opar + expr + cpar, lambda h, s: CosNode(s[3])
-        # factor %= sqrt + opar + expr + cpar, lambda h, s: SqrtNode(s[3])
-        # factor %= exp + opar + expr + cpar, lambda h, s: ExpNode(s[3])
-        # factor %= log + opar + expr + cpar, lambda h, s: LogNode(s[3])
-        # factor %= rand + opar + cpar, lambda h, s: RandNode()
+        factor %= sin + opar + expr + cpar, lambda h, s: SinNode(s[3])
+        factor %= cos + opar + expr + cpar, lambda h, s: CosNode(s[3])
+        factor %= sqrt + opar + expr + cpar, lambda h, s: SqrtNode(s[3])
+        factor %= exp + opar + expr + cpar, lambda h, s: ExpNode(s[3])
+        factor %= log + opar + expr + comma + expr + cpar, lambda h, s: LogNode(s[3],s[5])
+        factor %= rand + opar + cpar, lambda h, s: RandNode()
         factor %= atom, lambda h, s: s[1]
         
         atom %= number, lambda h, s: NumberNode(s[1])
-        # atom %= true, lambda h, s: BoolNode(s[1])
-        # atom %= false, lambda h, s: BoolNode(s[1])
-        # atom %= pi, lambda h, s: ConstantNumNode(s[1])
-        # atom %= e, lambda h, s: ConstantNumNode(s[1])
+        atom %= true, lambda h, s: BoolNode(s[1])
+        atom %= false, lambda h, s: BoolNode(s[1])
+        atom %= pi, lambda h, s: NumberNode(s[1])
+        atom %= e, lambda h, s: NumberNode(s[1])
         atom %= string, lambda h, s: StringNode(s[1])
         atom %= opar + expr + cpar, lambda h, s: s[2]
         atom %= selfx + dot + idnode, lambda h, s: SelfNode(s[3])

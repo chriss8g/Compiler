@@ -272,30 +272,27 @@ class SelfNode(ExpressionNode):
         super().__init__(type)
         self.lex = lex
 
-class SinNode(ExpressionNode):
-    def __init__(self, expr):
-        super().__init__()
-        self.expr = expr
+class SinNode(AtomicNode):
+    def __init__(self, lex):
+        super().__init__(lex,type=NUMBER_TYPE)
 
-class CosNode(ExpressionNode):
-    def __init__(self, expr):
-        super().__init__()
-        self.expr = expr
+class CosNode(AtomicNode):
+    def __init__(self, lex):
+        super().__init__(lex,type=NUMBER_TYPE)
 
-class SqrtNode(ExpressionNode):
-    def __init__(self, expr):
-        super().__init__()
-        self.expr = expr
+class SqrtNode(AtomicNode):
+    def __init__(self, lex):
+        super().__init__(lex,type=NUMBER_TYPE)
 
-class ExpNode(ExpressionNode):
-    def __init__(self, expr):
-        super().__init__()
-        self.expr = expr
+class ExpNode(AtomicNode):
+    def __init__(self, lex):
+        super().__init__(lex,type=NUMBER_TYPE)
 
 class LogNode(ExpressionNode):
-    def __init__(self, expr):
+    def __init__(self, base,arg):
         super().__init__()
-        self.expr = expr
+        self.base = base
+        self.arg = arg
 
 class RandNode(ExpressionNode):
     def __init__(self):

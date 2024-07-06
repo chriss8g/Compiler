@@ -47,7 +47,7 @@ def main(input_file):
     with open('script.c', 'w') as output_file:
         output_file.write(output)
 
-    os.system("gcc script.c && ./a.out")
+    os.system("gcc script.c -lm && ./a.out")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate C code from custom script")
