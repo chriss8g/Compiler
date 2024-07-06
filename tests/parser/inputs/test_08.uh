@@ -1,0 +1,3 @@
+function next(x) => x+1;
+
+print(next(8));

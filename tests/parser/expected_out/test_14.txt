@@ -1,0 +1,19 @@
+\__ProgramNode [<program>]
+	\__LetNode [<expression>]
+		\__AssignNode:
+			\__IdentifierNode: a
+			\__NumberNode: 0
+		\__WhileNode [<expression>]
+			\_ Condition
+				\__LTNode [<expression>]
+					\__IdentifierNode: a
+					\__NumberNode: 10
+			\_ Body
+				\__BlockNode [<expression>]
+					\__PrintNode [<sentence>]
+						\__IdentifierNode: a
+					\DestructNode   [<expression>]
+						\__IdentifierNode: a
+						\__PlusNode [<expression>]
+							\__IdentifierNode: a
+							\__NumberNode: 1

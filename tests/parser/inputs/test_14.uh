@@ -1,0 +1,3 @@
+for a in arr {
+    print(a);
+};

@@ -1,0 +1,11 @@
+\__ProgramNode [<program>]
+	\__PrintNode [<sentence>]
+		\__DivNode [<expression>]
+			\__StarNode [<expression>]
+				\__MinusNode [<expression>]
+					\__PlusNode [<expression>]
+						\__NumberNode: 1
+						\__NumberNode: 2
+					\__NumberNode: 3
+				\__NumberNode: 4
+			\__NumberNode: 5

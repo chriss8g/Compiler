@@ -1,0 +1,3 @@
+\__ProgramNode [<program>]
+	\__PrintNode [<sentence>]
+		\__NumberNode: 42
