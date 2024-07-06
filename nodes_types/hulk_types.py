@@ -3,6 +3,7 @@ FLOAT_TYPE = 'float'
 BOOL_TYPE = 'bool'
 STRING_TYPE = 'string'
 CONST_TYPE = 'const'
+OBJECT_TYPE = 'object'
 NUMBER_TYPE = [INT_TYPE, FLOAT_TYPE, CONST_TYPE]
 
 class Node:
@@ -26,7 +27,7 @@ class FuncDeclarationNode(StatementNode):
         self.type = type
         
 class TypeDeclarationNode(StatementNode):
-    def __init__(self, name, body, params=[], base_type=None, base_params=[]):
+    def __init__(self, name, body, params=[], base_type=OBJECT_TYPE, base_params=[]):
         self.name = name
         self.body = body
         self.params = params
@@ -148,16 +149,16 @@ class BinaryNode(ExpressionNode):
         self.right = right
         
 class NumberOpNode(BinaryNode):
-    def __init__(self, left, right, type=NUMBER_TYPE):
-        super().__init__(left, right, type)
+    def __init__(self, left, right):
+        super().__init__(left, right, NUMBER_TYPE)
 
 class StringOpNode(BinaryNode):
-    def __init__(self, left, right, type=STRING_TYPE):
-        super().__init__(left, right, type)
+    def __init__(self, left, right):
+        super().__init__(left, right, STRING_TYPE)
 
 class BoolOpNode(BinaryNode):
-    def __init__(self, left, right, type=BOOL_TYPE):
-        super().__init__(left, right, type)
+    def __init__(self, left, right):
+        super().__init__(left, right, BOOL_TYPE)
    
    
 # *****************     Operaciones Aritmeticas     ***************** 
@@ -239,7 +240,7 @@ class OrNode(LogicalNode):
 
 class NotNode(AtomicNode):
     def __init__(self, lex):
-        super().__init__(lex, type = BOOL_TYPE)
+        super().__init__(lex, BOOL_TYPE)
 
 
 # *****************     Operaciones con String     ***************** 
@@ -255,6 +256,11 @@ class ConcatSpaceNode(StringOpNode):
 
 
 # ***************      Expresiones atomicas      ******************
+
+class SingleAritmeticOpNode(ExpressionNode):
+    def __init__(self,expr):
+        super().__init__(NUMBER_TYPE)
+        self.expr = expr
 
 class ObjectCreationNode(ExpressionNode):
     def __init__(self, type, args=[]):
@@ -272,38 +278,42 @@ class SelfNode(ExpressionNode):
         super().__init__(type)
         self.lex = lex
 
-class SinNode(AtomicNode):
-    def __init__(self, lex):
-        super().__init__(lex,type=NUMBER_TYPE)
+class SinNode(SingleAritmeticOpNode):
+    def __init__(self, expr):
+        super().__init__(expr)
+        
 
-class CosNode(AtomicNode):
-    def __init__(self, lex):
-        super().__init__(lex,type=NUMBER_TYPE)
+class CosNode(SingleAritmeticOpNode):
+    def __init__(self, expr):
+        super().__init__(expr)
+        
 
-class SqrtNode(AtomicNode):
-    def __init__(self, lex):
-        super().__init__(lex,type=NUMBER_TYPE)
+class SqrtNode(SingleAritmeticOpNode):
+    def __init__(self, expr):
+        super().__init__(expr)
+        
 
-class ExpNode(AtomicNode):
-    def __init__(self, lex):
-        super().__init__(lex,type=NUMBER_TYPE)
+class ExpNode(SingleAritmeticOpNode):
+    def __init__(self, expr):
+        super().__init__(expr)
+        
 
 class LogNode(ExpressionNode):
     def __init__(self, base,arg):
-        super().__init__()
+        super().__init__(NUMBER_TYPE)
         self.base = base
         self.arg = arg
 
 class RandNode(ExpressionNode):
     def __init__(self):
-        super().__init__()
+        super().__init__(NUMBER_TYPE)
 
 
 #  Literales
 
 class NumberNode(AtomicNode):
-    def __init__(self, lex, type=NUMBER_TYPE):
-        super().__init__(lex, type)
+    def __init__(self, lex):
+        super().__init__(lex, NUMBER_TYPE)
 
 class StringNode(AtomicNode):
     def __init__(self, lex, type=STRING_TYPE):
