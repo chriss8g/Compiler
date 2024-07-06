@@ -181,10 +181,10 @@ class CodeToAST:
         expr %= let + asig_list + inx + expr, lambda h, s: LetNode(s[2], s[4])
         expr %= ifx + opar + expr + cpar + specialBlock + elifx_expr + elsex + superexpr, lambda h,s:IfNode(s[3],s[5],s[8],s[6][0],s[6][1])
         expr %= whilex + opar + expr + cpar + expr, lambda h,s:WhileNode(s[3],s[5])
-        # expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + expr + cpar + cpar + expr, lambda h,s:ForRangeNode(s[3],s[7],s[9],s[12])
+        expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + expr + cpar + cpar + expr, lambda h,s:ForRangeNode(s[3],s[7],s[9],s[12])
         expr %= printx + opar + expr + cpar, lambda h, s: PrintNode(s[3])
         expr %= recurrent_object + asign2 + expr, lambda h, s: DestructNode(s[1],s[3])
-        # expr %= new + idx + opar + arg_expr + cpar, lambda h, s: ObjectCreationNode(s[2], s[4])
+        expr %= new + idx + opar + arg_expr + cpar, lambda h, s: ObjectCreationNode(s[2], s[4])
         expr %= subexpr, lambda h, s: s[1]
         
         superexpr %= expr, lambda h,s:s[1]
@@ -278,10 +278,7 @@ class CodeToAST:
 if __name__ == "__main__":
     
     text = '''
-            let a = 10 in while (a >= 0) {
-                print(a);
-                a := a - 1;
-            };
+            let x = f(5, 7) in x + 1;
         '''
 
  

@@ -40,21 +40,21 @@ class TestCodeToAST(unittest.TestCase):
         self.assertIsNotNone(ast.ast)
         self.assertIn('WhileNode', repr(ast))
 
-# work
+# work 5
     def test_for_loop(self):
         code = 'for (x in range(0, 10)) print (x);'
         ast = CodeToAST(code)
         self.assertIsNotNone(ast.ast)
         self.assertIn('ForRangeNode', repr(ast))
 
-# work
+# work 6
     def test_if_else(self):
         code = 'if (x == 10) print("less"); else print("more");'
         ast = CodeToAST(code)
         self.assertIsNotNone(ast.ast)
         self.assertIn('IfNode', repr(ast))
 
-# work
+# work 7
     def test_complex_expression(self):
         code = '''let x = 5 in
                                  let y = 6 in
@@ -63,7 +63,7 @@ class TestCodeToAST(unittest.TestCase):
         self.assertIsNotNone(ast.ast)
         self.assertIn('VarDeclarationNode', repr(ast))
 
-# work
+# work 8
     def test_function_call(self):
         code = 'let x = f(5, 7) in x + 1;'
         ast = CodeToAST(code)
