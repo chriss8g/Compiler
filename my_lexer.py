@@ -36,7 +36,7 @@ regular_expresions = [
     ('range', 'range'),
     ('num', f'0|({nonzero_digits})(0|{nonzero_digits})*'),
     ('id', f'({lettersLowerCase}|{lettersUpperCase}|_)({lettersLowerCase}|{lettersUpperCase}|_|0|{nonzero_digits})*'),
-    ('string', f'"({lettersLowerCase}|{lettersUpperCase}|0|{nonzero_digits})*"'),
+    ('string', f'"({lettersLowerCase}|{lettersUpperCase}|0|{nonzero_digits}|@|##|#||=|:|,|#(|#)|+|-|#*|/|^|%|#$| |!|<|>|@|;|[|])*"'),
     ('asign1','='),
     ('asign2',':='),
     ('comma', ','),
@@ -121,9 +121,6 @@ class Lexer:
         head = 0
         
         for c in text:
-            if c == ' ':
-                break
-            
             head += 1 
 
             for regex in self.regexs:
@@ -190,13 +187,13 @@ if __name__ == "__main__":
     nonzero_digits = '|'.join(str(n) for n in range(1,10))
     lettersUpperCase = '|'.join(chr(n) for n in range(ord('A'),ord('Z')+1))
 
-
     # print('Non-zero digits:', nonzero_digits)
-    print('Letters:', lettersUpperCase)
+    # print('Letters:', lettersUpperCase)
+
 
     # lexer = Lexer('eof')
 
-    # text = 'let a = 0 in let b #= a := 1 in {print(a);print(b);};'
+    # text = '''print("a b")'''
     # print(f'\n>>> Tokenizando: "{text}"')
     # tokens = lexer(text)
     
@@ -206,3 +203,10 @@ if __name__ == "__main__":
     
     # print('\n',tokens)
 
+    autom_maker = RegexHandler()
+    
+    autom = autom_maker('"(##|a)*"')
+    
+    dfa = nfa_to_dfa(autom)
+    
+    print(dfa.recognize('"#"'))

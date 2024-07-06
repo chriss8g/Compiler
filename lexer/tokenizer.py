@@ -65,7 +65,7 @@ class RegexHandler:
 
         return G
 
-    def _regex_tokenizer(self, text, skip_whitespaces=True):
+    def _regex_tokenizer(self, text, skip_whitespaces=False):
         tokens = []
         tmp = ''
         text = text + '$'
@@ -76,12 +76,12 @@ class RegexHandler:
             if skip_whitespaces and char.isspace():
                 continue
             
-            if char == '#':
-                ignore_char = True
-                continue
             if ignore_char:
                 ignore_char = False
                 tokens.append(Token(char,self.symbol))
+                continue
+            if char == '#':
+                ignore_char = True
                 continue
             
             if char == '|':
@@ -104,10 +104,10 @@ class RegexHandler:
 
         # Obtener los tokens de la expresion regular
         tokens = self._regex_tokenizer(text)
-
+        # print(tokens)
         parser = LR1Parser(self.grammar)
         derivations = parser([tok.token_type for tok in tokens])
-
+        
         tokens.reverse()
         derivations.reverse()
 

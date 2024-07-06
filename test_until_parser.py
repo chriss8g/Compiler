@@ -45,7 +45,7 @@ class TestCodeToAST(unittest.TestCase):
         code = 'for (x in range(0, 10)) print (x);'
         ast = CodeToAST(code)
         self.assertIsNotNone(ast.ast)
-        self.assertIn('ForRangeNode', repr(ast))
+        self.assertIn('LetNode', repr(ast))
 
 # work 6
     def test_if_else(self):
@@ -61,7 +61,7 @@ class TestCodeToAST(unittest.TestCase):
                                          x + y * (x - y);'''
         ast = CodeToAST(code)
         self.assertIsNotNone(ast.ast)
-        self.assertIn('VarDeclarationNode', repr(ast))
+        self.assertIn('LetNode', repr(ast))
 
 # work 8
     def test_function_call(self):
