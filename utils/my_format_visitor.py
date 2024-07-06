@@ -153,6 +153,12 @@ class FormatVisitor(object):
     @visitor.when(hulk.AtomicNode)
     def visit(self, node, tabs=0):
         return '\t' * tabs + f'\\__{node.__class__.__name__}: {node.lex}'
+    
+    @visitor.when(hulk.SingleAritmeticOpNode)
+    def visit(self, node, tabs=0):
+        ans = '\t' * tabs + f'\\__{node.__class__.__name__}   [<expression>]'
+        body = self.visit(node.expr,tabs+1)
+        return f'{ans}\n{body}'
 
     @visitor.when(hulk.IdentifierNode)
     def visit(self, node, tabs=0):
@@ -177,8 +183,16 @@ class FormatVisitor(object):
         child = self.visit(node.lex,tabs+1)
         return f'{ans}\n{child}'
 
+    @visitor.when(hulk.LogNode)
+    def visit(self, node, tabs=0):
+        ans = '\t' * tabs + f'\\__{node.__class__.__name__} [<expression>]'
+        left = self.visit(node.base, tabs + 1)
+        right = self.visit(node.arg, tabs + 1)
+        return f'{ans}\n{left}\n{right}'
 
-
+    @visitor.when(hulk.RandNode)
+    def visit(self, node, tabs=0):
+        return '\t' * tabs + f'\\__{node.__class__.__name__} ()'
 
 
 

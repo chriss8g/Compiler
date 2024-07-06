@@ -149,16 +149,16 @@ class BinaryNode(ExpressionNode):
         self.right = right
         
 class NumberOpNode(BinaryNode):
-    def __init__(self, left, right, type=NUMBER_TYPE):
-        super().__init__(left, right, type)
+    def __init__(self, left, right):
+        super().__init__(left, right, NUMBER_TYPE)
 
 class StringOpNode(BinaryNode):
-    def __init__(self, left, right, type=STRING_TYPE):
-        super().__init__(left, right, type)
+    def __init__(self, left, right):
+        super().__init__(left, right, STRING_TYPE)
 
 class BoolOpNode(BinaryNode):
-    def __init__(self, left, right, type=BOOL_TYPE):
-        super().__init__(left, right, type)
+    def __init__(self, left, right):
+        super().__init__(left, right, BOOL_TYPE)
    
    
 # *****************     Operaciones Aritmeticas     ***************** 
@@ -240,7 +240,7 @@ class OrNode(LogicalNode):
 
 class NotNode(AtomicNode):
     def __init__(self, lex):
-        super().__init__(lex, type = BOOL_TYPE)
+        super().__init__(lex, BOOL_TYPE)
 
 
 # *****************     Operaciones con String     ***************** 
@@ -256,6 +256,11 @@ class ConcatSpaceNode(StringOpNode):
 
 
 # ***************      Expresiones atomicas      ******************
+
+class SingleAritmeticOpNode(ExpressionNode):
+    def __init__(self,expr):
+        super().__init__(NUMBER_TYPE)
+        self.expr = expr
 
 class ObjectCreationNode(ExpressionNode):
     def __init__(self, type, args=[]):
@@ -273,30 +278,31 @@ class SelfNode(ExpressionNode):
         super().__init__(type)
         self.lex = lex
 
-class SinNode(ExpressionNode):
+class SinNode(SingleAritmeticOpNode):
     def __init__(self, expr):
-        super().__init__()
-        self.expr = expr
+        super().__init__(expr)
+        
 
-class CosNode(ExpressionNode):
+class CosNode(SingleAritmeticOpNode):
     def __init__(self, expr):
-        super().__init__()
-        self.expr = expr
+        super().__init__(expr)
+        
 
-class SqrtNode(ExpressionNode):
+class SqrtNode(SingleAritmeticOpNode):
     def __init__(self, expr):
-        super().__init__()
-        self.expr = expr
+        super().__init__(expr)
+        
 
-class ExpNode(ExpressionNode):
+class ExpNode(SingleAritmeticOpNode):
     def __init__(self, expr):
-        super().__init__()
-        self.expr = expr
+        super().__init__(expr)
+        
 
 class LogNode(ExpressionNode):
-    def __init__(self, expr):
-        super().__init__()
-        self.expr = expr
+    def __init__(self, base,arg):
+        super().__init__(NUMBER_TYPE)
+        self.base = base
+        self.arg = arg
 
 class RandNode(ExpressionNode):
     def __init__(self):
