@@ -278,12 +278,10 @@ class CodeToAST:
 if __name__ == "__main__":
     
     text = '''
-            type MyClass {
-                a = 5 ;
-                b = 32;
-                method(x):Number => x + a;
-            }
-            print("hello");
+            let a = 10 in while (a >= 0) {
+                print(a);
+                a := a - 1;
+            };
         '''
 
  

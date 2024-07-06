@@ -15,9 +15,9 @@ class TestCodeToAST(unittest.TestCase):
         code = 'let x = 5 in x + 3;'
         ast = CodeToAST(code)
         self.assertIsNotNone(ast)
-        self.assertIn('VarDeclarationNode', repr(ast))
+        self.assertIn('LetNode', repr(ast))
 
-# work
+# work 3
     def test_function_declaration(self):
         code = '''
                 function add(a, b) => a + b;
@@ -28,7 +28,7 @@ class TestCodeToAST(unittest.TestCase):
         self.assertIsNotNone(ast)
         self.assertIn('FuncDeclarationNode', repr(ast))
 
-# work
+# work 4
     def test_while_loop(self):
         code = '''
                 let a = 10 in while (a >= 0) {
@@ -84,6 +84,19 @@ class TestCodeToAST(unittest.TestCase):
     #     self.assertIn('MethodCallNode', repr(ast))
 
 # work
+    def test_type_declaration_simple(self):
+        code = '''
+            type MyClass {
+                a = 5 ;
+                method(x) => x + self.a;
+            }
+            print("hello");
+        '''
+        ast = CodeToAST(code)
+        self.assertIsNotNone(ast.ast)
+        self.assertIn('TypeNode', repr(ast))
+
+# work
     def test_type_declaration(self):
         code = '''
             type MyClass {
@@ -95,7 +108,7 @@ class TestCodeToAST(unittest.TestCase):
         ast = CodeToAST(code)
         self.assertIsNotNone(ast.ast)
         self.assertIn('TypeNode', repr(ast))
-
+        
 # work
     def test_super(self):
         code = '''

@@ -267,7 +267,7 @@ class IdentifierNode(ExpressionNode):
         self.name = name
         self.child = child
         
-class SelfNode(AtomicNode):
+class SelfNode(ExpressionNode):
     def __init__(self, lex):
         super().__init__(lex)
 
