@@ -7,9 +7,25 @@
 		 \__params
 
 		 \__local_vars
-			\__LocalNode local__internal_0
-			\__LocalNode local__internal_1
+			\__LocalNode int local__internal_0
+			\__LocalNode int local__internal_1
+			\__LocalNode int local__internal_2
+			\__LocalNode int local__internal_3
+			\__LocalNode int local__internal_4
+			\__LocalNode int local__internal_5
+			\__LocalNode int local__internal_6
+			\__LocalNode int local__internal_7
+			\__LocalNode int local__internal_8
+			\__LocalNode int local__internal_9
 		 \__instructions
-			\__AsignNode: local__internal_0 = 42
-			\__OurFunctionNode local__internal_1 = printf local__internal_0
+			\__AsignNode: local__internal_0 = 1
+			\__AsignNode: local__internal_1 = 3
+			\__AsignNode: local__internal_2 = local__internal_0 + local__internal_1
+			\__AsignNode: local__internal_3 = 3
+			\__AsignNode: local__internal_4 = local__internal_2 - local__internal_3
+			\__AsignNode: local__internal_5 = 4
+			\__AsignNode: local__internal_6 = local__internal_4 * local__internal_5
+			\__AsignNode: local__internal_7 = 5
+			\__AsignNode: local__internal_8 = local__internal_6 * local__internal_7
+			\__OurFunctionNode local__internal_9 = printf local__internal_8
 			\__ReturnNode return 0

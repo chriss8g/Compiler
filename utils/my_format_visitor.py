@@ -258,7 +258,7 @@ class FormatVisitor(object):
     
     @visitor.when(cil.LocalNode)
     def visit(self, node, tabs=0):
-        return f'{'\t' * tabs}\\__LocalNode {node.name}'
+        return f'{'\t' * tabs}\\__LocalNode {node.type} {node.name}'
     
     @visitor.when(cil.ParamNode)
     def visit(self, node, tabs=0):
