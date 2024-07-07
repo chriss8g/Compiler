@@ -21,19 +21,19 @@ def main(input_file):
 
 
     # semantic_checker = SemanticCheckerVisitor()
-    # type_collector = TypeCollector()
-    # type_builder = TypeBuilder(type_collector.context)
+    type_collector = TypeCollector()
+    type_builder = TypeBuilder(type_collector.context)
     # errors = []
     # errors = errors + semantic_checker.visit(codeToAST.ast)
-    # errors = errors + type_collector.visit(codeToAST.ast)
-    # errors = errors + type_builder.visit(codeToAST.ast)
-    # if(len(errors) > 0):
-    #     for i, error in enumerate(errors, 1):
-    #         print(f'{i}.', error)
+    errors = errors + type_collector.visit(codeToAST.ast)
+    errors = errors + type_builder.visit(codeToAST.ast)
+    if(len(errors) > 0):
+        for i, error in enumerate(errors, 1):
+            print(f'{i}.', error)
 
-    #     return
+        return
     
-    # print("✅ Semantic Checked")
+    print("✅ Semantic Checked")
 
     cil_generator = HULKToCILVisitor([])
     output = cil_generator.visit(codeToAST.ast)

@@ -1,0 +1,13 @@
+{
+    let a = 0 in {
+    print(a);
+    a := 1;
+    print(a);
+    };
+
+let a = 0 in
+    let b = a := 1 in {
+        print(a);
+        print(b);
+    };
+}

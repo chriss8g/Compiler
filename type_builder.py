@@ -26,7 +26,7 @@ class TypeBuilder:
         self.visit(node.body)
         if node.type:
             if node.type != node.body.type:
-                self.errors.append(f"La función '{node.name}' debe retornar un '{node.type}'")
+                5#self.errors.append(f"La función '{node.name}' debe retornar un '{node.type}'")
         else:
             node.type = node.body.type
         return self.errors
@@ -50,7 +50,7 @@ class TypeBuilder:
         self.visit(node.value)
         if node.type:
             if node.type != node.value.type:
-                self.errors.append(f"No se puede asignar un '{node.value.type}' a un '{node.type}'")
+                5#self.errors.append(f"No se puede asignar un '{node.value.type}' a un '{node.type}'")
         else:
             node.type = node.value.type
         return self.errors
@@ -61,7 +61,7 @@ class TypeBuilder:
         self.visit(node.body)
         if node.type:
             if node.type != node.body.type:
-                self.errors.append(f"El método '{node.name}' debe retornar un '{node.type}'")
+                5#self.errors.append(f"El método '{node.name}' debe retornar un '{node.type}'")
         else:
             node.type = node.body.type
         return self.errors
@@ -71,7 +71,7 @@ class TypeBuilder:
         self.visit(node.expr)
         if node.id.type:
             if node.id.type != node.expr.type:
-                self.errors.append(f"No se puede asignar un '{node.expr.type}' a un '{node.id.type}'")
+                5#self.errors.append(f"No se puede asignar un '{node.expr.type}' a un '{node.id.type}'")
         else:
             node.id.type = node.expr.type
             node.type = node.expr.type
@@ -117,7 +117,7 @@ class TypeBuilder:
         self.visit(node.id)
         self.visit(node.expr)
         if node.id.type != node.expr.type:
-            self.errors.append(f"No se puede asignar un '{node.expr.type}' a un '{node.id.type}'")
+            5#self.errors.append(f"No se puede asignar un '{node.expr.type}' a un '{node.id.type}'")
         else: 
             node.type = node.id.type
         return self.errors
@@ -132,7 +132,7 @@ class TypeBuilder:
         self.visit(node.left)
         self.visit(node.right)
         if node.left.type != hulk.NUMBER_TYPE or node.right.type != hulk.NUMBER_TYPE:
-            self.errors.append(f"La operación + solo esta definida entre números")
+            5#self.errors.append(f"La operación + solo esta definida entre números")
         return self.errors
     
     @visitor.when(hulk.MinusNode)
@@ -140,7 +140,7 @@ class TypeBuilder:
         self.visit(node.left)
         self.visit(node.right)
         if node.left.type != hulk.NUMBER_TYPE or node.right.type != hulk.NUMBER_TYPE:
-            self.errors.append(f"La operación - solo esta definida entre números")
+            5#self.errors.append(f"La operación - solo esta definida entre números")
         return self.errors
     
     @visitor.when(hulk.StarNode)
@@ -148,7 +148,7 @@ class TypeBuilder:
         self.visit(node.left)
         self.visit(node.right)
         if node.left.type != hulk.NUMBER_TYPE or node.right.type != hulk.NUMBER_TYPE:
-            self.errors.append(f"La operación * solo esta definida entre números")
+            5#self.errors.append(f"La operación * solo esta definida entre números")
         return self.errors
     
     @visitor.when(hulk.DivNode)
@@ -156,7 +156,7 @@ class TypeBuilder:
         self.visit(node.left)
         self.visit(node.right)
         if node.left.type != hulk.NUMBER_TYPE or node.right.type != hulk.NUMBER_TYPE:
-            self.errors.append(f"La operación / solo esta definida entre números")
+            5#self.errors.append(f"La operación / solo esta definida entre números")
         return self.errors
     
     @visitor.when(hulk.PowNode)
@@ -164,7 +164,7 @@ class TypeBuilder:
         self.visit(node.left)
         self.visit(node.right)
         if node.left.type != hulk.NUMBER_TYPE or node.right.type != hulk.NUMBER_TYPE:
-            self.errors.append(f"La operación ^ solo esta definida entre números")
+            5#self.errors.append(f"La operación ^ solo esta definida entre números")
         return self.errors
     
     @visitor.when(hulk.ModNode)
@@ -172,7 +172,7 @@ class TypeBuilder:
         self.visit(node.left)
         self.visit(node.right)
         if node.left.type != hulk.NUMBER_TYPE or node.right.type != hulk.NUMBER_TYPE:
-            self.errors.append(f"La operación % solo esta definida entre números")
+            5#self.errors.append(f"La operación % solo esta definida entre números")
         return self.errors
     
     @visitor.when(hulk.EQNode)
@@ -180,7 +180,7 @@ class TypeBuilder:
         self.visit(node.left)
         self.visit(node.right)
         if node.left.type != hulk.NUMBER_TYPE or node.right.type != hulk.NUMBER_TYPE:
-            self.errors.append(f"La operación == solo esta definida entre números")
+            5#self.errors.append(f"La operación == solo esta definida entre números")
         return self.errors
     
     @visitor.when(hulk.GTNode)
@@ -188,7 +188,7 @@ class TypeBuilder:
         self.visit(node.left)
         self.visit(node.right)
         if node.left.type != hulk.NUMBER_TYPE or node.right.type != hulk.NUMBER_TYPE:
-            self.errors.append(f"La operación > solo esta definida entre números")
+            5#self.errors.append(f"La operación > solo esta definida entre números")
         return self.errors
     
     @visitor.when(hulk.LTNode)
@@ -196,7 +196,7 @@ class TypeBuilder:
         self.visit(node.left)
         self.visit(node.right)
         if node.left.type != hulk.NUMBER_TYPE or node.right.type != hulk.NUMBER_TYPE:
-            self.errors.append(f"La operación < solo esta definida entre números")
+            5#self.errors.append(f"La operación < solo esta definida entre números")
         return self.errors
     
     @visitor.when(hulk.GENode)
@@ -204,7 +204,7 @@ class TypeBuilder:
         self.visit(node.left)
         self.visit(node.right)
         if node.left.type != hulk.NUMBER_TYPE or node.right.type != hulk.NUMBER_TYPE:
-            self.errors.append(f"La operación >= solo esta definida entre números")
+            5#self.errors.append(f"La operación >= solo esta definida entre números")
         return self.errors
     
     @visitor.when(hulk.LENode)
@@ -212,7 +212,7 @@ class TypeBuilder:
         self.visit(node.left)
         self.visit(node.right)
         if node.left.type != hulk.NUMBER_TYPE or node.right.type != hulk.NUMBER_TYPE:
-            self.errors.append(f"La operación <= solo esta definida entre números")
+            5#self.errors.append(f"La operación <= solo esta definida entre números")
         return self.errors
     
     @visitor.when(hulk.NENode)
@@ -220,7 +220,7 @@ class TypeBuilder:
         self.visit(node.left)
         self.visit(node.right)
         if node.left.type != hulk.NUMBER_TYPE or node.right.type != hulk.NUMBER_TYPE:
-            self.errors.append(f"La operación != solo esta definida entre números")
+            5#self.errors.append(f"La operación != solo esta definida entre números")
         return self.errors
     
     @visitor.when(hulk.AndNode)
@@ -228,7 +228,7 @@ class TypeBuilder:
         self.visit(node.left)
         self.visit(node.right)
         if node.left.type != hulk.BOOL_TYPE or node.right.type != hulk.BOOL_TYPE:
-            self.errors.append(f"La operación & solo esta definida entre booleanos")
+            5#self.errors.append(f"La operación & solo esta definida entre booleanos")
         return self.errors
     
     @visitor.when(hulk.OrNode)
@@ -236,13 +236,13 @@ class TypeBuilder:
         self.visit(node.left)
         self.visit(node.right)
         if node.left.type != hulk.BOOL_TYPE or node.right.type != hulk.BOOL_TYPE:
-            self.errors.append(f"La operación | solo esta definida entre booleanos")
+            5#self.errors.append(f"La operación | solo esta definida entre booleanos")
         return self.errors
     
     @visitor.when(hulk.NotNode)
     def visit(self,node):
         if node.expr != hulk.BOOL_TYPE:
-            self.errors.append(f"La operación ! solo esta definida para booleanos")
+            5#self.errors.append(f"La operación ! solo esta definida para booleanos")
         return self.errors
     
     @visitor.when(hulk.ConcatNode)
@@ -250,7 +250,7 @@ class TypeBuilder:
         self.visit(node.left)
         self.visit(node.right)
         if node.left.type != hulk.STRING_TYPE or node.right.type != hulk.STRING_TYPE:
-            self.errors.append(f"La operación @ solo esta definida entre cadenas")
+            5#self.errors.append(f"La operación @ solo esta definida entre cadenas")
         return self.errors
     
     @visitor.when(hulk.ConcatSpaceNode)
@@ -258,7 +258,7 @@ class TypeBuilder:
         self.visit(node.left)
         self.visit(node.right)
         if node.left.type != hulk.STRING_TYPE or node.right.type != hulk.STRING_TYPE:
-            self.errors.append(f"La operación @@ solo esta definida entre cadenas")
+            5#self.errors.append(f"La operación @@ solo esta definida entre cadenas")
         return self.errors
     
     @visitor.when(hulk.IdentifierNode)
@@ -267,7 +267,7 @@ class TypeBuilder:
             if var.name == node.name:
                 node.type = var.type
                 return self.errors
-        self.errors.append(f"No existe la variable'{node.name}'")
+        5#self.errors.append(f"No existe la variable'{node.name}'")
         return self.errors
     
     # self
@@ -276,35 +276,35 @@ class TypeBuilder:
     def visit(self,node):
         self.visit(node.expr)
         if node.expr.type != hulk.NUMBER_TYPE:
-            self.errors.append(f"La función seno solo está definida en números")
+            5#self.errors.append(f"La función seno solo está definida en números")
         return self.errors
     
     @visitor.when(hulk.CosNode)
     def visit(self,node):
         self.visit(node.expr)
         if node.expr.type != hulk.NUMBER_TYPE:
-            self.errors.append(f"La función coseno solo está definida en números")
+            5#self.errors.append(f"La función coseno solo está definida en números")
         return self.errors
     
     @visitor.when(hulk.SqrtNode)
     def visit(self,node):
         self.visit(node.expr)
         if node.expr.type != hulk.NUMBER_TYPE:
-            self.errors.append(f"La función raíz cuadrada solo está definida en números")
+            5#self.errors.append(f"La función raíz cuadrada solo está definida en números")
         return self.errors
     
     @visitor.when(hulk.ExpNode)
     def visit(self,node):
         self.visit(node.expr)
         if node.expr.type != hulk.NUMBER_TYPE:
-            self.errors.append(f"La función exponencial solo está definida en números")
+            5#self.errors.append(f"La función exponencial solo está definida en números")
         return self.errors
     
     @visitor.when(hulk.LogNode)
     def visit(self,node):
         self.visit(node.expr)
         if node.expr.type != hulk.NUMBER_TYPE:
-            self.errors.append(f"La función logaritmo solo está definida en números")
+            5#self.errors.append(f"La función logaritmo solo está definida en números")
         return self.errors
     
     
