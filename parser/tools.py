@@ -1,3 +1,5 @@
+import os
+import pickle
 from utils.pycompiler import Item
 from utils.automate import State, multiline_formatter
 from utils.utils import ContainerSet
@@ -157,11 +159,12 @@ class ShiftReduceParser:
     REDUCE = 'REDUCE'
     OK = 'OK'
 
-    def __init__(self, G, verbose=False):
+    def __init__(self, G, parser_name ,verbose=False):
         self.G = G
         self.verbose = verbose
         self.action = {}
         self.goto = {}
+        
         self._build_parsing_table()
 
     def _build_parsing_table(self):
@@ -222,10 +225,13 @@ class ShiftReduceParser:
                 raise Exception('Invalid action!!!')
 
 class LR1Parser(ShiftReduceParser):
+    def __init__(self, G,verbose=False):
+        super().__init__(G,verbose)
     def _build_parsing_table(self):
         G = self.G.AugmentedGrammar(True)
         
         automaton = build_LR1_automaton(G)
+        
         for i, node in enumerate(automaton):
             if self.verbose: print(i, '\t', '\n\t '.join(str(x) for x in node.state), '\n')
             node.idx = i
@@ -247,7 +253,7 @@ class LR1Parser(ShiftReduceParser):
 
                 else:
                     self._register(self.goto, (idx, item.NextSymbol), node.get(item.NextSymbol.Name).idx)
-     
+
         
     @staticmethod
     def _register(table, key, value):

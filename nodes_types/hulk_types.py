@@ -308,6 +308,10 @@ class RandNode(ExpressionNode):
     def __init__(self):
         super().__init__(NUMBER_TYPE)
 
+class VectorNode(ExpressionNode):
+    def __init__(self, items, type=None):
+        super().__init__(type)
+        self.items = items # array de los elementos del vector
 
 #  Literales
 
