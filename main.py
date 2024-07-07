@@ -23,7 +23,7 @@ def main(input_file):
     # semantic_checker = SemanticCheckerVisitor()
     type_collector = TypeCollector()
     type_builder = TypeBuilder(type_collector.context)
-    # errors = []
+    errors = []
     # errors = errors + semantic_checker.visit(codeToAST.ast)
     errors = errors + type_collector.visit(codeToAST.ast)
     errors = errors + type_builder.visit(codeToAST.ast)
