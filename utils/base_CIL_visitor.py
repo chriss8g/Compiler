@@ -61,4 +61,4 @@ class BaseHULKToCILVisitor:
         vname = f'data_{len(self.dotdata)}'
         data_node = cil.DataNode(vname, value)
         self.dotdata.append(data_node)
-        return data_node
+        return vname

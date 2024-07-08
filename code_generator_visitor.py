@@ -19,8 +19,7 @@ class CodeGeneratorVisitor(object):
 
         dottypes = "\n".join(self.visit(child, scope.create_child_scope())
                              for child in node.dottypes)
-        dotdata = "\n".join(
-            '#define ' + self.visit(t, scope.create_child_scope()) for t in node.dotdata)
+        dotdata = "\n".join(self.visit(t, scope.create_child_scope()) for t in node.dotdata)
         dotcode = "\n".join(self.visit(child, scope.create_child_scope())
                             for child in node.dotcode)
 
@@ -77,8 +76,8 @@ class CodeGeneratorVisitor(object):
                 return f'{node.dest} = printf("%d\\n", {node.source});\n'
             elif node.type == hulk.FLOAT_TYPE:
                 return f'{node.dest} = printf("%f\\n", {node.source});\n'
-            elif node.type == hulk.STRING_TYPE:
-                return f'{node.dest} = printf("%c\\n", {node.source});\n'
+            elif node.type == 'char*':
+                return f'{node.dest} = printf("%s\\n", {node.source});\n'
             else:
                 return f'{node.dest} = printf("%d\\n", {node.source});\n'
         elif node.name in ['cos', 'sin', 'exp', 'sqrt', 'log']:
@@ -117,3 +116,13 @@ class CodeGeneratorVisitor(object):
     @visitor.when(cil.LogicNode)
     def visit(self, node, scope):
         return f'{node.left} {node.op} {node.right}'
+
+    @visitor.when(cil.LoadNode)
+    def visit(self, node, scope):
+        ans = f'{node.dest} = {node.msg};'
+        return ans
+    
+    @visitor.when(cil.DataNode)
+    def visit(self, node, scope):
+        return f'#define {node.name} {node.value}'
+    
