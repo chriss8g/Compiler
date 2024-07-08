@@ -42,7 +42,7 @@ class CompilerTestCase(unittest.TestCase):
 test_cases = [
     ('test1.uh', 'test1.output'),
     ('test2.uh', 'test2.output'),
-    # ('test3.uh', 'test3.output'),
+    ('test3.uh', 'test3.output'),
     # # ('test4.uh', 'test4.output'),
     # ('test5.uh', 'test5.output'),
     # ('test6.uh', 'test6.output'),
