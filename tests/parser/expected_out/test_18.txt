@@ -1,0 +1,6 @@
+\__ProgramNode [<program>]
+	\__BlockNode [<expression>]
+		\__PrintNode [<expression>]
+			\__StringNode: "I say \"Hello World\""
+		\__PrintNode [<expression>]
+			\__StringNode: "Hello \n World"

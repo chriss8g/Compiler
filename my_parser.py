@@ -175,19 +175,19 @@ class CodeToAST:
         func_body %= blockExpr, lambda h, s: s[1]
 
         # *************** Producciones de Type ****************
-        stats %= typex + idx + arg_opt_typed_list + inherit_item + obrace + type_body + cbrace + stats, lambda h,s: [TypeDeclarationNode(s[2],TypeBodyDeclarationNode(s[6][0],s[6][1]),s[3],s[4][0],s[4][1])]+s[8]
-        # Manejar la herencia
-        inherit_item %= inherits + idx, lambda h,s: (s[2],[])
-        inherit_item %= inherits + idx + opar + arg_expr + cpar, lambda h,s: (s[2],s[4])
-        inherit_item %= self.G.Epsilon, lambda h,s: (None,[])
-        # Cuerpo de un Type
-        type_body %= attribute_declaration + type_body, lambda h,s: ([s[1]]+s[2][0],s[2][1])
-        type_body %= method_declaration + type_body, lambda h,s: (s[2][0],[s[1]]+s[2][1])
-        type_body %= self.G.Epsilon, lambda h,s: ([],[])
-        # Atributos de Type
-        attribute_declaration %= idnode + opt_typed + asign1 + expr + semicolon, lambda h,s: AttributeNode(s[1],s[4],s[2])
-        # Métodos de Type
-        method_declaration %= idx + opar + arg_opt_typed_list + cpar + opt_typed + func_body, lambda h,s:MethodNode(s[1], [s[6]], s[3], s[5])
+        # stats %= typex + idx + arg_opt_typed_list + inherit_item + obrace + type_body + cbrace + stats, lambda h,s: [TypeDeclarationNode(s[2],TypeBodyDeclarationNode(s[6][0],s[6][1]),s[3],s[4][0],s[4][1])]+s[8]
+        # # Manejar la herencia
+        # inherit_item %= inherits + idx, lambda h,s: (s[2],[])
+        # inherit_item %= inherits + idx + opar + arg_expr + cpar, lambda h,s: (s[2],s[4])
+        # inherit_item %= self.G.Epsilon, lambda h,s: (None,[])
+        # # Cuerpo de un Type
+        # type_body %= attribute_declaration + type_body, lambda h,s: ([s[1]]+s[2][0],s[2][1])
+        # type_body %= method_declaration + type_body, lambda h,s: (s[2][0],[s[1]]+s[2][1])
+        # type_body %= self.G.Epsilon, lambda h,s: ([],[])
+        # # Atributos de Type
+        # attribute_declaration %= idnode + opt_typed + asign1 + expr + semicolon, lambda h,s: AttributeNode(s[1],s[4],s[2])
+        # # Métodos de Type
+        # method_declaration %= idx + opar + arg_opt_typed_list + cpar + opt_typed + func_body, lambda h,s:MethodNode(s[1], [s[6]], s[3], s[5])
 
         # Lista de parámetros opcionalmente tipados
         arg_opt_typed_list %= self.G.Epsilon, lambda h,s:[]
@@ -209,25 +209,23 @@ class CodeToAST:
         # Bloques especiales
         specialBlock %= expr + semicolon, lambda h, s: s[1]
         specialBlock %= blockExpr, lambda h, s: s[1]
-        blockExpr %= obrace + specialBlock_list + \
-            cbrace, lambda h, s: BlockNode(s[2])
+        blockExpr %= obrace + specialBlock_list + cbrace, lambda h, s: BlockNode(s[2])
 
         # Lista de bloques especiales
         specialBlock_list %= specialBlock, lambda h, s: [s[1]]
-        specialBlock_list %= specialBlock + \
-            specialBlock_list, lambda h, s: [s[1]] + s[2]
+        specialBlock_list %= specialBlock + specialBlock_list, lambda h, s: [s[1]] + s[2]
 
         # ***************** Expresiones ******************
         expr %= blockExpr, lambda h, s: s[1]
-        expr %= let + asig_list + inx + expr, lambda h, s: LetNode(s[2], s[4])
-        expr %= ifx + opar + expr + cpar + specialBlock + elifx_expr + elsex + superexpr, lambda h, s: IfNode(s[3], s[5], s[8], s[6][0], s[6][1])
-        expr %= whilex + opar + expr + cpar + expr, lambda h, s: WhileNode(s[3], s[5])
-        expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + expr + cpar + cpar + expr, lambda h, s: ForRangeToWhile(s)
-        expr %= forx + opar + idnode + inx + idnode + cpar + expr, lambda h, s: ForToWhile(s)
+        # expr %= let + asig_list + inx + expr, lambda h, s: LetNode(s[2], s[4])
+        # expr %= ifx + opar + expr + cpar + specialBlock + elifx_expr + elsex + superexpr, lambda h, s: IfNode(s[3], s[5], s[8], s[6][0], s[6][1])
+        # expr %= whilex + opar + expr + cpar + expr, lambda h, s: WhileNode(s[3], s[5])
+        # expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + expr + cpar + cpar + expr, lambda h, s: ForRangeToWhile(s)
+        # expr %= forx + opar + idnode + inx + idnode + cpar + expr, lambda h, s: ForToWhile(s)
         expr %= printx + opar + expr + cpar, lambda h, s: PrintNode(s[3])
-        expr %= idnode + asign2 + expr, lambda h, s: DestructNode(s[1], s[3])
-        expr %= new + idx + opar + arg_expr + cpar, lambda h, s: ObjectCreationNode(s[2], s[4])
-        expr %= new + idx + opar + cpar, lambda h, s: ObjectCreationNode(s[2], [])
+        # expr %= idnode + asign2 + expr, lambda h, s: DestructNode(s[1], s[3])
+        # expr %= new + idx + opar + arg_expr + cpar, lambda h, s: ObjectCreationNode(s[2], s[4])
+        # expr %= new + idx + opar + cpar, lambda h, s: ObjectCreationNode(s[2], [])
         expr %= subexpr, lambda h, s: s[1]
 
         superexpr %= expr, lambda h, s: s[1]
@@ -241,40 +239,40 @@ class CodeToAST:
         asig1 %= idnode + asign1 + expr, lambda h, s: AssignNode(s[1], s[3])
 
         # Aritmetica
-        subexpr %= subexpr + plus + term, lambda h, s: PlusNode(s[1], s[3])
-        subexpr %= subexpr + minus + term, lambda h, s: MinusNode(s[1], s[3])
-        subexpr %= subexpr + andx + term, lambda h, s: AndNode(s[1], s[3])
-        subexpr %= subexpr + orx + term, lambda h, s: OrNode(s[1], s[3])
-        subexpr %= notx + term, lambda h, s: NotNode(s[2])
-        subexpr %= subexpr + eq + term, lambda h, s: EQNode(s[1], s[3])
-        subexpr %= subexpr + ne + term, lambda h, s: NENode(s[1], s[3])
-        subexpr %= subexpr + gt + term, lambda h, s: GTNode(s[1], s[3])
-        subexpr %= subexpr + lt + term, lambda h, s: LTNode(s[1], s[3])
-        subexpr %= subexpr + ge + term, lambda h, s: GENode(s[1], s[3])
-        subexpr %= subexpr + le + term, lambda h, s: LENode(s[1], s[3])
-        subexpr %= subexpr + concat + term, lambda h, s: ConcatNode(s[1], s[3])
-        subexpr %= subexpr + concat_space + term, lambda h, s: ConcatSpaceNode(s[1], s[3])
+        # subexpr %= subexpr + plus + term, lambda h, s: PlusNode(s[1], s[3])
+        # subexpr %= subexpr + minus + term, lambda h, s: MinusNode(s[1], s[3])
+        # subexpr %= subexpr + andx + term, lambda h, s: AndNode(s[1], s[3])
+        # subexpr %= subexpr + orx + term, lambda h, s: OrNode(s[1], s[3])
+        # subexpr %= notx + term, lambda h, s: NotNode(s[2])
+        # subexpr %= subexpr + eq + term, lambda h, s: EQNode(s[1], s[3])
+        # subexpr %= subexpr + ne + term, lambda h, s: NENode(s[1], s[3])
+        # subexpr %= subexpr + gt + term, lambda h, s: GTNode(s[1], s[3])
+        # subexpr %= subexpr + lt + term, lambda h, s: LTNode(s[1], s[3])
+        # subexpr %= subexpr + ge + term, lambda h, s: GENode(s[1], s[3])
+        # subexpr %= subexpr + le + term, lambda h, s: LENode(s[1], s[3])
+        # subexpr %= subexpr + concat + term, lambda h, s: ConcatNode(s[1], s[3])
+        # subexpr %= subexpr + concat_space + term, lambda h, s: ConcatSpaceNode(s[1], s[3])
         subexpr %= term, lambda h, s: s[1]
 
-        term %= term + star + factor, lambda h, s: StarNode(s[1], s[3])
-        term %= term + div + factor, lambda h, s: DivNode(s[1], s[3])
-        term %= term + powx + factor, lambda h, s: PowNode(s[1], s[3])
-        term %= term + mod + factor, lambda h, s: ModNode(s[1], s[3])
+        # term %= term + star + factor, lambda h, s: StarNode(s[1], s[3])
+        # term %= term + div + factor, lambda h, s: DivNode(s[1], s[3])
+        # term %= term + powx + factor, lambda h, s: PowNode(s[1], s[3])
+        # term %= term + mod + factor, lambda h, s: ModNode(s[1], s[3])
         term %= factor, lambda h, s: s[1]
 
-        factor %= sin + opar + expr + cpar, lambda h, s: SinNode(s[3])
-        factor %= cos + opar + expr + cpar, lambda h, s: CosNode(s[3])
-        factor %= sqrt + opar + expr + cpar, lambda h, s: SqrtNode(s[3])
-        factor %= exp + opar + expr + cpar, lambda h, s: ExpNode(s[3])
-        factor %= log + opar + expr + comma + expr + cpar, lambda h, s: LogNode(s[3], s[5])
-        factor %= rand + opar + cpar, lambda h, s: RandNode()
+        # factor %= sin + opar + expr + cpar, lambda h, s: SinNode(s[3])
+        # factor %= cos + opar + expr + cpar, lambda h, s: CosNode(s[3])
+        # factor %= sqrt + opar + expr + cpar, lambda h, s: SqrtNode(s[3])
+        # factor %= exp + opar + expr + cpar, lambda h, s: ExpNode(s[3])
+        # factor %= log + opar + expr + comma + expr + cpar, lambda h, s: LogNode(s[3], s[5])
+        # factor %= rand + opar + cpar, lambda h, s: RandNode()
         factor %= atom, lambda h, s: s[1]
 
-        atom %= number, lambda h, s: NumberNode(s[1])
-        atom %= true, lambda h, s: BoolNode(s[1])
-        atom %= false, lambda h, s: BoolNode(s[1])
-        atom %= pi, lambda h, s: NumberNode(s[1])
-        atom %= e, lambda h, s: NumberNode(s[1])
+        # atom %= number, lambda h, s: NumberNode(s[1])
+        # atom %= true, lambda h, s: BoolNode(s[1])
+        # atom %= false, lambda h, s: BoolNode(s[1])
+        # atom %= pi, lambda h, s: NumberNode(s[1])
+        # atom %= e, lambda h, s: NumberNode(s[1])
         atom %= string, lambda h, s: StringNode(s[1])
         atom %= opar + expr + cpar, lambda h, s: s[2]
         atom %= selfx + dot + idnode, lambda h, s: SelfNode(s[3])
@@ -318,24 +316,20 @@ class CodeToAST:
 if __name__ == "__main__":
 
     text = '''
-            function operate(x, y) {
-                print(x + y);
-                print(x - y);
-                print(x * y);
-                print(x / y);
+            {
+                print("I say \\"Hello World\\"");
+                print("Hello \\n World");
             }
-
-            operate(6, 3);
         '''
 
     codeToAST = CodeToAST(text)
 
     print(codeToAST)
 
-    # # Especifica la ruta del archivo donde quieres escribir
-    # ruta_del_archivo = "tests/parser/expected_out/test_17.txt"
+    # Especifica la ruta del archivo donde quieres escribir
+    ruta_del_archivo = "tests/parser/expected_out/test_18.txt"
 
-    # # Abre el archivo en modo de escritura ('w')
-    # with open(ruta_del_archivo, 'w') as archivo:
-    #     # Escribe el string en el archivo
-    #     archivo.write(repr(codeToAST))
+    # Abre el archivo en modo de escritura ('w')
+    with open(ruta_del_archivo, 'w') as archivo:
+        # Escribe el string en el archivo
+        archivo.write(repr(codeToAST))
