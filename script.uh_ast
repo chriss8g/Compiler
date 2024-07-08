@@ -1,19 +1,19 @@
 \__ProgramNode [<program>]
 	\__LetNode [<expression>]
 		\__AssignNode:
-			\__IdentifierNode: x
-			\__NumberNode: 5
+			\__IdentifierNode: a
+			\__NumberNode: 10
 		\__WhileNode [<expression>]
 			\_ Condition
-				\__LTNode [<expression>]
-					\__IdentifierNode: x
-					\__NumberNode: 10
+				\__GENode [<expression>]
+					\__IdentifierNode: a
+					\__NumberNode: 0
 			\_ Body
 				\__BlockNode [<expression>]
 					\__PrintNode [<expression>]
-						\__IdentifierNode: x
+						\__IdentifierNode: a
 					\DestructNode   [<expression>]
-						\__IdentifierNode: x
-						\__PlusNode [<expression>]
-							\__IdentifierNode: x
+						\__IdentifierNode: a
+						\__MinusNode [<expression>]
+							\__IdentifierNode: a
 							\__NumberNode: 1

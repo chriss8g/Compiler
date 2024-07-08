@@ -23,17 +23,17 @@
 			\__LocalNode int local_block_1_internal_5
 			\__LocalNode int local_block_1_internal_6
 		 \__instructions
-			\__AsignNode: local_block_1_internal_1 = 5
+			\__AsignNode: local_block_1_internal_1 = 10
 			\__AsignNode: local_block_1_internal_0 = local_block_1_internal_1
 			\GotoNode while_label
 			\__LabelNode body
 
 			\__AsignNode: local_block_1_internal_3 = 1
-			\__AsignNode: local_block_1_internal_4 = local_block_1_internal_0 + local_block_1_internal_3
+			\__AsignNode: local_block_1_internal_4 = local_block_1_internal_0 - local_block_1_internal_3
 			\__AsignNode: local_block_1_internal_0 = local_block_1_internal_4
 			\__LabelNode while_label
-			\__AsignNode: local_block_1_internal_5 = 10
-			\__AsignNode: local_block_1_internal_6 = local_block_1_internal_0 < local_block_1_internal_5
+			\__AsignNode: local_block_1_internal_5 = 0
+			\__AsignNode: local_block_1_internal_6 = local_block_1_internal_0 >= local_block_1_internal_5
 			\__GotoIfNode:
  				\__condition local_block_1_internal_6 
 				\goto: body
