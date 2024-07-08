@@ -1,5 +1,7 @@
-let a = 0 in {
-        print(a);
-        a := 1;
-        print(a);
+function gcd(a, b) => while (a > 0)
+    let m = a % b in {
+        b := a;
+        a := m;
     };
+
+print(gcd(26, 3));

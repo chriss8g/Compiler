@@ -254,8 +254,8 @@ class CodeToAST:
         # subexpr %= notx + term, lambda h, s: NotNode(s[2])
         subexpr %= subexpr + eq + term, lambda h, s: EQNode(s[1], s[3])
         # subexpr %= subexpr + ne + term, lambda h, s: NENode(s[1], s[3])
-        # subexpr %= subexpr + gt + term, lambda h, s: GTNode(s[1], s[3])
-        # subexpr %= subexpr + lt + term, lambda h, s: LTNode(s[1], s[3])
+        subexpr %= subexpr + gt + term, lambda h, s: GTNode(s[1], s[3])
+        subexpr %= subexpr + lt + term, lambda h, s: LTNode(s[1], s[3])
         subexpr %= subexpr + ge + term, lambda h, s: GENode(s[1], s[3])
         subexpr %= subexpr + le + term, lambda h, s: LENode(s[1], s[3])
         # subexpr %= subexpr + concat + term, lambda h, s: ConcatNode(s[1], s[3])
@@ -266,7 +266,7 @@ class CodeToAST:
         term %= term + star + factor, lambda h, s: StarNode(s[1], s[3])
         term %= term + div + factor, lambda h, s: DivNode(s[1], s[3])
         # term %= term + powx + factor, lambda h, s: PowNode(s[1], s[3])
-        # term %= term + mod + factor, lambda h, s: ModNode(s[1], s[3])
+        term %= term + mod + factor, lambda h, s: ModNode(s[1], s[3])
         term %= factor, lambda h, s: s[1]
 
         factor %= sin + opar + expr + cpar, lambda h, s: SinNode(s[3])
