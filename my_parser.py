@@ -281,6 +281,7 @@ class CodeToAST:
         atom %= obrake + arg_expr + cbrake, lambda h, s: VectorNode(s[2])
         atom %= idnode, lambda h, s: s[1]
         atom %= idx + dot + recurrent_object, lambda h, s: IdentifierNode(s[1], s[3])
+        atom %= recurrent_object, lambda h, s: s[1]
 
         recurrent_object %= idx + opar + arg_expr + cpar + dot + recurrent_object, lambda h, s: CallNode(s[1], s[3], s[6])
         recurrent_object %= idx + opar + cpar + dot + recurrent_object, lambda h, s: CallNode(s[1], [], s[5])
@@ -317,9 +318,14 @@ class CodeToAST:
 if __name__ == "__main__":
 
     text = '''
-            {
-                print("Hello World " @@ 42);
+            function operate(x, y) {
+                print(x + y);
+                print(x - y);
+                print(x * y);
+                print(x / y);
             }
+
+            operate(6, 3);
         '''
 
     codeToAST = CodeToAST(text)
