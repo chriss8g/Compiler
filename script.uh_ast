@@ -1,3 +1,5 @@
 \__ProgramNode [<program>]
 	\__PrintNode [<expression>]
-		\__StringNode: "Hello World"
+		\__ConcatNode [<expression>]
+			\__StringNode: "The meaning of life is "
+			\__StringNode: "aaaa"

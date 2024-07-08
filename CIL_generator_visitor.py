@@ -135,6 +135,16 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
     #     source = cil.LocalNode(vinfo.name)
     #     self.register_instruction(cil.AssignNode(dest, source))
 
+    @visitor.when(hulk.ConcatNode)
+    def visit(self, node, scope):
+        node.type = node.type if node.type != hulk.BOOL_TYPE else hulk.INT_TYPE
+        node.type = node.type if node.type != hulk.STRING_TYPE else 'char*'
+        left = self.visit(node.left, scope)
+        right = self.visit(node.right, scope)
+        dest = self.define_internal_local(node.type)
+        self.register_instruction(cil.AssignNode(dest, f"{left} + {right}"))
+        return dest
+
     @visitor.when(hulk.PlusNode)
     def visit(self, node, scope):
         node.type = node.type if node.type != hulk.BOOL_TYPE else hulk.INT_TYPE

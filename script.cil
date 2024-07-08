@@ -1,7 +1,8 @@
 \__.TYPES
 
 \__.DATA
-	\__DataNode data_0 = "Hello World"
+	\__DataNode data_0 = "The meaning of life is " 
+	\__DataNode data_1 = "aaaa"
 \__.CODE
 	 \__FunctionNode function <main>
 		 \__params
@@ -9,7 +10,11 @@
 		 \__local_vars
 			\__LocalNode char* local__internal_0
 			\__LocalNode char* local__internal_1
+			\__LocalNode char* local__internal_2
+			\__LocalNode char* local__internal_3
 		 \__instructions
 			\__LoadNode: local__internal_0 = LOAD data_0
-			\__OurFunctionNode local__internal_1 = printf local__internal_0
+			\__LoadNode: local__internal_1 = LOAD data_1
+			\__AsignNode: local__internal_2 = local__internal_0 + local__internal_1
+			\__OurFunctionNode local__internal_3 = printf local__internal_2
 			\__ReturnNode return 0
