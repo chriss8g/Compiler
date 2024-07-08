@@ -1,13 +1,13 @@
 import utils.visitor as visitor
 from nodes_types import hulk_types as hulk
-# from utils.semantic import VariableInfo
+from utils.semantic import VariableInfo
 
 class TypeBuilder:   
     def __init__(self, context, errors=[]):
         self.context = context
         self.current_type = None
         self.errors = errors
-        # self.var = []
+        self.var = []
     
     @visitor.on('node')
     def visit(self, node):
@@ -75,7 +75,7 @@ class TypeBuilder:
         else:
             node.id.type = node.expr.type
             node.type = node.expr.type
-            # self.var.append(VariableInfo(node.id.name, node.id.type))
+            self.var.append(VariableInfo(node.id.name, node.id.type))
         return self.errors
     
     @visitor.when(hulk.BlockNode)
@@ -274,11 +274,11 @@ class TypeBuilder:
     
     @visitor.when(hulk.IdentifierNode)
     def visit(self,node):
-        # for var in self.var:
-        #     if var.name == node.name:
-        #         node.type = var.type
-        #         return self.errors
-        # self.errors.append(f"No existe la variable'{node.name}'")
+        for var in self.var:
+            if var.name == node.name:
+                node.type = var.type
+                return self.errors
+        5#self.errors.append(f"No existe la variable'{node.name}'")
         return self.errors
     
     # self

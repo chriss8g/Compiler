@@ -134,11 +134,12 @@ class Collector(object):
     
     @visitor.when(hulk.CallNode)
     def visit(self, node, scope):
-        if is_func_defined(node.id, len(node.args)):
+        if scope.is_func_defined(node.id, len(node.args)):
             for arg in node.args:
                 self.visit(arg, scope.create_child_scope())
         else:
-            self.errors(f"La función '{node.id}' no está definida")
+            # self.errors.append(f"La función '{node.id}' no está definida")
+            pass
         return self.errors
     
     @visitor.when(hulk.PlusNode)

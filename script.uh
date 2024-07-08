@@ -1,5 +1,3 @@
-type Point {
-    x = 0;
-    y = 0;
-}
-5;
+function next(x) => x+1;
+
+print(next(8));
