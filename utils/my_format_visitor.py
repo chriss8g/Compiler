@@ -191,9 +191,20 @@ class FormatVisitor(object):
     def visit(self, node, tabs=0):
         return '\t' * tabs + f'\\__{node.__class__.__name__} ()'
 
+    @visitor.when(hulk.VectorNode)
+    def visit(self, node, tabs=0):
+        ans = '\t' * tabs + f'\\__VectorNode  [<expression>]'
+        items_head = '\t' * (tabs+1) + '\\_Items'
+        items_body = '\n'.join(self.visit(item,tabs+2) for item in node.items)
+        return f'{ans}\n{items_head}\n{items_body}'
 
-
-
+    @visitor.when(hulk.ForNode)
+    def visit(self, node, tabs=0):
+        ans = '\t' * tabs + f'\\__ForNode: {node.id.name} in <vector>  [<expression>]'
+        iter_var = self.visit(node.id,tabs+1)
+        iter_vect = self.visit(node.iterable,tabs+1)
+        body = self.visit(node.body,tabs+1)
+        return f'{ans}\n{iter_var}\n{iter_vect}\n{body}'
 
 
     #########################################################################################
@@ -245,9 +256,9 @@ class FormatVisitor(object):
     # def visit(self, node, tabs=0):
     #     return f'{'\t' * tabs}\\__ReturnNode return {node.value if node.value is not None else ""}'
     
-    # @visitor.when(cil.LocalNode)
-    # def visit(self, node, tabs=0):
-    #     return f'{'\t' * tabs}\\__LocalNode {node.name}'
+    @visitor.when(cil.LocalNode)
+    def visit(self, node, tabs=0):
+        return f'{'\t' * tabs}\\__LocalNode {node.type} {node.name}'
     
     # @visitor.when(cil.ParamNode)
     # def visit(self, node, tabs=0):

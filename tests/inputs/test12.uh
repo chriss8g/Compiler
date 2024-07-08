@@ -1,0 +1,7 @@
+{
+    let b = 7 in print(b);
+    
+    let a = 20 in {
+        print(a);
+    };
+}

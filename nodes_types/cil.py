@@ -33,8 +33,9 @@ class ParamNode(Node):
         self.name = name
 
 class LocalNode(Node):
-    def __init__(self, name):
+    def __init__(self, name, type):
         self.name = name
+        self.type = type
 
 class InstructionNode(Node):
     pass
@@ -155,8 +156,10 @@ class ReadNode(InstructionNode):
         self.dest = dest
 
 class OurFunctionNode(InstructionNode):
-    def __init__(self, name, dest, source):
+    def __init__(self, name, dest, source, type=None):
         self.name = name
         self.dest = dest
         self.source = source
+        self.type = type
+
 

@@ -60,6 +60,8 @@ regular_expresions = [
     ('concat', '@'),
     ('lbrace', '{'),
     ('rbrace', '}'),
+    ('lbrake', '['),
+    ('rbrake', ']'),
     ('semi', ';'),
     ('colon', ':'),
     ('arrow', '=>')

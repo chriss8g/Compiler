@@ -4,7 +4,7 @@ BOOL_TYPE = 'bool'
 STRING_TYPE = 'string'
 CONST_TYPE = 'const'
 OBJECT_TYPE = 'object'
-NUMBER_TYPE = [INT_TYPE, FLOAT_TYPE, CONST_TYPE]
+NUMBER_TYPE = INT_TYPE#[INT_TYPE, FLOAT_TYPE, CONST_TYPE]
 
 class Node:
     pass
@@ -76,7 +76,7 @@ class ExpressionNode(Node):
         
 class PrintNode(ExpressionNode):
     def __init__(self,expr):
-        super().__init__(STRING_TYPE)
+        super().__init__(None)
         self.expr = expr
 
 class BlockNode(ExpressionNode):
@@ -308,6 +308,10 @@ class RandNode(ExpressionNode):
     def __init__(self):
         super().__init__(NUMBER_TYPE)
 
+class VectorNode(ExpressionNode):
+    def __init__(self, items, type=None):
+        super().__init__(type)
+        self.items = items # array de los elementos del vector
 
 #  Literales
 
