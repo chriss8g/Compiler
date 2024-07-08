@@ -28,8 +28,6 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
     @visitor.when(hulk.TypeDeclarationNode)
     def visit(self, node, scope):
-        node.type = node.type if node.type != hulk.BOOL_TYPE else hulk.INT_TYPE
-        node.type = node.type if node.type != hulk.STRING_TYPE else 'char*'
 
         parent_type = self.current_type
 
@@ -43,17 +41,45 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
             self.current_type.attributes.append(
                 cil.AssignNode(izq, attribute.value.lex))
 
-        # for method in node.body.methods:
-        #     function_name = self.to_function_name_in_type(method.name, method.type)
-        #     self.current_type.methods.append(cil.AssignNode(function_name, attribute.value))
+        for method in node.body.methods:
+            function_name = self.to_function_name_in_type(
+                method.name, node.name)
+
+            method.name = function_name
+            self.visit(method, scope)
+
+            text = function_name + '(' + ".".join(method.params) + ');'
+            self.current_type.methods.append(text)
 
         self.current_type = parent_type
 
-    @visitor.when(hulk.ObjectCreationNode)
+    @visitor.when(hulk.MethodNode)
     def visit(self, node, scope):
         node.type = node.type if node.type != hulk.BOOL_TYPE else hulk.INT_TYPE
         node.type = node.type if node.type != hulk.STRING_TYPE else 'char*'
-        dest = self.define_internal_local()
+        node.type = node.type if node.type in ['char*', hulk.NUMBER_TYPE, hulk.INT_TYPE] else (node.type + '*')
+
+        parent = self.current_function
+
+        # function_name = self.to_function_name_in_type(node.name, node.type)
+        self.current_function = self.register_function(node.name)
+
+        for param in node.params:
+            # vinfo = scope.find_variable(param)
+            param_node = cil.ParamNode(param[0])
+            self.params.append(param_node)
+
+        expr = self.visit(node.body, scope)
+
+        self.register_instruction(cil.ReturnNode(expr))
+
+        self.current_function = parent
+
+    @visitor.when(hulk.ObjectCreationNode)
+    def visit(self, node, scope):
+        
+        dest = self.define_internal_local(node.type + '*')
+        typex = cil.TypeNode('object')
         for x in self.dottypes:
             if x.name == node.type:
                 typex = x
@@ -64,6 +90,7 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
     def visit(self, node, scope):
         node.type = node.type if node.type != hulk.BOOL_TYPE else hulk.INT_TYPE
         node.type = node.type if node.type != hulk.STRING_TYPE else 'char*'
+        node.type = node.type if node.type in ['char*', hulk.NUMBER_TYPE, hulk.INT_TYPE] else (node.type + '*')
 
         parent = self.current_function
 
@@ -85,45 +112,43 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
     def visit(self, node, scope):
         node.type = node.type if node.type != hulk.BOOL_TYPE else hulk.INT_TYPE
         node.type = node.type if node.type != hulk.STRING_TYPE else 'char*'
+        node.type = node.type if node.type in ['char*', hulk.NUMBER_TYPE, hulk.INT_TYPE] else (node.type + '*')
         source = self.visit(node.expr, scope)
         dest = self.define_internal_local(node.type)
-        self.register_instruction(cil.OurFunctionNode('printf', dest, source, node.type))
+        self.register_instruction(cil.OurFunctionNode(
+            'printf', dest, source, node.type))
         return dest
 
     @visitor.when(hulk.SinNode)
     def visit(self, node, scope):
-        node.type = node.type if node.type != hulk.BOOL_TYPE else hulk.INT_TYPE
-        node.type = node.type if node.type != hulk.STRING_TYPE else 'char*'
         source = self.visit(node.expr, scope)
         dest = self.define_internal_local(node.type)
-        self.register_instruction(cil.OurFunctionNode('sin', dest, source, node.type))
+        self.register_instruction(
+            cil.OurFunctionNode('sin', dest, source, node.type))
         return dest
 
     @visitor.when(hulk.CosNode)
     def visit(self, node, scope):
-        node.type = node.type if node.type != hulk.BOOL_TYPE else hulk.INT_TYPE
-        node.type = node.type if node.type != hulk.STRING_TYPE else 'char*'
         source = self.visit(node.expr, scope)
         dest = self.define_internal_local(node.type)
-        self.register_instruction(cil.OurFunctionNode('cos', dest, source, node.type))
+        self.register_instruction(
+            cil.OurFunctionNode('cos', dest, source, node.type))
         return dest
 
     @visitor.when(hulk.ExpNode)
     def visit(self, node, scope):
-        node.type = node.type if node.type != hulk.BOOL_TYPE else hulk.INT_TYPE
-        node.type = node.type if node.type != hulk.STRING_TYPE else 'char*'
         source = self.visit(node.expr, scope)
         dest = self.define_internal_local(node.type)
-        self.register_instruction(cil.OurFunctionNode('exp', dest, source, node.type))
+        self.register_instruction(
+            cil.OurFunctionNode('exp', dest, source, node.type))
         return dest
 
     @visitor.when(hulk.SqrtNode)
     def visit(self, node, scope):
-        node.type = node.type if node.type != hulk.BOOL_TYPE else hulk.INT_TYPE
-        node.type = node.type if node.type != hulk.STRING_TYPE else 'char*'
         source = self.visit(node.expr, scope)
         dest = self.define_internal_local(node.type)
-        self.register_instruction(cil.OurFunctionNode('sqrt', dest, source, node.type))
+        self.register_instruction(cil.OurFunctionNode(
+            'sqrt', dest, source, node.type))
         return dest
 
     # @visitor.when(hulk.AssignNode)
@@ -139,6 +164,7 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
     def visit(self, node, scope):
         node.type = node.type if node.type != hulk.BOOL_TYPE else hulk.INT_TYPE
         node.type = node.type if node.type != hulk.STRING_TYPE else 'char*'
+        node.type = node.type if node.type in ['char*', hulk.NUMBER_TYPE, hulk.INT_TYPE] else (node.type + '*')
         left = self.visit(node.left, scope)
         right = self.visit(node.right, scope)
         dest = self.define_internal_local(node.type)
@@ -147,8 +173,6 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
     @visitor.when(hulk.PlusNode)
     def visit(self, node, scope):
-        node.type = node.type if node.type != hulk.BOOL_TYPE else hulk.INT_TYPE
-        node.type = node.type if node.type != hulk.STRING_TYPE else 'char*'
         left = self.visit(node.left, scope)
         right = self.visit(node.right, scope)
         dest = self.define_internal_local(node.type)
@@ -157,8 +181,6 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
     @visitor.when(hulk.MinusNode)
     def visit(self, node, scope):
-        node.type = node.type if node.type != hulk.BOOL_TYPE else hulk.INT_TYPE
-        node.type = node.type if node.type != hulk.STRING_TYPE else 'char*'
         left = self.visit(node.left, scope.create_child_scope())
         right = self.visit(node.right, scope.create_child_scope())
         dest = self.define_internal_local(node.type)
@@ -167,8 +189,6 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
     @visitor.when(hulk.StarNode)
     def visit(self, node, scope):
-        node.type = node.type if node.type != hulk.BOOL_TYPE else hulk.INT_TYPE
-        node.type = node.type if node.type != hulk.STRING_TYPE else 'char*'
         left = self.visit(node.left, scope.create_child_scope())
         right = self.visit(node.right, scope.create_child_scope())
         dest = self.define_internal_local(node.type)
@@ -177,8 +197,6 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
     @visitor.when(hulk.DivNode)
     def visit(self, node, scope):
-        node.type = node.type if node.type != hulk.BOOL_TYPE else hulk.INT_TYPE
-        node.type = node.type if node.type != hulk.STRING_TYPE else 'char*'
         left = self.visit(node.left, scope.create_child_scope())
         right = self.visit(node.right, scope.create_child_scope())
         dest = self.define_internal_local(node.type)
@@ -187,8 +205,6 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
     @visitor.when(hulk.ModNode)
     def visit(self, node, scope):
-        node.type = node.type if node.type != hulk.BOOL_TYPE else hulk.INT_TYPE
-        node.type = node.type if node.type != hulk.STRING_TYPE else 'char*'
         left = self.visit(node.left, scope.create_child_scope())
         right = self.visit(node.right, scope.create_child_scope())
         dest = self.define_internal_local(node.type)
@@ -197,51 +213,41 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
     @visitor.when(hulk.EQNode)
     def visit(self, node, scope):
-        node.type = node.type if node.type != hulk.BOOL_TYPE else hulk.INT_TYPE
-        node.type = node.type if node.type != hulk.STRING_TYPE else 'char*'
         left = self.visit(node.left, scope.create_child_scope())
         right = self.visit(node.right, scope.create_child_scope())
-        dest = self.define_internal_local(node.type)
+        dest = self.define_internal_local(hulk.INT_TYPE)
         self.register_instruction(cil.AssignNode(dest, f"{left} == {right}"))
         return dest
 
     @visitor.when(hulk.GENode)
     def visit(self, node, scope):
-        node.type = node.type if node.type != hulk.BOOL_TYPE else hulk.INT_TYPE
-        node.type = node.type if node.type != hulk.STRING_TYPE else 'char*'
         left = self.visit(node.left, scope.create_child_scope())
         right = self.visit(node.right, scope.create_child_scope())
-        dest = self.define_internal_local(node.type)
+        dest = self.define_internal_local(hulk.INT_TYPE)
         self.register_instruction(cil.AssignNode(dest, f"{left} >= {right}"))
         return dest
 
     @visitor.when(hulk.GTNode)
     def visit(self, node, scope):
-        node.type = node.type if node.type != hulk.BOOL_TYPE else hulk.INT_TYPE
-        node.type = node.type if node.type != hulk.STRING_TYPE else 'char*'
         left = self.visit(node.left, scope.create_child_scope())
         right = self.visit(node.right, scope.create_child_scope())
-        dest = self.define_internal_local(node.type)
+        dest = self.define_internal_local(hulk.INT_TYPE)
         self.register_instruction(cil.AssignNode(dest, f"{left} > {right}"))
         return dest
 
     @visitor.when(hulk.LENode)
     def visit(self, node, scope):
-        node.type = node.type if node.type != hulk.BOOL_TYPE else hulk.INT_TYPE
-        node.type = node.type if node.type != hulk.STRING_TYPE else 'char*'
         left = self.visit(node.left, scope.create_child_scope())
         right = self.visit(node.right, scope.create_child_scope())
-        dest = self.define_internal_local(node.type)
+        dest = self.define_internal_local(hulk.INT_TYPE)
         self.register_instruction(cil.AssignNode(dest, f"{left} <= {right}"))
         return dest
 
     @visitor.when(hulk.LTNode)
     def visit(self, node, scope):
-        node.type = node.type if node.type != hulk.BOOL_TYPE else hulk.INT_TYPE
-        node.type = node.type if node.type != hulk.STRING_TYPE else 'char*'
         left = self.visit(node.left, scope.create_child_scope())
         right = self.visit(node.right, scope.create_child_scope())
-        dest = self.define_internal_local(node.type)
+        dest = self.define_internal_local(hulk.INT_TYPE)
         self.register_instruction(cil.AssignNode(dest, f"{left} < {right}"))
         return dest
 
@@ -270,6 +276,7 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
     def visit(self, node, scope):
         node.type = node.type if node.type != hulk.BOOL_TYPE else hulk.INT_TYPE
         node.type = node.type if node.type != hulk.STRING_TYPE else 'char*'
+        node.type = node.type if node.type in ['char*', hulk.NUMBER_TYPE, hulk.INT_TYPE] else (node.type + '*')
 
         x = scope.get_variable_info(node.id.name) if scope.get_variable_info(
             node.id.name) else node.id
@@ -280,6 +287,7 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
     def visit(self, node, scope):
         node.type = node.type if node.type != hulk.BOOL_TYPE else hulk.INT_TYPE
         node.type = node.type if node.type != hulk.STRING_TYPE else 'char*'
+        node.type = node.type if node.type in ['char*', hulk.NUMBER_TYPE, hulk.INT_TYPE] else (node.type + '*')
         self.register_instruction(cil.GotoNode('while_label'))
         self.register_instruction(cil.LabelNode('body'))
         self.visit(node.body, scope.create_child_scope())
@@ -293,16 +301,18 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
     def visit(self, node, scope):
         node.type = node.type if node.type != hulk.BOOL_TYPE else hulk.INT_TYPE
         node.type = node.type if node.type != hulk.STRING_TYPE else 'char*'
+        node.type = node.type if node.type in ['char*', hulk.NUMBER_TYPE, hulk.INT_TYPE] else (node.type + '*')
         # print(node.type)
         source = node.lex
         dest = self.define_internal_local(node.type)
         self.register_instruction(cil.AssignNode(dest, source))
         return dest
-    
+
     @visitor.when(hulk.StringNode)
     def visit(self, node, scope):
         node.type = node.type if node.type != hulk.BOOL_TYPE else hulk.INT_TYPE
         node.type = node.type if node.type != hulk.STRING_TYPE else 'char*'
+        node.type = node.type if node.type in ['char*', hulk.NUMBER_TYPE, hulk.INT_TYPE] else (node.type + '*')
         source = node.lex
         msg = self.register_data(source)
         dest = self.define_internal_local(node.type)
@@ -314,6 +324,7 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
     def visit(self, node, scope):
         node.type = node.type if node.type != hulk.BOOL_TYPE else hulk.INT_TYPE
         node.type = node.type if node.type != hulk.STRING_TYPE else 'char*'
+        node.type = node.type if node.type in ['char*', hulk.NUMBER_TYPE, hulk.INT_TYPE] else (node.type + '*')
 
         # parent = self.current_function
 
@@ -332,6 +343,7 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
     def visit(self, node, scope):
         node.type = node.type if node.type != hulk.BOOL_TYPE else hulk.INT_TYPE
         node.type = node.type if node.type != hulk.STRING_TYPE else 'char*'
+        node.type = node.type if node.type in ['char*', hulk.NUMBER_TYPE, hulk.INT_TYPE] else (node.type + '*')
 
         parent = self.current_function
 
@@ -341,6 +353,12 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
         local_names = []
         for child in node.args:
+
+            child.type = child.type if child.type != hulk.BOOL_TYPE else hulk.INT_TYPE
+            child.type = child.type if child.type != hulk.STRING_TYPE else 'char*'
+            child.type = child.type if child.type in ['char*', hulk.NUMBER_TYPE, hulk.INT_TYPE] else (child.type + '*')
+
+
             dest = self.define_internal_local(child.type)
             local_names.append(dest)
             scope.dict[child.id.name] = dest
@@ -367,25 +385,37 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
     def visit(self, node, scope):
         node.type = node.type if node.type != hulk.BOOL_TYPE else hulk.INT_TYPE
         node.type = node.type if node.type != hulk.STRING_TYPE else 'char*'
+        node.type = node.type if node.type in ['char*', hulk.NUMBER_TYPE, hulk.INT_TYPE] else (node.type + '*')
+        
         elemt = scope.get_variable_info(
             node.name) if scope.get_variable_info(node.name) else node.name
+        
+        
         child = node.child
-        while (child):
-            elemt += "." + child.name
-            child = child.child
-        return elemt
+        
+        if(child):
+            func = self.to_function_name_in_type(child.id, node.type[:-1])
+            func += '(' + ", ".join(child.args) + ')'
+
+        # while (child):
+        #     elemt += "." + child.id + '(' + ".".join(child.args) + ');'
+        #     child = child.child
+
+
+        return func
 
     @visitor.when(hulk.CallNode)
     def visit(self, node, scope):
         node.type = node.type if node.type != hulk.BOOL_TYPE else hulk.INT_TYPE
         node.type = node.type if node.type != hulk.STRING_TYPE else 'char*'
+        node.type = node.type if node.type in ['char*', hulk.NUMBER_TYPE, hulk.INT_TYPE] else (node.type + '*')
 
         params = []
         for child in node.args:
             params.append(self.visit(child, scope.create_child_scope()))
-        
-        temp = f'{node.name}(' + ", ".join(child for child in params) + ")"
-        dest = self.define_internal_local(child.type)
+
+        temp = f'{node.id}(' + ", ".join(child for child in params) + ")"
+        dest = self.define_internal_local(node.type)
         self.register_instruction(cil.AssignNode(dest, temp))
 
         return dest

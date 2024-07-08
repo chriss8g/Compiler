@@ -185,7 +185,7 @@ class CodeToAST:
         # Atributos de Type
         attribute_declaration %= idnode + opt_typed + asign1 + expr + semicolon, lambda h,s: AttributeNode(s[1],s[4],s[2])
         # Métodos de Type
-        method_declaration %= idx + opar + arg_opt_typed_list + cpar + opt_typed + func_body, lambda h,s:MethodNode(s[1], [s[6]], s[3], s[5])
+        method_declaration %= idx + opar + arg_opt_typed_list + cpar + opt_typed + func_body, lambda h,s:MethodNode(s[1], s[6], s[3], s[5])
 
         # Lista de parámetros opcionalmente tipados
         arg_opt_typed_list %= self.G.Epsilon, lambda h,s:[]

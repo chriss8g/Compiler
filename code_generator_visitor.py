@@ -46,7 +46,7 @@ class CodeGeneratorVisitor(object):
 
         object_name = node.dest
         code = f"{object_name} = malloc(sizeof({node.type.name}));\n"
-        code += f"memset({object_name}, 0, sizeof({node.type.name}));"
+        # code += f"memset({object_name}, 0, sizeof({node.type.name}));"
         return code
 
     @visitor.when(cil.AssignNode)
