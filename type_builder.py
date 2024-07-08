@@ -42,7 +42,7 @@ class TypeBuilder:
         for attr in node.attributes:
             self.visit(attr)
         for meth in node.methods:
-            self.vist(meth)
+            self.visit(meth)
         return self.errors
             
     @visitor.when(hulk.AttributeNode)

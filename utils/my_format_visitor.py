@@ -57,7 +57,11 @@ class FormatVisitor(object):
         params = ', '.join(f'({param[0],param[1]})' for param in node.params)
         ans = '\t' * tabs + f'\\__MethodNode: function {node.name} : {node.type} => <body>'
         params = '\t' * (tabs+1) + 'Params' + '\n' + '\n'.join('\t' * (tabs+2) + f'{param}' for param in node.params)
-        body = '\n'.join(self.visit(child, tabs + 1) for child in node.body)
+        if isinstance(node.body, list):
+            body = '\n'.join(self.visit(child, tabs + 1) for child in node.body)
+        else:
+            body = self.visit(node.body, tabs + 1)
+
         return f'{ans}\n{params}\n{body}'
     
     @visitor.when(hulk.AssignNode)
@@ -225,7 +229,7 @@ class FormatVisitor(object):
         ans = '\t' * tabs + f'\\__TypeNode: type {node.name}\n'
         ans = ans + '\t' * tabs + f'\t\\__TypeBodyNode'
         attributes = '\t' * (tabs+2) + 'Atributes' + '\n' + '\n'.join(self.visit(attr, tabs + 2) for attr in node.attributes)
-        methods = '\t' * (tabs+2) + 'Methods' + '\n' + '\n'.join(self.visit(method, tabs + 2) for method in node.methods)
+        methods = '\t' * (tabs+2) + 'Methods' + f'\n {'\t' * (tabs+3)}' + f'\n {'\t' * (tabs+3)}'.join(method for method in node.methods)
         return f'{ans}\n{attributes}\n{methods}'
 
     @visitor.when(cil.AllocateNode)
