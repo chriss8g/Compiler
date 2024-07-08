@@ -24,19 +24,17 @@ def ForRangeToWhile(s):
 
 
 def ForToWhile(s):
-    # count = s[3]
-    # start = s[7]
-    # end = s[9]
-    # body = []
-    # for expr in s[12].body:
-    #     body.append(expr)
-    # increase_count = DestructNode(count,PlusNode(count,NumberNode(1)))
-    # body.append(increase_count)
-    # assign = AssignNode(count,start)
-    # while_term = WhileNode(LTNode(count,end),BlockNode(body))
-    # let_term = LetNode([assign],while_term)
-    # return let_term
-    return ForNode(s[3], s[5], s[7])
+    # expr %= forx + opar + idnode + inx + idnode + cpar + expr, lambda h, s: ForToWhile(s)
+    
+    nextx = CallNode('next')
+    current = CallNode('current')
+    arr_next = IdentifierNode(s[5].name,nextx)
+    arr_current = IdentifierNode(s[5].name,current)
+    body = s[7]
+    assig = AssignNode(s[3],arr_current)
+    let = LetNode([assig],body)
+    whilex = WhileNode(arr_next,let)
+    return whilex
 
 
 class CodeToAST:
@@ -317,29 +315,19 @@ class CodeToAST:
 if __name__ == "__main__":
 
     text = '''
-            protocol Equatable extends Hashable {
-                equals(other: Object): Boolean;
-            }
-            
-            type Person {
-                a = 5;
-
-                hash() : Number {
-                    print(a);
-                }
-            }
-
-            let x : Hashable = new Person() in print(x.hash());
+            for (a in arr) {
+                print(a);
+            };
         '''
 
     codeToAST = CodeToAST(text)
 
     print(codeToAST)
 
-    # Especifica la ruta del archivo donde quieres escribir
-    ruta_del_archivo = "tests/parser/expected_out/test_18.txt"
+    # # Especifica la ruta del archivo donde quieres escribir
+    # ruta_del_archivo = "tests/parser/expected_out/test_18.txt"
 
-    # Abre el archivo en modo de escritura ('w')
-    with open(ruta_del_archivo, 'w') as archivo:
-        # Escribe el string en el archivo
-        archivo.write(repr(codeToAST))
+    # # Abre el archivo en modo de escritura ('w')
+    # with open(ruta_del_archivo, 'w') as archivo:
+    #     # Escribe el string en el archivo
+    #     archivo.write(repr(codeToAST))
