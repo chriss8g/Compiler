@@ -20,7 +20,7 @@ def ForRangeToWhile(s):
     while_term = WhileNode(LTNode(count, end), BlockNode(body))
     let_term = LetNode([assign], while_term)
     # return let_term
-    return ForRangeNode(s[3], s[7], s[9], body)
+    return let_term
 
 
 def ForToWhile(s):
@@ -64,16 +64,20 @@ class CodeToAST:
         obrake, cbrake = self.G.Terminals('[ ]')
 
         program = self.G.NonTerminal('<program>', startSymbol=True)
-        stats, specialBlock = self.G.NonTerminals('<stats> <specialBlock>')
-        expr, blockExpr = self.G.NonTerminals('<expr> <blockExpr>')
-        asig_list, asig1 = self.G.NonTerminals('<asig_list> <asig1>')
+        stats, specialBlock = self.G.NonTerminals(
+            '<stats> <specialBlock>')
+        expr, blockExpr = self.G.NonTerminals(
+            '<expr> <blockExpr>')
+        asig_list, asig1 = self.G.NonTerminals(
+            '<asig_list> <asig1>')
         atom, idnode, specialBlock_list = self.G.NonTerminals(
             '<atom> <idnode> <specialBlock_list>')
         subexpr, expr, term, factor, atom = self.G.NonTerminals(
             '<subexpr> <expr> <term> <factor> <atom>')
         protocol, extension, protocolBody = self.G.NonTerminals(
             '<protocol> <extension> <protocolBody>')
-        extends, arg_typed = self.G.NonTerminals('<extends> <arg_typed>')
+        extends, arg_typed = self.G.NonTerminals(
+            '<extends> <arg_typed>')
         type_body, inherit_item = self.G.NonTerminals(
             '<type_body> <inherit_item>')
         arg_list, func_body, arg_expr, arg_opt_typed = self.G.NonTerminals(
@@ -222,10 +226,10 @@ class CodeToAST:
             superexpr, lambda h, s: IfNode(s[3], s[5], s[8], s[6][0], s[6][1])
         expr %= whilex + opar + expr + cpar + \
             expr, lambda h, s: WhileNode(s[3], s[5])
-        # expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + \
-        #     expr + cpar + cpar + expr, lambda h, s: ForRangeToWhile(s)
-        # expr %= forx + opar + idnode + inx + idnode + \
-        #     cpar + expr, lambda h, s: ForToWhile(s)
+        expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + \
+            expr + cpar + cpar + expr, lambda h, s: ForRangeToWhile(s)
+        expr %= forx + opar + idnode + inx + idnode + \
+            cpar + expr, lambda h, s: ForToWhile(s)
         expr %= printx + opar + expr + cpar, lambda h, s: PrintNode(s[3])
         expr %= recurrent_object + asign2 + \
             expr, lambda h, s: DestructNode(s[1], s[3])
@@ -283,17 +287,15 @@ class CodeToAST:
         atom %= false, lambda h, s: BoolNode(s[1])
         atom %= pi, lambda h, s: NumberNode(s[1])
         atom %= e, lambda h, s: NumberNode(s[1])
-        # atom %= string, lambda h, s: StringNode(s[1])
+        atom %= string, lambda h, s: StringNode(s[1])
         atom %= opar + expr + cpar, lambda h, s: s[2]
         atom %= selfx + dot + idnode, lambda h, s: SelfNode(s[3])
         atom %= obrake + arg_expr + cbrake, lambda h, s: VectorNode(s[2])
         atom %= recurrent_object, lambda h, s: s[1]
 
-        recurrent_object %= idx + dot + \
-            recurrent_object, lambda h, s: IdentifierNode(s[1], s[3])
+        recurrent_object %= idx + dot + recurrent_object, lambda h, s: IdentifierNode(s[1], s[3])
         recurrent_object %= idnode, lambda h, s: s[1]
-        recurrent_object %= idx + opar + arg_expr + \
-            cpar, lambda h, s: CallNode(s[1], s[3])
+        recurrent_object %= idx + opar + arg_expr + cpar, lambda h, s: CallNode(s[1], s[3])
         recurrent_object %= idx + opar + cpar, lambda h, s: CallNode(s[1], [])
 
         idnode %= idx, lambda h, s: IdentifierNode(s[1])
@@ -326,9 +328,7 @@ class CodeToAST:
 if __name__ == "__main__":
 
     text = '''
-            for (a in arr) {
-                print(a);
-            };
+            print("Hello World");
         '''
 
     codeToAST = CodeToAST(text)
