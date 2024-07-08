@@ -215,70 +215,70 @@ class FormatVisitor(object):
     # #########################################################################################
     # #########################################################################################
     
-    @visitor.when(cil.TypeNode)
-    def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__TypeNode: type {node.name}\n'
-        ans = ans + '\t' * tabs + f'\t\\__TypeBodyNode'
-        attributes = '\t' * (tabs+2) + 'Atributes' + '\n' + '\n'.join(self.visit(attr, tabs + 2) for attr in node.attributes)
-        methods = '\t' * (tabs+2) + 'Methods' + '\n' + '\n'.join(self.visit(method, tabs + 2) for method in node.methods)
-        return f'{ans}\n{attributes}\n{methods}'
+    # @visitor.when(cil.TypeNode)
+    # def visit(self, node, tabs=0):
+    #     ans = '\t' * tabs + f'\\__TypeNode: type {node.name}\n'
+    #     ans = ans + '\t' * tabs + f'\t\\__TypeBodyNode'
+    #     attributes = '\t' * (tabs+2) + 'Atributes' + '\n' + '\n'.join(self.visit(attr, tabs + 2) for attr in node.attributes)
+    #     methods = '\t' * (tabs+2) + 'Methods' + '\n' + '\n'.join(self.visit(method, tabs + 2) for method in node.methods)
+    #     return f'{ans}\n{attributes}\n{methods}'
 
-    @visitor.when(cil.AllocateNode)
-    def visit(self, node, tabs=0):
-        return f'{'\t' * tabs}\\CallNode {node.dest} = ALOCATE {node.type.name}'
+    # @visitor.when(cil.AllocateNode)
+    # def visit(self, node, tabs=0):
+    #     return f'{'\t' * tabs}\\CallNode {node.dest} = ALOCATE {node.type.name}'
     
-    @visitor.when(cil.OurFunctionNode)
-    def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__{node.__class__.__name__} {node.dest} = {node.name} {node.source}'
-        return f'{ans}'
+    # @visitor.when(cil.OurFunctionNode)
+    # def visit(self, node, tabs=0):
+    #     ans = '\t' * tabs + f'\\__{node.__class__.__name__} {node.dest} = {node.name} {node.source}'
+    #     return f'{ans}'
     
-    @visitor.when(cil.ProgramNode)
-    def visit(self, node, tabs=0):
-        dottypes = '\\__.TYPES\n' + f'{'\t' * tabs} \n'.join(self.visit(t, tabs + 1) for t in node.dottypes)
-        dotdata = '\\__.DATA\n' + f'{'\t' * tabs} \n'.join(self.visit(t, tabs + 1) for t in node.dotdata)
-        dotcode = '\\__.CODE\n' + f'{'\t' * tabs} \n'.join(self.visit(t, tabs + 1) for t in node.dotcode)
+    # @visitor.when(cil.ProgramNode)
+    # def visit(self, node, tabs=0):
+    #     dottypes = '\\__.TYPES\n' + f'{'\t' * tabs} \n'.join(self.visit(t, tabs + 1) for t in node.dottypes)
+    #     dotdata = '\\__.DATA\n' + f'{'\t' * tabs} \n'.join(self.visit(t, tabs + 1) for t in node.dotdata)
+    #     dotcode = '\\__.CODE\n' + f'{'\t' * tabs} \n'.join(self.visit(t, tabs + 1) for t in node.dotcode)
 
-        return f'{dottypes}\n{dotdata}\n{dotcode}'
+    #     return f'{dottypes}\n{dotdata}\n{dotcode}'
     
-    @visitor.when(cil.FunctionNode)
-    def visit(self, node, tabs=0):
-        params = f'{'\t' * tabs}\t \\__params\n' + '\n'.join(self.visit(x, tabs + 2) for x in node.params)
-        localvars = f'{'\t' * tabs}\t \\__local_vars\n' +  '\n'.join(self.visit(x, tabs + 2) for x in node.localvars)
-        instructions = f'{'\t' * tabs}\t \\__instructions\n' +  '\n'.join(self.visit(x, tabs + 2) for x in node.instructions)
+    # @visitor.when(cil.FunctionNode)
+    # def visit(self, node, tabs=0):
+    #     params = f'{'\t' * tabs}\t \\__params\n' + '\n'.join(self.visit(x, tabs + 2) for x in node.params)
+    #     localvars = f'{'\t' * tabs}\t \\__local_vars\n' +  '\n'.join(self.visit(x, tabs + 2) for x in node.localvars)
+    #     instructions = f'{'\t' * tabs}\t \\__instructions\n' +  '\n'.join(self.visit(x, tabs + 2) for x in node.instructions)
 
-        return f'{'\t' * tabs} \\__FunctionNode function <{node.name}>\n{params}\n{localvars}\n{instructions}'
+    #     return f'{'\t' * tabs} \\__FunctionNode function <{node.name}>\n{params}\n{localvars}\n{instructions}'
     
-    @visitor.when(cil.StaticCallNode)
-    def visit(self, node, tabs=0):
-        return f'{'\t' * tabs}\\CallNode {node.dest} = call {node.function}'
+    # @visitor.when(cil.StaticCallNode)
+    # def visit(self, node, tabs=0):
+    #     return f'{'\t' * tabs}\\CallNode {node.dest} = call {node.function}'
     
-    @visitor.when(cil.ReturnNode)
-    def visit(self, node, tabs=0):
-        return f'{'\t' * tabs}\\__ReturnNode return {node.value if node.value is not None else ""}'
+    # @visitor.when(cil.ReturnNode)
+    # def visit(self, node, tabs=0):
+    #     return f'{'\t' * tabs}\\__ReturnNode return {node.value if node.value is not None else ""}'
     
     @visitor.when(cil.LocalNode)
     def visit(self, node, tabs=0):
         return f'{'\t' * tabs}\\__LocalNode {node.type} {node.name}'
     
-    @visitor.when(cil.ParamNode)
-    def visit(self, node, tabs=0):
-        return f'{'\t' * tabs}\\__ParamNode {node.name}'
+    # @visitor.when(cil.ParamNode)
+    # def visit(self, node, tabs=0):
+    #     return f'{'\t' * tabs}\\__ParamNode {node.name}'
     
-    @visitor.when(cil.LabelNode)
-    def visit(self, node, tabs=0):
-        return f'{'\t' * tabs}\\__LabelNode {node.label}'
+    # @visitor.when(cil.LabelNode)
+    # def visit(self, node, tabs=0):
+    #     return f'{'\t' * tabs}\\__LabelNode {node.label}'
     
-    @visitor.when(cil.GotoNode)
-    def visit(self, node, tabs=0):
-        return f'{'\t' * tabs}\\GotoNode {node.label}'
+    # @visitor.when(cil.GotoNode)
+    # def visit(self, node, tabs=0):
+    #     return f'{'\t' * tabs}\\GotoNode {node.label}'
     
-    @visitor.when(cil.GotoIfNode)
-    def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__GotoIfNode:\n {'\t' * (tabs+1)}\\__condition {node.condition} \n' + '\t' * (tabs+1) 
-        return f'{ans}\\goto: {node.label}' + '\n' + '\t' * (tabs+1) + f'\\__else_goto: ' + f' {node.label_else}'
+    # @visitor.when(cil.GotoIfNode)
+    # def visit(self, node, tabs=0):
+    #     ans = '\t' * tabs + f'\\__GotoIfNode:\n {'\t' * (tabs+1)}\\__condition {node.condition} \n' + '\t' * (tabs+1) 
+    #     return f'{ans}\\goto: {node.label}' + '\n' + '\t' * (tabs+1) + f'\\__else_goto: ' + f' {node.label_else}'
         
-    @visitor.when(cil.AssignNode)
-    def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__AsignNode: {node.dest} = {node.source}'
-        return ans
+    # @visitor.when(cil.AssignNode)
+    # def visit(self, node, tabs=0):
+    #     ans = '\t' * tabs + f'\\__AsignNode: {node.dest} = {node.source}'
+    #     return ans
     
