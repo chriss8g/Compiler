@@ -16,6 +16,7 @@ class SemanticCheckerVisitor(object):
         scope = Scope() if not scope else scope
         for nod in node.statements:
             self.visit(nod, scope.create_child_scope())
+        self.visit(node.main, scope.create_child_scope())
         return self.errors
 
     @visitor.when(AssignNode)

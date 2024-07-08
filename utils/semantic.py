@@ -156,6 +156,7 @@ class IntType(Type):
 class Context:
     def __init__(self):
         self.types = {}
+        self.functions = {}
 
     def create_type(self, name:str):
         if name in self.types:
@@ -168,6 +169,12 @@ class Context:
             return self.types[name]
         except KeyError:
             raise SemanticError(f'Type "{name}" is not defined.')
+        
+    def create_func(self, name:str):
+        if name in self.functions:
+          raise SemanticError(f'Type with the same name ({name}) already in context.')
+        self.functions[name] = ""
+        # funcx = self.functions[name] = Function()  
 
     def __str__(self):
         return '{\n\t' + '\n\t'.join(y for x in self.types.values() for y in str(x).split('\n')) + '\n}'

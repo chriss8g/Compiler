@@ -1,3 +1,5 @@
-let a = 20 in {
-    print(a);
-};
+type Point {
+    x = 0;
+    y = 0;
+}
+5;

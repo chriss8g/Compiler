@@ -1,21 +1,15 @@
 \__ProgramNode [<program>]
-	\__LetNode [<expression>]
-		\__AssignNode:
-			\__IdentifierNode: x
-			\__NumberNode: 10
-		\__BlockNode [<expression>]
-			\__IfNode  [<expression>]
-				\_ Condition
-					\__EQNode [<expression>]
-						\__IdentifierNode: x
-						\__NumberNode: 10
-				\_ Body
-					\__BlockNode [<expression>]
-						\__PrintNode [<sentence>]
-							\__PlusNode [<expression>]
-								\__IdentifierNode: x
-								\__NumberNode: 3
-				\_ Else Body
-					\__BlockNode [<expression>]
-						\__PrintNode [<sentence>]
-							\__IdentifierNode: x
+	\__TypeNode: type Point inherits None [<statement>]
+		
+		
+		\__TypeBodyNode
+			Atributes
+				\__AttributeNode id = <expr>
+					\__IdentifierNode: x
+					\__NumberNode: 0
+				\__AttributeNode id = <expr>
+					\__IdentifierNode: y
+					\__NumberNode: 0
+			Methods
+
+	\__NumberNode: 5

@@ -1,12 +1,12 @@
 import argparse
 
-from code_generator_visitor import CodeGeneratorVisitor
+# from code_generator_visitor import CodeGeneratorVisitor
 from my_parser import CodeToAST
 from semantic_checker_visitor import SemanticCheckerVisitor
 from CIL_generator_visitor import HULKToCILVisitor
 import nodes_types.cil as cil
 import os
-from type_collector import TypeCollector
+from collector import Collector
 from type_builder import TypeBuilder
 
 def main(input_file):
@@ -21,36 +21,36 @@ def main(input_file):
 
 
     # semantic_checker = SemanticCheckerVisitor()
-    # type_collector = TypeCollector()
-    # type_builder = TypeBuilder(type_collector.context)
-    # errors = []
+    collector = Collector()
+    # type_builder = TypeBuilder(collector.context)
+    errors = []
     # errors = errors + semantic_checker.visit(codeToAST.ast)
-    # errors = errors + type_collector.visit(codeToAST.ast)
+    errors = errors + collector.visit(codeToAST.ast)
     # errors = errors + type_builder.visit(codeToAST.ast)
-    # if(len(errors) > 0):
-    #     for i, error in enumerate(errors, 1):
-    #         print(f'{i}.', error)
+    if(len(errors) > 0):
+        for i, error in enumerate(errors, 1):
+            print(f'{i}.', error)
 
-    #     return
+        return
     
-    # print("✅ Semantic Checked")
+    print("✅ Semantic Checked")
 
-    cil_generator = HULKToCILVisitor([])
-    output = cil_generator.visit(codeToAST.ast)
+    # cil_generator = HULKToCILVisitor([])
+    # output = cil_generator.visit(codeToAST.ast)
 
-    from utils.my_format_visitor import FormatVisitor
-    formatter = FormatVisitor()
+    # from utils.my_format_visitor import FormatVisitor
+    # formatter = FormatVisitor()
 
-    with open('script.cil', 'w') as output_file:
-        output_file.write(formatter.visit(output))
+    # with open('script.cil', 'w') as output_file:
+    #     output_file.write(formatter.visit(output))
 
-    c_generator = CodeGeneratorVisitor()
-    output = c_generator.visit(output, None)
+    # c_generator = CodeGeneratorVisitor()
+    # output = c_generator.visit(output, None)
 
-    with open('script.c', 'w') as output_file:
-        output_file.write(output)
+    # with open('script.c', 'w') as output_file:
+    #     output_file.write(output)
 
-    os.system("gcc script.c -lm -o script.out && ./script.out")
+    # os.system("gcc script.c -lm -o script.out && ./script.out")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Generate C code from custom script")
