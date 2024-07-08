@@ -7,9 +7,145 @@
 		 \__params
 
 		 \__local_vars
-			\__LocalNode local__internal_0
-			\__LocalNode local__internal_1
+			\__LocalNode int local__internal_0
+			\__LocalNode int local__internal_1
+			\__LocalNode int local__internal_2
+			\__LocalNode int local__internal_3
 		 \__instructions
-			\__AsignNode: local__internal_0 = 42
-			\__OurFunctionNode local__internal_1 = printf local__internal_0
-			\__ReturnNode return 0
+			\CallNode local__internal_0 = call function_block_1
+			\CallNode local__internal_1 = call function_block_2
+			\CallNode local__internal_2 = call function_block_3
+			\CallNode local__internal_3 = call function_block_4
+			\__ReturnNode return 0 
+	 \__FunctionNode function <function_block_1>
+		 \__params
+
+		 \__local_vars
+			\__LocalNode int local_block_1_internal_0
+			\__LocalNode int local_block_1_internal_1
+			\__LocalNode int local_block_1_internal_2
+			\__LocalNode int local_block_1_internal_3
+			\__LocalNode int local_block_1_internal_4
+			\__LocalNode int local_block_1_internal_5
+			\__LocalNode int local_block_1_internal_6
+			\__LocalNode int local_block_1_internal_7
+		 \__instructions
+			\__AsignNode: local_block_1_internal_1 = 10
+			\__AsignNode: local_block_1_internal_0 = local_block_1_internal_1
+			\__AsignNode: local_block_1_internal_2 = 10
+			\__AsignNode: local_block_1_internal_3 = local_block_1_internal_0 == local_block_1_internal_2
+			\GotoNode my_begin
+			\__LabelNode my_if
+			\__AsignNode: local_block_1_internal_4 = 3
+			\__AsignNode: local_block_1_internal_5 = local_block_1_internal_0 + local_block_1_internal_4
+			\__OurFunctionNode local_block_1_internal_6 = printf local_block_1_internal_5
+			\GotoNode my_end
+			\__LabelNode my_else
+			\__OurFunctionNode local_block_1_internal_7 = printf local_block_1_internal_0
+			\GotoNode my_end
+			\__LabelNode my_begin
+			\__GotoIfNode:
+ 				\__condition local_block_1_internal_3 
+				\goto: my_if
+				\__else_goto:  my_else
+			\__LabelNode my_end
+			\__ReturnNode return  
+	 \__FunctionNode function <function_block_2>
+		 \__params
+
+		 \__local_vars
+			\__LocalNode int local_block_2_internal_0
+			\__LocalNode int local_block_2_internal_1
+			\__LocalNode int local_block_2_internal_2
+			\__LocalNode int local_block_2_internal_3
+			\__LocalNode int local_block_2_internal_4
+			\__LocalNode int local_block_2_internal_5
+			\__LocalNode int local_block_2_internal_6
+			\__LocalNode int local_block_2_internal_7
+		 \__instructions
+			\__AsignNode: local_block_2_internal_1 = 5
+			\__AsignNode: local_block_2_internal_0 = local_block_2_internal_1
+			\__AsignNode: local_block_2_internal_2 = 10
+			\__AsignNode: local_block_2_internal_3 = local_block_2_internal_0 == local_block_2_internal_2
+			\GotoNode my_begin
+			\__LabelNode my_if
+			\__AsignNode: local_block_2_internal_4 = 3
+			\__AsignNode: local_block_2_internal_5 = local_block_2_internal_0 + local_block_2_internal_4
+			\__OurFunctionNode local_block_2_internal_6 = printf local_block_2_internal_5
+			\GotoNode my_end
+			\__LabelNode my_else
+			\__OurFunctionNode local_block_2_internal_7 = printf local_block_2_internal_0
+			\GotoNode my_end
+			\__LabelNode my_begin
+			\__GotoIfNode:
+ 				\__condition local_block_2_internal_3 
+				\goto: my_if
+				\__else_goto:  my_else
+			\__LabelNode my_end
+			\__ReturnNode return  
+	 \__FunctionNode function <function_block_3>
+		 \__params
+
+		 \__local_vars
+			\__LocalNode int local_block_3_internal_0
+			\__LocalNode int local_block_3_internal_1
+			\__LocalNode int local_block_3_internal_2
+			\__LocalNode int local_block_3_internal_3
+			\__LocalNode int local_block_3_internal_4
+			\__LocalNode int local_block_3_internal_5
+			\__LocalNode int local_block_3_internal_6
+			\__LocalNode int local_block_3_internal_7
+		 \__instructions
+			\__AsignNode: local_block_3_internal_1 = 5
+			\__AsignNode: local_block_3_internal_0 = local_block_3_internal_1
+			\__AsignNode: local_block_3_internal_2 = 10
+			\__AsignNode: local_block_3_internal_3 = local_block_3_internal_0 == local_block_3_internal_2
+			\GotoNode my_begin
+			\__LabelNode my_if
+			\__AsignNode: local_block_3_internal_4 = 3
+			\__AsignNode: local_block_3_internal_5 = local_block_3_internal_0 + local_block_3_internal_4
+			\__OurFunctionNode local_block_3_internal_6 = printf local_block_3_internal_5
+			\GotoNode my_end
+			\__LabelNode my_else
+			\__OurFunctionNode local_block_3_internal_7 = printf local_block_3_internal_0
+			\GotoNode my_end
+			\__LabelNode my_begin
+			\__GotoIfNode:
+ 				\__condition local_block_3_internal_3 
+				\goto: my_if
+				\__else_goto:  my_else
+			\__LabelNode my_end
+			\__ReturnNode return  
+	 \__FunctionNode function <function_block_4>
+		 \__params
+
+		 \__local_vars
+			\__LocalNode int local_block_4_internal_0
+			\__LocalNode int local_block_4_internal_1
+			\__LocalNode int local_block_4_internal_2
+			\__LocalNode int local_block_4_internal_3
+			\__LocalNode int local_block_4_internal_4
+			\__LocalNode int local_block_4_internal_5
+			\__LocalNode int local_block_4_internal_6
+			\__LocalNode int local_block_4_internal_7
+		 \__instructions
+			\__AsignNode: local_block_4_internal_1 = 5
+			\__AsignNode: local_block_4_internal_0 = local_block_4_internal_1
+			\__AsignNode: local_block_4_internal_2 = 10
+			\__AsignNode: local_block_4_internal_3 = local_block_4_internal_0 == local_block_4_internal_2
+			\GotoNode my_begin
+			\__LabelNode my_if
+			\__AsignNode: local_block_4_internal_4 = 3
+			\__AsignNode: local_block_4_internal_5 = local_block_4_internal_0 + local_block_4_internal_4
+			\__OurFunctionNode local_block_4_internal_6 = printf local_block_4_internal_5
+			\GotoNode my_end
+			\__LabelNode my_else
+			\__OurFunctionNode local_block_4_internal_7 = printf local_block_4_internal_0
+			\GotoNode my_end
+			\__LabelNode my_begin
+			\__GotoIfNode:
+ 				\__condition local_block_4_internal_3 
+				\goto: my_if
+				\__else_goto:  my_else
+			\__LabelNode my_end
+			\__ReturnNode return 
