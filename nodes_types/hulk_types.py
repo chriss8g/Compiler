@@ -40,8 +40,8 @@ class TypeBodyDeclarationNode(Node):
         self.methods = methods
         
 class AttributeNode(Node):
-    def __init__(self, name, value, type=None):
-        self.name = name
+    def __init__(self, id, value, type=None):
+        self.id = id
         self.value = value
         self.type = type
 
@@ -127,9 +127,9 @@ class DestructNode(ExpressionNode):
         self.expr = expr
 
 class CallNode(ExpressionNode):
-    def __init__(self, idx, args=[], child=None, type=None):
+    def __init__(self, name, args=[], child=None, type=None):
         super().__init__(type)
-        self.id = idx
+        self.name = name
         self.args = args # array de expresiones
         self.child = child
 

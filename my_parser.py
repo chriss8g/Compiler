@@ -175,19 +175,19 @@ class CodeToAST:
         func_body %= blockExpr, lambda h, s: s[1]
 
         # *************** Producciones de Type ****************
-        # stats %= typex + idx + arg_opt_typed_list + inherit_item + obrace + type_body + cbrace + stats, lambda h,s: [TypeDeclarationNode(s[2],TypeBodyDeclarationNode(s[6][0],s[6][1]),s[3],s[4][0],s[4][1])]+s[8]
-        # # Manejar la herencia
-        # inherit_item %= inherits + idx, lambda h,s: (s[2],[])
-        # inherit_item %= inherits + idx + opar + arg_expr + cpar, lambda h,s: (s[2],s[4])
-        # inherit_item %= self.G.Epsilon, lambda h,s: (None,[])
-        # # Cuerpo de un Type
-        # type_body %= attribute_declaration + type_body, lambda h,s: ([s[1]]+s[2][0],s[2][1])
-        # type_body %= method_declaration + type_body, lambda h,s: (s[2][0],[s[1]]+s[2][1])
-        # type_body %= self.G.Epsilon, lambda h,s: ([],[])
-        # # Atributos de Type
-        # attribute_declaration %= idnode + opt_typed + asign1 + expr + semicolon, lambda h,s: AttributeNode(s[1],s[4],s[2])
-        # # Métodos de Type
-        # method_declaration %= idx + opar + arg_opt_typed_list + cpar + opt_typed + func_body, lambda h,s:MethodNode(s[1], [s[6]], s[3], s[5])
+        stats %= typex + idx + arg_opt_typed_list + inherit_item + obrace + type_body + cbrace + stats, lambda h,s: [TypeDeclarationNode(s[2],TypeBodyDeclarationNode(s[6][0],s[6][1]),s[3],s[4][0],s[4][1])]+s[8]
+        # Manejar la herencia
+        inherit_item %= inherits + idx, lambda h,s: (s[2],[])
+        inherit_item %= inherits + idx + opar + arg_expr + cpar, lambda h,s: (s[2],s[4])
+        inherit_item %= self.G.Epsilon, lambda h,s: (None,[])
+        # Cuerpo de un Type
+        type_body %= attribute_declaration + type_body, lambda h,s: ([s[1]]+s[2][0],s[2][1])
+        type_body %= method_declaration + type_body, lambda h,s: (s[2][0],[s[1]]+s[2][1])
+        type_body %= self.G.Epsilon, lambda h,s: ([],[])
+        # Atributos de Type
+        attribute_declaration %= idnode + opt_typed + asign1 + expr + semicolon, lambda h,s: AttributeNode(s[1],s[4],s[2])
+        # Métodos de Type
+        method_declaration %= idx + opar + arg_opt_typed_list + cpar + opt_typed + func_body, lambda h,s:MethodNode(s[1], [s[6]], s[3], s[5])
 
         # Lista de parámetros opcionalmente tipados
         arg_opt_typed_list %= self.G.Epsilon, lambda h,s:[]
@@ -217,15 +217,15 @@ class CodeToAST:
 
         # ***************** Expresiones ******************
         expr %= blockExpr, lambda h, s: s[1]
-        # expr %= let + asig_list + inx + expr, lambda h, s: LetNode(s[2], s[4])
-        # expr %= ifx + opar + expr + cpar + specialBlock + elifx_expr + elsex + superexpr, lambda h, s: IfNode(s[3], s[5], s[8], s[6][0], s[6][1])
-        # expr %= whilex + opar + expr + cpar + expr, lambda h, s: WhileNode(s[3], s[5])
-        # expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + expr + cpar + cpar + expr, lambda h, s: ForRangeToWhile(s)
-        # expr %= forx + opar + idnode + inx + idnode + cpar + expr, lambda h, s: ForToWhile(s)
+        expr %= let + asig_list + inx + expr, lambda h, s: LetNode(s[2], s[4])
+        expr %= ifx + opar + expr + cpar + specialBlock + elifx_expr + elsex + superexpr, lambda h, s: IfNode(s[3], s[5], s[8], s[6][0], s[6][1])
+        expr %= whilex + opar + expr + cpar + expr, lambda h, s: WhileNode(s[3], s[5])
+        expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + expr + cpar + cpar + expr, lambda h, s: ForRangeToWhile(s)
+        expr %= forx + opar + idnode + inx + idnode + cpar + expr, lambda h, s: ForToWhile(s)
         expr %= printx + opar + expr + cpar, lambda h, s: PrintNode(s[3])
-        # expr %= idnode + asign2 + expr, lambda h, s: DestructNode(s[1], s[3])
-        # expr %= new + idx + opar + arg_expr + cpar, lambda h, s: ObjectCreationNode(s[2], s[4])
-        # expr %= new + idx + opar + cpar, lambda h, s: ObjectCreationNode(s[2], [])
+        expr %= idnode + asign2 + expr, lambda h, s: DestructNode(s[1], s[3])
+        expr %= new + idx + opar + arg_expr + cpar, lambda h, s: ObjectCreationNode(s[2], s[4])
+        expr %= new + idx + opar + cpar, lambda h, s: ObjectCreationNode(s[2], [])
         expr %= subexpr, lambda h, s: s[1]
 
         superexpr %= expr, lambda h, s: s[1]
