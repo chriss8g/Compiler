@@ -1,5 +1,19 @@
 \__ProgramNode [<program>]
-	\__PrintNode [<expression>]
-		\__ConcatNode [<expression>]
-			\__StringNode: "The meaning of life is "
-			\__NumberNode: 42
+	\__LetNode [<expression>]
+		\__AssignNode:
+			\__IdentifierNode: x
+			\__NumberNode: 5
+		\__WhileNode [<expression>]
+			\_ Condition
+				\__LTNode [<expression>]
+					\__IdentifierNode: x
+					\__NumberNode: 10
+			\_ Body
+				\__BlockNode [<expression>]
+					\__PrintNode [<expression>]
+						\__IdentifierNode: x
+					\DestructNode   [<expression>]
+						\__IdentifierNode: x
+						\__PlusNode [<expression>]
+							\__IdentifierNode: x
+							\__NumberNode: 1

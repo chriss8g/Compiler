@@ -12,8 +12,12 @@ def ForRangeToWhile(s):
     start = s[7]
     end = s[9]
     body = []
-    for expr in s[12].body:
-        body.append(expr)
+    if isinstance(s[12], list):
+        for expr in s[12]:
+            body.append(expr)
+    else:
+        body.append(s[12])
+
     increase_count = DestructNode(count, PlusNode(count, NumberNode(1)))
     body.append(increase_count)
     assign = AssignNode(count, start)
