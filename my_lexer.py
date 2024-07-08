@@ -36,7 +36,7 @@ regular_expresions = [
     ('range', 'range'),
     ('num', f'0|({nonzero_digits})(0|{nonzero_digits})*'),
     ('id', f'({lettersLowerCase}|{lettersUpperCase}|_)({lettersLowerCase}|{lettersUpperCase}|_|0|{nonzero_digits})*'),
-    ('string', f'"({lettersLowerCase}|{lettersUpperCase}|0|{nonzero_digits}|@|##|#||=|:|,|#(|#)|+|-|#*|/|^|%|#$| |!|<|>|@|;|[|])*"'),
+    ('string', f'"({lettersLowerCase}|{lettersUpperCase}|0|{nonzero_digits}|@|##|#||=|:|,|#(|#)|+|-|#*|/|^|%|#$| |\\"|!|<|>|\\|@|;|[|])*"'),
     ('asign1','='),
     ('asign2',':='),
     ('comma', ','),
