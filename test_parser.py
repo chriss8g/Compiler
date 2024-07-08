@@ -4,7 +4,7 @@ from my_parser import CodeToAST
 class TestCodeToAST(unittest.TestCase):
 
     def setUp(self):
-        self.test = 'test_16'
+        self.test = 'test_17'
         """Configura el entorno antes de cada prueba."""
         # Abre y lee el contenido del archivo donde se espera que esté el resultado correcto
         with open(f'tests/parser/inputs/{self.test}.uh', 'r') as file:

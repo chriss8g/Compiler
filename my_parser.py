@@ -221,29 +221,21 @@ class CodeToAST:
 
         # ***************** Expresiones ******************
         expr %= blockExpr, lambda h, s: s[1]
-        expr %= let + asig_list + inx + expr, lambda h, s: LetNode(s[2], s[4])
-        expr %= ifx + opar + expr + cpar + specialBlock + elifx_expr + elsex + \
-            superexpr, lambda h, s: IfNode(s[3], s[5], s[8], s[6][0], s[6][1])
-        expr %= whilex + opar + expr + cpar + \
-            expr, lambda h, s: WhileNode(s[3], s[5])
-        expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + \
-            expr + cpar + cpar + expr, lambda h, s: ForRangeToWhile(s)
-        expr %= forx + opar + idnode + inx + idnode + \
-            cpar + expr, lambda h, s: ForToWhile(s)
+        # expr %= let + asig_list + inx + expr, lambda h, s: LetNode(s[2], s[4])
+        # expr %= ifx + opar + expr + cpar + specialBlock + elifx_expr + elsex + superexpr, lambda h, s: IfNode(s[3], s[5], s[8], s[6][0], s[6][1])
+        # expr %= whilex + opar + expr + cpar + expr, lambda h, s: WhileNode(s[3], s[5])
+        # expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + expr + cpar + cpar + expr, lambda h, s: ForRangeToWhile(s)
+        # expr %= forx + opar + idnode + inx + idnode + cpar + expr, lambda h, s: ForToWhile(s)
         expr %= printx + opar + expr + cpar, lambda h, s: PrintNode(s[3])
-        expr %= recurrent_object + asign2 + \
-            expr, lambda h, s: DestructNode(s[1], s[3])
-        # expr %= new + idx + opar + arg_expr + \
-        #     cpar, lambda h, s: ObjectCreationNode(s[2], s[4])
-        # expr %= new + idx + opar + \
-        #     cpar, lambda h, s: ObjectCreationNode(s[2], [])
+        expr %= idnode + asign2 + expr, lambda h, s: DestructNode(s[1], s[3])
+        # expr %= new + idx + opar + arg_expr + cpar, lambda h, s: ObjectCreationNode(s[2], s[4])
+        # expr %= new + idx + opar + cpar, lambda h, s: ObjectCreationNode(s[2], [])
         expr %= subexpr, lambda h, s: s[1]
 
         superexpr %= expr, lambda h, s: s[1]
         superexpr %= obrace + cbrace, lambda h, s: None
 
-        elifx_expr %= elifx + opar + expr + cpar + specialBlock + \
-            elifx_expr, lambda h, s: (s[6][0]+[s[3]], s[6][1]+[s[5]])
+        elifx_expr %= elifx + opar + expr + cpar + specialBlock + elifx_expr, lambda h, s: (s[6][0]+[s[3]], s[6][1]+[s[5]])
         elifx_expr %= self.G.Epsilon, lambda h, s: ([], [])
 
         asig_list %= asig1, lambda h, s: [s[1]]
@@ -263,8 +255,7 @@ class CodeToAST:
         subexpr %= subexpr + ge + term, lambda h, s: GENode(s[1], s[3])
         subexpr %= subexpr + le + term, lambda h, s: LENode(s[1], s[3])
         # subexpr %= subexpr + concat + term, lambda h, s: ConcatNode(s[1], s[3])
-        subexpr %= subexpr + concat_space + \
-            term, lambda h, s: ConcatSpaceNode(s[1], s[3])
+        subexpr %= subexpr + concat_space + term, lambda h, s: ConcatSpaceNode(s[1], s[3])
         subexpr %= term, lambda h, s: s[1]
 
         term %= term + star + factor, lambda h, s: StarNode(s[1], s[3])
@@ -277,8 +268,7 @@ class CodeToAST:
         factor %= cos + opar + expr + cpar, lambda h, s: CosNode(s[3])
         # factor %= sqrt + opar + expr + cpar, lambda h, s: SqrtNode(s[3])
         # factor %= exp + opar + expr + cpar, lambda h, s: ExpNode(s[3])
-        # factor %= log + opar + expr + comma + expr + \
-            # cpar, lambda h, s: LogNode(s[3], s[5])
+        # factor %= log + opar + expr + comma + expr + cpar, lambda h, s: LogNode(s[3], s[5])
         # factor %= rand + opar + cpar, lambda h, s: RandNode()
         factor %= atom, lambda h, s: s[1]
 
@@ -291,12 +281,13 @@ class CodeToAST:
         atom %= opar + expr + cpar, lambda h, s: s[2]
         atom %= selfx + dot + idnode, lambda h, s: SelfNode(s[3])
         atom %= obrake + arg_expr + cbrake, lambda h, s: VectorNode(s[2])
-        atom %= recurrent_object, lambda h, s: s[1]
+        atom %= idnode, lambda h, s: s[1]
+        atom %= idx + dot + recurrent_object, lambda h, s: IdentifierNode(s[1], s[3])
 
-        recurrent_object %= idx + dot + recurrent_object, lambda h, s: IdentifierNode(s[1], s[3])
-        recurrent_object %= idnode, lambda h, s: s[1]
+        recurrent_object %= idx + opar + arg_expr + cpar + dot + recurrent_object, lambda h, s: CallNode(s[1], s[3], s[6])
+        recurrent_object %= idx + opar + cpar + dot + recurrent_object, lambda h, s: CallNode(s[1], [], s[5])
         recurrent_object %= idx + opar + arg_expr + cpar, lambda h, s: CallNode(s[1], s[3])
-        recurrent_object %= idx + opar + cpar, lambda h, s: CallNode(s[1], [])
+        recurrent_object %= idx + opar + cpar, lambda h, s: CallNode(s[1])
 
         idnode %= idx, lambda h, s: IdentifierNode(s[1])
 
@@ -328,7 +319,10 @@ class CodeToAST:
 if __name__ == "__main__":
 
     text = '''
-            print("Hello World");
+            {
+                print("Hello World");
+                a.b(3,4).c(aas);
+            }
         '''
 
     codeToAST = CodeToAST(text)
@@ -336,7 +330,7 @@ if __name__ == "__main__":
     print(codeToAST)
 
     # # Especifica la ruta del archivo donde quieres escribir
-    # ruta_del_archivo = "tests/parser/expected_out/test_14.txt"
+    # ruta_del_archivo = "tests/parser/expected_out/test_17.txt"
 
     # # Abre el archivo en modo de escritura ('w')
     # with open(ruta_del_archivo, 'w') as archivo:

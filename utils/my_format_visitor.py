@@ -73,7 +73,7 @@ class FormatVisitor(object):
 
     @visitor.when(hulk.PrintNode)
     def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__PrintNode [<sentence>]'
+        ans = '\t' * tabs + f'\\__PrintNode [<expression>]'
         expr = self.visit(node.expr, tabs + 1)
         return f'{ans}\n{expr}'
     
@@ -132,8 +132,13 @@ class FormatVisitor(object):
     @visitor.when(hulk.CallNode)
     def visit(self, node, tabs=0):
         ans = '\t' * tabs + f'\\__CallNode function {node.id}   [<expression>]'
-        args = '\t' * (tabs+1) + '\\_ Arguments' + '\n' + '\n'.join(self.visit(arg, tabs + 2) for arg in node.args)
-        return f'{ans}\n{args}'
+        args = ''
+        if node.args:
+            args = '\n' + '\t' * (tabs+1) + '\\_ Arguments' + '\n' + '\n'.join(self.visit(arg, tabs + 2) for arg in node.args)
+        child = ''
+        if node.child is not None:
+            child = '\n' + self.visit(node.child,tabs+1)
+        return f'{ans}{args}{child}'
         
 
     # **********************************************************
