@@ -1,36 +1,5 @@
 \__ProgramNode [<program>]
-	\__BlockNode [<expression>]
-		\__LetNode [<expression>]
-			\__AssignNode:
-				\__IdentifierNode: a
-				\__NumberNode: 6
-			\__AssignNode:
-				\__IdentifierNode: b
-				\__StarNode [<expression>]
-					\__IdentifierNode: a
-					\__NumberNode: 7
-			\__PrintNode [<expression>]
-				\__IdentifierNode: b
-		\__LetNode [<expression>]
-			\__AssignNode:
-				\__IdentifierNode: a
-				\__NumberNode: 5
-			\__AssignNode:
-				\__IdentifierNode: b
-				\__NumberNode: 10
-			\__AssignNode:
-				\__IdentifierNode: c
-				\__NumberNode: 20
-			\__BlockNode [<expression>]
-				\__PrintNode [<expression>]
-					\__PlusNode [<expression>]
-						\__IdentifierNode: a
-						\__IdentifierNode: b
-				\__PrintNode [<expression>]
-					\__StarNode [<expression>]
-						\__IdentifierNode: b
-						\__IdentifierNode: c
-				\__PrintNode [<expression>]
-					\__DivNode [<expression>]
-						\__IdentifierNode: c
-						\__IdentifierNode: a
+	\__PrintNode [<expression>]
+		\__ConcatNode [<expression>]
+			\__StringNode: "The meaning of life is "
+			\__NumberNode: 42

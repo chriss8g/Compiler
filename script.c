@@ -1,58 +1,46 @@
 #define PI  3.141592
 #define E 2.71828
+#include <string.h>
+#include <stdlib.h>
 #include <stdio.h>
 
+                            char* concatenateStrings(const char* str1, const char* str2) {
+                                // Calculamos la longitud total de la cadena resultante
+                                size_t length1 = strlen(str1);
+                                size_t length2 = strlen(str2);
+                                size_t totalLength = length1 + length2 + 1; // +1 para el carácter nulo
 
+                                // Reservamos memoria para la cadena resultante
+                                char* result = (char*)malloc(totalLength * sizeof(char));
+                                if (result == NULL) {
+                                    // Si no se pudo asignar memoria, devolvemos NULL
+                                    printf("Error: No se pudo asignar memoria.\n");
+                                    return NULL;
+                                }
+
+                                // Copiamos la primera cadena en el resultado
+                                strcpy(result, str1);
+                                // Concatenamos la segunda cadena al resultado
+                                strcat(result, str2);
+
+                                return result;
+                            }
+                        
+
+#define data_0 "The meaning of life is "
+#define data_1 "42"
 int main(){ 
-int local__internal_0;
-int local__internal_1;
-local__internal_0 = function_block_1();
-local__internal_1 = function_block_2();
+char* local__internal_0;
+char* local__internal_1;
+char* local__internal_2;
+char* local__internal_3;
+char* local__internal_4;
+local__internal_0 = data_0;
+local__internal_1 = data_1;
+local__internal_3 = concatenateStrings(local__internal_0, local__internal_1);
+
+local__internal_2 = local__internal_3;
+local__internal_4 = printf("%s\n", local__internal_2);
+
 return 0;
-}
-int function_block_1(){ 
-int local_block_1_internal_0;
-int local_block_1_internal_1;
-int local_block_1_internal_2;
-int local_block_1_internal_3;
-int local_block_1_internal_4;
-int local_block_1_internal_5;
-local_block_1_internal_1 = 6;
-local_block_1_internal_0 = local_block_1_internal_1;
-local_block_1_internal_3 = 7;
-local_block_1_internal_4 = local_block_1_internal_0 * local_block_1_internal_3;
-local_block_1_internal_2 = local_block_1_internal_4;
-local_block_1_internal_5 = printf("%d\n", local_block_1_internal_2);
-
-return local_block_1_internal_5;
-}
-int function_block_2(){ 
-int local_block_2_internal_0;
-int local_block_2_internal_1;
-int local_block_2_internal_2;
-int local_block_2_internal_3;
-int local_block_2_internal_4;
-int local_block_2_internal_5;
-int local_block_2_internal_6;
-int local_block_2_internal_7;
-int local_block_2_internal_8;
-int local_block_2_internal_9;
-int local_block_2_internal_10;
-int local_block_2_internal_11;
-local_block_2_internal_1 = 5;
-local_block_2_internal_0 = local_block_2_internal_1;
-local_block_2_internal_3 = 10;
-local_block_2_internal_2 = local_block_2_internal_3;
-local_block_2_internal_5 = 20;
-local_block_2_internal_4 = local_block_2_internal_5;
-local_block_2_internal_6 = local_block_2_internal_0 + local_block_2_internal_2;
-local_block_2_internal_7 = printf("%d\n", local_block_2_internal_6);
-
-local_block_2_internal_8 = local_block_2_internal_2 * local_block_2_internal_4;
-local_block_2_internal_9 = printf("%d\n", local_block_2_internal_8);
-
-local_block_2_internal_10 = local_block_2_internal_4 / local_block_2_internal_0;
-local_block_2_internal_11 = printf("%d\n", local_block_2_internal_10);
-
-return local_block_2_internal_11;
 }

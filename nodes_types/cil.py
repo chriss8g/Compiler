@@ -156,10 +156,12 @@ class ReadNode(InstructionNode):
         self.dest = dest
 
 class OurFunctionNode(InstructionNode):
-    def __init__(self, name, dest, source, type=None):
+    def __init__(self, name, dest, source, type=None, op_nd=None):
         self.name = name
         self.dest = dest
         self.source = source
         self.type = type
+        self.op_nd = op_nd
+
 
 

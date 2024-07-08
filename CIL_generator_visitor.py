@@ -162,13 +162,17 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
     @visitor.when(hulk.ConcatNode)
     def visit(self, node, scope):
-        node.type = node.type if node.type != hulk.BOOL_TYPE else hulk.INT_TYPE
         node.type = node.type if node.type != hulk.STRING_TYPE else 'char*'
-        node.type = node.type if node.type in ['char*', hulk.NUMBER_TYPE, hulk.INT_TYPE] else (node.type + '*')
+
         left = self.visit(node.left, scope)
         right = self.visit(node.right, scope)
+
         dest = self.define_internal_local(node.type)
-        self.register_instruction(cil.AssignNode(dest, f"{left} + {right}"))
+
+        dest2 = self.define_internal_local(node.type)
+        self.register_instruction(cil.OurFunctionNode('concat', dest2, left, node.type, right))
+
+        self.register_instruction(cil.AssignNode(dest, dest2))
         return dest
 
     @visitor.when(hulk.PlusNode)

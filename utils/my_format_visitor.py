@@ -260,7 +260,7 @@ class FormatVisitor(object):
     
     @visitor.when(cil.OurFunctionNode)
     def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__{node.__class__.__name__} {node.dest} = {node.name} {node.source}'
+        ans = '\t' * tabs + f'\\__{node.__class__.__name__} {node.dest} = {node.name} {node.source} ' + node.op_nd if node.op_nd else ""
         return f'{ans}'
     
     @visitor.when(cil.ProgramNode)
