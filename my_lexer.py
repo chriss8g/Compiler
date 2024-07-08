@@ -58,6 +58,7 @@ regular_expresions = [
     ('lt', '<'),
     ('le', '<='),
     ('concat', '@'),
+    ('concat_space', '@@'),
     ('lbrace', '{'),
     ('rbrace', '}'),
     ('lbrake', '['),
