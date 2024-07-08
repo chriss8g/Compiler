@@ -169,9 +169,7 @@ class CodeToAST:
 
         # *************** Producciones de Functions ***************
         # Function
-        stats %= functionx + idx + opar + arg_opt_typed + cpar + opt_typed + func_body + \
-            stats, lambda h, s: [FuncDeclarationNode(
-                s[2], s[7], s[4], s[6])] + s[8]
+        stats %= functionx + idx + opar + arg_opt_typed + cpar + opt_typed + func_body + stats, lambda h, s: [FuncDeclarationNode(s[2], s[7], s[4], s[6])] + s[8]
         # Cuerpo de un function
         func_body %= arrow + expr + semicolon, lambda h, s: s[2]
         func_body %= blockExpr, lambda h, s: s[1]
@@ -254,7 +252,7 @@ class CodeToAST:
         subexpr %= subexpr + lt + term, lambda h, s: LTNode(s[1], s[3])
         subexpr %= subexpr + ge + term, lambda h, s: GENode(s[1], s[3])
         subexpr %= subexpr + le + term, lambda h, s: LENode(s[1], s[3])
-        # subexpr %= subexpr + concat + term, lambda h, s: ConcatNode(s[1], s[3])
+        subexpr %= subexpr + concat + term, lambda h, s: ConcatNode(s[1], s[3])
         subexpr %= subexpr + concat_space + term, lambda h, s: ConcatSpaceNode(s[1], s[3])
         subexpr %= term, lambda h, s: s[1]
 
@@ -320,8 +318,7 @@ if __name__ == "__main__":
 
     text = '''
             {
-                print("Hello World");
-                a.b(3,4).c(aas);
+                print("Hello World " @@ 42);
             }
         '''
 
