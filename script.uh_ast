@@ -1,19 +1,15 @@
 \__ProgramNode [<program>]
-	\__LetNode [<expression>]
-		\__AssignNode:
-			\__IdentifierNode: a
-			\__NumberNode: 10
-		\__WhileNode [<expression>]
-			\_ Condition
-				\__GENode [<expression>]
+	\__BlockNode [<expression>]
+		\__LetNode [<expression>]
+			\__AssignNode:
+				\__IdentifierNode: b
+				\__NumberNode: 7
+			\__PrintNode [<sentence>]
+				\__IdentifierNode: b
+		\__LetNode [<expression>]
+			\__AssignNode:
+				\__IdentifierNode: a
+				\__NumberNode: 20
+			\__BlockNode [<expression>]
+				\__PrintNode [<sentence>]
 					\__IdentifierNode: a
-					\__NumberNode: 0
-			\_ Body
-				\__BlockNode [<expression>]
-					\__PrintNode [<sentence>]
-						\__IdentifierNode: a
-					\DestructNode   [<expression>]
-						\__IdentifierNode: a
-						\__MinusNode [<expression>]
-							\__IdentifierNode: a
-							\__NumberNode: 1
