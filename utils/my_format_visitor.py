@@ -265,6 +265,10 @@ class FormatVisitor(object):
     def visit(self, node, tabs=0):
         return f'{'\t' * tabs}\\__LocalNode {node.type} {node.name}'
     
+    @visitor.when(cil.DataNode)
+    def visit(self, node, tabs=0):
+        return f'{'\t' * tabs}\\__DataNode {node.name} = {node.value}'
+    
     @visitor.when(cil.ParamNode)
     def visit(self, node, tabs=0):
         return f'{'\t' * tabs}\\__ParamNode {node.name}'
@@ -285,5 +289,10 @@ class FormatVisitor(object):
     @visitor.when(cil.AssignNode)
     def visit(self, node, tabs=0):
         ans = '\t' * tabs + f'\\__AsignNode: {node.dest} = {node.source}'
+        return ans
+    
+    @visitor.when(cil.LoadNode)
+    def visit(self, node, tabs=0):
+        ans = '\t' * tabs + f'\\__LoadNode: {node.dest} = LOAD {node.msg}'
         return ans
     
