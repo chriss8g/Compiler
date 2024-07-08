@@ -11,7 +11,6 @@ class FormatVisitor(object):
     def visit(self, node, tabs=0):
         ans = '\t' * tabs + '\\__ProgramNode [<program>]'
         statements = ""
-        print(node.statements)
         if node.statements:
             statements = '\n' + '\n'.join(self.visit(child, tabs + 1) for child in node.statements)
         main = self.visit(node.main,tabs+1)

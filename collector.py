@@ -52,11 +52,11 @@ class Collector(object):
     def visit(self, node, scope):
         sub_scope = scope.create_child_scope()
         for attr in node.attributes:
-            if not sub_scope.is_var_defined(attr.name.name):
+            if not sub_scope.is_var_defined(attr.id.name):
                 self.visit(attr, sub_scope)
-                sub_scope.define_variable(attr.name.name,attr.type)
+                sub_scope.define_variable(attr.id.name,attr.type)
             else:
-                self.errors.append(f"El atributo '{attr.name.name}' ha sido definido más de una vez")
+                self.errors.append(f"El atributo '{attr.id.name}' ha sido definido más de una vez")
         for meth in node.methods:
             if not sub_scope.is_func_defined(meth.name,len(meth.params)):
                 sub_scope.define_function(meth.name,meth.params)
@@ -134,7 +134,7 @@ class Collector(object):
     
     @visitor.when(hulk.CallNode)
     def visit(self, node, scope):
-        if scope.is_func_defined(node.id, len(node.args)):
+        if scope.is_func_defined(node.name, len(node.args)):
             for arg in node.args:
                 self.visit(arg, scope.create_child_scope())
         else:
