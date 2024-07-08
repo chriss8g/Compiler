@@ -36,8 +36,8 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
         self.current_type = type_node
 
         for attribute in node.body.attributes:
-            izq = attribute.name.name + \
-                ".".join(attribute.name.child if attribute.name.child else [])
+            izq = attribute.id.name + \
+                ".".join(attribute.id.child if attribute.id.child else [])
             self.current_type.attributes.append(
                 cil.AssignNode(izq, attribute.value.lex))
 
@@ -387,15 +387,17 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
         node.type = node.type if node.type != hulk.STRING_TYPE else 'char*'
         node.type = node.type if node.type in ['char*', hulk.NUMBER_TYPE, hulk.INT_TYPE] else (node.type + '*')
         
-        elemt = scope.get_variable_info(
-            node.name) if scope.get_variable_info(node.name) else node.name
-        
         
         child = node.child
         
+        func = ''
         if(child):
-            func = self.to_function_name_in_type(child.id, node.type[:-1])
+            func = self.to_function_name_in_type(child.name, node.type[:-1])
             func += '(' + ", ".join(child.args) + ')'
+        else:
+            func = scope.get_variable_info(
+                node.name) if scope.get_variable_info(node.name) else node.name
+        
 
         # while (child):
         #     elemt += "." + child.id + '(' + ".".join(child.args) + ');'
@@ -414,7 +416,7 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
         for child in node.args:
             params.append(self.visit(child, scope.create_child_scope()))
 
-        temp = f'{node.id}(' + ", ".join(child for child in params) + ")"
+        temp = f'{node.name}(' + ", ".join(child for child in params) + ")"
         dest = self.define_internal_local(node.type)
         self.register_instruction(cil.AssignNode(dest, temp))
 

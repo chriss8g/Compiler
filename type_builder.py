@@ -124,8 +124,8 @@ class TypeBuilder:
         return self.errors
     
     @visitor.when(hulk.CallNode)
-    # to ta cabron
     def visit(self,node):
+        node.type = hulk.NUMBER_TYPE
         return self.errors
     
     @visitor.when(hulk.PlusNode)
@@ -135,6 +135,8 @@ class TypeBuilder:
         if node.left.type != hulk.NUMBER_TYPE or node.right.type != hulk.NUMBER_TYPE:
             5#self.errors.append(f"La operación + solo esta definida entre números")
         node.type = hulk.NUMBER_TYPE
+        node.left.type = hulk.NUMBER_TYPE
+        node.right.type = hulk.NUMBER_TYPE
         return self.errors
     
     @visitor.when(hulk.MinusNode)
@@ -144,6 +146,8 @@ class TypeBuilder:
         if node.left.type != hulk.NUMBER_TYPE or node.right.type != hulk.NUMBER_TYPE:
             5#self.errors.append(f"La operación - solo esta definida entre números")
         node.type = hulk.NUMBER_TYPE
+        node.left.type = hulk.NUMBER_TYPE
+        node.right.type = hulk.NUMBER_TYPE
         return self.errors
     
     @visitor.when(hulk.StarNode)
@@ -153,6 +157,8 @@ class TypeBuilder:
         if node.left.type != hulk.NUMBER_TYPE or node.right.type != hulk.NUMBER_TYPE:
             5#self.errors.append(f"La operación * solo esta definida entre números")
         node.type = hulk.NUMBER_TYPE
+        node.left.type = hulk.NUMBER_TYPE
+        node.right.type = hulk.NUMBER_TYPE
         return self.errors
     
     @visitor.when(hulk.DivNode)
@@ -161,7 +167,9 @@ class TypeBuilder:
         self.visit(node.right)
         if node.left.type != hulk.NUMBER_TYPE or node.right.type != hulk.NUMBER_TYPE:
             5#self.errors.append(f"La operación / solo esta definida entre números")
-        node.type = hulk.FLOAT_TYPE
+        node.type = hulk.NUMBER_TYPE
+        node.left.type = hulk.NUMBER_TYPE
+        node.right.type = hulk.NUMBER_TYPE
         return self.errors
     
     @visitor.when(hulk.PrintNode)
