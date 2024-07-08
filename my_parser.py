@@ -59,9 +59,9 @@ class CodeToAST:
         ifx, elsex, elifx, whilex, forx, rangex = self.G.Terminals(
             'if else elif while for range')
         typex, inherits = self.G.Terminals('type inherits')
-        selfx, new = self.G.Terminals('self new')
+        selfx, new, extends = self.G.Terminals('self new extends')
         dot, concat_space, returnx = self.G.Terminals('. @@ return')
-        obrake, cbrake = self.G.Terminals('[ ]')
+        obrake, cbrake, protocol = self.G.Terminals('[ ] protocol')
 
         program = self.G.NonTerminal('<program>', startSymbol=True)
         stats, specialBlock = self.G.NonTerminals(
@@ -74,10 +74,8 @@ class CodeToAST:
             '<atom> <idnode> <specialBlock_list>')
         subexpr, expr, term, factor, atom = self.G.NonTerminals(
             '<subexpr> <expr> <term> <factor> <atom>')
-        protocol, extension, protocolBody = self.G.NonTerminals(
-            '<protocol> <extension> <protocolBody>')
-        extends, arg_typed = self.G.NonTerminals(
-            '<extends> <arg_typed>')
+        extension, protocolBody = self.G.NonTerminals(
+            '<extension> <protocolBody>')
         type_body, inherit_item = self.G.NonTerminals(
             '<type_body> <inherit_item>')
         arg_list, func_body, arg_expr, arg_opt_typed = self.G.NonTerminals(
@@ -86,8 +84,8 @@ class CodeToAST:
             '<attribute_declaration> <method_declaration>')
         opt_typed, arg_opt_typed_list, elifx_expr = self.G.NonTerminals(
             '<opt_typed> <arg_opt_typed_list> <elifx_expr>')
-        recurrent_object, superexpr = self.G.NonTerminals(
-            '<recurrent_object> <superexpr>')
+        recurrent_object, superexpr, arg_typed_list = self.G.NonTerminals(
+            '<recurrent_object> <superexpr> <arg_typed_list>')
 
         terminals = {}
         terminals['let'] = let
@@ -146,6 +144,8 @@ class CodeToAST:
         terminals['self'] = selfx
         terminals['new'] = new
         terminals['dot'] = dot
+        terminals['protocol'] = protocol
+        terminals['extends'] = extends
         terminals['concat_space'] = concat_space
         terminals['return'] = returnx
         terminals['eof'] = self.G.EOF
@@ -156,16 +156,14 @@ class CodeToAST:
         stats %= self.G.Epsilon, lambda h, s: []
 
         # ************ Producciones de Protocols ************
-        # # Protocolo completo
-        # stats %= protocol + idx + extension + obrace + protocolBody + cbrace + stats
-        # # Protocolo sin herencia
-        # stats %= protocol + idx + obrace + protocolBody + cbrace + stats
-        # # Protocolo sin cuerpo
-        # stats %= protocol + idx + obrace + cbrace + stats
-        # # Herencia
-        # extension %= extends + idx
-        # # Cuerpo de un protocolo
-        # protocolBody %= idx + opar + arg_typed + cpar + colon + idx + semicolon + protocolBody
+        # Protocolo completo
+        stats %= protocol + idx + extension + obrace + protocolBody + cbrace + stats, lambda h,s:[ProtocolNode(s[2],s[3],s[5])] + s[7]
+        # Herencia
+        extension %= extends + idx, lambda h,s: s[2]
+        extension %= self.G.Epsilon, lambda h,s:None
+        # Cuerpo de un protocolo
+        protocolBody %= idx + opar + arg_typed_list + cpar + colon + idx + semicolon + protocolBody, lambda h,s: [MethodProtocolNode(s[1],s[3],s[6])] + s[8]
+        protocolBody %= self.G.Epsilon, lambda h,s:[]
 
         # *************** Producciones de Functions ***************
         # Function
@@ -198,6 +196,9 @@ class CodeToAST:
         opt_typed %= colon + idx, lambda h, s: s[2]
         opt_typed %= self.G.Epsilon, lambda h, s: None
 
+        arg_typed_list %= idx + colon + idx, lambda h,s:[(s[1],s[3])]
+        arg_typed_list %= idx + colon + idx + comma + arg_typed_list, lambda h,s:[(s[1],s[3])] + s[5]
+        
         # Lista de Variables
         arg_list %= idnode, lambda h, s: [s[1]]
         arg_list %= idnode + comma + arg_list, lambda h, s: [s[1]] + s[3]
@@ -218,12 +219,12 @@ class CodeToAST:
         # ***************** Expresiones ******************
         expr %= blockExpr, lambda h, s: s[1]
         expr %= let + asig_list + inx + expr, lambda h, s: LetNode(s[2], s[4])
-        expr %= ifx + opar + expr + cpar + specialBlock + elifx_expr + elsex + superexpr, lambda h, s: IfNode(s[3], s[5], s[8], s[6][0], s[6][1])
-        expr %= whilex + opar + expr + cpar + expr, lambda h, s: WhileNode(s[3], s[5])
-        expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + expr + cpar + cpar + expr, lambda h, s: ForRangeToWhile(s)
-        expr %= forx + opar + idnode + inx + idnode + cpar + expr, lambda h, s: ForToWhile(s)
+        # expr %= ifx + opar + expr + cpar + specialBlock + elifx_expr + elsex + superexpr, lambda h, s: IfNode(s[3], s[5], s[8], s[6][0], s[6][1])
+        # expr %= whilex + opar + expr + cpar + expr, lambda h, s: WhileNode(s[3], s[5])
+        # expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + expr + cpar + cpar + expr, lambda h, s: ForRangeToWhile(s)
+        # expr %= forx + opar + idnode + inx + idnode + cpar + expr, lambda h, s: ForToWhile(s)
         expr %= printx + opar + expr + cpar, lambda h, s: PrintNode(s[3])
-        expr %= idnode + asign2 + expr, lambda h, s: DestructNode(s[1], s[3])
+        # expr %= idnode + asign2 + expr, lambda h, s: DestructNode(s[1], s[3])
         expr %= new + idx + opar + arg_expr + cpar, lambda h, s: ObjectCreationNode(s[2], s[4])
         expr %= new + idx + opar + cpar, lambda h, s: ObjectCreationNode(s[2], [])
         expr %= subexpr, lambda h, s: s[1]
@@ -236,7 +237,7 @@ class CodeToAST:
 
         asig_list %= asig1, lambda h, s: [s[1]]
         asig_list %= asig1 + comma + asig_list, lambda h, s: [s[1]] + s[3]
-        asig1 %= idnode + asign1 + expr, lambda h, s: AssignNode(s[1], s[3])
+        asig1 %= idnode + opt_typed + asign1 + expr, lambda h, s: AssignNode(s[1], s[4], s[2])
 
         # Aritmetica
         # subexpr %= subexpr + plus + term, lambda h, s: PlusNode(s[1], s[3])
@@ -268,7 +269,7 @@ class CodeToAST:
         # factor %= rand + opar + cpar, lambda h, s: RandNode()
         factor %= atom, lambda h, s: s[1]
 
-        # atom %= number, lambda h, s: NumberNode(s[1])
+        atom %= number, lambda h, s: NumberNode(s[1])
         # atom %= true, lambda h, s: BoolNode(s[1])
         # atom %= false, lambda h, s: BoolNode(s[1])
         # atom %= pi, lambda h, s: NumberNode(s[1])
@@ -316,10 +317,19 @@ class CodeToAST:
 if __name__ == "__main__":
 
     text = '''
-            {
-                print("I say \\"Hello World\\"");
-                print("Hello \\n World");
+            protocol Equatable extends Hashable {
+                equals(other: Object): Boolean;
             }
+            
+            type Person {
+                a = 5;
+
+                hash() : Number {
+                    print(a);
+                }
+            }
+
+            let x : Hashable = new Person() in print(x.hash());
         '''
 
     codeToAST = CodeToAST(text)

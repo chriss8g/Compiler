@@ -18,6 +18,20 @@ class ProgramNode(Node):
 class StatementNode(Node):
     pass
 
+class ProtocolNode(StatementNode):
+    def __init__(self,name,extension,body):
+        super().__init__()
+        self.name = name
+        self.extension = extension
+        self.body = body
+
+class MethodProtocolNode(Node):
+    def __init__(self, name, args, type):
+        super().__init__()
+        self.name = name
+        self.args = args
+        self.type = type 
+
 class FuncDeclarationNode(StatementNode):
     def __init__(self, name, body, params=[], type=None):
         super().__init__()

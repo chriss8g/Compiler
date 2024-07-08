@@ -5,7 +5,7 @@ import os
 
 class CompilerTestCase(unittest.TestCase):
     def setUp(self):
-        self.compiler_path = 'hulk'  # Ajusta esto a la ubicación de tu compilador
+        self.compiler_path = 'python main.py'  # Ajusta esto a la ubicación de tu compilador
         self.test_dir = os.path.dirname(__file__)
         self.inputs_dir = os.path.join(self.test_dir, 'tests/inputs')
         self.expected_outputs_dir = os.path.join(self.test_dir, 'tests/expected_outputs')
