@@ -1,11 +1,19 @@
 \__ProgramNode [<program>]
-	\__PrintNode [<sentence>]
-		\__StarNode [<expression>]
-			\__StarNode [<expression>]
-				\__MinusNode [<expression>]
-					\__PlusNode [<expression>]
-						\__NumberNode: 1
-						\__NumberNode: 3
-					\__NumberNode: 3
-				\__NumberNode: 4
-			\__NumberNode: 5
+	\__LetNode [<expression>]
+		\__AssignNode:
+			\__IdentifierNode: a
+			\__NumberNode: 10
+		\__WhileNode [<expression>]
+			\_ Condition
+				\__GENode [<expression>]
+					\__IdentifierNode: a
+					\__NumberNode: 0
+			\_ Body
+				\__BlockNode [<expression>]
+					\__PrintNode [<sentence>]
+						\__IdentifierNode: a
+					\DestructNode   [<expression>]
+						\__IdentifierNode: a
+						\__MinusNode [<expression>]
+							\__IdentifierNode: a
+							\__NumberNode: 1

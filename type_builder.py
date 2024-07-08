@@ -82,6 +82,7 @@ class TypeBuilder:
     def visit(self,node):
         for expr in node.body:
             self.visit(expr)
+        node.type = node.body[-1].type
         return self.errors
     
     @visitor.when(hulk.LetNode)
@@ -160,12 +161,13 @@ class TypeBuilder:
         self.visit(node.right)
         if node.left.type != hulk.NUMBER_TYPE or node.right.type != hulk.NUMBER_TYPE:
             5#self.errors.append(f"La operación / solo esta definida entre números")
+        node.type = hulk.FLOAT_TYPE
         return self.errors
     
     @visitor.when(hulk.PrintNode)
     def visit(self,node):
         self.visit(node.expr)
-        node.type = node.expr.type
+        node.type = node.expr.type if node.expr.type else hulk.INT_TYPE
         return self.errors
     
     @visitor.when(hulk.PowNode)
@@ -286,6 +288,7 @@ class TypeBuilder:
         self.visit(node.expr)
         if node.expr.type != hulk.NUMBER_TYPE:
             5#self.errors.append(f"La función seno solo está definida en números")
+        node.type = hulk.FLOAT_TYPE
         return self.errors
     
     @visitor.when(hulk.CosNode)
@@ -293,6 +296,8 @@ class TypeBuilder:
         self.visit(node.expr)
         if node.expr.type != hulk.NUMBER_TYPE:
             5#self.errors.append(f"La función coseno solo está definida en números")
+        node.type = hulk.FLOAT_TYPE
+        
         return self.errors
     
     @visitor.when(hulk.SqrtNode)
@@ -300,6 +305,7 @@ class TypeBuilder:
         self.visit(node.expr)
         if node.expr.type != hulk.NUMBER_TYPE:
             5#self.errors.append(f"La función raíz cuadrada solo está definida en números")
+        node.type = hulk.FLOAT_TYPE
         return self.errors
     
     @visitor.when(hulk.ExpNode)
@@ -307,6 +313,7 @@ class TypeBuilder:
         self.visit(node.expr)
         if node.expr.type != hulk.NUMBER_TYPE:
             5#self.errors.append(f"La función exponencial solo está definida en números")
+        node.type = hulk.FLOAT_TYPE
         return self.errors
     
     @visitor.when(hulk.LogNode)
@@ -314,6 +321,7 @@ class TypeBuilder:
         self.visit(node.expr)
         if node.expr.type != hulk.NUMBER_TYPE:
             5#self.errors.append(f"La función logaritmo solo está definida en números")
+        node.type = hulk.FLOAT_TYPE
         return self.errors
     
     

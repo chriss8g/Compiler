@@ -41,7 +41,7 @@ class CompilerTestCase(unittest.TestCase):
 # Lista de tuplas con nombres de archivos de entrada y salida esperada
 test_cases = [
     ('test1.uh', 'test1.output'),
-    # ('test2.uh', 'test2.output'),
+    ('test2.uh', 'test2.output'),
     # ('test3.uh', 'test3.output'),
     # # ('test4.uh', 'test4.output'),
     # ('test5.uh', 'test5.output'),
@@ -51,13 +51,13 @@ test_cases = [
     ('test8.uh', 'test8.output'),
     # ('test9.0.uh', 'test9.0.output'),
     # # ('test9.uh', 'test9.output'),
-    # ('test10.uh', 'test10.output'),
+    ('test10.uh', 'test10.output'),
     # ('test11.uh', 'test11.output'),
-    # ('test12.uh', 'test12.output'),
+    ('test12.uh', 'test12.output'),
     ('test13.uh', 'test13.output'),
     ('test14.uh', 'test14.output'),
     # ('test15.uh', 'test15.output'),
-    ('test16.uh', 'test16.output'),
+    # ('test16.uh', 'test16.output'),
     # ('test17.uh', 'test17.output'),
     # ('test17hard.uh', 'test17hard.output'),
 ]

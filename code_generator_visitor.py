@@ -79,7 +79,9 @@ class CodeGeneratorVisitor(object):
                 return f'{node.dest} = printf("%f\\n", {node.source});\n'
             elif node.type == hulk.STRING_TYPE:
                 return f'{node.dest} = printf("%c\\n", {node.source});\n'
-        elif node.name in ['cos', 'sin', 'exp']:
+            else:
+                return f'{node.dest} = printf("%d\\n", {node.source});\n'
+        elif node.name in ['cos', 'sin', 'exp', 'sqrt', 'log']:
             header = "#include <math.h>"
             if header not in self.headers:
                 self.headers.append(header)
@@ -91,6 +93,7 @@ class CodeGeneratorVisitor(object):
                            for param in node.params)
         localvars = "\n".join(self.visit(
             var, scope.create_child_scope()) for var in node.localvars)
+        # print(node.instructions)
         instructions = "\n".join(self.visit(
             inst, scope.create_child_scope()) for inst in node.instructions)
         return f'int {node.name}({params}){{ \n{localvars}\n{instructions}\n}}'

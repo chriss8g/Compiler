@@ -188,10 +188,10 @@ class CodeToAST:
         # method_declaration %= idx + opar + arg_opt_typed + cpar + opt_typed + func_body, lambda h,s:MethodNode(s[1], [s[6]], s[3], s[5])
 
         # Lista de parámetros opcionalmente tipados
-        # arg_opt_typed_list %= self.G.Epsilon, lambda h,s:[]
-        # arg_opt_typed_list %= opar + arg_opt_typed + cpar, lambda h,s:s[2]
-        # arg_opt_typed %= idx + opt_typed, lambda h,s:[(s[1],s[2])]
-        # arg_opt_typed %= idx + opt_typed + comma + arg_opt_typed, lambda h,s:[(s[1],s[2])] + s[4]
+        arg_opt_typed_list %= self.G.Epsilon, lambda h,s:[]
+        arg_opt_typed_list %= opar + arg_opt_typed + cpar, lambda h,s:s[2]
+        arg_opt_typed %= idx + opt_typed, lambda h,s:[(s[1],s[2])]
+        arg_opt_typed %= idx + opt_typed + comma + arg_opt_typed, lambda h,s:[(s[1],s[2])] + s[4]
 
         opt_typed %= colon + idx, lambda h, s: s[2]
         opt_typed %= self.G.Epsilon, lambda h, s: None
@@ -227,8 +227,8 @@ class CodeToAST:
         # expr %= forx + opar + idnode + inx + idnode + \
         #     cpar + expr, lambda h, s: ForToWhile(s)
         expr %= printx + opar + expr + cpar, lambda h, s: PrintNode(s[3])
-        # expr %= recurrent_object + asign2 + \
-        #     expr, lambda h, s: DestructNode(s[1], s[3])
+        expr %= recurrent_object + asign2 + \
+            expr, lambda h, s: DestructNode(s[1], s[3])
         # expr %= new + idx + opar + arg_expr + \
         #     cpar, lambda h, s: ObjectCreationNode(s[2], s[4])
         # expr %= new + idx + opar + \
@@ -256,7 +256,7 @@ class CodeToAST:
         # subexpr %= subexpr + ne + term, lambda h, s: NENode(s[1], s[3])
         # subexpr %= subexpr + gt + term, lambda h, s: GTNode(s[1], s[3])
         # subexpr %= subexpr + lt + term, lambda h, s: LTNode(s[1], s[3])
-        # subexpr %= subexpr + ge + term, lambda h, s: GENode(s[1], s[3])
+        subexpr %= subexpr + ge + term, lambda h, s: GENode(s[1], s[3])
         subexpr %= subexpr + le + term, lambda h, s: LENode(s[1], s[3])
         # subexpr %= subexpr + concat + term, lambda h, s: ConcatNode(s[1], s[3])
         subexpr %= subexpr + concat_space + \
@@ -264,7 +264,7 @@ class CodeToAST:
         subexpr %= term, lambda h, s: s[1]
 
         term %= term + star + factor, lambda h, s: StarNode(s[1], s[3])
-        # term %= term + div + factor, lambda h, s: DivNode(s[1], s[3])
+        term %= term + div + factor, lambda h, s: DivNode(s[1], s[3])
         # term %= term + powx + factor, lambda h, s: PowNode(s[1], s[3])
         # term %= term + mod + factor, lambda h, s: ModNode(s[1], s[3])
         term %= factor, lambda h, s: s[1]
