@@ -26,7 +26,6 @@ def ForRangeToWhile(s):
     # return let_term
     return let_term
 
-
 def ForToWhile(s):
     # expr %= forx + opar + idnode + inx + idnode + cpar + expr, lambda h, s: ForToWhile(s)
     
@@ -39,6 +38,19 @@ def ForToWhile(s):
     let = LetNode([assig],body)
     whilex = WhileNode(arr_next,let)
     return whilex
+
+def MultipleLet(s):
+    # expr %= let + asig_list + inx + expr, lambda h, s: LetNode(s[2], s[4])
+    
+    assign_list = s[2]
+    let = LetNode([assign_list[0]],None)
+    tmp = let
+    for i in range(1,len(assign_list)-1):
+        tmp.body = LetNode([assign_list[i]],None)
+        tmp = tmp.body
+    
+    tmp.body = LetNode([assign_list[len(assign_list)-1]],s[4])
+    return let
 
 
 class CodeToAST:
@@ -221,7 +233,8 @@ class CodeToAST:
 
         # ***************** Expresiones ******************
         expr %= blockExpr, lambda h, s: s[1]
-        expr %= let + asig_list + inx + expr, lambda h, s: LetNode(s[2], s[4])
+        # expr %= let + asig_list + inx + expr, lambda h, s: LetNode(s[2], s[4])
+        expr %= let + asig_list + inx + expr, lambda h, s: MultipleLet(s)
         expr %= ifx + opar + expr + cpar + specialBlock + elifx_expr + elsex + superexpr, lambda h, s: IfNode(s[3], s[5], s[8], s[6][0], s[6][1])
         expr %= whilex + opar + expr + cpar + expr, lambda h, s: WhileNode(s[3], s[5])
         expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + expr + cpar + cpar + expr, lambda h, s: ForRangeToWhile(s)
@@ -327,12 +340,17 @@ class CodeToAST:
 if __name__ == "__main__":
 
     text = '''
-            print(.658);
+            let a=4,b=3 in {
+                print(a);
+            };
         '''
 
     codeToAST = CodeToAST(text)
 
-    print(codeToAST.error_msg)
+    if codeToAST.error_msg == 'Clean Code':
+        print(codeToAST)
+    else:
+        print(codeToAST.error_msg)
 
     # # Especifica la ruta del archivo donde quieres escribir
     # ruta_del_archivo = "tests/parser/expected_out/test_18.txt"
