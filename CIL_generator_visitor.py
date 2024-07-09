@@ -36,10 +36,9 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
         self.current_type = type_node
 
         for attribute in node.body.attributes:
-            izq = attribute.id.name + \
-                ".".join(attribute.id.child if attribute.id.child else [])
+            izq = attribute.id.name
             self.current_type.attributes.append(
-                cil.AssignNode(izq, attribute.value.lex))
+                cil.AssignNode(izq, self.visit(attribute.value, scope.create_child_scope())))
 
         for method in node.body.methods:
             function_name = self.to_function_name_in_type(
@@ -173,6 +172,26 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
         self.register_instruction(cil.OurFunctionNode('concat', dest2, left, node.type, right))
 
         self.register_instruction(cil.AssignNode(dest, dest2))
+        return dest
+    
+    @visitor.when(hulk.ConcatSpaceNode)
+    def visit(self, node, scope):
+        node.type = node.type if node.type != hulk.STRING_TYPE else 'char*'
+
+        left = self.visit(node.left, scope)
+        right = self.visit(node.right, scope)
+        space = self.visit(hulk.StringNode("\" \""),scope)
+
+        dest = self.define_internal_local(node.type)
+
+        dest2 = self.define_internal_local(node.type)
+        self.register_instruction(cil.OurFunctionNode('concat', dest2, left, node.type, space))
+
+        dest3 = self.define_internal_local(node.type)
+        self.register_instruction(cil.OurFunctionNode('concat', dest3, dest2, node.type, right))
+
+        self.register_instruction(cil.AssignNode(dest, dest3))
+
         return dest
 
     @visitor.when(hulk.PlusNode)
@@ -315,9 +334,7 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
     @visitor.when(hulk.StringNode)
     def visit(self, node, scope):
-        node.type = node.type if node.type != hulk.BOOL_TYPE else hulk.INT_TYPE
         node.type = node.type if node.type != hulk.STRING_TYPE else 'char*'
-        node.type = node.type if node.type in ['char*', hulk.NUMBER_TYPE, hulk.INT_TYPE] else (node.type + '*')
         source = node.lex
         msg = self.register_data(source)
         dest = self.define_internal_local(node.type)
@@ -403,6 +420,7 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
     def visit(self, node, scope):
         node.type = node.type if node.type != hulk.BOOL_TYPE else hulk.INT_TYPE
         node.type = node.type if node.type != hulk.STRING_TYPE else 'char*'
+        print(node.name)
         node.type = node.type if node.type in ['char*', hulk.NUMBER_TYPE, hulk.INT_TYPE] else (node.type + '*')
         
         

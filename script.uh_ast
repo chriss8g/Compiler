@@ -1,15 +1,5 @@
 \__ProgramNode [<program>]
-	\__BlockNode [<expression>]
-		\__LetNode [<expression>]
-			\__AssignNode:
-				\__IdentifierNode: b
-				\__NumberNode: 7
-			\__PrintNode [<expression>]
-				\__IdentifierNode: b
-		\__LetNode [<expression>]
-			\__AssignNode:
-				\__IdentifierNode: a
-				\__NumberNode: 20
-			\__BlockNode [<expression>]
-				\__PrintNode [<expression>]
-					\__IdentifierNode: a
+	\__PrintNode [<expression>]
+		\__ConcatSpaceNode [<expression>]
+			\__StringNode: "dfs"
+			\__StringNode: "fdg"

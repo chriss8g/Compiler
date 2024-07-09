@@ -16,7 +16,7 @@ def main(input_file):
 
     codeToAST = CodeToAST(text)
     
-    if not codeToAST:
+    if not codeToAST.ast:
         print(codeToAST.error_msg)
         return
 
