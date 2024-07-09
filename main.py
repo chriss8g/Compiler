@@ -7,6 +7,7 @@ import nodes_types.cil as cil
 import os
 from collector import Collector
 from type_builder import TypeBuilder
+from nodes_types import hulk_types as hulk
 
 def main(input_file):
     with open(input_file, 'r') as file:
@@ -26,6 +27,9 @@ def main(input_file):
     collector = Collector()
     errors = []
     errors = errors + collector.visit(codeToAST.ast)
+    collector.context.create_type(hulk.BOOL_TYPE)
+    collector.context.create_type(hulk.NUMBER_TYPE)
+    collector.context.create_type(hulk.STRING_TYPE)
     type_builder = TypeBuilder(collector.context)
     errors = errors + type_builder.visit(codeToAST.ast)
     if(len(errors) > 0):

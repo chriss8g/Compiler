@@ -132,6 +132,7 @@ class TypeBuilder:
             # self.var.append(VariableInfo(arg.id.name, arg.id.type))
         self.visit(node.body)
         node.type = node.body.type
+        print(node.type)
         return self.errors
     
     @visitor.when(hulk.WhileNode)
@@ -203,6 +204,8 @@ class TypeBuilder:
         if node.child:
             self.recurrent_type = self.context.get_type(node.type)
             self.visit(node.child)
+            self.recurrent_type = self.context.get_type(node.child.type)
+            print(self.recurrent_type.name)
         return self.errors
     
     @visitor.when(hulk.PlusNode)
@@ -277,7 +280,7 @@ class TypeBuilder:
         if node.expr.type:
             try:
                 if node.expr.child:
-                    node.type = self.recurrent_type
+                    node.type = self.recurrent_type.name
             except:
                 node.type = node.expr.type
         return self.errors
@@ -471,6 +474,8 @@ class TypeBuilder:
             if node.type:
                 self.recurrent_type = self.context.get_type(node.type)
                 self.visit(node.child)
+                self.recurrent_type = self.context.get_type(node.child.type)
+                print(self.recurrent_type.name)
                 # self.recurrent_type = None
         return self.errors
     
