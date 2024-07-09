@@ -10,13 +10,14 @@
 			\__AssignNode:
 				\__IdentifierNode: number : None
 				\__StringNode: "42"
-			\__AssignNode:
-				\__IdentifierNode: text : None
-				\__StringNode: "The meaning of life is"
-			\__PrintNode [<expression>]
-				\__ConcatSpaceNode [<expression>]
+			\__LetNode [<expression>]
+				\__AssignNode:
 					\__IdentifierNode: text : None
-					\__IdentifierNode: number : None
+					\__StringNode: "The meaning of life is"
+				\__PrintNode [<expression>]
+					\__ConcatSpaceNode [<expression>]
+						\__IdentifierNode: text : None
+						\__IdentifierNode: number : None
 		\__LetNode [<expression>]
 			\__AssignNode:
 				\__IdentifierNode: number : None
