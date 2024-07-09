@@ -321,15 +321,7 @@ class CodeToAST:
 if __name__ == "__main__":
 
     text = '''
-            type MyClass {
-                a = 5;
-                
-                myMethod (a,b) {
-                    print(self.my());
-                }
-            }
-            
-            print(a);
+            print(658);
         '''
 
     codeToAST = CodeToAST(text)
