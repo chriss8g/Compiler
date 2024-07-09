@@ -6,7 +6,9 @@
 			Methods
 function_method_at_MyClass();
 \__.DATA
-
+	\__DataNode data_0 = "dfs" 
+	\__DataNode data_1 = "fdg" 
+	\__DataNode data_2 = " "
 \__.CODE
 	 \__FunctionNode function <function_method_at_MyClass>
 		 \__params
