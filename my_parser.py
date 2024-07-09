@@ -43,14 +43,18 @@ def MultipleLet(s):
     # expr %= let + asig_list + inx + expr, lambda h, s: LetNode(s[2], s[4])
     
     assign_list = s[2]
-    let = LetNode([assign_list[0]],None)
-    tmp = let
-    for i in range(1,len(assign_list)-1):
-        tmp.body = LetNode([assign_list[i]],None)
-        tmp = tmp.body
     
-    tmp.body = LetNode([assign_list[len(assign_list)-1]],s[4])
-    return let
+    if len(assign_list) > 1:
+        let = LetNode([assign_list[0]],None)
+        tmp = let
+        for i in range(1,len(assign_list)-1):
+            tmp.body = LetNode([assign_list[i]],None)
+            tmp = tmp.body
+        tmp.body = LetNode([assign_list[len(assign_list)-1]],s[4])
+        return let
+    
+
+    return LetNode([assign_list[0]],s[4])
 
 
 class CodeToAST:
