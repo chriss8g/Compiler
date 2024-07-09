@@ -1,20 +1,99 @@
 \__.TYPES
 
 \__.DATA
-	\__DataNode data_0 = "The meaning of life is " 
-	\__DataNode data_1 = "aaaa"
+
 \__.CODE
 	 \__FunctionNode function <main>
 		 \__params
 
 		 \__local_vars
-			\__LocalNode char* local__internal_0
-			\__LocalNode char* local__internal_1
-			\__LocalNode char* local__internal_2
-			\__LocalNode char* local__internal_3
+			\__LocalNode int local__internal_0
+			\__LocalNode int local__internal_1
+			\__LocalNode int local__internal_2
+			\__LocalNode int local__internal_3
 		 \__instructions
-			\__LoadNode: local__internal_0 = LOAD data_0
-			\__LoadNode: local__internal_1 = LOAD data_1
-			\__AsignNode: local__internal_2 = local__internal_0 + local__internal_1
-			\__OurFunctionNode local__internal_3 = printf local__internal_2
-			\__ReturnNode return 0
+			\__AsignNode: local__internal_0 = 6
+			\__AsignNode: local__internal_1 = function_block_1(local__internal_0)
+			\__AsignNode: local__internal_2 = 5
+			\__AsignNode: local__internal_3 = function_block_3(local__internal_2)
+			\__ReturnNode return 0 
+	 \__FunctionNode function <function_block_1>
+		 \__params
+			\__ParamNode int a
+		 \__local_vars
+			\__LocalNode int local_block_1_internal_0
+			\__LocalNode int local_block_1_internal_1
+			\__LocalNode int local_block_1_internal_2
+			\__LocalNode int local_block_1_internal_3
+		 \__instructions
+			\__AsignNode: local_block_1_internal_0 = a
+			\__AsignNode: local_block_1_internal_1 = 7
+			\__AsignNode: local_block_1_internal_2 = local_block_1_internal_0 * local_block_1_internal_1
+			\__AsignNode: local_block_1_internal_3 = function_block_2(a, local_block_1_internal_2)
+			\__ReturnNode return local_block_1_internal_3 
+	 \__FunctionNode function <function_block_2>
+		 \__params
+			\__ParamNode int a
+			\__ParamNode int b
+		 \__local_vars
+			\__LocalNode int local_block_2_internal_0
+			\__LocalNode int local_block_2_internal_1
+			\__LocalNode int local_block_2_internal_2
+		 \__instructions
+			\__AsignNode: local_block_2_internal_0 = a
+			\__AsignNode: local_block_2_internal_1 = b
+			\__OurFunctionNode local_block_2_internal_2 = printf local_block_2_internal_1 
+			\__ReturnNode return local_block_2_internal_2 
+	 \__FunctionNode function <function_block_3>
+		 \__params
+			\__ParamNode int a
+		 \__local_vars
+			\__LocalNode int local_block_3_internal_0
+			\__LocalNode int local_block_3_internal_1
+			\__LocalNode int local_block_3_internal_2
+		 \__instructions
+			\__AsignNode: local_block_3_internal_0 = a
+			\__AsignNode: local_block_3_internal_1 = 10
+			\__AsignNode: local_block_3_internal_2 = function_block_4(a, local_block_3_internal_1)
+			\__ReturnNode return local_block_3_internal_2 
+	 \__FunctionNode function <function_block_4>
+		 \__params
+			\__ParamNode int a
+			\__ParamNode int b
+		 \__local_vars
+			\__LocalNode int local_block_4_internal_0
+			\__LocalNode int local_block_4_internal_1
+			\__LocalNode int local_block_4_internal_2
+			\__LocalNode int local_block_4_internal_3
+		 \__instructions
+			\__AsignNode: local_block_4_internal_0 = a
+			\__AsignNode: local_block_4_internal_1 = b
+			\__AsignNode: local_block_4_internal_2 = 20
+			\__AsignNode: local_block_4_internal_3 = function_block_5(a, b, local_block_4_internal_2)
+			\__ReturnNode return local_block_4_internal_3 
+	 \__FunctionNode function <function_block_5>
+		 \__params
+			\__ParamNode int a
+			\__ParamNode int b
+			\__ParamNode int c
+		 \__local_vars
+			\__LocalNode int local_block_5_internal_0
+			\__LocalNode int local_block_5_internal_1
+			\__LocalNode int local_block_5_internal_2
+			\__LocalNode int local_block_5_internal_3
+			\__LocalNode int local_block_5_internal_4
+			\__LocalNode int local_block_5_internal_5
+			\__LocalNode int local_block_5_internal_6
+			\__LocalNode int local_block_5_internal_7
+			\__LocalNode int local_block_5_internal_8
+		 \__instructions
+			\__AsignNode: local_block_5_internal_0 = a
+			\__AsignNode: local_block_5_internal_1 = b
+			\__AsignNode: local_block_5_internal_2 = c
+			\__AsignNode: local_block_5_internal_3 = local_block_5_internal_0 + local_block_5_internal_1
+			\__OurFunctionNode local_block_5_internal_4 = printf local_block_5_internal_3 
+			\__AsignNode: local_block_5_internal_5 = local_block_5_internal_1 * local_block_5_internal_2
+			\__OurFunctionNode local_block_5_internal_6 = printf local_block_5_internal_5 
+			\__AsignNode: local_block_5_internal_7 = local_block_5_internal_2 / local_block_5_internal_0
+			\__OurFunctionNode local_block_5_internal_8 = printf local_block_5_internal_7 
+			\__ReturnNode return local_block_5_internal_8

@@ -9,6 +9,8 @@ lettersUpperCase = '|'.join(chr(n) for n in range(ord('A'),ord('Z')+1))
 # Expresiones regulares
 regular_expresions = [
     ('function', 'function'),
+    ('protocol', 'protocol'),
+    ('extends', 'extends'),
     ('inherits', 'inherits'),
     ('type', 'type'),
     ('return', 'return'),
@@ -34,9 +36,9 @@ regular_expresions = [
     ('while', 'while'),
     ('for', 'for'),
     ('range', 'range'),
-    ('num', f'0|({nonzero_digits})(0|{nonzero_digits})*'),
+    ('num', f'0|({nonzero_digits})(0|{nonzero_digits})*|0.(0|{nonzero_digits})*|({nonzero_digits})(0|{nonzero_digits})*.({nonzero_digits})(0|{nonzero_digits})*'),
     ('id', f'({lettersLowerCase}|{lettersUpperCase}|_)({lettersLowerCase}|{lettersUpperCase}|_|0|{nonzero_digits})*'),
-    ('string', f'"({lettersLowerCase}|{lettersUpperCase}|0|{nonzero_digits}|@|##|#||=|:|,|#(|#)|+|-|#*|/|^|%|#$| |!|<|>|@|;|[|])*"'),
+    ('string', f'"({lettersLowerCase}|{lettersUpperCase}|0|{nonzero_digits}|@|##|#||=|:|,|#(|#)|+|-|#*|/|^|%|#$| |\\"|!|<|>|\\|@|;|[|])*"'),
     ('asign1','='),
     ('asign2',':='),
     ('comma', ','),

@@ -15,6 +15,10 @@ def main(input_file):
     
 
     codeToAST = CodeToAST(text)
+    
+    if not codeToAST:
+        print(codeToAST.error_msg)
+        return
 
     with open('script.uh_ast', 'w') as output_file:
         output_file.write(str(codeToAST))

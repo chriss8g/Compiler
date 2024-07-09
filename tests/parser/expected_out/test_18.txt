@@ -1,0 +1,24 @@
+\__ProgramNode [<program>]
+	\__ProtocolNode protocol Equatable : Hashable  [<statement>]
+		\__Body
+			\__MethodProtocolNode equals : Boolean  [<statement>]
+				Arguments
+					('other', 'Object')
+	\__TypeNode: type Person inherits None [<statement>]
+		\__TypeBodyNode
+			Atributes
+				\__AttributeNode id = <expr>
+					\__IdentifierNode: a
+					\__NumberNode: 5
+			Methods
+				\__MethodNode: function hash : Number => <body>
+					\__BlockNode [<expression>]
+						\__PrintNode [<expression>]
+							\__IdentifierNode: a
+	\__LetNode [<expression>]
+		\__AssignNode : Hashable
+			\__IdentifierNode: x
+			\_ObjectCreationNode: new Person  [<expression>]
+		\__PrintNode [<expression>]
+			\__IdentifierNode: x
+				\__CallNode function hash   [<expression>]

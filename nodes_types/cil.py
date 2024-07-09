@@ -29,7 +29,8 @@ class FunctionNode(Node):
         self.instructions = instructions
 
 class ParamNode(Node):
-    def __init__(self, name):
+    def __init__(self, name, typex):
+        self.type = typex
         self.name = name
 
 class LocalNode(Node):
@@ -156,10 +157,12 @@ class ReadNode(InstructionNode):
         self.dest = dest
 
 class OurFunctionNode(InstructionNode):
-    def __init__(self, name, dest, source, type=None):
+    def __init__(self, name, dest, source, type=None, op_nd=None):
         self.name = name
         self.dest = dest
         self.source = source
         self.type = type
+        self.op_nd = op_nd
+
 
 

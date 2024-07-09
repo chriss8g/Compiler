@@ -1,0 +1,6 @@
+type MyClass {
+    a = 5;
+    method() => print(2);
+}
+
+let a = new MyClass() in a.method();

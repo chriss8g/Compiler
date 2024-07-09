@@ -150,6 +150,7 @@ class TypeBuilder:
             self.errors.append(f"No se puede asignar un '{node.expr.type}' a un '{node.id.type}'")
         else: 
             node.type = node.id.type
+        node.type = node.expr.type
         return self.errors
     
     @visitor.when(hulk.CallNode)
@@ -194,6 +195,8 @@ class TypeBuilder:
         if node.left.type != hulk.NUMBER_TYPE or node.right.type != hulk.NUMBER_TYPE:
             self.errors.append(f"La operación + solo esta definida entre números")
         node.type = hulk.NUMBER_TYPE
+        node.left.type = hulk.NUMBER_TYPE
+        node.right.type = hulk.NUMBER_TYPE
         return self.errors
     
     @visitor.when(hulk.MinusNode)
@@ -209,6 +212,8 @@ class TypeBuilder:
         if node.left.type != hulk.NUMBER_TYPE or node.right.type != hulk.NUMBER_TYPE:
             self.errors.append(f"La operación - solo esta definida entre números")
         node.type = hulk.NUMBER_TYPE
+        node.left.type = hulk.NUMBER_TYPE
+        node.right.type = hulk.NUMBER_TYPE
         return self.errors
     
     @visitor.when(hulk.StarNode)
@@ -224,6 +229,8 @@ class TypeBuilder:
         if node.left.type != hulk.NUMBER_TYPE or node.right.type != hulk.NUMBER_TYPE:
             self.errors.append(f"La operación * solo esta definida entre números")
         node.type = hulk.NUMBER_TYPE
+        node.left.type = hulk.NUMBER_TYPE
+        node.right.type = hulk.NUMBER_TYPE
         return self.errors
     
     @visitor.when(hulk.DivNode)
