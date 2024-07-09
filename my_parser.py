@@ -239,10 +239,10 @@ class CodeToAST:
         expr %= blockExpr, lambda h, s: s[1]
         # expr %= let + asig_list + inx + expr, lambda h, s: LetNode(s[2], s[4])
         expr %= let + asig_list + inx + expr, lambda h, s: MultipleLet(s)
-        # expr %= ifx + opar + expr + cpar + specialBlock + elifx_expr + elsex + superexpr, lambda h, s: IfNode(s[3], s[5], s[8], s[6][0], s[6][1])
-        # expr %= whilex + opar + expr + cpar + expr, lambda h, s: WhileNode(s[3], s[5])
-        # expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + expr + cpar + cpar + expr, lambda h, s: ForRangeToWhile(s)
-        # expr %= forx + opar + idnode + inx + idnode + cpar + expr, lambda h, s: ForToWhile(s)
+        expr %= ifx + opar + expr + cpar + specialBlock + elifx_expr + elsex + superexpr, lambda h, s: IfNode(s[3], s[5], s[8], s[6][0], s[6][1])
+        expr %= whilex + opar + expr + cpar + expr, lambda h, s: WhileNode(s[3], s[5])
+        expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + expr + cpar + cpar + expr, lambda h, s: ForRangeToWhile(s)
+        expr %= forx + opar + idnode + inx + idnode + cpar + expr, lambda h, s: ForToWhile(s)
         expr %= printx + opar + expr + cpar, lambda h, s: PrintNode(s[3])
         expr %= idnode + asign2 + expr, lambda h, s: DestructNode(s[1], s[3])
         expr %= new + idx + opar + arg_expr + cpar, lambda h, s: ObjectCreationNode(s[2], s[4])
@@ -275,8 +275,8 @@ class CodeToAST:
         subexpr %= subexpr + concat_space + term, lambda h, s: ConcatSpaceNode(s[1], s[3])
         subexpr %= term, lambda h, s: s[1]
 
-        # term %= term + star + factor, lambda h, s: StarNode(s[1], s[3])
-        # term %= term + div + factor, lambda h, s: DivNode(s[1], s[3])
+        term %= term + star + factor, lambda h, s: StarNode(s[1], s[3])
+        term %= term + div + factor, lambda h, s: DivNode(s[1], s[3])
         # term %= term + powx + factor, lambda h, s: PowNode(s[1], s[3])
         # term %= term + mod + factor, lambda h, s: ModNode(s[1], s[3])
         term %= factor, lambda h, s: s[1]
