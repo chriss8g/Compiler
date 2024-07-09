@@ -1,1 +1,5 @@
-print("The meaning of life is " @ "aaaa");
+type lala {
+    a = 0;
+    lalal (x) => x +1;
+}
+let a = new lala() in print(a.lalal(5));

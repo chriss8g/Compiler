@@ -134,7 +134,7 @@ class Collector(object):
     
     @visitor.when(hulk.CallNode)
     def visit(self, node, scope):
-        if scope.is_func_defined(node.id, len(node.args)):
+        if scope.is_func_defined(node.name, len(node.args)):
             for arg in node.args:
                 self.visit(arg, scope.create_child_scope())
         else:

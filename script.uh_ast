@@ -1,5 +1,35 @@
 \__ProgramNode [<program>]
+	\__FuncDeclarationNode: function tan : None => <body> [<statement>]
+		Params
+		('x', None)
+		Body
+		\__DivNode [<expression>]
+			\__SinNode   [<expression>]
+				\__IdentifierNode: x
+			\__CosNode   [<expression>]
+				\__IdentifierNode: x
+	\__FuncDeclarationNode: function cot : None => <body> [<statement>]
+		Params
+		('x', None)
+		Body
+		\__DivNode [<expression>]
+			\__NumberNode: 1
+			\__CallNode function tan   [<expression>]
+				\_ Arguments
+					\__IdentifierNode: x
 	\__PrintNode [<expression>]
-		\__ConcatNode [<expression>]
-			\__StringNode: "The meaning of life is "
-			\__StringNode: "aaaa"
+		\__PlusNode [<expression>]
+			\__PowNode [<expression>]
+				\__CallNode function tan   [<expression>]
+					\_ Arguments
+						\__DivNode [<expression>]
+							\__NumberNode: PI
+							\__NumberNode: 4
+				\__NumberNode: 2
+			\__PowNode [<expression>]
+				\__CallNode function cot   [<expression>]
+					\_ Arguments
+						\__DivNode [<expression>]
+							\__NumberNode: PI
+							\__NumberNode: 4
+				\__NumberNode: 2
