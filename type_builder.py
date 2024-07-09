@@ -170,7 +170,11 @@ class TypeBuilder:
     @visitor.when(hulk.CallNode)
     def visit(self,node):
         if self.current_type:
-            fun = self.current_type.get_method(node.name)
+            try:
+                fun = self.current_type.get_method(node.name)
+            except:
+                self.errors.append(f"El método '{node.name}' no está definido en '{self.current_type.name}'")
+                return self.errors
             for i,arg in enumerate(node.args):
                 self.visit(arg)
                 if arg.type != fun.param_types[i]:
@@ -181,7 +185,11 @@ class TypeBuilder:
                         self.errors.append(f"La función '{fun.name}' esperaba como argumento número {i + 1} un '{fun.param_types[i]}' y recibió un '{arg.type}'")
             node.type = fun.return_type
         else:
-            fun = self.context.get_func(node.name)
+            try:
+                fun = self.context.get_func(node.name)
+            except:
+                self.errors.append(f"La función '{node.name}' no está definida")
+                return self.errors
             for i,arg in enumerate(node.args):
                 self.visit(arg)
                 if arg.type != fun.params[i][1]:
