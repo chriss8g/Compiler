@@ -1,174 +1,38 @@
 \__.TYPES
-
+	\__TypeNode: type MyClass
+		\__TypeBodyNode
+			Atributes
+			\__LocalNode float a
+			Methods
+function_method_at_MyClass();
 \__.DATA
-	\__DataNode data_0 = "Hello" 
-	\__DataNode data_1 = " World!"
+
 \__.CODE
+	 \__FunctionNode function <function_method_at_MyClass>
+		 \__params
+
+		 \__local_vars
+			\__LocalNode float local_method_at_MyClass_internal_0
+			\__LocalNode int local_method_at_MyClass_internal_1
+		 \__instructions
+			\__AsignNode: local_method_at_MyClass_internal_0 = 2
+			\__OurFunctionNode local_method_at_MyClass_internal_1 = printf local_method_at_MyClass_internal_0
+			\__ReturnNode return local_method_at_MyClass_internal_0 
 	 \__FunctionNode function <main>
 		 \__params
 
 		 \__local_vars
-			\__LocalNode float local__internal_0
-			\__LocalNode int local__internal_1
-			\__LocalNode float local__internal_2
-			\__LocalNode float local__internal_3
-			\__LocalNode float local__internal_4
-			\__LocalNode int local__internal_5
-			\__LocalNode float local__internal_6
-			\__LocalNode float local__internal_7
-			\__LocalNode float local__internal_8
-			\__LocalNode float local__internal_9
-			\__LocalNode int local__internal_10
-			\__LocalNode float local__internal_11
-			\__LocalNode float local__internal_12
-			\__LocalNode float local__internal_13
-			\__LocalNode float local__internal_14
-			\__LocalNode float local__internal_15
-			\__LocalNode int local__internal_16
-			\__LocalNode float local__internal_17
-			\__LocalNode float local__internal_18
-			\__LocalNode float local__internal_19
-			\__LocalNode float local__internal_20
-			\__LocalNode float local__internal_21
-			\__LocalNode int local__internal_22
-			\__LocalNode int local__internal_23
-			\__LocalNode int local__internal_24
-			\__LocalNode int local__internal_25
-			\__LocalNode int local__internal_26
-			\__LocalNode int local__internal_27
-			\__LocalNode int local__internal_28
-			\__LocalNode float local__internal_29
-			\__LocalNode float local__internal_30
-			\__LocalNode int local__internal_31
-			\__LocalNode int local__internal_32
-			\__LocalNode char* local__internal_33
-			\__LocalNode char* local__internal_34
-			\__LocalNode char * local__internal_35
-			\__LocalNode char * local__internal_36
-			\__LocalNode int local__internal_37
-			\__LocalNode float local__internal_38
-			\__LocalNode float local__internal_39
-			\__LocalNode float local__internal_40
-			\__LocalNode int local__internal_41
-			\__LocalNode float local__internal_42
-			\__LocalNode int local__internal_43
-			\__LocalNode float local__internal_44
-			\__LocalNode float local__internal_45
-			\__LocalNode float local__internal_46
-			\__LocalNode int local__internal_47
-			\__LocalNode float local__internal_48
-			\__LocalNode float local__internal_49
-			\__LocalNode int local__internal_50
-			\__LocalNode int local__internal_51
-			\__LocalNode int local__internal_52
-			\__LocalNode float local__internal_53
-			\__LocalNode float local__internal_54
-			\__LocalNode int local__internal_55
-			\__LocalNode int local__internal_56
-			\__LocalNode float local__internal_57
-			\__LocalNode float local__internal_58
-			\__LocalNode int local__internal_59
-			\__LocalNode float local__internal_60
-			\__LocalNode float local__internal_61
-			\__LocalNode int local__internal_62
-			\__LocalNode float local__internal_63
-			\__LocalNode float local__internal_64
-			\__LocalNode float local__internal_65
-			\__LocalNode int local__internal_66
-			\__LocalNode float local__internal_67
-			\__LocalNode float local__internal_68
-			\__LocalNode float local__internal_69
-			\__LocalNode int local__internal_70
-			\__LocalNode int local__internal_71
-			\__LocalNode int local__internal_72
-			\__LocalNode int local__internal_73
-			\__LocalNode int local__internal_74
-			\__LocalNode float local__internal_75
-			\__LocalNode float local__internal_76
-			\__LocalNode float local__internal_77
-			\__LocalNode float local__internal_78
-			\__LocalNode float local__internal_79
-			\__LocalNode int local__internal_80
+			\__LocalNode MyClass* local__internal_0
+			\__LocalNode float local__internal_1
 		 \__instructions
-			\__AsignNode: local__internal_0 = 5
-			\__OurFunctionNode local__internal_1 = printf local__internal_0
-			\__AsignNode: local__internal_2 = PI
-			\__AsignNode: local__internal_3 = E
-			\__AsignNode: local__internal_4 = local__internal_2 + local__internal_3
-			\__OurFunctionNode local__internal_5 = printf local__internal_4
-			\__AsignNode: local__internal_6 = PI
-			\__AsignNode: local__internal_7 = 2
-			\__AsignNode: local__internal_8 = local__internal_6 / local__internal_7
-			\__OurFunctionNode local__internal_9 = sin local__internal_8
-			\__OurFunctionNode local__internal_10 = printf local__internal_9
-			\__AsignNode: local__internal_11 = 3
-			\__AsignNode: local__internal_12 = 4.5
-			\__AsignNode: local__internal_13 = 10
-			\__AsignNode: local__internal_14 = local__internal_12 * local__internal_13
-			\__AsignNode: local__internal_15 = local__internal_11 + local__internal_14
-			\__OurFunctionNode local__internal_16 = printf local__internal_15
-			\__AsignNode: local__internal_17 = 3
-			\__AsignNode: local__internal_18 = 4
-			\__AsignNode: local__internal_19 = local__internal_17 + local__internal_18
-			\__AsignNode: local__internal_20 = 10.5
-			\__AsignNode: local__internal_21 = local__internal_19 * local__internal_20
-			\__OurFunctionNode local__internal_22 = printf local__internal_21
-			\__AsignNode: local__internal_23 = 1
-			\__AsignNode: local__internal_24 = 0
-			\__AsignNode: local__internal_25 = local__internal_23 & local__internal_24
-			\__AsignNode: local__internal_26 = 1
-			\__AsignNode: local__internal_27 = local__internal_25 | local__internal_26
-			\__OurFunctionNode local__internal_28 = printf local__internal_27
-			\__AsignNode: local__internal_29 = 3.0
-			\__AsignNode: local__internal_30 = 2
-			\__AsignNode: local__internal_31 = local__internal_29 >= local__internal_30
-			\__OurFunctionNode local__internal_32 = printf local__internal_31
-			\__LoadNode: local__internal_33 = LOAD data_0
-			\__LoadNode: local__internal_34 = LOAD data_1
-			\__OurFunctionNode local__internal_36 = concat local__internal_33
-			\__AsignNode: local__internal_35 = local__internal_36
-			\__OurFunctionNode local__internal_37 = printf local__internal_35
-			\__AsignNode: local__internal_38 = 100
-			\__AsignNode: local__internal_39 = 10
-			\__OurFunctionNode local__internal_40 = log local__internal_38
-			\__OurFunctionNode local__internal_41 = printf local__internal_40
-			\__OurFunctionNode local__internal_42 = rand 
-			\__OurFunctionNode local__internal_43 = printf local__internal_42
-			\__AsignNode: local__internal_44 = 3.14
-			\__AsignNode: local__internal_45 = 2.71
-			\__AsignNode: local__internal_46 = local__internal_44 + local__internal_45
-			\__OurFunctionNode local__internal_47 = printf local__internal_46
-			\__AsignNode: local__internal_48 = 5
-			\__AsignNode: local__internal_49 = 5
-			\__AsignNode: local__internal_50 = local__internal_48 == local__internal_49
-			\__AsignNode: local__internal_51 = !local__internal_50
-			\__OurFunctionNode local__internal_52 = printf local__internal_51
-			\__AsignNode: local__internal_53 = 10
-			\__AsignNode: local__internal_54 = 20
-			\__AsignNode: local__internal_55 = local__internal_53 != local__internal_54
-			\__OurFunctionNode local__internal_56 = printf local__internal_55
-			\__AsignNode: local__internal_57 = 4
-			\__OurFunctionNode local__internal_58 = sqrt local__internal_57
-			\__OurFunctionNode local__internal_59 = printf local__internal_58
-			\__AsignNode: local__internal_60 = 1
-			\__OurFunctionNode local__internal_61 = exp local__internal_60
-			\__OurFunctionNode local__internal_62 = printf local__internal_61
-			\__AsignNode: local__internal_63 = 4
-			\__AsignNode: local__internal_64 = 2.0
-			\__AsignNode: local__internal_65 = local__internal_63 / local__internal_64
-			\__OurFunctionNode local__internal_66 = printf local__internal_65
-			\__AsignNode: local__internal_67 = 10
-			\__AsignNode: local__internal_68 = 5
-			\__AsignNode: local__internal_69 = local__internal_67 - local__internal_68
-			\__OurFunctionNode local__internal_70 = printf local__internal_69
-			\__AsignNode: local__internal_71 = 1
-			\__OurFunctionNode local__internal_72 = printf local__internal_71
-			\__AsignNode: local__internal_73 = 0
-			\__OurFunctionNode local__internal_74 = printf local__internal_73
-			\__AsignNode: local__internal_75 = PI
-			\__OurFunctionNode local__internal_76 = sin local__internal_75
-			\__AsignNode: local__internal_77 = E
-			\__OurFunctionNode local__internal_78 = cos local__internal_77
-			\__AsignNode: local__internal_79 = local__internal_76 + local__internal_78
-			\__OurFunctionNode local__internal_80 = printf local__internal_79
-			\__ReturnNode return 0
+			\CallNode local__internal_0 = ALOCATE MyClass
+			\__AsignNode: local__internal_1 = function_let_2(local__internal_0)
+			\__ReturnNode return 0 
+	 \__FunctionNode function <function_let_2>
+		 \__params
+			\__ParamNode a
+		 \__local_vars
+			\__LocalNode MyClass* local_let_2_internal_0
+		 \__instructions
+			\__AsignNode: local_let_2_internal_0 = a
+			\__ReturnNode return function_method_at_MyClass()

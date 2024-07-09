@@ -190,20 +190,20 @@ class CodeToAST:
         func_body %= arrow + expr + semicolon, lambda h, s: s[2]
         func_body %= blockExpr, lambda h, s: s[1]
 
-        # # *************** Producciones de Type ****************
-        # stats %= typex + idx + arg_opt_typed_list + inherit_item + obrace + type_body + cbrace + stats, lambda h,s: [TypeDeclarationNode(s[2],TypeBodyDeclarationNode(s[6][0],s[6][1]),s[3],s[4][0],s[4][1])]+s[8]
-        # # Manejar la herencia
-        # inherit_item %= inherits + idx, lambda h,s: (s[2],[])
-        # inherit_item %= inherits + idx + opar + arg_expr + cpar, lambda h,s: (s[2],s[4])
-        # inherit_item %= self.G.Epsilon, lambda h,s: (None,[])
-        # # Cuerpo de un Type
-        # type_body %= attribute_declaration + type_body, lambda h,s: ([s[1]]+s[2][0],s[2][1])
-        # type_body %= method_declaration + type_body, lambda h,s: (s[2][0],[s[1]]+s[2][1])
-        # type_body %= self.G.Epsilon, lambda h,s: ([],[])
-        # # Atributos de Type
-        # attribute_declaration %= idx + opt_typed + asign1 + expr + semicolon, lambda h,s: AttributeNode(IdentifierNode(s[1],None,s[2]),s[4],s[2])
-        # # Métodos de Type
-        # method_declaration %= idx + opar + arg_opt_typed + cpar + opt_typed + func_body, lambda h,s:MethodNode(s[1], s[6], s[3], s[5])
+        # *************** Producciones de Type ****************
+        stats %= typex + idx + arg_opt_typed_list + inherit_item + obrace + type_body + cbrace + stats, lambda h,s: [TypeDeclarationNode(s[2],TypeBodyDeclarationNode(s[6][0],s[6][1]),s[3],s[4][0],s[4][1])]+s[8]
+        # Manejar la herencia
+        inherit_item %= inherits + idx, lambda h,s: (s[2],[])
+        inherit_item %= inherits + idx + opar + arg_expr + cpar, lambda h,s: (s[2],s[4])
+        inherit_item %= self.G.Epsilon, lambda h,s: (None,[])
+        # Cuerpo de un Type
+        type_body %= attribute_declaration + type_body, lambda h,s: ([s[1]]+s[2][0],s[2][1])
+        type_body %= method_declaration + type_body, lambda h,s: (s[2][0],[s[1]]+s[2][1])
+        type_body %= self.G.Epsilon, lambda h,s: ([],[])
+        # Atributos de Type
+        attribute_declaration %= idx + opt_typed + asign1 + expr + semicolon, lambda h,s: AttributeNode(IdentifierNode(s[1],None,s[2]),s[4],s[2])
+        # Métodos de Type
+        method_declaration %= idx + opar + arg_opt_typed + cpar + opt_typed + func_body, lambda h,s:MethodNode(s[1], s[6], s[3], s[5])
 
         # Lista de parámetros opcionalmente tipados
         arg_opt_typed_list %= self.G.Epsilon, lambda h,s:[]

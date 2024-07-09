@@ -455,7 +455,7 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
         temp = f'{name}(' + ", ".join(child.name for child in parent.params) + (', ' if len(parent.params)
                                                                                 else "") + ", ".join(self.visit(child.expr, scope.create_child_scope()) for child in node.args) + ")"
-        dest = self.define_internal_local(node.body.type)
+        dest = self.define_internal_local(node.type)
         self.register_instruction(cil.AssignNode(dest, temp))
 
         return dest
