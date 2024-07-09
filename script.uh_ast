@@ -1,15 +1,25 @@
 \__ProgramNode [<program>]
-	\__BlockNode [<expression>]
-		\__LetNode [<expression>]
-			\__AssignNode:
-				\__IdentifierNode: b
-				\__NumberNode: 7
-			\__PrintNode [<expression>]
-				\__IdentifierNode: b
+	\__TypeNode: type lala inherits None [<statement>]
+		\__TypeBodyNode
+			Atributes
+				\__AttributeNode id = <expr>
+					\__IdentifierNode: a
+					\__NumberNode: 0
+			Methods
+				\__MethodNode: function lalal : None => <body>
+					Params
+						('x', None)
+					\__NotNode: <nodes_types.hulk_types.IdentifierNode object at 0x7f3450225db0>
+	\__LetNode [<expression>]
+		\__AssignNode:
+			\__IdentifierNode: a
+			\_ObjectCreationNode: new lala  [<expression>]
 		\__LetNode [<expression>]
 			\__AssignNode:
 				\__IdentifierNode: a
-				\__NumberNode: 20
-			\__BlockNode [<expression>]
-				\__PrintNode [<expression>]
-					\__IdentifierNode: a
+				\_ObjectCreationNode: new lala  [<expression>]
+			\__PrintNode [<expression>]
+				\__IdentifierNode: a
+					\__CallNode lalal   [<expression>]
+						\_ Arguments
+							\__NumberNode: 5

@@ -34,11 +34,18 @@ class Method:
             other.return_type == self.return_type and \
             other.param_types == self.param_types
 
+class Function:
+    def __init__(self, name, params = [], r_type = None):
+        self.name = name
+        self.params = params
+        self.type = r_type
+
 class Type:
     def __init__(self, name:str):
         self.name = name
         self.attributes = []
         self.methods = []
+        self.params = []
         self.parent = None
 
     def set_parent(self, parent):
@@ -173,8 +180,16 @@ class Context:
     def create_func(self, name:str):
         if name in self.functions:
           raise SemanticError(f'Type with the same name ({name}) already in context.')
-        self.functions[name] = ""
-        # funcx = self.functions[name] = Function()  
+        # self.functions[name] = ""
+        funcx = self.functions[name] = Function(name) 
+        return funcx
+    
+    def get_func(self, name:str):
+        try:
+            return self.functions[name]
+        except KeyError:
+            raise SemanticError(f'Function "{name}" is not defined.')
+        
 
     def __str__(self):
         return '{\n\t' + '\n\t'.join(y for x in self.types.values() for y in str(x).split('\n')) + '\n}'

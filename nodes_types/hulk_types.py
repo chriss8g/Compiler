@@ -1,10 +1,7 @@
-INT_TYPE = 'int'
-FLOAT_TYPE = 'float'
 BOOL_TYPE = 'bool'
 STRING_TYPE = 'string'
-CONST_TYPE = 'const'
 OBJECT_TYPE = 'object'
-NUMBER_TYPE = INT_TYPE#[INT_TYPE, FLOAT_TYPE, CONST_TYPE]
+NUMBER_TYPE = 'float'
 
 class Node:
     pass
@@ -54,17 +51,17 @@ class TypeBodyDeclarationNode(Node):
         self.methods = methods
         
 class AttributeNode(Node):
-    def __init__(self, id, value, type=None):
-        self.id = id
+    def __init__(self, idx, value, typex=None):
+        self.id = idx
         self.value = value
-        self.type = type
+        self.type = typex
 
 class MethodNode(Node):
-    def __init__(self, name, body, params=[], type=None):
+    def __init__(self, name, body, params=[], typex=None):
         self.name = name
         self.params = params
         self.body = body
-        self.type = type
+        self.type = typex
 
 class AssignNode(Node):
     def __init__(self, idx, expr,type=None):
