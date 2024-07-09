@@ -190,7 +190,7 @@ class FormatVisitor(object):
 
     @visitor.when(hulk.IdentifierNode)
     def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__IdentifierNode: {node.name}'
+        ans = '\t' * tabs + f'\\__IdentifierNode: {node.name} : {node.type}'
         child = ''
         if node.child is not None:
             child = '\n' + self.visit(node.child,tabs+1)

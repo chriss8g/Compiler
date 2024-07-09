@@ -31,20 +31,20 @@ class MethodProtocolNode(Node):
         self.type = type 
 
 class FuncDeclarationNode(StatementNode):
-    def __init__(self, name, body, params=[], type=None):
+    def __init__(self, name, body, params=None, type=None):
         super().__init__()
         self.name = name
-        self.params = params # Array de tuplas (name,type) donde por defecto type es None
+        self.params = params if params else []# Array de tuplas (name,type) donde por defecto type es None
         self.body = body
         self.type = type
         
 class TypeDeclarationNode(StatementNode):
-    def __init__(self, name, body, params=[], base_type=OBJECT_TYPE, base_params=[]):
+    def __init__(self, name, body, params=None, base_type=OBJECT_TYPE, base_params=None):
         self.name = name
         self.body = body
-        self.params = params
+        self.params = params if params else []
         self.base_type = base_type
-        self.base_params = base_params
+        self.base_params = base_params if base_params else []
         
 class TypeBodyDeclarationNode(Node):
     def __init__(self, attributes,methods):
@@ -58,9 +58,9 @@ class AttributeNode(Node):
         self.type = typex
 
 class MethodNode(Node):
-    def __init__(self, name, body, params=[], typex=None):
+    def __init__(self, name, body, params=None, typex=None):
         self.name = name
-        self.params = params
+        self.params = params if params else []
         self.body = body
         self.type = typex
 
@@ -124,12 +124,12 @@ class ForRangeNode(ExpressionNode):
         self.body = body
         
 class IfNode(ExpressionNode):
-    def __init__(self, condition, body, else_body, elif_conditions=[], elif_body=[], type=None):
+    def __init__(self, condition, body, else_body, elif_conditions=None, elif_body=None, type=None):
         super().__init__(type)
-        self.condition = condition
+        self.condition = condition if condition else []
         self.body = body
         self.else_body = else_body
-        self.elif_conditions = elif_conditions
+        self.elif_conditions = elif_conditions if elif_conditions else []
         self.elif_body = elif_body
 
 class DestructNode(ExpressionNode):
@@ -139,10 +139,10 @@ class DestructNode(ExpressionNode):
         self.expr = expr
 
 class CallNode(ExpressionNode):
-    def __init__(self, name, args=[], child=None, type=None):
+    def __init__(self, name, args=None, child=None, type=None):
         super().__init__(type)
         self.name = name
-        self.args = args # array de expresiones
+        self.args = args if args else []# array de expresiones
         self.child = child
 
 
@@ -276,9 +276,9 @@ class SingleAritmeticOpNode(ExpressionNode):
         self.expr = expr
 
 class ObjectCreationNode(ExpressionNode):
-    def __init__(self, type, args=[]):
+    def __init__(self, type, args=None):
         super().__init__(type)
-        self.args = args
+        self.args = args if args else []
         
 class IdentifierNode(ExpressionNode):
     def __init__(self, name, child=None, type=None):

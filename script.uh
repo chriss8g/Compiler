@@ -1,6 +1,8 @@
-type MyClass {
-    a = 5;
-    method() => print(2);
+{
+        print(true & false | true);
+        print(log(100, 10));
+        print(rand());
+        print(!5 == 5);
+        print(sqrt(4));
+        print(exp(1));
 }
-
-let a = new MyClass() in a.method();

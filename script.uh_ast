@@ -1,19 +1,43 @@
 \__ProgramNode [<program>]
-	\__TypeNode: type MyClass inherits None [<statement>]
-		\__TypeBodyNode
-			Atributes
-				\__AttributeNode id = <expr>
-					\__IdentifierNode: a
-					\__NumberNode: 5
-			Methods
-				\__MethodNode: function method : None => <body>
-					Params
-
-					\__PrintNode [<expression>]
-						\__NumberNode: 2
-	\__LetNode [<expression>]
-		\__AssignNode:
-			\__IdentifierNode: a
-			\_ObjectCreationNode: new MyClass  [<expression>]
-		\__IdentifierNode: a
-			\__CallNode method   [<expression>]
+	\__BlockNode [<expression>]
+		\__LetNode [<expression>]
+			\__AssignNode:
+				\__IdentifierNode: msg : None
+				\__StringNode: "Hello World"
+			\__PrintNode [<expression>]
+				\__IdentifierNode: msg : None
+		\__LetNode [<expression>]
+			\__AssignNode:
+				\__IdentifierNode: number : None
+				\__StringNode: "42"
+			\__AssignNode:
+				\__IdentifierNode: text : None
+				\__StringNode: "The meaning of life is"
+			\__PrintNode [<expression>]
+				\__ConcatSpaceNode [<expression>]
+					\__IdentifierNode: text : None
+					\__IdentifierNode: number : None
+		\__LetNode [<expression>]
+			\__AssignNode:
+				\__IdentifierNode: number : None
+				\__StringNode: "42"
+			\__LetNode [<expression>]
+				\__AssignNode:
+					\__IdentifierNode: text : None
+					\__StringNode: "The meaning of life is "
+				\__PrintNode [<expression>]
+					\__ConcatNode [<expression>]
+						\__IdentifierNode: text : None
+						\__IdentifierNode: number : None
+		\__LetNode [<expression>]
+			\__AssignNode:
+				\__IdentifierNode: number : None
+				\__StringNode: "42"
+			\__LetNode [<expression>]
+				\__AssignNode:
+					\__IdentifierNode: text : None
+					\__StringNode: "The meaning of life is "
+				\__PrintNode [<expression>]
+					\__ConcatNode [<expression>]
+						\__IdentifierNode: text : None
+						\__IdentifierNode: number : None
