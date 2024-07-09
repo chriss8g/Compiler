@@ -187,7 +187,7 @@ class CodeToAST:
         # Atributos de Type
         attribute_declaration %= idnode + opt_typed + asign1 + expr + semicolon, lambda h,s: AttributeNode(s[1],s[4],s[2])
         # Métodos de Type
-        method_declaration %= idx + opar + arg_opt_typed_list + cpar + opt_typed + func_body, lambda h,s:MethodNode(s[1], s[6], s[3], s[5])
+        method_declaration %= idx + opar + arg_opt_typed + cpar + opt_typed + func_body, lambda h,s:MethodNode(s[1], s[6], s[3], s[5])
 
         # Lista de parámetros opcionalmente tipados
         arg_opt_typed_list %= self.G.Epsilon, lambda h,s:[]
@@ -220,9 +220,9 @@ class CodeToAST:
 
         # ***************** Expresiones ******************
         expr %= blockExpr, lambda h, s: s[1]
-        expr %= let + asig_list + inx + expr, lambda h, s: LetNode(s[2], s[4])
+        # expr %= let + asig_list + inx + expr, lambda h, s: LetNode(s[2], s[4])
         # expr %= ifx + opar + expr + cpar + specialBlock + elifx_expr + elsex + superexpr, lambda h, s: IfNode(s[3], s[5], s[8], s[6][0], s[6][1])
-        expr %= whilex + opar + expr + cpar + expr, lambda h, s: WhileNode(s[3], s[5])
+        # expr %= whilex + opar + expr + cpar + expr, lambda h, s: WhileNode(s[3], s[5])
         # expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + expr + cpar + cpar + expr, lambda h, s: ForRangeToWhile(s)
         # expr %= forx + opar + idnode + inx + idnode + cpar + expr, lambda h, s: ForToWhile(s)
         expr %= printx + opar + expr + cpar, lambda h, s: PrintNode(s[3])
@@ -279,6 +279,8 @@ class CodeToAST:
         atom %= string, lambda h, s: StringNode(s[1])
         atom %= opar + expr + cpar, lambda h, s: s[2]
         atom %= selfx + dot + idnode, lambda h, s: SelfNode(s[3])
+        atom %= selfx + dot + idx + dot + recurrent_object, lambda h, s: SelfNode(IdentifierNode(s[3],s[5]))
+        atom %= selfx + dot + recurrent_object, lambda h, s: SelfNode(s[3])
         atom %= obrake + arg_expr + cbrake, lambda h, s: VectorNode(s[2])
         atom %= idnode, lambda h, s: s[1]
         atom %= idx + dot + recurrent_object, lambda h, s: IdentifierNode(s[1], s[3])
@@ -319,9 +321,15 @@ class CodeToAST:
 if __name__ == "__main__":
 
     text = '''
-            for (a in arr) {
-                print(a);
-            };
+            type MyClass {
+                a = 5;
+                
+                myMethod (a,b) {
+                    print(self.my());
+                }
+            }
+            
+            print(a);
         '''
 
     codeToAST = CodeToAST(text)

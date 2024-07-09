@@ -157,7 +157,7 @@ class FormatVisitor(object):
     
     @visitor.when(hulk.CallNode)
     def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__CallNode function {node.name}   [<expression>]'
+        ans = '\t' * tabs + f'\\__CallNode {node.name}   [<expression>]'
         args = ''
         if node.args:
             args = '\n' + '\t' * (tabs+1) + '\\_ Arguments' + '\n' + '\n'.join(self.visit(arg, tabs + 2) for arg in node.args)
