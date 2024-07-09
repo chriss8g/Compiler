@@ -190,20 +190,20 @@ class CodeToAST:
         func_body %= arrow + expr + semicolon, lambda h, s: s[2]
         func_body %= blockExpr, lambda h, s: s[1]
 
-        # *************** Producciones de Type ****************
-        stats %= typex + idx + arg_opt_typed_list + inherit_item + obrace + type_body + cbrace + stats, lambda h,s: [TypeDeclarationNode(s[2],TypeBodyDeclarationNode(s[6][0],s[6][1]),s[3],s[4][0],s[4][1])]+s[8]
-        # Manejar la herencia
-        inherit_item %= inherits + idx, lambda h,s: (s[2],[])
-        inherit_item %= inherits + idx + opar + arg_expr + cpar, lambda h,s: (s[2],s[4])
-        inherit_item %= self.G.Epsilon, lambda h,s: (None,[])
-        # Cuerpo de un Type
-        type_body %= attribute_declaration + type_body, lambda h,s: ([s[1]]+s[2][0],s[2][1])
-        type_body %= method_declaration + type_body, lambda h,s: (s[2][0],[s[1]]+s[2][1])
-        type_body %= self.G.Epsilon, lambda h,s: ([],[])
-        # Atributos de Type
-        attribute_declaration %= idx + opt_typed + asign1 + expr + semicolon, lambda h,s: AttributeNode(IdentifierNode(s[1],None,s[2]),s[4],s[2])
-        # Métodos de Type
-        method_declaration %= idx + opar + arg_opt_typed + cpar + opt_typed + func_body, lambda h,s:MethodNode(s[1], s[6], s[3], s[5])
+        # # *************** Producciones de Type ****************
+        # stats %= typex + idx + arg_opt_typed_list + inherit_item + obrace + type_body + cbrace + stats, lambda h,s: [TypeDeclarationNode(s[2],TypeBodyDeclarationNode(s[6][0],s[6][1]),s[3],s[4][0],s[4][1])]+s[8]
+        # # Manejar la herencia
+        # inherit_item %= inherits + idx, lambda h,s: (s[2],[])
+        # inherit_item %= inherits + idx + opar + arg_expr + cpar, lambda h,s: (s[2],s[4])
+        # inherit_item %= self.G.Epsilon, lambda h,s: (None,[])
+        # # Cuerpo de un Type
+        # type_body %= attribute_declaration + type_body, lambda h,s: ([s[1]]+s[2][0],s[2][1])
+        # type_body %= method_declaration + type_body, lambda h,s: (s[2][0],[s[1]]+s[2][1])
+        # type_body %= self.G.Epsilon, lambda h,s: ([],[])
+        # # Atributos de Type
+        # attribute_declaration %= idx + opt_typed + asign1 + expr + semicolon, lambda h,s: AttributeNode(IdentifierNode(s[1],None,s[2]),s[4],s[2])
+        # # Métodos de Type
+        # method_declaration %= idx + opar + arg_opt_typed + cpar + opt_typed + func_body, lambda h,s:MethodNode(s[1], s[6], s[3], s[5])
 
         # Lista de parámetros opcionalmente tipados
         arg_opt_typed_list %= self.G.Epsilon, lambda h,s:[]
@@ -237,7 +237,7 @@ class CodeToAST:
 
         # ***************** Expresiones ******************
         expr %= blockExpr, lambda h, s: s[1]
-        # expr %= let + asig_list + inx + expr, lambda h, s: LetNode(s[2], s[4])
+        expr %= let + asig_list + inx + expr, lambda h, s: LetNode(s[2], s[4])
         expr %= let + asig_list + inx + expr, lambda h, s: MultipleLet(s)
         expr %= ifx + opar + expr + cpar + specialBlock + elifx_expr + elsex + superexpr, lambda h, s: IfNode(s[3], s[5], s[8], s[6][0], s[6][1])
         expr %= whilex + opar + expr + cpar + expr, lambda h, s: WhileNode(s[3], s[5])
@@ -277,23 +277,23 @@ class CodeToAST:
 
         term %= term + star + factor, lambda h, s: StarNode(s[1], s[3])
         term %= term + div + factor, lambda h, s: DivNode(s[1], s[3])
-        # term %= term + powx + factor, lambda h, s: PowNode(s[1], s[3])
-        # term %= term + mod + factor, lambda h, s: ModNode(s[1], s[3])
+        term %= term + powx + factor, lambda h, s: PowNode(s[1], s[3])
+        term %= term + mod + factor, lambda h, s: ModNode(s[1], s[3])
         term %= factor, lambda h, s: s[1]
 
-        # factor %= sin + opar + expr + cpar, lambda h, s: SinNode(s[3])
-        # factor %= cos + opar + expr + cpar, lambda h, s: CosNode(s[3])
-        # factor %= sqrt + opar + expr + cpar, lambda h, s: SqrtNode(s[3])
-        # factor %= exp + opar + expr + cpar, lambda h, s: ExpNode(s[3])
-        # factor %= log + opar + expr + comma + expr + cpar, lambda h, s: LogNode(s[3], s[5])
-        # factor %= rand + opar + cpar, lambda h, s: RandNode()
+        factor %= sin + opar + expr + cpar, lambda h, s: SinNode(s[3])
+        factor %= cos + opar + expr + cpar, lambda h, s: CosNode(s[3])
+        factor %= sqrt + opar + expr + cpar, lambda h, s: SqrtNode(s[3])
+        factor %= exp + opar + expr + cpar, lambda h, s: ExpNode(s[3])
+        factor %= log + opar + expr + comma + expr + cpar, lambda h, s: LogNode(s[3], s[5])
+        factor %= rand + opar + cpar, lambda h, s: RandNode()
         factor %= atom, lambda h, s: s[1]
 
         atom %= number, lambda h, s: NumberNode(s[1])
-        # atom %= true, lambda h, s: BoolNode(s[1])
-        # atom %= false, lambda h, s: BoolNode(s[1])
-        # atom %= pi, lambda h, s: NumberNode(s[1])
-        # atom %= e, lambda h, s: NumberNode(s[1])
+        atom %= true, lambda h, s: BoolNode(s[1])
+        atom %= false, lambda h, s: BoolNode(s[1])
+        atom %= pi, lambda h, s: NumberNode(s[1])
+        atom %= e, lambda h, s: NumberNode(s[1])
         atom %= string, lambda h, s: StringNode(s[1])
         atom %= opar + expr + cpar, lambda h, s: s[2]
         atom %= selfx + dot + idnode, lambda h, s: SelfNode(s[3])

@@ -242,6 +242,14 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
         dest = self.define_internal_local(c.INT_TYPE)
         self.register_instruction(cil.AssignNode(dest, f"{left} == {right}"))
         return dest
+    
+    @visitor.when(hulk.NENode)
+    def visit(self, node, scope):
+        left = self.visit(node.left, scope.create_child_scope())
+        right = self.visit(node.right, scope.create_child_scope())
+        dest = self.define_internal_local(c.INT_TYPE)
+        self.register_instruction(cil.AssignNode(dest, f"{left} != {right}"))
+        return dest
 
     @visitor.when(hulk.GENode)
     def visit(self, node, scope):
@@ -324,13 +332,17 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
     @visitor.when(hulk.NumberNode)
     def visit(self, node, scope):
-        node.type = node.type if node.type != hulk.BOOL_TYPE else c.INT_TYPE
-        node.type = node.type if node.type != hulk.STRING_TYPE else c.STRING_TYPE
-        node.type = node.type if node.type in c.MY_TYPES else (node.type + '*')
-        # print(node.type)
         source = node.lex
         dest = self.define_internal_local(node.type)
         self.register_instruction(cil.AssignNode(dest, source))
+        return dest
+    
+    @visitor.when(hulk.BoolNode)
+    def visit(self, node, scope):
+        node.type = node.type if node.type != hulk.BOOL_TYPE else c.INT_TYPE
+        source = node.lex
+        dest = self.define_internal_local(node.type)
+        self.register_instruction(cil.AssignNode(dest, 1 if source == 'true' else 0))
         return dest
 
     @visitor.when(hulk.StringNode)

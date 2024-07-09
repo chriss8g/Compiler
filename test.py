@@ -46,7 +46,7 @@ test_cases = [
     ('escaped_quotes.uh', 'escaped_quotes.output'),
     ('string_concatenation.uh', 'string_concatenation.output'),
     # ('trigonometric_functions.uh', 'trigonometric_functions.output'),
-    # ('mixed_prints.uh', 'mixed_prints.output'),
+    ('mixed_prints.uh', 'mixed_prints.output'),
     # ('advanced_expressions.uh', 'advanced_expressions.output'),
     ('simple_function.uh', 'simple_function.output'),
     # ('trigonometric_operations.uh', 'trigonometric_operations.output'),
