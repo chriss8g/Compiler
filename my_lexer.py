@@ -39,6 +39,7 @@ regular_expresions = [
     ('num', f'0|({nonzero_digits})(0|{nonzero_digits})*|0.(0|{nonzero_digits})*|({nonzero_digits})(0|{nonzero_digits})*.(0|{nonzero_digits})*'),
     ('id', f'({lettersLowerCase}|{lettersUpperCase}|_)({lettersLowerCase}|{lettersUpperCase}|_|0|{nonzero_digits})*'),
     ('string', f'"({lettersLowerCase}|{lettersUpperCase}|0|{nonzero_digits}|@|##|#||=|:|,|#(|#)|+|-|#*|/|^|%|#$| |\\"|!|<|>|\\|@|;|[|])*"'),
+    ('comment', f'/#*({lettersLowerCase}|{lettersUpperCase}|0|{nonzero_digits}| |,|)*#*/'),
     ('asign1','='),
     ('asign2',':='),
     ('comma', ','),
@@ -178,7 +179,7 @@ class Lexer:
         yield '$', self.eof
     
     def __call__(self, text):
-        return [ Token(lex, self.terminals[ttype]) for lex, ttype in self._tokenize(text) ]
+        return [ Token(lex, self.terminals[ttype]) for lex, ttype in self._tokenize(text) if ttype != "comment" ]
     
 
     

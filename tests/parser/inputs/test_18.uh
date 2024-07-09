@@ -1,4 +1,0 @@
-{
-    print("I say \\"Hello World\\"");
-    print("Hello \\n World");
-}
