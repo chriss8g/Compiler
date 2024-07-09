@@ -799,7 +799,7 @@ class TypeBuilder:
     @visitor.when(hulk.LogNode)
     def visit(self, node):
         self.visit(node.base)
-        self.visit(node.args)
+        self.visit(node.arg)
         try:
             if node.base.child:
                 if self.recurrent_type.name != hulk.NUMBER_TYPE:
@@ -808,7 +808,7 @@ class TypeBuilder:
         except:
             pass
         try:
-            if node.args.child:
+            if node.arg.child:
                 if self.recurrent_type.name != hulk.NUMBER_TYPE:
                     self.errors.append(
                         f"La operación log solo esta definida entre números")
@@ -817,10 +817,10 @@ class TypeBuilder:
         if not node.base.type:
             node.base.type = hulk.NUMBER_TYPE
             self.visit(node.base)
-        if not node.args.type:
-            node.args.type = hulk.NUMBER_TYPE
-            self.visit(node.args)
-        if node.base.type != hulk.NUMBER_TYPE or node.args.type != hulk.NUMBER_TYPE:
+        if not node.arg.type:
+            node.arg.type = hulk.NUMBER_TYPE
+            self.visit(node.arg)
+        if node.base.type != hulk.NUMBER_TYPE or node.arg.type != hulk.NUMBER_TYPE:
             self.errors.append(
                 f"La operación log solo esta definida entre números")
         node.type = hulk.NUMBER_TYPE
