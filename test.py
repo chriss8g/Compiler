@@ -52,7 +52,7 @@ test_cases = [
     # ('trigonometric_operations.uh', 'trigonometric_operations.output'),
     # # ('trigonometric_identity.uh', 'trigonometric_identity.output'),
     ('arithmetic_operations.uh', 'arithmetic_operations.output'),
-    # ('variable_declarations.uh', 'variable_declarations.output'),
+    ('variable_declarations.uh', 'variable_declarations.output'),
     ('nested_scopes.uh', 'nested_scopes.output'),
     ('while_loop.uh', 'while_loop.output'),
     ('complex_arithmetic.uh', 'complex_arithmetic.output'),

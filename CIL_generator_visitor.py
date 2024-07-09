@@ -391,6 +391,7 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
         self.register_instruction(cil.ReturnNode(expr))
         self.current_function = parent
+        scope = scope.parent
 
         temp = f'{name}(' + ", ".join(child.name for child in parent.params) + (', ' if len(parent.params) else "") + ", ".join(self.visit(child.expr, scope.create_child_scope()) for child in node.args) + ")"
         dest = self.define_internal_local(node.body.type)
@@ -412,8 +413,15 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
             func = self.to_function_name_in_type(child.name, node.type[:-1])
             func += '(' + ", ".join(child.args) + ')'
         else:
+            print(self.current_function.name)
+            print(node.name)
             func = scope.get_variable_info(
                 node.name) if scope.get_variable_info(node.name) else node.name
+            print(func)
+            print(scope.dict)
+            print(scope.parent)
+
+            
         
 
         # while (child):

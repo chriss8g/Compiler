@@ -1,30 +1,37 @@
 \__ProgramNode [<program>]
-	\__FuncDeclarationNode: function gcd : None => <body> [<statement>]
-		Params
-		('a', None)
-		('b', None)
-		Body
-		\__WhileNode [<expression>]
-			\_ Condition
-				\__GTNode [<expression>]
-					\__IdentifierNode: a
-					\__NumberNode: 0
-			\_ Body
-				\__LetNode [<expression>]
-					\__AssignNode:
-						\__IdentifierNode: m
-						\__ModNode [<expression>]
-							\__IdentifierNode: a
-							\__IdentifierNode: b
-					\__BlockNode [<expression>]
-						\DestructNode   [<expression>]
-							\__IdentifierNode: b
-							\__IdentifierNode: a
-						\DestructNode   [<expression>]
-							\__IdentifierNode: a
-							\__IdentifierNode: m
-	\__PrintNode [<expression>]
-		\__CallNode function gcd   [<expression>]
-			\_ Arguments
-				\__NumberNode: 26
-				\__NumberNode: 3
+	\__BlockNode [<expression>]
+		\__LetNode [<expression>]
+			\__AssignNode:
+				\__IdentifierNode: a
+				\__NumberNode: 6
+			\__LetNode [<expression>]
+				\__AssignNode:
+					\__IdentifierNode: b
+					\__StarNode [<expression>]
+						\__IdentifierNode: a
+						\__NumberNode: 7
+				\__PrintNode [<expression>]
+					\__IdentifierNode: b
+		\__LetNode [<expression>]
+			\__AssignNode:
+				\__IdentifierNode: a
+				\__NumberNode: 5
+			\__AssignNode:
+				\__IdentifierNode: b
+				\__NumberNode: 10
+			\__AssignNode:
+				\__IdentifierNode: c
+				\__NumberNode: 20
+			\__BlockNode [<expression>]
+				\__PrintNode [<expression>]
+					\__PlusNode [<expression>]
+						\__IdentifierNode: a
+						\__IdentifierNode: b
+				\__PrintNode [<expression>]
+					\__StarNode [<expression>]
+						\__IdentifierNode: b
+						\__IdentifierNode: c
+				\__PrintNode [<expression>]
+					\__DivNode [<expression>]
+						\__IdentifierNode: c
+						\__IdentifierNode: a
