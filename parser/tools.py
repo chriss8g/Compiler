@@ -228,6 +228,7 @@ class ShiftReduceParser:
 class LR1Parser(ShiftReduceParser):
     def __init__(self, G,verbose=False):
         super().__init__(G,verbose)
+    
     def _build_parsing_table(self):
         G = self.G.AugmentedGrammar(True)
         
