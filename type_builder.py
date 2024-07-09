@@ -110,17 +110,18 @@ class TypeBuilder:
     def visit(self, node):
         self.visit(node.expr)
         try:
-            if node.expr.child:
-                    node.type = self.recurrent_type.name
+            if node.expr.child:   
+                node.type = self.recurrent_type.name
+            else:
+                node.type = node.expr.type
         except:
             node.type = node.expr.type
         if node.id.type:
-            if node.id.type != node.expr.type:
-                self.errors.append(f"No se puede asignar un '{node.expr.type}' a un '{node.id.type}'")
+            if node.id.type != node.type:
+                self.errors.append(f"No se puede asignar un '{node.type}' a un '{node.id.type}'")
         else:
-            node.id.type = node.expr.type
-            node.type = node.expr.type
-            self.var[node.id.name] =  node.id.type
+            node.id.type = node.type
+            self.var[node.id.name] =  node.type
         return self.errors
     
     @visitor.when(hulk.BlockNode)
@@ -130,6 +131,8 @@ class TypeBuilder:
         try:
             if node.body[-1].child:
                 node.type = self.recurrent_type.name
+            else:
+                node.type = node.body[-1].type
         except:
             node.type = node.body[-1].type
         # node.type = node.body[-1].type
@@ -139,13 +142,16 @@ class TypeBuilder:
     def visit(self,node):
         for arg in node.args:
             self.visit(arg)
-            # self.var.append(VariableInfo(arg.id.name, arg.id.type))
+            self.var[arg.id.name]= arg.id.type
         self.visit(node.body)
         try:
             if node.body.child:
                 node.type = self.recurrent_type.name
+            else:
+                node.type = node.body.type
         except:
             node.type = node.body.type
+        
         return self.errors
     
     @visitor.when(hulk.WhileNode)
@@ -155,6 +161,8 @@ class TypeBuilder:
         try:
             if node.body.child:
                 node.type = self.recurrent_type.name
+            else:
+                node.type = node.body.type
         except:
             node.type = node.body.type
         return self.errors
@@ -186,6 +194,8 @@ class TypeBuilder:
         try:
             if node.expr.child:
                 node.type = self.recurrent_type.name
+            else:
+                node.type = node.expr.type
         except:
             node.type = node.expr.type
         return self.errors
@@ -349,6 +359,8 @@ class TypeBuilder:
             try:
                 if node.expr.child:
                     node.type = self.recurrent_type.name
+                else:
+                    node.type = node.expr.type
             except:
                 node.type = node.expr.type
         return self.errors
