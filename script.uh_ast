@@ -1,35 +1,25 @@
 \__ProgramNode [<program>]
-	\__FuncDeclarationNode: function tan : None => <body> [<statement>]
-		Params
-		('x', None)
-		Body
-		\__DivNode [<expression>]
-			\__SinNode   [<expression>]
-				\__IdentifierNode: x
-			\__CosNode   [<expression>]
-				\__IdentifierNode: x
-	\__FuncDeclarationNode: function cot : None => <body> [<statement>]
-		Params
-		('x', None)
-		Body
-		\__DivNode [<expression>]
-			\__NumberNode: 1
-			\__CallNode function tan   [<expression>]
-				\_ Arguments
-					\__IdentifierNode: x
-	\__PrintNode [<expression>]
-		\__PlusNode [<expression>]
-			\__PowNode [<expression>]
-				\__CallNode function tan   [<expression>]
-					\_ Arguments
-						\__DivNode [<expression>]
-							\__NumberNode: PI
-							\__NumberNode: 4
-				\__NumberNode: 2
-			\__PowNode [<expression>]
-				\__CallNode function cot   [<expression>]
-					\_ Arguments
-						\__DivNode [<expression>]
-							\__NumberNode: PI
-							\__NumberNode: 4
-				\__NumberNode: 2
+	\__TypeNode: type lala inherits None [<statement>]
+		\__TypeBodyNode
+			Atributes
+				\__AttributeNode id = <expr>
+					\__IdentifierNode: a
+					\__NumberNode: 0
+			Methods
+				\__MethodNode: function lalal : None => <body>
+					Params
+						('x', None)
+					\__NotNode: <nodes_types.hulk_types.IdentifierNode object at 0x7f3450225db0>
+	\__LetNode [<expression>]
+		\__AssignNode:
+			\__IdentifierNode: a
+			\_ObjectCreationNode: new lala  [<expression>]
+		\__LetNode [<expression>]
+			\__AssignNode:
+				\__IdentifierNode: a
+				\_ObjectCreationNode: new lala  [<expression>]
+			\__PrintNode [<expression>]
+				\__IdentifierNode: a
+					\__CallNode lalal   [<expression>]
+						\_ Arguments
+							\__NumberNode: 5

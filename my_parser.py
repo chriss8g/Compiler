@@ -260,7 +260,7 @@ class CodeToAST:
         subexpr %= subexpr + minus + term, lambda h, s: MinusNode(s[1], s[3])
         subexpr %= subexpr + andx + term, lambda h, s: AndNode(s[1], s[3])
         subexpr %= subexpr + orx + term, lambda h, s: OrNode(s[1], s[3])
-        # subexpr %= notx + term, lambda h, s: NotNode(s[2])
+        subexpr %= notx + term, lambda h, s: NotNode(s[2])
         subexpr %= subexpr + eq + term, lambda h, s: EQNode(s[1], s[3])
         subexpr %= subexpr + ne + term, lambda h, s: NENode(s[1], s[3])
         subexpr %= subexpr + gt + term, lambda h, s: GTNode(s[1], s[3])
@@ -340,14 +340,16 @@ class CodeToAST:
 if __name__ == "__main__":
 
     text = '''
-            let a=4,b=3 in {
-                print(a);
-            };
+            type lala {
+                a = 0;
+                lalal (x) => !x;
+            }
+            let a = new lala() in print(a.lalal(5));
         '''
 
     codeToAST = CodeToAST(text)
 
-    if codeToAST.error_msg == 'Clean Code':
+    if codeToAST.ast:
         print(codeToAST)
     else:
         print(codeToAST.error_msg)

@@ -1,5 +1,5 @@
 type lala {
     a = 0;
-    lalal (x) => x +1;
+    lalal (x) => !x;
 }
 let a = new lala() in print(a.lalal(5));

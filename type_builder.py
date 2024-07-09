@@ -46,10 +46,10 @@ class TypeBuilder:
     def visit(self, node):
         for param in node.params:
             self.var[param[0]] = param[1]
-        self.visit(node.body)
         self.current_type = self.context.get_type(node.name)
+        self.visit(node.body)
         for param in self.var.keys():
-            self.current_type.params.append(param, self.var[param])
+            self.current_type.params.append((param, self.var[param]))
         self.var = {}
         self.current_type = None
         return self.errors
@@ -61,7 +61,12 @@ class TypeBuilder:
             self.current_type.define_attribute(attr.id.name, attr.type)
         for meth in node.methods:
             self.visit(meth)
-            self.current_type.define_method(meth.name, (i[0] for i in meth.params), (i[1] for i in meth.params), meth.type)
+            param_names= []
+            param_types = []
+            for param in meth.params:
+                param_names.append(param[0])
+                param_types.append(param[1])
+            self.current_type.define_method(meth.name, param_names, param_types, meth.type)
         return self.errors
             
     @visitor.when(hulk.AttributeNode)
@@ -82,6 +87,15 @@ class TypeBuilder:
         for param in node.params:
             self.var[param[0]] = param[1]
         self.visit(node.body)
+        
+        
+        node.params = [(param[0], self.var[param[0]]) for param in node.params]
+        
+        for param in node.params:
+            if not self.var[param[0]]:
+                self.errors.append(f"No se pudo inferir el tipo del parámetro '{node.name}' del método '{node.name}'")
+        
+        
         if node.type:
             if node.type != node.body.type:
                 self.errors.append(f"El método '{node.name}' debe retornar un '{node.type}'")
@@ -165,7 +179,7 @@ class TypeBuilder:
                         self.vist(arg)
                     else:
                         self.errors.append(f"La función '{fun.name}' esperaba como argumento número {i + 1} un '{fun.param_types[i]}' y recibió un '{arg.type}'")
-            node.type = fun.type
+            node.type = fun.return_type
         else:
             fun = self.context.get_func(node.name)
             for i,arg in enumerate(node.args):
@@ -178,7 +192,7 @@ class TypeBuilder:
                         self.errors.append(f"La función '{fun.name}' esperaba como argumento número {i + 1} un '{fun.params[i][1]}' y recibió un '{arg.type}'")
             node.type = fun.type
         if node.child:
-            self.current_type = node.type
+            self.current_type = self.context.get_type(node.type)
             self.visit(node.child)
         return self.errors
     
@@ -438,8 +452,16 @@ class TypeBuilder:
     
     @visitor.when(hulk.IdentifierNode)
     def visit(self,node):
-        self.var[node.name] = node.type
-        self.visit(node.child)
+        if not node.type:
+            node.type = self.var[node.name] 
+        else:
+            self.var[node.name] = node.type
+        if node.child:
+            if node.type:
+                self.current_type = self.context.get_type(node.type)
+                self.visit(node.child)
+                self.current_type = None
+        
         return self.errors
     
     # self

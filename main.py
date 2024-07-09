@@ -16,7 +16,7 @@ def main(input_file):
 
     codeToAST = CodeToAST(text)
     
-    if not codeToAST:
+    if not codeToAST.ast:
         print(codeToAST.error_msg)
         return
 
@@ -26,7 +26,6 @@ def main(input_file):
 
     # semantic_checker = SemanticCheckerVisitor()
     collector = Collector()
-    type_builder = TypeBuilder(collector.context)
     errors = []
     # errors = errors + semantic_checker.visit(codeToAST.ast)
     errors = errors + collector.visit(codeToAST.ast)
