@@ -82,11 +82,28 @@ class CodeGeneratorVisitor(object):
                 return f'{node.dest} = printf("%s\\n", {node.source});\n'
             else:
                 return f'{node.dest} = printf("%d\\n", {node.source});\n'
-        elif node.name in ['cos', 'sin', 'exp', 'sqrt', 'log']:
+        elif node.name in ['cos', 'sin', 'exp', 'sqrt']:
             header = "#include <math.h>"
             if header not in self.headers:
                 self.headers.append(header)
             return f'{node.dest} = {node.name}({node.source});\n'
+        elif node.name == 'log':
+            header = "#include <math.h>"
+            if header not in self.headers:
+                self.headers.append(header)
+            return f'{node.dest} = {node.name}({node.source})/{node.name}({node.op_nd});\n'
+        elif node.name == 'rand':
+            header = "#include <math.h>"
+            if header not in self.headers:
+                self.headers.append(header)
+            header = "#include <stdlib.h>"
+            if header not in self.headers:
+                self.headers.append(header)
+            header = "#include <time.h>"
+            if header not in self.headers:
+                self.headers.append(header)
+
+            return f'srand(time(NULL));\n{node.dest} = ({node.name}()%101)/100.0;\n'
         elif node.name == 'concat':
 
             header = "#include <string.h>"

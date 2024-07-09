@@ -149,15 +149,22 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
         self.register_instruction(cil.OurFunctionNode(
             'sqrt', dest, source, node.type))
         return dest
-
-    # @visitor.when(hulk.AssignNode)
-    # def visit(self, node, scope):
-
-    #     vinfo = scope.find_variable(node.id)
-    #     self.visit(node.expr, scope)
-    #     dest = self.define_internal_local()
-    #     source = cil.LocalNode(vinfo.name)
-    #     self.register_instruction(cil.AssignNode(dest, source))
+    
+    @visitor.when(hulk.LogNode)
+    def visit(self, node, scope):
+        base = self.visit(node.base, scope)
+        arg = self.visit(node.arg, scope)
+        dest = self.define_internal_local(node.type)
+        self.register_instruction(cil.OurFunctionNode(
+            'log', dest, base, node.type, arg))
+        return dest
+    
+    @visitor.when(hulk.RandNode)
+    def visit(self, node, scope):
+        dest = self.define_internal_local(node.type)
+        self.register_instruction(cil.OurFunctionNode(
+            'rand', dest, "", node.type))
+        return dest
 
     @visitor.when(hulk.ConcatNode)
     def visit(self, node, scope):
@@ -250,6 +257,30 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
         dest = self.define_internal_local(c.INT_TYPE)
         self.register_instruction(cil.AssignNode(dest, f"{left} != {right}"))
         return dest
+    
+    @visitor.when(hulk.NotNode)
+    def visit(self, node, scope):
+        expr = self.visit(node.lex, scope.create_child_scope())
+        dest = self.define_internal_local(c.INT_TYPE)
+        self.register_instruction(cil.AssignNode(dest, f"!{expr}"))
+        return dest
+    
+    
+    @visitor.when(hulk.AndNode)
+    def visit(self, node, scope):
+        left = self.visit(node.left, scope.create_child_scope())
+        right = self.visit(node.right, scope.create_child_scope())
+        dest = self.define_internal_local(c.INT_TYPE)
+        self.register_instruction(cil.AssignNode(dest, f"{left} & {right}"))
+        return dest
+    
+    @visitor.when(hulk.OrNode)
+    def visit(self, node, scope):
+        left = self.visit(node.left, scope.create_child_scope())
+        right = self.visit(node.right, scope.create_child_scope())
+        dest = self.define_internal_local(c.INT_TYPE)
+        self.register_instruction(cil.AssignNode(dest, f"{left} | {right}"))
+        return dest
 
     @visitor.when(hulk.GENode)
     def visit(self, node, scope):
@@ -335,6 +366,13 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
         source = node.lex
         dest = self.define_internal_local(node.type)
         self.register_instruction(cil.AssignNode(dest, source))
+        return dest
+    
+    @visitor.when(hulk.BoolNode)
+    def visit(self, node, scope):
+        source = node.lex
+        dest = self.define_internal_local(c.INT_TYPE)
+        self.register_instruction(cil.AssignNode(dest, 1 if source == "true" else "false"))
         return dest
     
     @visitor.when(hulk.BoolNode)
