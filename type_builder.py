@@ -7,6 +7,7 @@ class TypeBuilder:
     def __init__(self, context, errors=[]):
         self.context = context
         self.current_type = None
+        self.recurrent_type = None
         self.errors = errors
         self.var = {}
     
@@ -78,7 +79,7 @@ class TypeBuilder:
         else:
             node.type = node.value.type
         if not node.type:
-            self.errors.append(f"No se pudo inferir el tipo del atributo '{node.name}'")
+            self.errors.append(f"No se pudo inferir el tipo del atributo '{node.id.name}'")
         return self.errors
     
     @visitor.when(hulk.MethodNode)
@@ -169,11 +170,11 @@ class TypeBuilder:
     
     @visitor.when(hulk.CallNode)
     def visit(self,node):
-        if self.current_type:
+        if self.recurrent_type:
             try:
-                fun = self.current_type.get_method(node.name)
+                fun = self.recurrent_type.get_method(node.name)
             except:
-                self.errors.append(f"El método '{node.name}' no está definido en '{self.current_type.name}'")
+                self.errors.append(f"El método '{node.name}' no está definido en '{self.recurrent_type.name}'")
                 return self.errors
             for i,arg in enumerate(node.args):
                 self.visit(arg)
@@ -200,7 +201,7 @@ class TypeBuilder:
                         self.errors.append(f"La función '{fun.name}' esperaba como argumento número {i + 1} un '{fun.params[i][1]}' y recibió un '{arg.type}'")
             node.type = fun.type
         if node.child:
-            self.current_type = self.context.get_type(node.type)
+            self.recurrent_type = self.context.get_type(node.type)
             self.visit(node.child)
         return self.errors
     
@@ -274,9 +275,11 @@ class TypeBuilder:
     def visit(self,node):
         self.visit(node.expr) 
         if node.expr.type:
-            node.type = node.expr.type
-        # else:
-        #     self.errors.append()
+            try:
+                if node.expr.child:
+                    node.type = self.recurrent_type
+            except:
+                node.type = node.expr.type
         return self.errors
     
     @visitor.when(hulk.PowNode)
@@ -466,10 +469,9 @@ class TypeBuilder:
             self.var[node.name] = node.type
         if node.child:
             if node.type:
-                self.current_type = self.context.get_type(node.type)
+                self.recurrent_type = self.context.get_type(node.type)
                 self.visit(node.child)
-                self.current_type = None
-        
+                # self.recurrent_type = None
         return self.errors
     
     # self
