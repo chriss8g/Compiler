@@ -304,8 +304,13 @@ class CodeToAST:
 
         parser = LR1Parser(self.G, 'parser_autom')
 
-        derivations = parser([tok.token_type for tok in tokens])
-
+        derivations,msg = parser([tok.token_type for tok in tokens])
+        self.error_msg = msg
+        
+        if derivations is None:
+            self.ast = None
+            return
+            
         tokens.reverse()
         derivations.reverse()
 
@@ -322,12 +327,12 @@ class CodeToAST:
 if __name__ == "__main__":
 
     text = '''
-            print(658);
+            print(.658);
         '''
 
     codeToAST = CodeToAST(text)
 
-    print(codeToAST)
+    print(codeToAST.error_msg)
 
     # # Especifica la ruta del archivo donde quieres escribir
     # ruta_del_archivo = "tests/parser/expected_out/test_18.txt"

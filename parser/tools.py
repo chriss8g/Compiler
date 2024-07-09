@@ -188,11 +188,11 @@ class ShiftReduceParser:
                 parsed = ' '.join([str(m)
                                     for m in stack if not str(m).isnumeric()])
                 message_error = f'It was expected "{excepted_char}" received "{lookahead}" after {parsed}'
-                print("\nError. Aborting...")
-                print('')
-                print("\n", message_error)
+                # print("\nError. Aborting...")
+                # print('')
+                # print("\n", message_error)
 
-                return None
+                return None,message_error
 
             if self.action[state, lookahead] == self.OK:
                 action = self.OK
@@ -220,9 +220,9 @@ class ShiftReduceParser:
                 stack.pop()
                 assert stack.pop() == self.G.startSymbol
                 assert len(stack) == 1
-                return output if not get_shift_reduce else(output, operations)
+                return output,'Clean Code' if not get_shift_reduce else(output, 'Operations: ' + ', '.join(op for op in operations))
             else:
-                raise Exception('Invalid action!!!')
+                return None,'Invalid Code'
 
 class LR1Parser(ShiftReduceParser):
     def __init__(self, G,verbose=False):
