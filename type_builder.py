@@ -46,6 +46,8 @@ class TypeBuilder:
             if not param[1]:
                 self.errors.append(f"No se pudo inferir el tipo del parámetro '{
                                    param[0]}' de la función '{node.name}'")
+        node.params = self.context.get_func(node.name).params
+        # print(node.args)
         return self.errors
 
     @visitor.when(hulk.TypeDeclarationNode)
@@ -103,7 +105,7 @@ class TypeBuilder:
             if not self.var[param[0]]:
                 self.errors.append(f"No se pudo inferir el tipo del parámetro '{
                                    node.name}' del método '{node.name}'")
-
+        
         if node.type:
             if node.type != node.body.type:
                 self.errors.append(
