@@ -194,6 +194,7 @@ class CodeToAST:
         arg_opt_typed_list %= opar + arg_opt_typed + cpar, lambda h,s:s[2]
         arg_opt_typed %= idx + opt_typed, lambda h,s:[(s[1],s[2])]
         arg_opt_typed %= idx + opt_typed + comma + arg_opt_typed, lambda h,s:[(s[1],s[2])] + s[4]
+        arg_opt_typed %= self.G.Epsilon, lambda h,s:[]
 
         opt_typed %= colon + idx, lambda h, s: s[2]
         opt_typed %= self.G.Epsilon, lambda h, s: None

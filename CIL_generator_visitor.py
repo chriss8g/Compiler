@@ -413,13 +413,8 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
             func = self.to_function_name_in_type(child.name, node.type[:-1])
             func += '(' + ", ".join(child.args) + ')'
         else:
-            print(self.current_function.name)
-            print(node.name)
             func = scope.get_variable_info(
                 node.name) if scope.get_variable_info(node.name) else node.name
-            print(func)
-            print(scope.dict)
-            print(scope.parent)
 
             
         

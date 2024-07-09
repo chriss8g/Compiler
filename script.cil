@@ -1,76 +1,38 @@
 \__.TYPES
-
+	\__TypeNode: type MyClass
+		\__TypeBodyNode
+			Atributes
+			\__AsignNode: a = 5
+			Methods
+ 				function_method_at_MyClass();
 \__.DATA
 
 \__.CODE
+	 \__FunctionNode function <function_method_at_MyClass>
+		 \__params
+
+		 \__local_vars
+			\__LocalNode int local_method_at_MyClass_internal_0
+			\__LocalNode int local_method_at_MyClass_internal_1
+		 \__instructions
+			\__AsignNode: local_method_at_MyClass_internal_0 = 2
+			\__OurFunctionNode local_method_at_MyClass_internal_1 = printf local_method_at_MyClass_internal_0 
+			\__ReturnNode return local_method_at_MyClass_internal_1 
 	 \__FunctionNode function <main>
 		 \__params
 
 		 \__local_vars
-			\__LocalNode int local__internal_0
-			\__LocalNode int local__internal_1
-			\__LocalNode int local__internal_2
-			\__LocalNode int local__internal_3
-			\__LocalNode int local__internal_4
-			\__LocalNode int local__internal_5
+			\__LocalNode MyClass* local__internal_0
+			\__LocalNode MyClass* local__internal_1
 		 \__instructions
-			\__AsignNode: local__internal_0 = 6
-			\__AsignNode: local__internal_1 = function_block_1(local__internal_0)
-			\__AsignNode: local__internal_2 = 5
-			\__AsignNode: local__internal_3 = 10
-			\__AsignNode: local__internal_4 = 20
-			\__AsignNode: local__internal_5 = function_block_3(local__internal_2, local__internal_3, local__internal_4)
+			\CallNode local__internal_0 = ALOCATE MyClass
+			\__AsignNode: local__internal_1 = function_block_2(local__internal_0)
 			\__ReturnNode return 0 
-	 \__FunctionNode function <function_block_1>
-		 \__params
-			\__ParamNode int a
-		 \__local_vars
-			\__LocalNode int local_block_1_internal_0
-			\__LocalNode int local_block_1_internal_1
-			\__LocalNode int local_block_1_internal_2
-			\__LocalNode int local_block_1_internal_3
-		 \__instructions
-			\__AsignNode: local_block_1_internal_0 = a
-			\__AsignNode: local_block_1_internal_1 = 7
-			\__AsignNode: local_block_1_internal_2 = local_block_1_internal_0 * local_block_1_internal_1
-			\__AsignNode: local_block_1_internal_3 = function_block_2(a, local_block_1_internal_2)
-			\__ReturnNode return local_block_1_internal_3 
 	 \__FunctionNode function <function_block_2>
 		 \__params
-			\__ParamNode int a
-			\__ParamNode int b
+			\__ParamNode MyClass* a
 		 \__local_vars
-			\__LocalNode int local_block_2_internal_0
-			\__LocalNode int local_block_2_internal_1
-			\__LocalNode int local_block_2_internal_2
+			\__LocalNode MyClass* local_block_2_internal_0
 		 \__instructions
 			\__AsignNode: local_block_2_internal_0 = a
-			\__AsignNode: local_block_2_internal_1 = b
-			\__OurFunctionNode local_block_2_internal_2 = printf local_block_2_internal_1 
-			\__ReturnNode return local_block_2_internal_2 
-	 \__FunctionNode function <function_block_3>
-		 \__params
-			\__ParamNode int a
-			\__ParamNode int b
-			\__ParamNode int c
-		 \__local_vars
-			\__LocalNode int local_block_3_internal_0
-			\__LocalNode int local_block_3_internal_1
-			\__LocalNode int local_block_3_internal_2
-			\__LocalNode int local_block_3_internal_3
-			\__LocalNode int local_block_3_internal_4
-			\__LocalNode int local_block_3_internal_5
-			\__LocalNode int local_block_3_internal_6
-			\__LocalNode int local_block_3_internal_7
-			\__LocalNode int local_block_3_internal_8
-		 \__instructions
-			\__AsignNode: local_block_3_internal_0 = a
-			\__AsignNode: local_block_3_internal_1 = b
-			\__AsignNode: local_block_3_internal_2 = c
-			\__AsignNode: local_block_3_internal_3 = local_block_3_internal_0 + local_block_3_internal_1
-			\__OurFunctionNode local_block_3_internal_4 = printf local_block_3_internal_3 
-			\__AsignNode: local_block_3_internal_5 = local_block_3_internal_1 * local_block_3_internal_2
-			\__OurFunctionNode local_block_3_internal_6 = printf local_block_3_internal_5 
-			\__AsignNode: local_block_3_internal_7 = local_block_3_internal_2 / local_block_3_internal_0
-			\__OurFunctionNode local_block_3_internal_8 = printf local_block_3_internal_7 
-			\__ReturnNode return local_block_3_internal_8
+			\__ReturnNode return function_method_at_MyClass()
