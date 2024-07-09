@@ -187,13 +187,14 @@ class CodeToAST:
         # Atributos de Type
         attribute_declaration %= idnode + opt_typed + asign1 + expr + semicolon, lambda h,s: AttributeNode(s[1],s[4],s[2])
         # Métodos de Type
-        method_declaration %= idx + opar + arg_opt_typed_list + cpar + opt_typed + func_body, lambda h,s:MethodNode(s[1], s[6], s[3], s[5])
+        method_declaration %= idx + opar + arg_opt_typed + cpar + opt_typed + func_body, lambda h,s:MethodNode(s[1], s[6], s[3], s[5])
 
         # Lista de parámetros opcionalmente tipados
         arg_opt_typed_list %= self.G.Epsilon, lambda h,s:[]
         arg_opt_typed_list %= opar + arg_opt_typed + cpar, lambda h,s:s[2]
         arg_opt_typed %= idx + opt_typed, lambda h,s:[(s[1],s[2])]
         arg_opt_typed %= idx + opt_typed + comma + arg_opt_typed, lambda h,s:[(s[1],s[2])] + s[4]
+        arg_opt_typed %= self.G.Epsilon, lambda h,s:[]
 
         opt_typed %= colon + idx, lambda h, s: s[2]
         opt_typed %= self.G.Epsilon, lambda h, s: None
@@ -279,6 +280,8 @@ class CodeToAST:
         atom %= string, lambda h, s: StringNode(s[1])
         atom %= opar + expr + cpar, lambda h, s: s[2]
         atom %= selfx + dot + idnode, lambda h, s: SelfNode(s[3])
+        atom %= selfx + dot + idx + dot + recurrent_object, lambda h, s: SelfNode(IdentifierNode(s[3],s[5]))
+        atom %= selfx + dot + recurrent_object, lambda h, s: SelfNode(s[3])
         atom %= obrake + arg_expr + cbrake, lambda h, s: VectorNode(s[2])
         atom %= idnode, lambda h, s: s[1]
         atom %= idx + dot + recurrent_object, lambda h, s: IdentifierNode(s[1], s[3])
@@ -319,9 +322,7 @@ class CodeToAST:
 if __name__ == "__main__":
 
     text = '''
-            for (a in arr) {
-                print(a);
-            };
+            print(658);
         '''
 
     codeToAST = CodeToAST(text)
