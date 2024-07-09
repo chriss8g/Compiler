@@ -56,7 +56,7 @@ test_cases = [
     ('nested_scopes.uh', 'nested_scopes.output'),
     ('while_loop.uh', 'while_loop.output'),
     ('complex_arithmetic.uh', 'complex_arithmetic.output'),
-    # ('variable_assignment.uh', 'variable_assignment.output'),
+    ('variable_assignment.uh', 'variable_assignment.output'),
     ('conditional_statements.uh', 'conditional_statements.output'),
     ('for_loop.uh', 'for_loop.output'),
     # ('gcd_function.uh', 'gcd_function.output'),

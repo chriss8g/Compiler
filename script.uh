@@ -1,3 +1,5 @@
-let number = "42" in
-        print(number);
-
+let a = 0 in {
+        print(a);
+        a := 1;
+        print(a);
+};

@@ -1,6 +1,7 @@
 import nodes_types.cil as cil
 from semantic_checker.scope import VariableInfo
 
+
 class BaseHULKToCILVisitor:
     def __init__(self, context):
         self.dottypes = []
@@ -14,17 +15,18 @@ class BaseHULKToCILVisitor:
     @property
     def params(self):
         return self.current_function.params
-    
+
     @property
     def localvars(self):
         return self.current_function.localvars
-    
+
     @property
     def instructions(self):
         return self.current_function.instructions
-    
+
     def register_local(self, vinfo):
-        vinfo.name = f'local_{self.current_function.name[9:]}_{vinfo.name}_{len(self.localvars)}'
+        vinfo.name = f'local_{self.current_function.name[9:]}_{
+            vinfo.name}_{len(self.localvars)}'
         local_node = cil.LocalNode(vinfo.name, vinfo.type)
         self.localvars.append(local_node)
         return vinfo.name
@@ -38,7 +40,7 @@ class BaseHULKToCILVisitor:
         return instruction
     
     def register_param(self, param):
-        self.params.append(param)
+        self.current_function.params.append(param)
         return param
     
     def to_function_name_in_type(self, method_name, type_name):
@@ -47,7 +49,8 @@ class BaseHULKToCILVisitor:
     def to_function_name(self, method_name):
         return f'function_{method_name}_{len(self.dotcode)}'
     
-    def register_function(self, function_name, params=[]):
+    def register_function(self, function_name, params=None):
+        params = params if params else []
         function_node = cil.FunctionNode(function_name, params, [], [])
         self.dotcode.append(function_node)
         return function_node

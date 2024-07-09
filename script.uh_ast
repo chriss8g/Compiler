@@ -1,7 +1,13 @@
 \__ProgramNode [<program>]
 	\__LetNode [<expression>]
 		\__AssignNode:
-			\__IdentifierNode: number
-			\__StringNode: "42"
-		\__PrintNode [<expression>]
-			\__IdentifierNode: number
+			\__IdentifierNode: a
+			\__NumberNode: 0
+		\__BlockNode [<expression>]
+			\__PrintNode [<expression>]
+				\__IdentifierNode: a
+			\DestructNode   [<expression>]
+				\__IdentifierNode: a
+				\__NumberNode: 1
+			\__PrintNode [<expression>]
+				\__IdentifierNode: a
