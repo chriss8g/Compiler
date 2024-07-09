@@ -1,55 +1,43 @@
 \__ProgramNode [<program>]
 	\__BlockNode [<expression>]
-		\__PrintNode [<expression>]
-			\__NumberNode: 5
-		\__PrintNode [<expression>]
-			\__PlusNode [<expression>]
-				\__NumberNode: PI
-				\__NumberNode: E
-		\__PrintNode [<expression>]
-			\__SinNode   [<expression>]
-				\__DivNode [<expression>]
-					\__NumberNode: PI
-					\__NumberNode: 2
-		\__PrintNode [<expression>]
-			\__PlusNode [<expression>]
-				\__NumberNode: 3
-				\__StarNode [<expression>]
-					\__NumberNode: 4.5
-					\__NumberNode: 10
-		\__PrintNode [<expression>]
-			\__StarNode [<expression>]
-				\__PlusNode [<expression>]
-					\__NumberNode: 3
-					\__NumberNode: 4
-				\__NumberNode: 10.5
-		\__PrintNode [<expression>]
-			\__GENode [<expression>]
-				\__NumberNode: 0
-				\__NumberNode: 2
-		\__PrintNode [<expression>]
-			\__ConcatNode [<expression>]
-				\__StringNode: "Hello"
-				\__StringNode: " World!"
-		\__PrintNode [<expression>]
-			\__PlusNode [<expression>]
-				\__NumberNode: 3.14
-				\__NumberNode: 2.71
-		\__PrintNode [<expression>]
-			\__NENode [<expression>]
-				\__NumberNode: 10
-				\__NumberNode: 20
-		\__PrintNode [<expression>]
-			\__MinusNode [<expression>]
-				\__NumberNode: 10
-				\__NumberNode: 5
-		\__PrintNode [<expression>]
-			\__BoolNode: true
-		\__PrintNode [<expression>]
-			\__BoolNode: false
-		\__PrintNode [<expression>]
-			\__PlusNode [<expression>]
-				\__SinNode   [<expression>]
-					\__NumberNode: PI
-				\__CosNode   [<expression>]
-					\__NumberNode: E
+		\__LetNode [<expression>]
+			\__AssignNode:
+				\__IdentifierNode: msg : None
+				\__StringNode: "Hello World"
+			\__PrintNode [<expression>]
+				\__IdentifierNode: msg : None
+		\__LetNode [<expression>]
+			\__AssignNode:
+				\__IdentifierNode: number : None
+				\__StringNode: "42"
+			\__AssignNode:
+				\__IdentifierNode: text : None
+				\__StringNode: "The meaning of life is"
+			\__PrintNode [<expression>]
+				\__ConcatSpaceNode [<expression>]
+					\__IdentifierNode: text : None
+					\__IdentifierNode: number : None
+		\__LetNode [<expression>]
+			\__AssignNode:
+				\__IdentifierNode: number : None
+				\__StringNode: "42"
+			\__LetNode [<expression>]
+				\__AssignNode:
+					\__IdentifierNode: text : None
+					\__StringNode: "The meaning of life is "
+				\__PrintNode [<expression>]
+					\__ConcatNode [<expression>]
+						\__IdentifierNode: text : None
+						\__IdentifierNode: number : None
+		\__LetNode [<expression>]
+			\__AssignNode:
+				\__IdentifierNode: number : None
+				\__StringNode: "42"
+			\__LetNode [<expression>]
+				\__AssignNode:
+					\__IdentifierNode: text : None
+					\__StringNode: "The meaning of life is "
+				\__PrintNode [<expression>]
+					\__ConcatNode [<expression>]
+						\__IdentifierNode: text : None
+						\__IdentifierNode: number : None

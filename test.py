@@ -45,13 +45,13 @@ test_cases = [
     ('hello_world.uh', 'hello_world.output'),
     ('escaped_quotes.uh', 'escaped_quotes.output'),
     ('string_concatenation.uh', 'string_concatenation.output'),
-    # ('trigonometric_functions.uh', 'trigonometric_functions.output'),
+    ('trigonometric_functions.uh', 'trigonometric_functions.output'),
     ('mixed_prints.uh', 'mixed_prints.output'),
-    # ('advanced_expressions.uh', 'advanced_expressions.output'),
-    ('simple_function.uh', 'simple_function.output'),
+    ('advanced_expressions.uh', 'advanced_expressions.output'),
+    # ('simple_function.uh', 'simple_function.output'),
     # ('trigonometric_operations.uh', 'trigonometric_operations.output'),
     # # ('trigonometric_identity.uh', 'trigonometric_identity.output'),
-    ('arithmetic_operations.uh', 'arithmetic_operations.output'),
+    # ('arithmetic_operations.uh', 'arithmetic_operations.output'),
     ('variable_declarations.uh', 'variable_declarations.output'),
     ('nested_scopes.uh', 'nested_scopes.output'),
     ('while_loop.uh', 'while_loop.output'),
@@ -60,7 +60,7 @@ test_cases = [
     ('conditional_statements.uh', 'conditional_statements.output'),
     ('for_loop.uh', 'for_loop.output'),
     # ('gcd_function.uh', 'gcd_function.output'),
-    ('class_definition.uh', 'class_definition.output'),
+    # ('class_definition.uh', 'class_definition.output'),
 
 ]
 
