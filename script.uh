@@ -1,5 +1,6 @@
-type lala {
-    a = 0;
-    lalal (x) => !x;
+type MyClass {
+    a = 5;
+    method() => print(2);
 }
-let a = new lala() in print(a.lalal(5));
+
+let a = new MyClass() in a.method();

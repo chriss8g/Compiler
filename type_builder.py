@@ -146,13 +146,13 @@ class TypeBuilder:
         self.visit(node.body)
         node.type = node.body.type
         self.visit(node.else_body)
-        if node.elsebody.type != node.type:
+        if node.else_body.type != node.type:
             self.errors.append(f"Todos los bloques del IF deben devolver el mismo tipo")
         for cond in node.elif_conditions:
             self.visit(cond)
         for body in node.elif_body:
             self.visit(body)
-            if nbody.type != node.type:
+            if body.type != node.type:
                 self.errors.append(f"Todos los bloques del IF deben devolver el mismo tipo")
         return self.errors
     

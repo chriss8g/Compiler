@@ -2,6 +2,7 @@ BOOL_TYPE = 'bool'
 STRING_TYPE = 'string'
 OBJECT_TYPE = 'object'
 NUMBER_TYPE = 'float'
+MY_TYPES = [BOOL_TYPE, STRING_TYPE, OBJECT_TYPE, NUMBER_TYPE]
 
 class Node:
     pass

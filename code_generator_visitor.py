@@ -1,5 +1,6 @@
 import utils.visitor as visitor
 from nodes_types import hulk_types as hulk
+from nodes_types import c_type as c
 from semantic_checker.scope import Scope
 import nodes_types.cil as cil
 
@@ -30,7 +31,7 @@ class CodeGeneratorVisitor(object):
     def visit(self, node, scope):
         struct_name = node.name
         struct_members = "\n    ".join(
-            f'float {attr.dest};' for attr in node.attributes)
+            f'{attr.type} {attr.name};' for attr in node.attributes)
 
         struct_code = f"""
                         typedef struct {{
@@ -73,11 +74,11 @@ class CodeGeneratorVisitor(object):
             header = "#include <stdio.h>"
             if header not in self.headers:
                 self.headers.append(header)
-            if node.type == hulk.INT_TYPE:
+            if node.type == c.INT_TYPE:
                 return f'{node.dest} = printf("%d\\n", {node.source});\n'
-            elif node.type == hulk.FLOAT_TYPE:
+            elif node.type == c.FLOAT_TYPE:
                 return f'{node.dest} = printf("%f\\n", {node.source});\n'
-            elif node.type == 'char*':
+            elif node.type == c.STRING_TYPE:
                 return f'{node.dest} = printf("%s\\n", {node.source});\n'
             else:
                 return f'{node.dest} = printf("%d\\n", {node.source});\n'
@@ -95,8 +96,7 @@ class CodeGeneratorVisitor(object):
             if header not in self.headers:
                 self.headers.append(header)
 
-            if len(self.aux) == 0:
-                self.aux.append('''
+            a = '''
                             char* concatenateStrings(const char* str1, const char* str2) {
                                 // Calculamos la longitud total de la cadena resultante
                                 size_t length1 = strlen(str1);
@@ -118,7 +118,9 @@ class CodeGeneratorVisitor(object):
 
                                 return result;
                             }
-                        ''')
+                        '''
+            if a not in self.aux:
+                self.aux.append(a)
 
             return f'{node.dest} = concatenateStrings((char*){node.source}, (char*){node.op_nd});\n'
             
@@ -127,16 +129,21 @@ class CodeGeneratorVisitor(object):
     def visit(self, node, scope):
         params = ', '.join(self.visit(param, scope.create_child_scope())
                            for param in node.params)
+        
+        aux = f"{node.type} {node.name}({params});"
+        if aux not in self.aux:
+            self.aux.append(aux)
+
         localvars = "\n".join(self.visit(
             var, scope.create_child_scope()) for var in node.localvars)
         # print(node.instructions)
         instructions = "\n".join(self.visit(
             inst, scope.create_child_scope()) for inst in node.instructions)
-        return f'int {node.name}({params}){{ \n{localvars}\n{instructions}\n}}'
+        return f'{node.type} {node.name}({params}){{ \n{localvars}\n{instructions}\n}}'
 
     @visitor.when(cil.ParamNode)
     def visit(self, node, scope):
-        return f'{node.type if node.type else 'int'} {node.name}'
+        return f'{node.type} {node.name}'
 
     @visitor.when(cil.StaticCallNode)
     def visit(self, node, scope):

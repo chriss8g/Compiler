@@ -1,0 +1,4 @@
+STRING_TYPE = 'char *'
+FLOAT_TYPE = 'float'
+INT_TYPE = 'int'
+MY_TYPES = [STRING_TYPE, FLOAT_TYPE, INT_TYPE]

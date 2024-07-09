@@ -24,12 +24,12 @@ class BaseHULKToCILVisitor:
     def instructions(self):
         return self.current_function.instructions
 
-    # def register_local(self, vinfo):
-    #     vinfo.name = f'local_{self.current_function.name[9:]}_{
-    #         vinfo.name}_{len(self.localvars)}'
-    #     local_node = cil.LocalNode(vinfo.name, vinfo.type)
-    #     self.localvars.append(local_node)
-    #     return vinfo.name
+    def register_local(self, vinfo):
+        vinfo.name = f'local_{self.current_function.name[9:]}_{
+            vinfo.name}_{len(self.localvars)}'
+        local_node = cil.LocalNode(vinfo.name, vinfo.type)
+        self.localvars.append(local_node)
+        return vinfo.name
 
     def define_internal_local(self, type=None):
         vinfo = VariableInfo('internal', type)
@@ -49,9 +49,9 @@ class BaseHULKToCILVisitor:
     def to_function_name(self, method_name):
         return f'function_{method_name}_{len(self.dotcode)}'
     
-    def register_function(self, function_name, params=None):
+    def register_function(self, function_name, typex, params=None):
         params = params if params else []
-        function_node = cil.FunctionNode(function_name, params, [], [])
+        function_node = cil.FunctionNode(function_name, params, [], [], typex)
         self.dotcode.append(function_node)
         return function_node
     
