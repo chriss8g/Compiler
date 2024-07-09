@@ -99,7 +99,7 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
         for param in node.params:
             # vinfo = scope.find_variable(param)
-            param_node = cil.ParamNode(param[0])
+            param_node = cil.ParamNode(param[0], param[1])
             self.register_param(param_node)
 
         expr = self.visit(node.body, scope)
