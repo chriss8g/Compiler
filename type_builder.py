@@ -109,6 +109,11 @@ class TypeBuilder:
     @visitor.when(hulk.AssignNode)
     def visit(self, node):
         self.visit(node.expr)
+        try:
+            if node.expr.child:
+                    node.type = self.recurrent_type.name
+        except:
+            node.type = node.expr.type
         if node.id.type:
             if node.id.type != node.expr.type:
                 self.errors.append(f"No se puede asignar un '{node.expr.type}' a un '{node.id.type}'")
@@ -122,7 +127,12 @@ class TypeBuilder:
     def visit(self,node):
         for expr in node.body:
             self.visit(expr)
-        node.type = node.body[-1].type
+        try:
+            if node.body[-1].child:
+                node.type = self.recurrent_type.name
+        except:
+            node.type = node.body[-1].type
+        # node.type = node.body[-1].type
         return self.errors
     
     @visitor.when(hulk.LetNode)
@@ -131,15 +141,22 @@ class TypeBuilder:
             self.visit(arg)
             # self.var.append(VariableInfo(arg.id.name, arg.id.type))
         self.visit(node.body)
-        node.type = node.body.type
-        print(node.type)
+        try:
+            if node.body.child:
+                node.type = self.recurrent_type.name
+        except:
+            node.type = node.body.type
         return self.errors
     
     @visitor.when(hulk.WhileNode)
     def visit(self,node):
         self.visit(node.condition)
         self.visit(node.body)
-        node.type = node.body.type
+        try:
+            if node.body.child:
+                node.type = self.recurrent_type.name
+        except:
+            node.type = node.body.type
         return self.errors
         
     @visitor.when(hulk.IfNode)
@@ -166,7 +183,11 @@ class TypeBuilder:
             self.errors.append(f"No se puede asignar un '{node.expr.type}' a un '{node.id.type}'")
         else: 
             node.type = node.id.type
-        node.type = node.expr.type
+        try:
+            if node.expr.child:
+                node.type = self.recurrent_type.name
+        except:
+            node.type = node.expr.type
         return self.errors
     
     @visitor.when(hulk.CallNode)
@@ -205,13 +226,24 @@ class TypeBuilder:
             self.recurrent_type = self.context.get_type(node.type)
             self.visit(node.child)
             self.recurrent_type = self.context.get_type(node.child.type)
-            print(self.recurrent_type.name)
         return self.errors
     
     @visitor.when(hulk.PlusNode)
     def visit(self,node):
         self.visit(node.left)
         self.visit(node.right)
+        try:
+            if node.left.child:
+                if self.recurrent_type.name != hulk.NUMBER_TYPE:
+                    self.errors.append(f"La operación + solo esta definida entre números")
+        except:
+            pass
+        try:
+            if node.rigth.child:
+                if self.recurrent_type.name != hulk.NUMBER_TYPE:
+                    self.errors.append(f"La operación + solo esta definida entre números")
+        except:
+            pass
         if not node.left.type:
             node.left.type = hulk.NUMBER_TYPE
             self.visit(node.left)
@@ -229,6 +261,18 @@ class TypeBuilder:
     def visit(self,node):
         self.visit(node.left)
         self.visit(node.right)
+        try:
+            if node.left.child:
+                if self.recurrent_type.name != hulk.NUMBER_TYPE:
+                    self.errors.append(f"La operación - solo esta definida entre números")
+        except:
+            pass
+        try:
+            if node.rigth.child:
+                if self.recurrent_type.name != hulk.NUMBER_TYPE:
+                    self.errors.append(f"La operación - solo esta definida entre números")
+        except:
+            pass
         if not node.left.type:
             node.left.type = hulk.NUMBER_TYPE
             self.visit(node.left)
@@ -246,6 +290,18 @@ class TypeBuilder:
     def visit(self,node):
         self.visit(node.left)
         self.visit(node.right)
+        try:
+            if node.left.child:
+                if self.recurrent_type.name != hulk.NUMBER_TYPE:
+                    self.errors.append(f"La operación * solo esta definida entre números")
+        except:
+            pass
+        try:
+            if node.rigth.child:
+                if self.recurrent_type.name != hulk.NUMBER_TYPE:
+                    self.errors.append(f"La operación * solo esta definida entre números")
+        except:
+            pass
         if not node.left.type:
             node.left.type = hulk.NUMBER_TYPE
             self.visit(node.left)
@@ -263,6 +319,18 @@ class TypeBuilder:
     def visit(self,node):
         self.visit(node.left)
         self.visit(node.right)
+        try:
+            if node.left.child:
+                if self.recurrent_type.name != hulk.NUMBER_TYPE:
+                    self.errors.append(f"La operación / solo esta definida entre números")
+        except:
+            pass
+        try:
+            if node.rigth.child:
+                if self.recurrent_type.name != hulk.NUMBER_TYPE:
+                    self.errors.append(f"La operación / solo esta definida entre números")
+        except:
+            pass
         if not node.left.type:
             node.left.type = hulk.NUMBER_TYPE
             self.visit(node.left)
@@ -289,6 +357,18 @@ class TypeBuilder:
     def visit(self,node):
         self.visit(node.left)
         self.visit(node.right)
+        try:
+            if node.left.child:
+                if self.recurrent_type.name != hulk.NUMBER_TYPE:
+                    self.errors.append(f"La operación ^ solo esta definida entre números")
+        except:
+            pass
+        try:
+            if node.rigth.child:
+                if self.recurrent_type.name != hulk.NUMBER_TYPE:
+                    self.errors.append(f"La operación ^ solo esta definida entre números")
+        except:
+            pass
         if not node.left.type:
             node.left.type = hulk.NUMBER_TYPE
             self.visit(node.left)
@@ -304,6 +384,18 @@ class TypeBuilder:
     def visit(self,node):
         self.visit(node.left)
         self.visit(node.right)
+        try:
+            if node.left.child:
+                if self.recurrent_type.name != hulk.NUMBER_TYPE:
+                    self.errors.append(f"La operación % solo esta definida entre números")
+        except:
+            pass
+        try:
+            if node.rigth.child:
+                if self.recurrent_type.name != hulk.NUMBER_TYPE:
+                    self.errors.append(f"La operación % solo esta definida entre números")
+        except:
+            pass
         if not node.left.type:
             node.left.type = hulk.NUMBER_TYPE
             self.visit(node.left)
@@ -319,6 +411,18 @@ class TypeBuilder:
     def visit(self,node):
         self.visit(node.left)
         self.visit(node.right)
+        try:
+            if node.left.child:
+                if self.recurrent_type.name != hulk.NUMBER_TYPE:
+                    self.errors.append(f"La operación == solo esta definida entre números")
+        except:
+            pass
+        try:
+            if node.rigth.child:
+                if self.recurrent_type.name != hulk.NUMBER_TYPE:
+                    self.errors.append(f"La operación == solo esta definida entre números")
+        except:
+            pass
         if not node.left.type:
             node.left.type = hulk.NUMBER_TYPE
             self.visit(node.left)
@@ -334,6 +438,18 @@ class TypeBuilder:
     def visit(self,node):
         self.visit(node.left)
         self.visit(node.right)
+        try:
+            if node.left.child:
+                if self.recurrent_type.name != hulk.NUMBER_TYPE:
+                    self.errors.append(f"La operación > solo esta definida entre números")
+        except:
+            pass
+        try:
+            if node.rigth.child:
+                if self.recurrent_type.name != hulk.NUMBER_TYPE:
+                    self.errors.append(f"La operación > solo esta definida entre números")
+        except:
+            pass
         if not node.left.type:
             node.left.type = hulk.NUMBER_TYPE
             self.visit(node.left)
@@ -349,6 +465,18 @@ class TypeBuilder:
     def visit(self,node):
         self.visit(node.left)
         self.visit(node.right)
+        try:
+            if node.left.child:
+                if self.recurrent_type.name != hulk.NUMBER_TYPE:
+                    self.errors.append(f"La operación < solo esta definida entre números")
+        except:
+            pass
+        try:
+            if node.rigth.child:
+                if self.recurrent_type.name != hulk.NUMBER_TYPE:
+                    self.errors.append(f"La operación < solo esta definida entre números")
+        except:
+            pass
         if not node.left.type:
             node.left.type = hulk.NUMBER_TYPE
             self.visit(node.left)
@@ -364,6 +492,18 @@ class TypeBuilder:
     def visit(self,node):
         self.visit(node.left)
         self.visit(node.right)
+        try:
+            if node.left.child:
+                if self.recurrent_type.name != hulk.NUMBER_TYPE:
+                    self.errors.append(f"La operación >= solo esta definida entre números")
+        except:
+            pass
+        try:
+            if node.rigth.child:
+                if self.recurrent_type.name != hulk.NUMBER_TYPE:
+                    self.errors.append(f"La operación >= solo esta definida entre números")
+        except:
+            pass
         if not node.left.type:
             node.left.type = hulk.NUMBER_TYPE
             self.visit(node.left)
@@ -379,6 +519,18 @@ class TypeBuilder:
     def visit(self,node):
         self.visit(node.left)
         self.visit(node.right)
+        try:
+            if node.left.child:
+                if self.recurrent_type.name != hulk.NUMBER_TYPE:
+                    self.errors.append(f"La operación <= solo esta definida entre números")
+        except:
+            pass
+        try:
+            if node.rigth.child:
+                if self.recurrent_type.name != hulk.NUMBER_TYPE:
+                    self.errors.append(f"La operación <= solo esta definida entre números")
+        except:
+            pass
         if not node.left.type:
             node.left.type = hulk.NUMBER_TYPE
             self.visit(node.left)
@@ -394,6 +546,18 @@ class TypeBuilder:
     def visit(self,node):
         self.visit(node.left)
         self.visit(node.right)
+        try:
+            if node.left.child:
+                if self.recurrent_type.name != hulk.NUMBER_TYPE:
+                    self.errors.append(f"La operación != solo esta definida entre números")
+        except:
+            pass
+        try:
+            if node.rigth.child:
+                if self.recurrent_type.name != hulk.NUMBER_TYPE:
+                    self.errors.append(f"La operación != solo esta definida entre números")
+        except:
+            pass
         if not node.left.type:
             node.left.type = hulk.NUMBER_TYPE
             self.visit(node.left)
@@ -409,6 +573,18 @@ class TypeBuilder:
     def visit(self,node):
         self.visit(node.left)
         self.visit(node.right)
+        try:
+            if node.left.child:
+                if self.recurrent_type.name != hulk.BOOL_TYPE:
+                    self.errors.append(f"La operación & solo esta definida entre números")
+        except:
+            pass
+        try:
+            if node.rigth.child:
+                if self.recurrent_type.name != hulk.BOOL_TYPE:
+                    self.errors.append(f"La operación & solo esta definida entre números")
+        except:
+            pass
         if not node.left.type:
             node.left.type = hulk.BOOL_TYPE
             self.visit(node.left)
@@ -424,6 +600,18 @@ class TypeBuilder:
     def visit(self,node):
         self.visit(node.left)
         self.visit(node.right)
+        try:
+            if node.left.child:
+                if self.recurrent_type.name != hulk.BOOL_TYPE:
+                    self.errors.append(f"La operación | solo esta definida entre números")
+        except:
+            pass
+        try:
+            if node.rigth.child:
+                if self.recurrent_type.name != hulk.BOOL_TYPE:
+                    self.errors.append(f"La operación | solo esta definida entre números")
+        except:
+            pass
         if not node.left.type:
             node.left.type = hulk.BOOL_TYPE
             self.visit(node.left)
@@ -438,6 +626,12 @@ class TypeBuilder:
     @visitor.when(hulk.NotNode)
     def visit(self,node):
         self.visit(node.lex)
+        try:
+            if node.lex.child:
+                if self.recurrent_type.name != hulk.BOOL_TYPE:
+                    self.errors.append(f"La operación ! solo esta definida entre números")
+        except:
+            pass
         if not node.lex.type:
             node.lex.type = hulk.BOOL_TYPE
             self.visit(node.lex)
@@ -450,8 +644,8 @@ class TypeBuilder:
     def visit(self,node):
         self.visit(node.left)
         self.visit(node.right)
-        if node.left.type != hulk.STRING_TYPE or node.right.type != hulk.STRING_TYPE:
-            self.errors.append(f"La operación @ solo esta definida entre cadenas")
+        # if node.left.type != hulk.STRING_TYPE or node.right.type != hulk.STRING_TYPE:
+        #     self.errors.append(f"La operación @ solo esta definida entre cadenas")
         node.type = hulk.STRING_TYPE
         return self.errors
     
@@ -459,8 +653,8 @@ class TypeBuilder:
     def visit(self,node):
         self.visit(node.left)
         self.visit(node.right)
-        if node.left.type != hulk.STRING_TYPE or node.right.type != hulk.STRING_TYPE:
-            self.errors.append(f"La operación @@ solo esta definida entre cadenas")
+        # if node.left.type != hulk.STRING_TYPE or node.right.type != hulk.STRING_TYPE:
+        #     self.errors.append(f"La operación @@ solo esta definida entre cadenas")
         node.type = hulk.STRING_TYPE
         return self.errors
     
@@ -475,7 +669,6 @@ class TypeBuilder:
                 self.recurrent_type = self.context.get_type(node.type)
                 self.visit(node.child)
                 self.recurrent_type = self.context.get_type(node.child.type)
-                print(self.recurrent_type.name)
                 # self.recurrent_type = None
         return self.errors
     
