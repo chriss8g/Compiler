@@ -67,7 +67,7 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
         for param in node.params:
             # vinfo = scope.find_variable(param)
             param_node = cil.ParamNode(param[0])
-            self.params.append(param_node)
+            self.register_param(param_node)
 
         expr = self.visit(node.body, scope)
 
@@ -99,8 +99,8 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
         for param in node.params:
             # vinfo = scope.find_variable(param)
-            param_node = cil.ParamNode(param[0])
-            self.params.append(param_node)
+            param_node = cil.ParamNode(param[0], param[1])
+            self.register_param(param_node)
 
         expr = self.visit(node.body, scope)
 
@@ -286,6 +286,7 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
             node.id.name) else node.id
         expr = self.visit(node.expr, scope.create_child_scope())
         self.register_instruction(cil.AssignNode(x, expr))
+        return expr
 
     @visitor.when(hulk.WhileNode)
     def visit(self, node, scope):
@@ -356,19 +357,30 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
         self.current_function = self.register_function(name)
 
         local_names = []
+        for arg in parent.params:
+            self.register_param(arg)
+
+            dest = self.define_internal_local(arg.type)
+            local_names.append(dest)
+            scope.dict[arg.name] = dest
+            scope.define_variable(arg.name)
+            self.register_instruction(cil.AssignNode(dest, arg.name))
+
+
         for child in node.args:
 
             child.type = child.type if child.type != hulk.BOOL_TYPE else hulk.INT_TYPE
             child.type = child.type if child.type != hulk.STRING_TYPE else 'char*'
             child.type = child.type if child.type in ['char*', hulk.NUMBER_TYPE, hulk.INT_TYPE] else (child.type + '*')
 
+            self.register_param(cil.ParamNode(child.id.name, child.type))
 
             dest = self.define_internal_local(child.type)
             local_names.append(dest)
             scope.dict[child.id.name] = dest
             scope.define_variable(child.id.name)
-            values = self.visit(child.expr, scope.create_child_scope())
-            self.register_instruction(cil.AssignNode(dest, values))
+
+            self.register_instruction(cil.AssignNode(dest, child.id.name))
 
         if (isinstance(node.body, hulk.BlockNode)):
             for child in node.body.body:
@@ -380,8 +392,9 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
         self.register_instruction(cil.ReturnNode(expr))
         self.current_function = parent
 
+        temp = f'{name}(' + ", ".join(child.name for child in parent.params) + (', ' if len(parent.params) else "") + ", ".join(self.visit(child.expr, scope.create_child_scope()) for child in node.args) + ")"
         dest = self.define_internal_local(node.body.type)
-        self.register_instruction(cil.StaticCallNode(name, dest))
+        self.register_instruction(cil.AssignNode(dest, temp))
 
         return dest
 

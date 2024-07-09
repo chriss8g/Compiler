@@ -1,1 +1,7 @@
-for (x in range(5, 10)) print(x);
+function gcd(a, b) => while (a > 0)
+    let m = a % b in {
+        b := a;
+        a := m;
+    };
+
+print(gcd(26,3));

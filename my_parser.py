@@ -221,14 +221,14 @@ class CodeToAST:
         # ***************** Expresiones ******************
         expr %= blockExpr, lambda h, s: s[1]
         expr %= let + asig_list + inx + expr, lambda h, s: LetNode(s[2], s[4])
-        expr %= ifx + opar + expr + cpar + specialBlock + elifx_expr + elsex + superexpr, lambda h, s: IfNode(s[3], s[5], s[8], s[6][0], s[6][1])
+        # expr %= ifx + opar + expr + cpar + specialBlock + elifx_expr + elsex + superexpr, lambda h, s: IfNode(s[3], s[5], s[8], s[6][0], s[6][1])
         expr %= whilex + opar + expr + cpar + expr, lambda h, s: WhileNode(s[3], s[5])
-        expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + expr + cpar + cpar + expr, lambda h, s: ForRangeToWhile(s)
-        expr %= forx + opar + idnode + inx + idnode + cpar + expr, lambda h, s: ForToWhile(s)
+        # expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + expr + cpar + cpar + expr, lambda h, s: ForRangeToWhile(s)
+        # expr %= forx + opar + idnode + inx + idnode + cpar + expr, lambda h, s: ForToWhile(s)
         expr %= printx + opar + expr + cpar, lambda h, s: PrintNode(s[3])
         expr %= idnode + asign2 + expr, lambda h, s: DestructNode(s[1], s[3])
-        expr %= new + idx + opar + arg_expr + cpar, lambda h, s: ObjectCreationNode(s[2], s[4])
-        expr %= new + idx + opar + cpar, lambda h, s: ObjectCreationNode(s[2], [])
+        # expr %= new + idx + opar + arg_expr + cpar, lambda h, s: ObjectCreationNode(s[2], s[4])
+        # expr %= new + idx + opar + cpar, lambda h, s: ObjectCreationNode(s[2], [])
         expr %= subexpr, lambda h, s: s[1]
 
         superexpr %= expr, lambda h, s: s[1]
@@ -247,12 +247,12 @@ class CodeToAST:
         # subexpr %= subexpr + andx + term, lambda h, s: AndNode(s[1], s[3])
         # subexpr %= subexpr + orx + term, lambda h, s: OrNode(s[1], s[3])
         # subexpr %= notx + term, lambda h, s: NotNode(s[2])
-        subexpr %= subexpr + eq + term, lambda h, s: EQNode(s[1], s[3])
-        subexpr %= subexpr + ne + term, lambda h, s: NENode(s[1], s[3])
+        # subexpr %= subexpr + eq + term, lambda h, s: EQNode(s[1], s[3])
+        # subexpr %= subexpr + ne + term, lambda h, s: NENode(s[1], s[3])
         subexpr %= subexpr + gt + term, lambda h, s: GTNode(s[1], s[3])
-        subexpr %= subexpr + lt + term, lambda h, s: LTNode(s[1], s[3])
-        subexpr %= subexpr + ge + term, lambda h, s: GENode(s[1], s[3])
-        subexpr %= subexpr + le + term, lambda h, s: LENode(s[1], s[3])
+        # subexpr %= subexpr + lt + term, lambda h, s: LTNode(s[1], s[3])
+        # subexpr %= subexpr + ge + term, lambda h, s: GENode(s[1], s[3])
+        # subexpr %= subexpr + le + term, lambda h, s: LENode(s[1], s[3])
         subexpr %= subexpr + concat + term, lambda h, s: ConcatNode(s[1], s[3])
         subexpr %= subexpr + concat_space + term, lambda h, s: ConcatSpaceNode(s[1], s[3])
         subexpr %= term, lambda h, s: s[1]
@@ -260,15 +260,15 @@ class CodeToAST:
         term %= term + star + factor, lambda h, s: StarNode(s[1], s[3])
         term %= term + div + factor, lambda h, s: DivNode(s[1], s[3])
         # term %= term + powx + factor, lambda h, s: PowNode(s[1], s[3])
-        # term %= term + mod + factor, lambda h, s: ModNode(s[1], s[3])
+        term %= term + mod + factor, lambda h, s: ModNode(s[1], s[3])
         term %= factor, lambda h, s: s[1]
 
-        factor %= sin + opar + expr + cpar, lambda h, s: SinNode(s[3])
-        factor %= cos + opar + expr + cpar, lambda h, s: CosNode(s[3])
-        factor %= sqrt + opar + expr + cpar, lambda h, s: SqrtNode(s[3])
-        factor %= exp + opar + expr + cpar, lambda h, s: ExpNode(s[3])
-        factor %= log + opar + expr + comma + expr + cpar, lambda h, s: LogNode(s[3], s[5])
-        factor %= rand + opar + cpar, lambda h, s: RandNode()
+        # factor %= sin + opar + expr + cpar, lambda h, s: SinNode(s[3])
+        # factor %= cos + opar + expr + cpar, lambda h, s: CosNode(s[3])
+        # factor %= sqrt + opar + expr + cpar, lambda h, s: SqrtNode(s[3])
+        # factor %= exp + opar + expr + cpar, lambda h, s: ExpNode(s[3])
+        # factor %= log + opar + expr + comma + expr + cpar, lambda h, s: LogNode(s[3], s[5])
+        # factor %= rand + opar + cpar, lambda h, s: RandNode()
         factor %= atom, lambda h, s: s[1]
 
         atom %= number, lambda h, s: NumberNode(s[1])

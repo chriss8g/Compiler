@@ -95,7 +95,8 @@ class CodeGeneratorVisitor(object):
             if header not in self.headers:
                 self.headers.append(header)
 
-            self.aux.append('''
+            if len(self.aux) == 0:
+                self.aux.append('''
                             char* concatenateStrings(const char* str1, const char* str2) {
                                 // Calculamos la longitud total de la cadena resultante
                                 size_t length1 = strlen(str1);
@@ -135,7 +136,7 @@ class CodeGeneratorVisitor(object):
 
     @visitor.when(cil.ParamNode)
     def visit(self, node, scope):
-        return f'int {node.name}'
+        return f'{node.type} {node.name}'
 
     @visitor.when(cil.StaticCallNode)
     def visit(self, node, scope):
