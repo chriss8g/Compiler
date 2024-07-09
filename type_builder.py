@@ -78,7 +78,7 @@ class TypeBuilder:
         else:
             node.type = node.value.type
         if not node.type:
-            self.errors.append(f"No se pudo inferir el tipo del atributo '{node.name}'")
+            self.errors.append(f"No se pudo inferir el tipo del atributo '{node.id.name}'")
         return self.errors
     
     @visitor.when(hulk.MethodNode)
