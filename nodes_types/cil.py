@@ -29,7 +29,8 @@ class FunctionNode(Node):
         self.instructions = instructions
 
 class ParamNode(Node):
-    def __init__(self, name):
+    def __init__(self, name, typex):
+        self.type = typex
         self.name = name
 
 class LocalNode(Node):

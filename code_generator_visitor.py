@@ -135,7 +135,7 @@ class CodeGeneratorVisitor(object):
 
     @visitor.when(cil.ParamNode)
     def visit(self, node, scope):
-        return f'int {node.name}'
+        return f'{node.type} {node.name}'
 
     @visitor.when(cil.StaticCallNode)
     def visit(self, node, scope):
