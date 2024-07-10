@@ -165,7 +165,10 @@ class ShiftReduceParser:
         self.action = {}
         self.goto = {}
         
-        self._build_parsing_table(parser_name)
+        with open('./parser/action', 'rb') as file1:
+            self.action = pickle.load(file1)
+        with open('./parser/goto', 'rb') as file2:
+            self.goto = pickle.load(file2)
 
     def _build_parsing_table(self):
         raise NotImplementedError()
@@ -179,7 +182,7 @@ class ShiftReduceParser:
             state = stack[-1]
             lookahead = w[cursor]
 
-            if(state, lookahead) not in self.action:
+            if(state, lookahead.Name) not in self.action:
                 excepted_char = ''
 
                 for (state1, i) in self.action:
@@ -195,14 +198,14 @@ class ShiftReduceParser:
 
                 return None,message_error
 
-            if self.action[state, lookahead] == self.OK:
+            if self.action[state, lookahead.Name] == self.OK:
                 action = self.OK
             else:
-                action, tag = self.action[state, lookahead]
+                action, tag = self.action[state, lookahead.Name]
 
             if action == self.SHIFT:
                 operations.append(self.SHIFT)
-                stack += [lookahead, tag]
+                stack += [lookahead.Name, tag]
                 cursor += 1
             elif action == self.REDUCE:
                 operations.append(self.REDUCE)
@@ -212,14 +215,14 @@ class ShiftReduceParser:
                 for symbol in reversed(body):
                     stack.pop()
 
-                    assert stack.pop() == symbol
+                    assert stack.pop() == symbol.Name
                     state = stack[-1]
 
-                goto = self.goto[state, head]
-                stack += [head, goto]
+                goto = self.goto[state, head.Name]
+                stack += [head.Name, goto]
             elif action == self.OK:
                 stack.pop()
-                assert stack.pop() == self.G.startSymbol
+                assert stack.pop() == self.G.startSymbol.Name
                 assert len(stack) == 1
                 return output,'Clean Code' if not get_shift_reduce else(output, 'Operations: ' + ', '.join(op for op in operations))
             else:
@@ -229,7 +232,7 @@ class LR1Parser(ShiftReduceParser):
     def __init__(self, G, parser_name='lexer' ,verbose=False):
         super().__init__(G, parser_name, verbose)
     
-    def _build_parsing_table(self, parser_name='lexer'):
+    def _build_parsing_table(self, parser_name):
         G = self.G.AugmentedGrammar(True)
         
         automaton = build_LR1_automaton(G)
@@ -256,18 +259,8 @@ class LR1Parser(ShiftReduceParser):
                 else:
                     self._register(self.goto, (idx, item.NextSymbol), node.get(item.NextSymbol.Name).idx)
         
-        action = {}
-        for key in self.action.keys():
-            action[key[0],key[1].Name] = self.action[key]
-        goto = {}
-        for key in self.goto.keys():
-            goto[key[0],key[1].Name] = self.goto[key]
         
-        if parser_name == "parser":
-            with open('./parser/action', 'wb') as file1:
-                pickle.dump(action, file1)
-            with open('./parser/goto', 'wb') as file2:
-                pickle.dump(goto, file2)
+        
         
     @staticmethod
     def _register(table, key, value):
@@ -306,7 +299,8 @@ def evaluate_parse(left_parse, tokens, G=None, attributes=None):
     
     if G:
         for i in range(len(G.Productions)):
-            G.attributes[G.Productions[i]] = attributes[i]
+            prod = G.Productions[i].Left.Name + ' ' + '\n'.join(s.Name for s in G.Productions[i].Right._symbols)
+            G.attributes[prod] = attributes[i]
     
     if not left_parse or not tokens:
         return
@@ -325,7 +319,8 @@ def evaluate(production, left_parse, tokens, G, inherited_value=None):
     if not G:
         attributes = production.attributes
     else:
-        attribute = G.attributes[production]
+        prod = production.Left.Name + ' ' + '\n'.join(s.Name for s in production.Right._symbols)
+        attribute = G.attributes[prod]
         attributes = [None for i in range(len(body)+1)]
         attributes[0] = attribute
         

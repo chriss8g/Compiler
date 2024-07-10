@@ -1,6 +1,6 @@
 from utils.pycompiler import Grammar
 from lexer.Nodes import *
-from parser.tools import *
+from lexer.tools import *
 
 
 class Token:

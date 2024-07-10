@@ -165,7 +165,16 @@ class ShiftReduceParser:
         self.action = {}
         self.goto = {}
         
-        self._build_parsing_table(parser_name)
+        if parser_name == "parser":
+            if os.path.exists('./parser/action'):
+                with open('./parser/action', 'rb') as file1:
+                    self.action = pickle.load(file1)
+                with open('./parser/goto', 'rb') as file2:
+                    self.goto = pickle.load(file2)
+            else:
+                self._build_parsing_table(parser_name)   
+        else:
+            self._build_parsing_table()
 
     def _build_parsing_table(self):
         raise NotImplementedError()

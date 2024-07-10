@@ -2,10 +2,13 @@ import os
 import pickle
 from utils.pycompiler import *
 from parser.TreeDef import *
-from parser.tools import *
 from nodes_types.hulk_types import *
 from my_lexer import Lexer
 
+if os.path.exists('./parser/action'):
+    from parser.tools_saved import *
+else:
+    from parser.tools import *
 
 def ForRangeToWhile(s):
     count = s[3]
@@ -185,6 +188,8 @@ class CodeToAST:
         tokens = lexer(text)
 
         ###################################################################################
+
+        
 
         parser = LR1Parser(self.G,"parser")
 
