@@ -165,12 +165,18 @@ class CodeToAST:
         terminals['eof'] = self.G.EOF
 
         self.terminals = terminals
+        
+        attributes = [
+            lambda h, s: AssignNode(s[1],s[3]),
+            lambda h, s: NumberNode(s[1]),
+            lambda h,s:PlusNode(NumberNode(s[1]),s[3]),
+            lambda h, s: NumberNode(s[1])
+        ]
 
-        expr %= atom + asign1 + atom, lambda h, s: AssignNode(s[1],s[3])
-        expr %= number, lambda h, s: NumberNode(s[1])
-        atom %= number + plus + atom, lambda h,s:PlusNode(NumberNode(s[1]),s[3])
-        atom %= number, lambda h, s: NumberNode(s[1])
-
+        expr %= atom + asign1 + atom 
+        expr %= number
+        atom %= number + plus + atom
+        atom %= number
 
         #############################################################################
 
@@ -180,7 +186,7 @@ class CodeToAST:
 
         ###################################################################################
 
-        parser = LR1Parser(self.G, 'parser_autom')
+        parser = LR1Parser(self.G,"parser")
 
         derivations,msg = parser([tok.token_type for tok in tokens])
         self.error_msg = msg
@@ -192,7 +198,7 @@ class CodeToAST:
         tokens.reverse()
         derivations.reverse()
 
-        self.ast = evaluate_parse(derivations, tokens)
+        self.ast = evaluate_parse(derivations, tokens, self.G, attributes)
 
     def __repr__(self):
         from utils.my_format_visitor import FormatVisitor

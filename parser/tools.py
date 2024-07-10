@@ -165,7 +165,16 @@ class ShiftReduceParser:
         self.action = {}
         self.goto = {}
         
-        self._build_parsing_table()
+        if parser_name == "parser":
+            if os.path.exists('./parser/action'):
+                with open('./parser/action', 'rb') as file1:
+                    self.action = pickle.load(file1)
+                with open('./parser/goto', 'rb') as file2:
+                    self.goto = pickle.load(file2)
+            else:
+                self._build_parsing_table(parser_name)   
+        else:
+            self._build_parsing_table()
 
     def _build_parsing_table(self):
         raise NotImplementedError()
@@ -226,10 +235,10 @@ class ShiftReduceParser:
                 return None,'Invalid Code'
 
 class LR1Parser(ShiftReduceParser):
-    def __init__(self, G,verbose=False):
-        super().__init__(G,verbose)
+    def __init__(self, G, parser_name='lexer' ,verbose=False):
+        super().__init__(G, parser_name, verbose)
     
-    def _build_parsing_table(self):
+    def _build_parsing_table(self, parser_name='lexer'):
         G = self.G.AugmentedGrammar(True)
         
         automaton = build_LR1_automaton(G)
@@ -255,7 +264,12 @@ class LR1Parser(ShiftReduceParser):
 
                 else:
                     self._register(self.goto, (idx, item.NextSymbol), node.get(item.NextSymbol.Name).idx)
-
+        
+        if parser_name == "parser":
+            with open('./parser/action', 'wb') as file1:
+                pickle.dump(self.action, file1)
+            with open('./parser/goto', 'wb') as file2:
+                pickle.dump(self.goto, file2)
         
     @staticmethod
     def _register(table, key, value):
@@ -290,7 +304,11 @@ class Token:
 # *******************************************
 
 
-def evaluate_parse(left_parse, tokens):
+def evaluate_parse(left_parse, tokens, G=None, attributes=None):
+    
+    if G:
+        for i in range(len(G.Productions)):
+            G.attributes[G.Productions[i]] = attributes[i]
     
     if not left_parse or not tokens:
         return
@@ -298,14 +316,22 @@ def evaluate_parse(left_parse, tokens):
     left_parse = iter(left_parse)
     tokens = iter(tokens)
     next(tokens)
-    result = evaluate(next(left_parse), left_parse, tokens)
+    result = evaluate(next(left_parse), left_parse, tokens, G)
     
     return result
     
-def evaluate(production, left_parse, tokens, inherited_value=None):
+def evaluate(production, left_parse, tokens, G, inherited_value=None):
     _, body = production
     
-    attributes = production.attributes
+    attributes = None
+    if not G:
+        attributes = production.attributes
+    else:
+        attribute = G.attributes[production]
+        attributes = [None for i in range(len(body)+1)]
+        attributes[0] = attribute
+        
+    
     synteticed = []
     inherited = []
     for i in range(len(attributes)):
@@ -321,7 +347,7 @@ def evaluate(production, left_parse, tokens, inherited_value=None):
             synteticed[index+1] = a
         else:
             next_production = next(left_parse)
-            synteticed[index+1] = evaluate(next_production,left_parse,tokens, inherited_value)
+            synteticed[index+1] = evaluate(next_production,left_parse,tokens,G, inherited_value)
 
     return attributes[0](inherited, synteticed)
     
