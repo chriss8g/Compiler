@@ -258,6 +258,8 @@ class CodeToAST:
         asig_list %= asig1 + comma + asig_list, lambda h, s: [s[1]] + s[3]
         asig1 %= idnode + opt_typed + asign1 + expr, lambda h, s: AssignNode(s[1], s[4], s[2])
 
+        
+        
         # Aritmetica
         subexpr %= subexpr + plus + term, lambda h, s: PlusNode(s[1], s[3])
         subexpr %= subexpr + minus + term, lambda h, s: MinusNode(s[1], s[3])
@@ -343,11 +345,7 @@ class CodeToAST:
 if __name__ == "__main__":
 
     text = '''
-            type lala {
-                a = 0;
-                lalal (x) => !x;
-            }
-            let a = new lala() in print(a.lalal(5));
+            3+4==5|4/3<=3;
         '''
 
     codeToAST = CodeToAST(text)

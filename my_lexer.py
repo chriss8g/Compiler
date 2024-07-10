@@ -163,9 +163,12 @@ class Lexer:
         return lex,tag
     
     def _tokenize(self, text):
-        
+        line = 0
         while text:
-            text = text.lstrip()
+            if text[0] == '\n':
+                line += 1
+            elif text[0] == ' ' or text[0] == '\t':
+                text = text[1:]
             self._reset_automs()
             
             lex,tag = self._walk(text)
@@ -174,12 +177,19 @@ class Lexer:
             if tag is None:
                 self.errors.append(f'Caracter {lex} desconocido')
                 continue
-            yield lex,tag
+            yield lex,tag,line
             
-        yield '$', self.eof
+        yield '$', self.eof,line
     
     def __call__(self, text):
-        return [ Token(lex, self.terminals[ttype]) for lex, ttype in self._tokenize(text) if ttype != "comment" ]
+        tokens = []
+        for lex,ttype,line in self._tokenize(text):
+            if ttype == "comment":
+                continue
+            new_terminal = self.terminals[ttype]
+            new_terminal.line = line
+            tokens.append(Token(lex, new_terminal , line))
+        return tokens
     
 
     

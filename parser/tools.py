@@ -188,7 +188,7 @@ class ShiftReduceParser:
                 parsed = ' '.join([str(m)
                                     for m in stack if not str(m).isnumeric()])
                 excepted_char = excepted_char.rstrip(', ')
-                message_error = f'❌ It was expected "{excepted_char}" received "{lookahead}" after {parsed}'
+                message_error = f'❌ It was expected "{excepted_char}" received "{lookahead}" at line {lookahead.line} after {parsed}'
                 # print("\nError. Aborting...")
                 # print('')
                 # print("\n", message_error)
