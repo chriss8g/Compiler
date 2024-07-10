@@ -78,7 +78,7 @@ class CodeGeneratorVisitor(object):
             if node.type == c.INT_TYPE:
                 return f'{node.dest} = printf("%d\\n", {node.source});\n'
             elif node.type == c.FLOAT_TYPE:
-                return f'{node.dest} = printf("%f\\n", {node.source});\n'
+                return f'{node.dest} = printf("%.6g\\n", {node.source});\n'
             elif node.type == c.STRING_TYPE:
                 return f'{node.dest} = printf("%s\\n", {node.source});\n'
             else:
@@ -87,12 +87,14 @@ class CodeGeneratorVisitor(object):
             header = "#include <math.h>"
             if header not in self.headers:
                 self.headers.append(header)
-            return f'{node.dest} = {node.name}({node.source});\n'
+            return f'{node.dest} = (float){node.name}({node.source});\n'
         elif node.name == 'log':
             header = "#include <math.h>"
             if header not in self.headers:
                 self.headers.append(header)
-            return f'{node.dest} = {node.name}({node.op_nd})/{node.name}({node.source});\n'
+            return f'{node.dest} = (float)({node.name}({node.op_nd})/{node.name}({node.source}));\n'
+        elif node.name == 'mod':
+            return f'{node.dest} = (int){node.source} % (int){node.op_nd};\n'
         elif node.name == 'rand':
             header = "#include <math.h>"
             if header not in self.headers:
@@ -105,7 +107,7 @@ class CodeGeneratorVisitor(object):
                 self.headers.append(header)
 
             return f'srand(time(NULL));\n{node.dest} = ({node.name}()%101)/100.0;\n'
-        
+
         elif 'concat' in node.name:
 
             header = "#include <string.h>"

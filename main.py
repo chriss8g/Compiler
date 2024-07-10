@@ -40,7 +40,7 @@ def main(input_file):
     
     print("✅ Semantic Checked")
 
-    cil_generator = HULKToCILVisitor([])
+    cil_generator = HULKToCILVisitor({})
     output = cil_generator.visit(codeToAST.ast)
 
     from utils.my_format_visitor import FormatVisitor

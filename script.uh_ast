@@ -1,13 +1,16 @@
 \__ProgramNode [<program>]
 	\__LetNode [<expression>]
 		\__AssignNode:
-			\__IdentifierNode: number : None
-			\__NumberNode: 42
+			\__IdentifierNode: a : None
+			\__NumberNode: 0
 		\__LetNode [<expression>]
 			\__AssignNode:
-				\__IdentifierNode: text : None
-				\__StringNode: "The meaning of life is"
-			\__PrintNode [<expression>]
-				\__ConcatSpaceNode [<expression>]
-					\__IdentifierNode: text : None
-					\__IdentifierNode: number : None
+				\__IdentifierNode: b : None
+				\DestructNode   [<expression>]
+					\__IdentifierNode: a : None
+					\__NumberNode: 1
+			\__BlockNode [<expression>]
+				\__PrintNode [<expression>]
+					\__IdentifierNode: a : None
+				\__PrintNode [<expression>]
+					\__IdentifierNode: b : None

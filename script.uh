@@ -1,2 +1,6 @@
-let number = 42, text = "The meaning of life is" in
-    print(text @@ number);
+
+let a = 0 in
+    let b = a := 1 in {
+        print(a);
+        print(b);
+    };
