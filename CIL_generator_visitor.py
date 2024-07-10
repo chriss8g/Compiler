@@ -180,7 +180,6 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
     @visitor.when(hulk.ConcatNode)
     def visit(self, node, scope):
         node.type = update_types(node.type)
-        node.type = node.type if node.type != hulk.STRING_TYPE else c.STRING_TYPE
 
         left = self.visit(node.left, scope)
         right = self.visit(node.right, scope)
@@ -188,8 +187,20 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
         dest = self.define_internal_local(node.type)
 
         dest2 = self.define_internal_local(node.type)
-        self.register_instruction(cil.OurFunctionNode(
-            'concat', dest2, left, node.type, right))
+
+        if (node.left.type == c.STRING_TYPE and node.right.type == c.STRING_TYPE):
+            self.register_instruction(cil.OurFunctionNode(
+                'concat0', dest2, left, node.type, right))
+        elif (node.left.type == c.FLOAT_TYPE and node.right.type == c.STRING_TYPE):
+            self.register_instruction(cil.OurFunctionNode(
+                'concat1', dest2, left, node.type, right))
+        elif (node.left.type == c.STRING_TYPE and node.right.type == c.FLOAT_TYPE):
+            self.register_instruction(cil.OurFunctionNode(
+                'concat2', dest2, left, node.type, right))
+        elif (node.left.type == c.FLOAT_TYPE and node.right.type == c.FLOAT_TYPE):
+            self.register_instruction(cil.OurFunctionNode(
+                'concat3', dest2, left, node.type, right))
+        
 
         self.register_instruction(cil.AssignNode(dest, dest2))
         return dest
@@ -206,10 +217,20 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
         dest = self.define_internal_local(node.type)
 
         dest2 = self.define_internal_local(node.type)
-        self.register_instruction(cil.OurFunctionNode('concat', dest2, left, node.type, space))
+        if (node.left.type == c.STRING_TYPE):
+            self.register_instruction(cil.OurFunctionNode(
+                'concat0', dest2, left, node.type, space))
+        elif (node.left.type == c.FLOAT_TYPE):
+            self.register_instruction(cil.OurFunctionNode(
+                'concat1', dest2, left, node.type, space))
 
         dest3 = self.define_internal_local(node.type)
-        self.register_instruction(cil.OurFunctionNode('concat', dest3, dest2, node.type, right))
+        if (node.right.type == c.STRING_TYPE):
+            self.register_instruction(cil.OurFunctionNode(
+                'concat0', dest3, dest2, node.type, right))
+        elif (node.right.type == c.FLOAT_TYPE):
+            self.register_instruction(cil.OurFunctionNode(
+                'concat2', dest3, dest2, node.type, right))
 
         self.register_instruction(cil.AssignNode(dest, dest3))
 

@@ -1,6 +1,2 @@
-type MyClass {
-    a = 5;
-    method() => print(2);
-}
-
-let a = new MyClass() in a.method();
+let number = 42, text = "The meaning of life is" in
+    print(text @@ number);
