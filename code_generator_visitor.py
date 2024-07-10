@@ -91,7 +91,7 @@ class CodeGeneratorVisitor(object):
             header = "#include <math.h>"
             if header not in self.headers:
                 self.headers.append(header)
-            return f'{node.dest} = {node.name}({node.source})/{node.name}({node.op_nd});\n'
+            return f'{node.dest} = {node.name}({node.op_nd})/{node.name}({node.source});\n'
         elif node.name == 'rand':
             header = "#include <math.h>"
             if header not in self.headers:

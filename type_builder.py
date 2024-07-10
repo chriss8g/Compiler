@@ -29,7 +29,7 @@ class TypeBuilder:
             self.var[param[0]] = param[1]
         self.visit(node.body)
         for param in self.var.keys():
-            self.context.get_func(node.name).params.append(
+            self.context.get_func(node.name).params.append( #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 (param, self.var[param]))
         self.var = {}
         if node.type:
@@ -38,6 +38,7 @@ class TypeBuilder:
                     f"La función '{node.name}' debe retornar un '{node.type}'")
         else:
             node.type = node.body.type
+            
         self.context.get_func(node.name).type = node.type
         if not node.type:
             self.errors.append(

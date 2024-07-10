@@ -1,29 +1,73 @@
 \__ProgramNode [<program>]
-	\__FuncDeclarationNode: function fib : float => <body> [<statement>]
-		Params
-		('n', None)
-		Body
-		\__IfNode  [<expression>]
-			\_ Condition
-				\__OrNode [<expression>]
-					\__EQNode [<expression>]
-						\__IdentifierNode: n : None
-						\__NumberNode: 0
-					\__EQNode [<expression>]
-						\__IdentifierNode: n : None
-						\__NumberNode: 1
-			\_ Body
-				\__NumberNode: 1
-			\_ Else Body
+	\__BlockNode [<expression>]
+		\__PrintNode [<expression>]
+			\__NumberNode: 5
+		\__PrintNode [<expression>]
+			\__SinNode   [<expression>]
+				\__DivNode [<expression>]
+					\__NumberNode: PI
+					\__NumberNode: 2
+		\__PrintNode [<expression>]
+			\__PlusNode [<expression>]
+				\__NumberNode: 3
+				\__StarNode [<expression>]
+					\__NumberNode: 4.5
+					\__NumberNode: 10
+		\__PrintNode [<expression>]
+			\__StarNode [<expression>]
 				\__PlusNode [<expression>]
-					\__CallNode fib   [<expression>]
-						\_ Arguments
-							\__MinusNode [<expression>]
-								\__IdentifierNode: n : None
-								\__NumberNode: 1
-					\__CallNode fib   [<expression>]
-						\_ Arguments
-							\__MinusNode [<expression>]
-								\__IdentifierNode: n : None
-								\__NumberNode: 2
-	\__NumberNode: 5
+					\__NumberNode: 3
+					\__NumberNode: 4
+				\__NumberNode: 10.5
+		\__PrintNode [<expression>]
+			\__OrNode [<expression>]
+				\__AndNode [<expression>]
+					\__BoolNode: true
+					\__BoolNode: false
+				\__BoolNode: true
+		\__PrintNode [<expression>]
+			\__GENode [<expression>]
+				\__NumberNode: 3.0
+				\__NumberNode: 2
+		\__PrintNode [<expression>]
+			\__ConcatNode [<expression>]
+				\__StringNode: "Hello"
+				\__StringNode: " World!"
+		\__PrintNode [<expression>]
+			\__LogNode [<expression>]
+				\__NumberNode: 100
+				\__NumberNode: 10
+		\__PrintNode [<expression>]
+			\__PlusNode [<expression>]
+				\__NumberNode: 3.14
+				\__NumberNode: 2.71
+		\__PrintNode [<expression>]
+			\__NotNode: <nodes_types.hulk_types.EQNode object at 0x723dc4ce3290>
+		\__PrintNode [<expression>]
+			\__NENode [<expression>]
+				\__NumberNode: 10
+				\__NumberNode: 20
+		\__PrintNode [<expression>]
+			\__SqrtNode   [<expression>]
+				\__NumberNode: 4
+		\__PrintNode [<expression>]
+			\__ExpNode   [<expression>]
+				\__NumberNode: 1
+		\__PrintNode [<expression>]
+			\__DivNode [<expression>]
+				\__NumberNode: 4
+				\__NumberNode: 2.0
+		\__PrintNode [<expression>]
+			\__MinusNode [<expression>]
+				\__NumberNode: 10
+				\__NumberNode: 5
+		\__PrintNode [<expression>]
+			\__BoolNode: true
+		\__PrintNode [<expression>]
+			\__BoolNode: false
+		\__PrintNode [<expression>]
+			\__PlusNode [<expression>]
+				\__SinNode   [<expression>]
+					\__NumberNode: PI
+				\__CosNode   [<expression>]
+					\__NumberNode: E

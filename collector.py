@@ -260,43 +260,44 @@ class Collector(object):
     
         #self
         
-        @visitor.when(hulk.SinNode)
-        def visit(self,node,scope):
-            self.visit(node.expr, scope.create_child_scope())
-            return self.errors
-        
-        @visitor.when(hulk.CosNode)
-        def visit(self,node,scope):
-            self.visit(node.expr, scope.create_child_scope())
-            return self.errors
-        
-        @visitor.when(hulk.SqrtNode)
-        def visit(self,node,scope):
-            self.visit(node.expr, scope.create_child_scope())
-            return self.errors
-        
-        @visitor.when(hulk.ExpNode)
-        def visit(self,node,scope):
-            self.visit(node.expr, scope.create_child_scope())
-            return self.errors
-        
-        @visitor.when(hulk.LogNode)
-        def visit(self,node,scope):
-            self.visit(node.expr, scope.create_child_scope())
-            return self.errors
-        
-        @visitor.when(hulk.RandNode)
-        def visit(self,node,scope):
-            pass
-        
-        @visitor.when(hulk.NumberNode)
-        def visit(self,node,scope):
-            pass
-        
-        @visitor.when(hulk.StringNode)
-        def visit(self,node,scope):
-            pass
-        
-        @visitor.when(hulk.BoolNode)
-        def visit(self,node,scope):
-            pass
+    @visitor.when(hulk.SinNode)
+    def visit(self,node,scope):
+        self.visit(node.expr, scope.create_child_scope())
+        return self.errors
+    
+    @visitor.when(hulk.CosNode)
+    def visit(self,node,scope):
+        self.visit(node.expr, scope.create_child_scope())
+        return self.errors
+    
+    @visitor.when(hulk.SqrtNode)
+    def visit(self,node,scope):
+        self.visit(node.expr, scope.create_child_scope())
+        return self.errors
+    
+    @visitor.when(hulk.ExpNode)
+    def visit(self,node,scope):
+        self.visit(node.expr, scope.create_child_scope())
+        return self.errors
+    
+    @visitor.when(hulk.LogNode)
+    def visit(self,node,scope):
+        self.visit(node.base, scope.create_child_scope())
+        self.visit(node.arg, scope.create_child_scope())
+        return self.errors
+    
+    @visitor.when(hulk.RandNode)
+    def visit(self,node,scope):
+        pass
+    
+    @visitor.when(hulk.NumberNode)
+    def visit(self,node,scope):
+        pass
+    
+    @visitor.when(hulk.StringNode)
+    def visit(self,node,scope):
+        pass
+    
+    @visitor.when(hulk.BoolNode)
+    def visit(self,node,scope):
+        pass
