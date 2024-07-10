@@ -2,10 +2,12 @@ import os
 import pickle
 from utils.pycompiler import *
 from parser.TreeDef import *
-from parser.tools import *
 from nodes_types.hulk_types import *
 from my_lexer import Lexer
-
+if os.path.exists('./parser/action'):
+    from parser.tools_saved import *
+else:
+    from parser.tools import *
 
 def ForRangeToWhile(s):
     count = s[3]
@@ -170,6 +172,8 @@ class CodeToAST:
 
         self.terminals = terminals
 
+        atributes = []
+
         program %= stats + specialBlock, lambda h, s: ProgramNode(s[1], s[2])
         stats %= self.G.Epsilon, lambda h, s: []
 
@@ -318,7 +322,7 @@ class CodeToAST:
 
         ###################################################################################
 
-        parser = LR1Parser(self.G, 'parser_autom')
+        parser = LR1Parser(self.G, 'parser')
 
         derivations,msg = parser([tok.token_type for tok in tokens])
         self.error_msg = msg
