@@ -210,3 +210,11 @@ class CodeGeneratorVisitor(object):
     @visitor.when(cil.DataNode)
     def visit(self, node, scope):
         return f'#define {node.name} {node.value}'
+    
+    @visitor.when(cil.OpenScope)
+    def visit(self, node, scope):
+        return '{\n'
+    
+    @visitor.when(cil.CloseScope)
+    def visit(self, node, scope):
+        return '}\n'

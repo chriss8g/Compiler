@@ -109,14 +109,14 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
             # print(param)
             name = self.to_param_name(param[0])
             scope.dict[param[0]] = name
-            scope.define_variable(param[0])
+            scope.define_variable(param[0], update_types(param[1]))
             param_node = cil.ParamNode(name, update_types(param[1]))
             self.register_param(param_node)
 
             dest = self.define_internal_local(update_types(param[1]))
             scope.dict[name] = dest
-            scope.define_variable(name)
-            scope.define_variable(dest)
+            scope.define_variable(name, update_types(param[1]))
+            scope.define_variable(dest, update_types(param[1]))
             self.register_instruction(cil.AssignNode(dest, name))
 
         expr = self.visit(node.body, scope.create_child_scope())
@@ -499,37 +499,40 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
     def visit(self, node, scope):
         node.type = update_types(node.type)
 
-        parent = self.current_function
+        scope = scope.create_child_scope()
 
-        params = []
-        for arg in parent.params:
+        self.register_instruction(cil.OpenScope())
 
-            # dest = self.define_internal_local(arg.type)
-            # scope.dict[arg.name] = dest
-            # scope.define_variable(arg.name)
-            # self.register_instruction(cil.AssignNode(dest, arg.name))
-            params.append((arg.name, arg.type))
+        # params = []
+        for arg in scope.parent.local_vars:
+
+            name = scope.get_variable_info(arg.name)[0]
+
+            dest = self.define_internal_local(arg.type)
+            scope.dict[name] = dest
+            scope.define_variable(name, update_types(arg.type))
+            self.register_instruction(cil.AssignNode(dest, name))
+        #     params.append((arg.name, arg.type))
 
         for child in node.args:
+        #     child.type = update_types(child.type)
+            dest = self.visit(child.expr, scope.create_child_scope())
+            scope.dict[child.id.name] = dest
+            scope.define_variable(child.id.name, update_types(child.type))
 
-            child.type = update_types(child.type)
+            dest2 = self.define_internal_local(update_types(child.type))
+            # # params.append((child.id.name, child.type))
+            scope.dict[dest] = dest2
+            scope.define_variable(dest, update_types(child.type))
+            self.register_instruction(cil.AssignNode(dest2, dest))
+            
 
-            # dest = self.define_internal_local(child.type)
-            params.append((child.id.name, child.type))
-            # scope.dict[child.id.name] = dest
-            # scope.define_variable(child.id.name)
+        # name = self.visit(hulk.FuncDeclarationNode(
+        #     'let', node.body, params, node.body.type), scope.create_child_scope())
 
-            # self.register_instruction(cil.AssignNode(dest, child.id.name))
+        dest = self.visit(node.body, scope.create_child_scope())
 
-        name = self.visit(hulk.FuncDeclarationNode(
-            'let', node.body, params, node.body.type), scope.create_child_scope())
-
-        parent_params = [scope.get_variable_info(child.name) for child in parent.params]
-
-        temp = f'{name}(' + ", ".join(child[0] for child in parent_params) + (', ' if len(parent.params)
-                                                                           else "") + ", ".join(self.visit(child.expr, scope.create_child_scope()) for child in node.args) + ")"
-        dest = self.define_internal_local(node.type)
-        self.register_instruction(cil.AssignNode(dest, temp))
+        self.register_instruction(cil.CloseScope())
 
         return dest
 
