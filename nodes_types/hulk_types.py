@@ -1,4 +1,4 @@
-BOOL_TYPE = 'Bool'
+BOOL_TYPE = 'Boolean'
 STRING_TYPE = 'String'
 OBJECT_TYPE = 'Object'
 NUMBER_TYPE = 'Number'

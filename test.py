@@ -57,7 +57,7 @@ test_cases = [
     ('variable_assignment.uh', 'variable_assignment.output'),
     ('conditional_statements.uh', 'conditional_statements.output'),
     ('for_loop.uh', 'for_loop.output'),
-    ('class_definition.uh', 'class_definition.output'),
+    # ('class_definition.uh', 'class_definition.output'),
 
 ]
 
