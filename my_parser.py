@@ -519,7 +519,11 @@ class CodeToAST:
         #############################################################################
 
         lexer = Lexer('eof', self.terminals)
-
+        if lexer.errors:
+            self.error_msg = '\n'.join(lexer.errors)
+            self.ast = None
+            return
+        
         tokens = lexer(text)
 
         ###################################################################################

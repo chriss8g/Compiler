@@ -168,7 +168,7 @@ class Lexer:
             if text[0] == '\n':
                 line += 1
             
-            while text[0] == ' ' or text[0] == '\t':
+            while text and (text[0] == ' ' or text[0] == '\t'):
                 text = text[1:]
             self._reset_automs()
             
@@ -176,11 +176,11 @@ class Lexer:
             text = text[len(lex):]
             
             if tag is None:
-                self.errors.append(f'Caracter {lex} desconocido')
+                self.errors.append(f'Character {lex} unknow at line {line}')
                 continue
-            yield lex,tag
+            yield lex,tag,line
             
-        yield '$', self.eof
+        yield '$', self.eof,line
     
     def __call__(self, text):
         tokens = []

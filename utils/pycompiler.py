@@ -36,7 +36,7 @@ class Symbol(object):
 class NonTerminal(Symbol):
 
 
-    def __init__(self, name, grammar, line):
+    def __init__(self, name, grammar, line=0):
         super().__init__(name, grammar, line)
         self.productions = []
 
@@ -94,7 +94,7 @@ class NonTerminal(Symbol):
 
 class Terminal(Symbol):
 
-    def __init__(self, name, grammar, line):
+    def __init__(self, name, grammar, line=0):
         super().__init__(name, grammar, line)
 
     @property
@@ -188,8 +188,8 @@ class SentenceList(object):
 
 class Epsilon(Terminal, Sentence):
 
-    def __init__(self, grammar, line):
-        super().__init__('epsilon', grammar, line)
+    def __init__(self, grammar):
+        super().__init__('epsilon', grammar)
 
 
     def __str__(self):
