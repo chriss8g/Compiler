@@ -284,6 +284,7 @@ class Grammar():
         self.pType = None
         self.Epsilon = Epsilon(self)
         self.EOF = EOF(self)
+        self.attributes = {}
 
         self.symbDict = { '$': self.EOF }
 

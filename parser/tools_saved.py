@@ -1,8 +1,9 @@
 import os
 import pickle
-from utils.pycompiler import Item
+from utils.pycompiler import *
 from utils.automate import State, multiline_formatter
 from utils.utils import ContainerSet
+
 
 def compute_local_first(firsts, alpha):
     first_alpha = ContainerSet()
@@ -299,7 +300,11 @@ def evaluate_parse(left_parse, tokens, G=None, attributes=None):
     
     if G:
         for i in range(len(G.Productions)):
-            prod = G.Productions[i].Left.Name + ' ' + '\n'.join(s.Name for s in G.Productions[i].Right._symbols)
+            prod = ''
+            if isinstance(G.Productions[i].Right,Epsilon):
+                prod = G.Productions[i].Left.Name + ' ' + 'epsilon'
+            else:
+                prod = G.Productions[i].Left.Name + ' ' + '\n'.join(s.Name for s in G.Productions[i].Right._symbols)
             G.attributes[prod] = attributes[i]
     
     if not left_parse or not tokens:
@@ -319,7 +324,11 @@ def evaluate(production, left_parse, tokens, G, inherited_value=None):
     if not G:
         attributes = production.attributes
     else:
-        prod = production.Left.Name + ' ' + '\n'.join(s.Name for s in production.Right._symbols)
+        prod = ''
+        if isinstance(production.Right,Epsilon):
+            prod = production.Left.Name + ' ' + 'epsilon'
+        else:
+            prod = production.Left.Name + ' ' + '\n'.join(s.Name for s in production.Right._symbols)
         attribute = G.attributes[prod]
         attributes = [None for i in range(len(body)+1)]
         attributes[0] = attribute
