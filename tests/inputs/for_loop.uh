@@ -1,9 +1,11 @@
-for (x in range(5, 10)) print(x);
+{
+    for (x in range(5, 10)) print(x);
 
-for (a in range(0, 10))
-    let mod = a % 3 in
-        print(
-            if (mod == 0) "Magic";
-            elif (mod % 3 == 1) "Woke";
-            else "Dumb"
-        );
+    for (a in range(0, 10))
+        let mod = a % 3 in
+            print(
+                if (mod == 0) "Magic";
+                elif (mod % 3 == 1) "Woke";
+                else "Dumb"
+            );
+}

@@ -1,31 +1,12 @@
 \__ProgramNode [<program>]
-	\__LetNode [<expression>]
-		\__AssignNode:
-			\__IdentifierNode: mod : None
-			\__NumberNode: 8
-		\__PrintNode [<expression>]
-			\__IfNode  [<expression>]
-				\_ Condition
-					\__EQNode [<expression>]
-						\__IdentifierNode: mod : None
-						\__NumberNode: 0
-				\_ Body
-					\__StringNode: "Magic"
-				\_ Elif Condition 0
-					\__EQNode [<expression>]
-						\__ModNode [<expression>]
-							\__IdentifierNode: mod : None
-							\__NumberNode: 2
-						\__NumberNode: 0
-				\_ Elif Body 0
-					\__StringNode: "Woke2"
-				\_ Elif Condition 1
-					\__EQNode [<expression>]
-						\__ModNode [<expression>]
-							\__IdentifierNode: mod : None
-							\__NumberNode: 3
-						\__NumberNode: 0
-				\_ Elif Body 1
-					\__StringNode: "Woke"
-				\_ Else Body
-					\__StringNode: "Dumb"
+	\__FuncDeclarationNode: function next : None => <body> [<statement>]
+		Params
+		('x', None)
+		Body
+		\__PlusNode [<expression>]
+			\__IdentifierNode: x : None
+			\__NumberNode: 1
+	\__PrintNode [<expression>]
+		\__CallNode next   [<expression>]
+			\_ Arguments
+				\__NumberNode: 8
