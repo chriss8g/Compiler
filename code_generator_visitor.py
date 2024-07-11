@@ -21,7 +21,8 @@ class CodeGeneratorVisitor(object):
 
         dottypes = "\n".join(self.visit(child, scope.create_child_scope())
                              for child in node.dottypes)
-        dotdata = "\n".join(self.visit(t, scope.create_child_scope()) for t in node.dotdata)
+        dotdata = "\n".join(self.visit(t, scope.create_child_scope())
+                            for t in node.dotdata)
         dotcode = "\n".join(self.visit(child, scope.create_child_scope())
                             for child in node.dotcode)
 
@@ -77,7 +78,7 @@ class CodeGeneratorVisitor(object):
             if node.type == c.INT_TYPE:
                 return f'{node.dest} = printf("%d\\n", {node.source});\n'
             elif node.type == c.FLOAT_TYPE:
-                return f'{node.dest} = printf("%f\\n", {node.source});\n'
+                return f'{node.dest} = printf("%.6g\\n", {node.source});\n'
             elif node.type == c.STRING_TYPE:
                 return f'{node.dest} = printf("%s\\n", {node.source});\n'
             else:
@@ -86,12 +87,14 @@ class CodeGeneratorVisitor(object):
             header = "#include <math.h>"
             if header not in self.headers:
                 self.headers.append(header)
-            return f'{node.dest} = {node.name}({node.source});\n'
+            return f'{node.dest} = (float){node.name}({node.source});\n'
         elif node.name == 'log':
             header = "#include <math.h>"
             if header not in self.headers:
                 self.headers.append(header)
-            return f'{node.dest} = {node.name}({node.source})/{node.name}({node.op_nd});\n'
+            return f'{node.dest} = (float)({node.name}({node.op_nd})/{node.name}({node.source}));\n'
+        elif node.name == 'mod':
+            return f'{node.dest} = (int){node.source} % (int){node.op_nd};\n'
         elif node.name == 'rand':
             header = "#include <math.h>"
             if header not in self.headers:
@@ -104,7 +107,8 @@ class CodeGeneratorVisitor(object):
                 self.headers.append(header)
 
             return f'srand(time(NULL));\n{node.dest} = ({node.name}()%101)/100.0;\n'
-        elif node.name == 'concat':
+
+        elif 'concat' in node.name:
 
             header = "#include <string.h>"
             if header not in self.headers:
@@ -139,14 +143,31 @@ class CodeGeneratorVisitor(object):
             if a not in self.aux:
                 self.aux.append(a)
 
-            return f'{node.dest} = concatenateStrings((char*){node.source}, (char*){node.op_nd});\n'
-            
+            if node.name != 'concat':
+                a = '''
+                        char *floatToString(float num, int precision) {
+                            static char buffer[20]; // Buffer para almacenar el string
+                            snprintf(buffer, 20, "%.*g", precision, num); 
+                            return buffer;
+                        }
+                        '''
+            if a not in self.aux:
+                self.aux.append(a)
+
+            if node.name.endswith('0'):
+                return f'{node.dest} = concatenateStrings({node.source}, {node.op_nd});\n'
+            elif node.name.endswith('1'):
+                return f'{node.dest} = concatenateStrings(floatToString({node.source},6), {node.op_nd});\n'
+            elif node.name.endswith('2'):
+                return f'{node.dest} = concatenateStrings({node.source}, floatToString({node.op_nd},6));\n'
+            elif node.name.endswith('3'):
+                return f'{node.dest} = concatenateStrings(floatToString({node.source},6), floatToString({node.op_nd},6));\n'
 
     @visitor.when(cil.FunctionNode)
     def visit(self, node, scope):
         params = ', '.join(self.visit(param, scope.create_child_scope())
                            for param in node.params)
-        
+
         aux = f"{node.type} {node.name}({params});"
         if aux not in self.aux:
             self.aux.append(aux)
@@ -182,8 +203,7 @@ class CodeGeneratorVisitor(object):
     def visit(self, node, scope):
         ans = f'{node.dest} = {node.msg};'
         return ans
-    
+
     @visitor.when(cil.DataNode)
     def visit(self, node, scope):
         return f'#define {node.name} {node.value}'
-    

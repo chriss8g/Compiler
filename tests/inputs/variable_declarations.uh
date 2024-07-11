@@ -1,14 +1,14 @@
 {
 let msg = "Hello World" in print(msg);
 
-let number = "42", text = "The meaning of life is" in
+let number = 42, text = "The meaning of life is" in
     print(text @@ number);
 
-let number = "42" in
+let number = 42 in
     let text = "The meaning of life is " in
         print(text @ number);
 
-let number = "42" in (
+let number = 42 in (
     let text = "The meaning of life is " in (
             print(text @ number)
         )

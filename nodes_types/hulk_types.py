@@ -1,7 +1,7 @@
-BOOL_TYPE = 'bool'
-STRING_TYPE = 'string'
-OBJECT_TYPE = 'object'
-NUMBER_TYPE = 'float'
+BOOL_TYPE = 'Bool'
+STRING_TYPE = 'String'
+OBJECT_TYPE = 'Object'
+NUMBER_TYPE = 'Number'
 MY_TYPES = [BOOL_TYPE, STRING_TYPE, OBJECT_TYPE, NUMBER_TYPE]
 
 class Node:
