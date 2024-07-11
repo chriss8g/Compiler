@@ -4,7 +4,7 @@ from utils.pycompiler import *
 from parser.TreeDef import *
 from nodes_types.hulk_types import *
 from my_lexer import Lexer
-if os.path.exists('./parser/action'):
+if os.path.exists('./parser/action') and os.path.exists('./parser/goto'):
     from parser.tools_saved import *
 else:
     from parser.tools import *
@@ -90,10 +90,16 @@ class CodeToAST:
             '<expr> <blockExpr>')
         asig_list, asig1 = self.G.NonTerminals(
             '<asig_list> <asig1>')
-        atom, idnode, specialBlock_list = self.G.NonTerminals(
-            '<atom> <idnode> <specialBlock_list>')
-        subexpr, expr, term, factor, atom = self.G.NonTerminals(
-            '<subexpr> <expr> <term> <factor> <atom>')
+        idnode, specialBlock_list = self.G.NonTerminals(
+            '<idnode> <specialBlock_list>')
+        calc_expr = self.G.NonTerminal(
+            '<calc_expr>')
+        string_expr, string_factor = self.G.NonTerminals(
+            '<string_expr> <string_factor>')
+        logical_expr, logical_term, logical_factor, comparative_expr = self.G.NonTerminals(
+            '<logical_expr> <logical_term> <logical_factor> <comparative_expr>')
+        aritmetic_expr, aritmetic_term, aritmetic_factor, aritmetic_atom, self_expr = self.G.NonTerminals(
+            '<aritmetic_expr> <aritmetic_term> <aritmetic_factor> <aritmetic_atom> <self_expr>')
         extension, protocolBody = self.G.NonTerminals(
             '<extension> <protocolBody>')
         type_body, inherit_item = self.G.NonTerminals(
@@ -259,30 +265,51 @@ class CodeToAST:
             lambda h, s: [s[1]] + s[3],
             lambda h, s: AssignNode(s[1], s[4], s[2]),
             
-            # Aritmetica
-            lambda h, s: PlusNode(s[1], s[3]),
-            lambda h, s: MinusNode(s[1], s[3]),
+            
+            # Expresion calculable
+            lambda h,s:s[1],
+            lambda h,s:s[1],
+            lambda h,s:s[1],
+            
+            # Expresiones de cadena
+            lambda h,s:ConcatNode(s[1],StringNode(s[3])),
+            lambda h,s:ConcatNode(s[1],s[3]),
+            lambda h,s:ConcatSpaceNode(s[1],StringNode(s[3])),
+            lambda h,s:ConcatSpaceNode(s[1],s[3]),
+            lambda h,s:StringNode(s[1]),
+            
+            # Expresiones logicas
+            lambda h,s:OrNode(s[1],s[3]),
+            lambda h,s:s[1],
+            
             lambda h, s: AndNode(s[1], s[3]),
-            lambda h, s: OrNode(s[1], s[3]),
+            lambda h,s:s[1],
+            
+            lambda h, s: BoolNode(s[1]),
+            lambda h, s: BoolNode(s[1]),
             lambda h, s: NotNode(s[2]),
-            lambda h, s: NENode(s[1], s[3]),
-            lambda h, s: GTNode(s[1], s[3]),
-            lambda h, s: GENode(s[1], s[3]),
-            lambda h, s: LTNode(s[1], s[3]),
-            lambda h, s: EQNode(s[1], s[3]),
-            lambda h, s: LENode(s[1], s[3]),
-            lambda h, s: ConcatNode(s[1], s[3]),
-            lambda h, s: ConcatSpaceNode(s[1], s[3]),
+            lambda h, s: s[2],
             lambda h, s: s[1],
             
-            # Terminos
+            # Expresiones comparativas
+            lambda h, s: EQNode(s[1], s[3]),
+            lambda h, s: NENode(s[1], s[3]),
+            lambda h, s: GENode(s[1], s[3]),
+            lambda h, s: GTNode(s[1], s[3]),
+            lambda h, s: LENode(s[1], s[3]),
+            lambda h, s: LTNode(s[1], s[3]),
+            
+            # Expresiones aritmeticas
+            lambda h, s: PlusNode(s[1], s[3]),
+            lambda h, s: MinusNode(s[1], s[3]),
+            lambda h, s: s[1],
+            
             lambda h, s: StarNode(s[1], s[3]),
             lambda h, s: DivNode(s[1], s[3]),
-            lambda h, s: PowNode(s[1], s[3]),
             lambda h, s: ModNode(s[1], s[3]),
             lambda h, s: s[1],
             
-            # Factor
+            lambda h, s: PowNode(s[1], s[3]),
             lambda h, s: SinNode(s[3]),
             lambda h, s: CosNode(s[3]),
             lambda h, s: SqrtNode(s[3]),
@@ -291,21 +318,20 @@ class CodeToAST:
             lambda h, s: RandNode(),
             lambda h, s: s[1],
             
-            # Atom
-            lambda h, s: NumberNode(s[1]),
-            lambda h, s: BoolNode(s[1]),
-            lambda h, s: BoolNode(s[1]),
             lambda h, s: NumberNode(s[1]),
             lambda h, s: NumberNode(s[1]),
-            lambda h, s: StringNode(s[1]),
+            lambda h, s: NumberNode(s[1]),
             lambda h, s: s[2],
-            lambda h, s: SelfNode(s[3]),
-            lambda h, s: SelfNode(IdentifierNode(s[3],s[5])),
-            lambda h, s: SelfNode(s[3]),
+            lambda h, s: s[1],
             lambda h, s: VectorNode(s[2]),
             lambda h, s: s[1],
             lambda h, s: IdentifierNode(s[1], s[3]),
             lambda h, s: s[1],
+
+            # Expresiones self
+            lambda h, s: SelfNode(s[3]),
+            lambda h, s: SelfNode(IdentifierNode(s[3],s[5])),
+            lambda h, s: SelfNode(s[3]),
             
             # Objetos recurrentes
             lambda h, s: CallNode(s[1], s[3], s[6]),
@@ -313,8 +339,65 @@ class CodeToAST:
             lambda h, s: CallNode(s[1], s[3]),
             lambda h, s: CallNode(s[1]),
             
-            # Idnode
+            # Identificador
             lambda h, s: IdentifierNode(s[1])
+            
+            # # Aritmetica
+            # lambda h, s: PlusNode(s[1], s[3]),
+            # lambda h, s: MinusNode(s[1], s[3]),
+            # lambda h, s: AndNode(s[1], s[3]),
+            # lambda h, s: OrNode(s[1], s[3]),
+            # lambda h, s: NotNode(s[2]),
+            # lambda h, s: NENode(s[1], s[3]),
+            # lambda h, s: GTNode(s[1], s[3]),
+            # lambda h, s: GENode(s[1], s[3]),
+            # lambda h, s: LTNode(s[1], s[3]),
+            # lambda h, s: EQNode(s[1], s[3]),
+            # lambda h, s: LENode(s[1], s[3]),
+            # lambda h, s: ConcatNode(s[1], s[3]),
+            # lambda h, s: ConcatSpaceNode(s[1], s[3]),
+            # lambda h, s: s[1],
+            
+            # # Terminos
+            # lambda h, s: StarNode(s[1], s[3]),
+            # lambda h, s: DivNode(s[1], s[3]),
+            # lambda h, s: PowNode(s[1], s[3]),
+            # lambda h, s: ModNode(s[1], s[3]),
+            # lambda h, s: s[1],
+            
+            # # Factor
+            # lambda h, s: SinNode(s[3]),
+            # lambda h, s: CosNode(s[3]),
+            # lambda h, s: SqrtNode(s[3]),
+            # lambda h, s: ExpNode(s[3]),
+            # lambda h, s: LogNode(s[3], s[5]),
+            # lambda h, s: RandNode(),
+            # lambda h, s: s[1],
+            
+            # # Atom
+            # lambda h, s: NumberNode(s[1]),
+            # lambda h, s: BoolNode(s[1]),
+            # lambda h, s: BoolNode(s[1]),
+            # lambda h, s: NumberNode(s[1]),
+            # lambda h, s: NumberNode(s[1]),
+            # lambda h, s: StringNode(s[1]),
+            # lambda h, s: s[2],
+            # lambda h, s: SelfNode(s[3]),
+            # lambda h, s: SelfNode(IdentifierNode(s[3],s[5])),
+            # lambda h, s: SelfNode(s[3]),
+            # lambda h, s: VectorNode(s[2]),
+            # lambda h, s: s[1],
+            # lambda h, s: IdentifierNode(s[1], s[3]),
+            # lambda h, s: s[1],
+            
+            # # Objetos recurrentes
+            # lambda h, s: CallNode(s[1], s[3], s[6]),
+            # lambda h, s: CallNode(s[1], [], s[5]),
+            # lambda h, s: CallNode(s[1], s[3]),
+            # lambda h, s: CallNode(s[1]),
+            
+            # # Idnode
+            # lambda h, s: IdentifierNode(s[1])
         ]
 
         program %= stats + specialBlock
@@ -396,7 +479,7 @@ class CodeToAST:
         expr %= idnode + asign2 + expr
         expr %= new + idx + opar + arg_expr + cpar
         expr %= new + idx + opar + cpar
-        expr %= subexpr
+        expr %= calc_expr
 
         # Super expresion
         superexpr %= expr
@@ -411,57 +494,136 @@ class CodeToAST:
         asig_list %= asig1 + comma + asig_list
         asig1 %= idnode + opt_typed + asign1 + expr
 
-        # Aritmetica
-        subexpr %= subexpr + plus + term
-        subexpr %= subexpr + minus + term
-        subexpr %= subexpr + andx + term
-        subexpr %= subexpr + orx + term
-        subexpr %= notx + term
-        subexpr %= subexpr + eq + term
-        subexpr %= subexpr + ne + term
-        subexpr %= subexpr + gt + term
-        subexpr %= subexpr + lt + term
-        subexpr %= subexpr + ge + term
-        subexpr %= subexpr + le + term
-        subexpr %= subexpr + concat + term
-        subexpr %= subexpr + concat_space + term
-        subexpr %= term
 
-        term %= term + star + factor
-        term %= term + div + factor
-        term %= term + powx + factor
-        term %= term + mod + factor
-        term %= factor
 
-        factor %= sin + opar + expr + cpar
-        factor %= cos + opar + expr + cpar
-        factor %= sqrt + opar + expr + cpar
-        factor %= exp + opar + expr + cpar
-        factor %= log + opar + expr + comma + expr + cpar
-        factor %= rand + opar + cpar
-        factor %= atom
+        # Expresion calculable
+        calc_expr %= logical_expr
+        calc_expr %= aritmetic_expr
+        calc_expr %= string_expr
+        
+        # Expresiones de cadena
+        string_expr %= string_expr + concat + string
+        string_expr %= string_expr + concat + aritmetic_atom
+        string_expr %= string_expr + concat_space + string
+        string_expr %= string_expr + concat_space + aritmetic_atom
+        string_expr %= string
+        
+        # Expresiones lógicas
+        logical_expr %= logical_expr + orx + logical_term
+        logical_expr %= logical_term
+        
+        logical_term %= logical_term + andx + logical_factor
+        logical_term %= logical_factor
+        
+        logical_factor %= true
+        logical_factor %= false
+        logical_factor %= notx + logical_factor
+        logical_factor %= opar + logical_expr + cpar
+        logical_factor %= comparative_expr
+        
+        # Expresiones comparativas 
+        comparative_expr %= aritmetic_expr + eq + aritmetic_expr
+        comparative_expr %= aritmetic_expr + ne + aritmetic_expr
+        comparative_expr %= aritmetic_expr + ge + aritmetic_expr
+        comparative_expr %= aritmetic_expr + gt + aritmetic_expr
+        comparative_expr %= aritmetic_expr + le + aritmetic_expr
+        comparative_expr %= aritmetic_expr + lt + aritmetic_expr
+        
+        # Expresiones aritmeticas
+        aritmetic_expr %= aritmetic_expr + plus + aritmetic_term
+        aritmetic_expr %= aritmetic_expr + minus + aritmetic_term
+        aritmetic_expr %= aritmetic_term
 
-        atom %= number
-        atom %= true
-        atom %= false
-        atom %= pi
-        atom %= e
-        atom %= string
-        atom %= opar + expr + cpar
-        atom %= selfx + dot + idnode
-        atom %= selfx + dot + idx + dot + recurrent_object
-        atom %= selfx + dot + recurrent_object
-        atom %= obrake + arg_expr + cbrake
-        atom %= idnode
-        atom %= idx + dot + recurrent_object
-        atom %= recurrent_object
+        aritmetic_term %= aritmetic_term + star + aritmetic_factor
+        aritmetic_term %= aritmetic_term + div + aritmetic_factor
+        aritmetic_term %= aritmetic_term + mod + aritmetic_factor
+        aritmetic_term %= aritmetic_factor
 
+        aritmetic_factor %= aritmetic_factor + powx + aritmetic_atom
+        aritmetic_factor %= sin + opar + aritmetic_expr + cpar
+        aritmetic_factor %= cos + opar + aritmetic_expr + cpar
+        aritmetic_factor %= sqrt + opar + aritmetic_expr + cpar
+        aritmetic_factor %= exp + opar + aritmetic_expr + cpar
+        aritmetic_factor %= log + opar + aritmetic_expr + comma + aritmetic_expr + cpar
+        aritmetic_factor %= rand + opar + cpar
+        aritmetic_factor %= aritmetic_atom
+
+        aritmetic_atom %= number
+        aritmetic_atom %= pi
+        aritmetic_atom %= e
+        aritmetic_atom %= opar + aritmetic_expr + cpar
+        aritmetic_atom %= self_expr
+        aritmetic_atom %= obrake + arg_expr + cbrake
+        aritmetic_atom %= idnode
+        aritmetic_atom %= idx + dot + recurrent_object
+        aritmetic_atom %= recurrent_object
+
+        # Expresiones self
+        self_expr %= selfx + dot + idnode
+        self_expr %= selfx + dot + idx + dot + recurrent_object
+        self_expr %= selfx + dot + recurrent_object
+
+        # Expresiones recurrentes
         recurrent_object %= idx + opar + arg_expr + cpar + dot + recurrent_object
         recurrent_object %= idx + opar + cpar + dot + recurrent_object
         recurrent_object %= idx + opar + arg_expr + cpar
         recurrent_object %= idx + opar + cpar
 
+        # Identificador
         idnode %= idx
+
+
+        # # Aritmetica
+        # subexpr %= subexpr + plus + term
+        # subexpr %= subexpr + minus + term
+        # subexpr %= subexpr + andx + term
+        # subexpr %= subexpr + orx + term
+        # subexpr %= notx + term
+        # subexpr %= subexpr + eq + term
+        # subexpr %= subexpr + ne + term
+        # subexpr %= subexpr + gt + term
+        # subexpr %= subexpr + lt + term
+        # subexpr %= subexpr + ge + term
+        # subexpr %= subexpr + le + term
+        # subexpr %= subexpr + concat + term
+        # subexpr %= subexpr + concat_space + term
+        # subexpr %= term
+
+        # term %= term + star + factor
+        # term %= term + div + factor
+        # term %= term + powx + factor
+        # term %= term + mod + factor
+        # term %= factor
+
+        # factor %= sin + opar + expr + cpar
+        # factor %= cos + opar + expr + cpar
+        # factor %= sqrt + opar + expr + cpar
+        # factor %= exp + opar + expr + cpar
+        # factor %= log + opar + expr + comma + expr + cpar
+        # factor %= rand + opar + cpar
+        # factor %= atom
+
+        # atom %= number
+        # atom %= true
+        # atom %= false
+        # atom %= pi
+        # atom %= e
+        # atom %= string
+        # atom %= opar + expr + cpar
+        # atom %= selfx + dot + idnode
+        # atom %= selfx + dot + idx + dot + recurrent_object
+        # atom %= selfx + dot + recurrent_object
+        # atom %= obrake + arg_expr + cbrake
+        # atom %= idnode
+        # atom %= idx + dot + recurrent_object
+        # atom %= recurrent_object
+
+        # recurrent_object %= idx + opar + arg_expr + cpar + dot + recurrent_object
+        # recurrent_object %= idx + opar + cpar + dot + recurrent_object
+        # recurrent_object %= idx + opar + arg_expr + cpar
+        # recurrent_object %= idx + opar + cpar
+
+        # idnode %= idx
 
         #############################################################################
 
@@ -496,11 +658,7 @@ class CodeToAST:
 if __name__ == "__main__":
 
     text = '''
-            type lala {
-                a = 0;
-                lalal (x) => !x;
-            }
-            let a = new lala() in print(a.lalal(5));
+            print("The meaning of life is " @ "Hola");
         '''
 
     codeToAST = CodeToAST(text)

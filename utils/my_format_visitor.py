@@ -173,11 +173,13 @@ class FormatVisitor(object):
 
     @visitor.when(hulk.BinaryNode)
     def visit(self, node, tabs=0):
+        if isinstance(node,hulk.ConcatNode):
+            print('hola')
         ans = '\t' * tabs + f'\\__{node.__class__.__name__} [<expression>]'
         left = self.visit(node.left, tabs + 1)
         right = self.visit(node.right, tabs + 1)
         return f'{ans}\n{left}\n{right}'
-
+    
     @visitor.when(hulk.AtomicNode)
     def visit(self, node, tabs=0):
         return '\t' * tabs + f'\\__{node.__class__.__name__}: {node.lex}'
@@ -238,6 +240,8 @@ class FormatVisitor(object):
         return f'{ans}\n{iter_var}\n{iter_vect}\n{body}'
 
 
+    
+    
     #########################################################################################
     #########################################################################################
     #########################################################################################
