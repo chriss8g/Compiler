@@ -246,14 +246,20 @@ class TypeBuilder:
                 return self.errors
             for i, arg in enumerate(node.args):
                 self.visit(arg)
-                if arg.type != fun.params[i][1]:
+                params = list(self.var.values()) if len(fun.params) == 0 else [i[1] for i in fun.params]
+                if arg.type != params[i]:
                     if not arg.type:
                         arg.type = fun.params[i][1]
                         self.visit(arg)
                     else:
                         self.errors.append(f"La función '{fun.name}' esperaba como argumento número {
                                            i + 1} un '{fun.params[i][1]}' y recibió un '{arg.type}'")
-            node.type = fun.type
+            if fun.type:
+                if node.type and fun.type != node.type:
+                     self.errors.append(f"La función '{fun.name}' es de tipo '{fun.type}' pero un llamado a esta es de tipo '{node.type}' ")
+                node.type = fun.type
+            elif node.type:
+                fun.type = node.type
         if node.child:
             self.recurrent_type = self.context.get_type(node.type)
             self.visit(node.child)

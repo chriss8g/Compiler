@@ -55,10 +55,10 @@ def main(input_file):
 
     os.system("gcc script.c -lm -o script.out && ./script.out")
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Generate C code from custom script")
-    parser.add_argument('input_file', type=str, help='The input file containing the script')
-    args = parser.parse_args()
+# if __name__ == "__main__":
+#     parser = argparse.ArgumentParser(description="Generate C code from custom script")
+#     parser.add_argument('input_file', type=str, help='The input file containing the script')
+#     args = parser.parse_args()
 
-    main(args.input_file)
-# main('./script.uh')
+#     main(args.input_file)
+main('./script.uh')
