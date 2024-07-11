@@ -268,15 +268,15 @@ class CodeToAST:
             
             # Expresion calculable
             lambda h,s:s[1],
-            lambda h,s:s[1],
-            lambda h,s:s[1],
             
             # Expresiones de cadena
-            lambda h,s:ConcatNode(s[1],StringNode(s[3])),
-            lambda h,s:ConcatNode(s[1],s[3]),
-            lambda h,s:ConcatSpaceNode(s[1],StringNode(s[3])),
             lambda h,s:ConcatSpaceNode(s[1],s[3]),
-            lambda h,s:StringNode(s[1]),
+            lambda h,s:ConcatSpaceNode(s[1],NumberNode(s[3])),
+            lambda h,s:ConcatSpaceNode(s[1],StringNode(s[3])),
+            lambda h,s:ConcatNode(s[1],s[3]),
+            lambda h,s:ConcatNode(s[1],NumberNode(s[3])),
+            lambda h,s:ConcatNode(s[1],StringNode(s[3])),
+            lambda h,s:s[1],
             
             # Expresiones logicas
             lambda h,s:OrNode(s[1],s[3]),
@@ -285,10 +285,7 @@ class CodeToAST:
             lambda h, s: AndNode(s[1], s[3]),
             lambda h,s:s[1],
             
-            lambda h, s: BoolNode(s[1]),
-            lambda h, s: BoolNode(s[1]),
             lambda h, s: NotNode(s[2]),
-            lambda h, s: s[2],
             lambda h, s: s[1],
             
             # Expresiones comparativas
@@ -298,6 +295,7 @@ class CodeToAST:
             lambda h, s: GTNode(s[1], s[3]),
             lambda h, s: LENode(s[1], s[3]),
             lambda h, s: LTNode(s[1], s[3]),
+            lambda h, s: s[1],
             
             # Expresiones aritmeticas
             lambda h, s: PlusNode(s[1], s[3]),
@@ -321,6 +319,9 @@ class CodeToAST:
             lambda h, s: NumberNode(s[1]),
             lambda h, s: NumberNode(s[1]),
             lambda h, s: NumberNode(s[1]),
+            lambda h, s: BoolNode(s[1]),
+            lambda h, s: BoolNode(s[1]),
+            lambda h, s: StringNode(s[1]),
             lambda h, s: s[2],
             lambda h, s: s[1],
             lambda h, s: VectorNode(s[2]),
@@ -440,18 +441,19 @@ class CodeToAST:
 
 
 
+
         # Expresion calculable
-        calc_expr %= logical_expr
-        calc_expr %= aritmetic_expr
         calc_expr %= string_expr
         
         # Expresiones de cadena
-        string_expr %= string_expr + concat + string
-        string_expr %= string_expr + concat + aritmetic_atom
+        string_expr %= string_expr + concat_space + idnode
+        string_expr %= string_expr + concat_space + number
         string_expr %= string_expr + concat_space + string
-        string_expr %= string_expr + concat_space + aritmetic_atom
-        string_expr %= string
-        
+        string_expr %= string_expr + concat + idnode
+        string_expr %= string_expr + concat + number
+        string_expr %= string_expr + concat + string
+        string_expr %= logical_expr
+
         # Expresiones lógicas
         logical_expr %= logical_expr + orx + logical_term
         logical_expr %= logical_term
@@ -459,10 +461,7 @@ class CodeToAST:
         logical_term %= logical_term + andx + logical_factor
         logical_term %= logical_factor
         
-        logical_factor %= true
-        logical_factor %= false
         logical_factor %= notx + logical_factor
-        logical_factor %= opar + logical_expr + cpar
         logical_factor %= comparative_expr
         
         # Expresiones comparativas 
@@ -472,6 +471,7 @@ class CodeToAST:
         comparative_expr %= aritmetic_expr + gt + aritmetic_expr
         comparative_expr %= aritmetic_expr + le + aritmetic_expr
         comparative_expr %= aritmetic_expr + lt + aritmetic_expr
+        comparative_expr %= aritmetic_expr
         
         # Expresiones aritmeticas
         aritmetic_expr %= aritmetic_expr + plus + aritmetic_term
@@ -495,7 +495,10 @@ class CodeToAST:
         aritmetic_atom %= number
         aritmetic_atom %= pi
         aritmetic_atom %= e
-        aritmetic_atom %= opar + aritmetic_expr + cpar
+        aritmetic_atom %= true
+        aritmetic_atom %= false
+        aritmetic_atom %= string
+        aritmetic_atom %= opar + expr + cpar
         aritmetic_atom %= self_expr
         aritmetic_atom %= obrake + arg_expr + cbrake
         aritmetic_atom %= idnode
@@ -553,7 +556,7 @@ class CodeToAST:
 if __name__ == "__main__":
 
     text = '''
-            print("The meaning of life is " @ "Hola")1;
+            print("hola " @ 42 @ id @ 43 @ "jooo");
         '''
 
     codeToAST = CodeToAST(text)
