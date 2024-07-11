@@ -1,26 +1,19 @@
 \__ProgramNode [<program>]
+	\__TypeNode: type MyClass inherits None [<statement>]
+		\__TypeBodyNode
+			Atributes
+				\__AttributeNode id = <expr>
+					\__IdentifierNode: a : None
+					\__NumberNode: 5
+			Methods
+				\__MethodNode: function method : None => <body>
+					Params
+
+					\__PrintNode [<expression>]
+						\__NumberNode: 2
 	\__LetNode [<expression>]
 		\__AssignNode:
 			\__IdentifierNode: a : None
-			\__NumberNode: 5
-		\__LetNode [<expression>]
-			\__AssignNode:
-				\__IdentifierNode: b : None
-				\__NumberNode: 10
-			\__LetNode [<expression>]
-				\__AssignNode:
-					\__IdentifierNode: c : None
-					\__NumberNode: 20
-				\__BlockNode [<expression>]
-					\__PrintNode [<expression>]
-						\__PlusNode [<expression>]
-							\__IdentifierNode: a : None
-							\__IdentifierNode: b : None
-					\__PrintNode [<expression>]
-						\__StarNode [<expression>]
-							\__IdentifierNode: b : None
-							\__IdentifierNode: c : None
-					\__PrintNode [<expression>]
-						\__DivNode [<expression>]
-							\__IdentifierNode: c : None
-							\__IdentifierNode: a : None
+			\_ObjectCreationNode: new MyClass  [<expression>]
+		\__IdentifierNode: a : None
+			\__CallNode method   [<expression>]
