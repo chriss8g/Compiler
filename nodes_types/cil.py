@@ -107,10 +107,12 @@ class GotoNode(InstructionNode):
         self.label = label
 
 class GotoIfNode(InstructionNode):
-    def __init__(self, condition, label, label_else):
+    def __init__(self, condition, label, label_else, elif_conditions=None, labels_elif=None):
         self.condition = condition
         self.label = label
         self.label_else = label_else
+        self.elif_conditions = elif_conditions if elif_conditions else []
+        self.labels_elif = labels_elif if labels_elif else []
 
 
 class StaticCallNode(InstructionNode):

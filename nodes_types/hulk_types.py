@@ -130,7 +130,7 @@ class IfNode(ExpressionNode):
         self.body = body
         self.else_body = else_body
         self.elif_conditions = elif_conditions if elif_conditions else []
-        self.elif_body = elif_body
+        self.elif_body = elif_body if elif_body else []
 
 class DestructNode(ExpressionNode):
     def __init__(self, idx, expr, type=None):

@@ -382,6 +382,10 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
         condition = self.visit(node.condition, scope.create_child_scope())
 
+        elif_conditions = []
+        for i in range(len(node.elif_conditions)):
+            elif_conditions.append(self.visit(node.elif_conditions[i], scope.create_child_scope()))
+
         self.register_instruction(cil.GotoNode('my_begin'))
 
         self.register_instruction(cil.LabelNode('my_if'))
@@ -390,6 +394,12 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
         self.register_instruction(cil.GotoNode('my_end'))
 
+        for i in range(len(node.elif_conditions)):
+            self.register_instruction(cil.LabelNode(f'my_elif_{i}'))
+            expr = self.visit(node.elif_body[i], scope.create_child_scope())
+            self.register_instruction(cil.AssignNode(dest, expr))
+            self.register_instruction(cil.GotoNode('my_end'))
+
         self.register_instruction(cil.LabelNode('my_else'))
         else_expr = self.visit(node.else_body, scope.create_child_scope())
         self.register_instruction(cil.AssignNode(dest, else_expr))
@@ -397,7 +407,7 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
         self.register_instruction(cil.LabelNode('my_begin'))
         self.register_instruction(
-            cil.GotoIfNode(condition, 'my_if', 'my_else'))
+            cil.GotoIfNode(condition, 'my_if', 'my_else', elif_conditions, [f'my_elif_{i} 'for i in range(len(node.elif_conditions))]))
         self.register_instruction(cil.LabelNode('my_end'))
 
         return dest
