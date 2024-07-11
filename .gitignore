@@ -5,6 +5,7 @@ semantic_checker/__pycache__/*
 nodes_types/__pycache__/*
 lexer/__pycache__/*
 tests/
+test.hulk
 script.uh_ast
 script.cil
 script.c
