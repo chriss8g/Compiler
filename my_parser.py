@@ -276,6 +276,7 @@ class CodeToAST:
             lambda h,s:ConcatSpaceNode(s[1],s[3]),
             lambda h,s:ConcatNode(s[1],s[3]),
             lambda h,s:ConcatNode(s[1],NumberNode(s[3])),
+            lambda h,s:ConcatNode(s[1],StringNode(s[3])),
             lambda h,s:ConcatNode(s[1],s[3]),
             lambda h,s:s[1],
             
