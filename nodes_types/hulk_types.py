@@ -94,7 +94,7 @@ class PrintNode(ExpressionNode):
 class BlockNode(ExpressionNode):
     def __init__(self, body, type=None):
         super().__init__(type)
-        self.body = body  # es un array de Sentences
+        self.body = body  # es un array de expresiones
 
 class LetNode(ExpressionNode):
     def __init__(self, args, body, type=None):

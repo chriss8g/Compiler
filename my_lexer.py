@@ -15,6 +15,8 @@ regular_expresions = [
     ('type', 'type'),
     ('return', 'return'),
     ('new', 'new'),
+    ('or2', 'or'),
+    ('and2', 'and'),
     # ('self', 'self'),
     ('dot', '.'),
     ('sin', 'sin'),
@@ -40,6 +42,7 @@ regular_expresions = [
     ('id', f'({lettersLowerCase}|{lettersUpperCase}|_)({lettersLowerCase}|{lettersUpperCase}|_|0|{nonzero_digits})*'),
     ('string', f'"({lettersLowerCase}|{lettersUpperCase}|0|{nonzero_digits}|@|##|#||=|:|,|#(|#)|+|-|#*|/|^|%|#$| |\\"|!|<|>|\\|@|;|[|])*"'),
     ('comment', f'/#*({lettersLowerCase}|{lettersUpperCase}|0|{nonzero_digits}| |,)*#*/'),
+    ('comment2', f'//({lettersLowerCase}|{lettersUpperCase}|0|{nonzero_digits}| |,)*\n'),
     ('asign1','='),
     ('asign2',':='),
     ('comma', ','),
@@ -48,6 +51,7 @@ regular_expresions = [
     ('plus', '+'),
     ('minus', '-'),
     ('star','#*'),
+    ('star2','#*#*'),
     ('divide', '/'),
     ('pow', '^'),
     ('mod', '%'),
@@ -157,6 +161,9 @@ class Lexer:
             tag = self._getAceptedTag(self.regexs)
         else:
             head = 1
+            
+        if tag == 'comment2':
+            head -= 1
 
         lex = text[:head]
         
@@ -186,11 +193,9 @@ class Lexer:
     def __call__(self, text):
         tokens = []
         for lex,ttype,line in self._tokenize(text):
-            if ttype == "comment":
+            if ttype == "comment" or ttype == 'comment2':
                 continue
-            new_terminal = self.terminals[ttype]
-            new_terminal.line = line
-            tokens.append(Token(lex, new_terminal, line))
+            tokens.append(Token(lex, self.terminals[ttype], line))
         return tokens
 
     
