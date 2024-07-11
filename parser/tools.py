@@ -179,7 +179,7 @@ class ShiftReduceParser:
             state = stack[-1]
             lookahead = w[cursor]
 
-            if(state, lookahead) not in self.action:
+            if(state, lookahead.token_type) not in self.action:
                 excepted_char = ''
 
                 for (state1, i) in self.action:
@@ -188,21 +188,21 @@ class ShiftReduceParser:
                 parsed = ' '.join([str(m)
                                     for m in stack if not str(m).isnumeric()])
                 excepted_char = excepted_char.rstrip(', ')
-                message_error = f'It was expected "{excepted_char}" received "{lookahead}" at line {lookahead.line} after {parsed}'
+                message_error = f'It was expected "{excepted_char}" received "{lookahead.token_type}" at line {lookahead.line} after {parsed}'
                 # print("\nError. Aborting...")
                 # print('')
                 # print("\n", message_error)
 
                 return None,message_error
 
-            if self.action[state, lookahead] == self.OK:
+            if self.action[state, lookahead.token_type] == self.OK:
                 action = self.OK
             else:
-                action, tag = self.action[state, lookahead]
+                action, tag = self.action[state, lookahead.token_type]
 
             if action == self.SHIFT:
                 operations.append(self.SHIFT)
-                stack += [lookahead, tag]
+                stack += [lookahead.token_type, tag]
                 cursor += 1
             elif action == self.REDUCE:
                 operations.append(self.REDUCE)

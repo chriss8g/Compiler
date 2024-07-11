@@ -107,7 +107,7 @@ class RegexHandler:
         tokens = self._regex_tokenizer(text)
         
         parser = LR1Parser(self.grammar)
-        derivations,_ = parser([tok.token_type for tok in tokens])
+        derivations,_ = parser(tokens)
         
         tokens.reverse()
         derivations.reverse()

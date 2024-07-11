@@ -15,7 +15,7 @@ regular_expresions = [
     ('type', 'type'),
     ('return', 'return'),
     ('new', 'new'),
-    ('self', 'self'),
+    # ('self', 'self'),
     ('dot', '.'),
     ('sin', 'sin'),
     ('cos', 'cos'),
@@ -165,7 +165,7 @@ class Lexer:
     def _tokenize(self, text):
         line = 1
         while text:
-            if text[0] == '\n':
+            while text[0] == '\n':
                 text = text[1:]
                 line += 1
             

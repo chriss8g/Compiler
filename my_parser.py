@@ -79,7 +79,7 @@ class CodeToAST:
         ifx, elsex, elifx, whilex, forx, rangex = self.G.Terminals(
             'if else elif while for range')
         typex, inherits = self.G.Terminals('type inherits')
-        selfx, new, extends = self.G.Terminals('self new extends')
+        new, extends = self.G.Terminals('new extends')
         dot, concat_space, returnx = self.G.Terminals('. @@ return')
         obrake, cbrake, protocol = self.G.Terminals('[ ] protocol')
 
@@ -167,7 +167,7 @@ class CodeToAST:
         terminals['range'] = rangex
         terminals['type'] = typex
         terminals['inherits'] = inherits
-        terminals['self'] = selfx
+        # terminals['self'] = selfx
         terminals['new'] = new
         terminals['dot'] = dot
         terminals['protocol'] = protocol
@@ -273,9 +273,10 @@ class CodeToAST:
             lambda h,s:ConcatSpaceNode(s[1],s[3]),
             lambda h,s:ConcatSpaceNode(s[1],NumberNode(s[3])),
             lambda h,s:ConcatSpaceNode(s[1],StringNode(s[3])),
+            lambda h,s:ConcatSpaceNode(s[1],s[3]),
             lambda h,s:ConcatNode(s[1],s[3]),
             lambda h,s:ConcatNode(s[1],NumberNode(s[3])),
-            lambda h,s:ConcatNode(s[1],StringNode(s[3])),
+            lambda h,s:ConcatNode(s[1],s[3]),
             lambda h,s:s[1],
             
             # Expresiones logicas
@@ -323,16 +324,15 @@ class CodeToAST:
             lambda h, s: BoolNode(s[1]),
             lambda h, s: StringNode(s[1]),
             lambda h, s: s[2],
-            lambda h, s: s[1],
+            # lambda h, s: s[1],
             lambda h, s: VectorNode(s[2]),
             lambda h, s: s[1],
-            lambda h, s: IdentifierNode(s[1], s[3]),
             lambda h, s: s[1],
 
             # Expresiones self
-            lambda h, s: SelfNode(s[3]),
-            lambda h, s: SelfNode(IdentifierNode(s[3],s[5])),
-            lambda h, s: SelfNode(s[3]),
+            # lambda h, s: SelfNode(s[3]),
+            # lambda h, s: SelfNode(IdentifierNode(s[3],s[5])),
+            # lambda h, s: SelfNode(s[3]),
             
             # Objetos recurrentes
             lambda h, s: CallNode(s[1], s[3], s[6]),
@@ -341,7 +341,10 @@ class CodeToAST:
             lambda h, s: CallNode(s[1]),
             
             # Identificador
-            lambda h, s: IdentifierNode(s[1])
+            lambda h, s: IdentifierNode(s[1]),
+            lambda h, s: IdentifierNode(s[1], s[3]),
+            lambda h, s: IdentifierNode(s[1], IdentifierNode(s[3], s[5])),
+            lambda h, s: IdentifierNode(s[1], s[3])
             
         ]
 
@@ -449,9 +452,11 @@ class CodeToAST:
         string_expr %= string_expr + concat_space + idnode
         string_expr %= string_expr + concat_space + number
         string_expr %= string_expr + concat_space + string
+        string_expr %= string_expr + concat_space + recurrent_object
         string_expr %= string_expr + concat + idnode
         string_expr %= string_expr + concat + number
         string_expr %= string_expr + concat + string
+        string_expr %= string_expr + concat + recurrent_object
         string_expr %= logical_expr
 
         # Expresiones lógicas
@@ -499,16 +504,15 @@ class CodeToAST:
         aritmetic_atom %= false
         aritmetic_atom %= string
         aritmetic_atom %= opar + expr + cpar
-        aritmetic_atom %= self_expr
+        # aritmetic_atom %= self_expr
         aritmetic_atom %= obrake + arg_expr + cbrake
         aritmetic_atom %= idnode
-        aritmetic_atom %= idx + dot + recurrent_object
         aritmetic_atom %= recurrent_object
 
         # Expresiones self
-        self_expr %= selfx + dot + idnode
-        self_expr %= selfx + dot + idx + dot + recurrent_object
-        self_expr %= selfx + dot + recurrent_object
+        # self_expr %= selfx + dot + idnode
+        # self_expr %= selfx + dot + idx + dot + recurrent_object
+        # self_expr %= selfx + dot + recurrent_object
 
         # Expresiones recurrentes
         recurrent_object %= idx + opar + arg_expr + cpar + dot + recurrent_object
@@ -518,6 +522,9 @@ class CodeToAST:
 
         # Identificador
         idnode %= idx
+        idnode %= idx + dot + idnode
+        idnode %= idx + dot + idx + recurrent_object
+        idnode %= idx + dot + recurrent_object
 
         #############################################################################
 
