@@ -163,9 +163,13 @@ class Lexer:
         return lex,tag
     
     def _tokenize(self, text):
-        
+        line = 0
         while text:
-            text = text.lstrip()
+            if text[0] == '\n':
+                line += 1
+            
+            while text[0] == ' ' or text[0] == '\t':
+                text = text[1:]
             self._reset_automs()
             
             lex,tag = self._walk(text)
