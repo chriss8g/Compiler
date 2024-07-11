@@ -49,7 +49,6 @@ class Scope:
     def get_variable_info(self, vname):    
         if self.is_local_var(vname) or self.parent:
             if self.is_local_var(vname):
-                # print(self.parent.get_variable_info(vname))
                 if(vname in self.dict.keys()):
                     return self.dict[vname], False
                 else:

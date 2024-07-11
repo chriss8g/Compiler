@@ -31,7 +31,7 @@ def main(input_file):
     collector.context.create_type(hulk.NUMBER_TYPE)
     collector.context.create_type(hulk.STRING_TYPE)
     type_builder = TypeBuilder(collector.context)
-    errors = errors + type_builder.visit(codeToAST.ast)
+    errors = errors + type_builder.visit(codeToAST.ast, None)
     if(len(errors) > 0):
         for i, error in enumerate(errors, 1):
             print(f'{i}.', error)
@@ -55,10 +55,10 @@ def main(input_file):
 
     os.system("gcc script.c -lm -o script.out && ./script.out")
 
-# if __name__ == "__main__":
-#     parser = argparse.ArgumentParser(description="Generate C code from custom script")
-#     parser.add_argument('input_file', type=str, help='The input file containing the script')
-#     args = parser.parse_args()
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Generate C code from custom script")
+    parser.add_argument('input_file', type=str, help='The input file containing the script')
+    args = parser.parse_args()
 
-    # main(args.input_file)
-main('./script.uh')
+    main(args.input_file)
+# main('./script.uh')

@@ -67,7 +67,10 @@ class CodeGeneratorVisitor(object):
 
     @visitor.when(cil.GotoIfNode)
     def visit(self, node, scope):
-        return f'if ({node.condition}) \n\tgoto {node.label};\nelse \n\tgoto {node.label_else};\n'
+        body = f'if ({node.condition}) \n\tgoto {node.label};'
+        for i in range(len(node.elif_conditions)):
+            body = body + f'\nelse if({node.elif_conditions[i]})\n\tgoto {node.labels_elif[i]};' 
+        return body + f'\nelse \n\tgoto {node.label_else};\n'
 
     @visitor.when(cil.OurFunctionNode)
     def visit(self, node, scope):

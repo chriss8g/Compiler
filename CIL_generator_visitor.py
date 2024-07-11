@@ -10,7 +10,8 @@ def update_types(type):
     type = type if type != hulk.BOOL_TYPE else c.INT_TYPE
     type = type if type != hulk.NUMBER_TYPE else c.FLOAT_TYPE
     type = type if type != hulk.STRING_TYPE else c.STRING_TYPE
-    type = type if type in c.MY_TYPES else (type + '*')
+    if(not type.endswith('*')):
+        type = type if type in c.MY_TYPES else (type + '*')
     return type
 
 
@@ -220,7 +221,6 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
     @visitor.when(hulk.ConcatSpaceNode)
     def visit(self, node, scope):
         node.type = update_types(node.type)
-        node.type = node.type if node.type != hulk.STRING_TYPE else 'char*'
 
         left = self.visit(node.left, scope.create_child_scope())
         right = self.visit(node.right, scope.create_child_scope())
@@ -382,6 +382,10 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
         condition = self.visit(node.condition, scope.create_child_scope())
 
+        elif_conditions = []
+        for i in range(len(node.elif_conditions)):
+            elif_conditions.append(self.visit(node.elif_conditions[i], scope.create_child_scope()))
+
         self.register_instruction(cil.GotoNode('my_begin'))
 
         self.register_instruction(cil.LabelNode('my_if'))
@@ -390,6 +394,12 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
         self.register_instruction(cil.GotoNode('my_end'))
 
+        for i in range(len(node.elif_conditions)):
+            self.register_instruction(cil.LabelNode(f'my_elif_{i}'))
+            expr = self.visit(node.elif_body[i], scope.create_child_scope())
+            self.register_instruction(cil.AssignNode(dest, expr))
+            self.register_instruction(cil.GotoNode('my_end'))
+
         self.register_instruction(cil.LabelNode('my_else'))
         else_expr = self.visit(node.else_body, scope.create_child_scope())
         self.register_instruction(cil.AssignNode(dest, else_expr))
@@ -397,7 +407,7 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
         self.register_instruction(cil.LabelNode('my_begin'))
         self.register_instruction(
-            cil.GotoIfNode(condition, 'my_if', 'my_else'))
+            cil.GotoIfNode(condition, 'my_if', 'my_else', elif_conditions, [f'my_elif_{i} 'for i in range(len(node.elif_conditions))]))
         self.register_instruction(cil.LabelNode('my_end'))
 
         return dest
@@ -406,7 +416,7 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
     def visit(self, node, scope):
         node.type = update_types(node.type)
 
-        x = scope.get_variable_info(node.id.name)[0]
+        x = self.visit(node.id, scope.create_child_scope())
         expr = self.visit(node.expr, scope.create_child_scope())
         self.register_instruction(cil.AssignNode(x, expr))
         return expr
@@ -523,12 +533,11 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
             func = self.to_function_name_in_type(child.name, node.type[:-1])
             func += '(' + ", ".join(child.args) + ')'
         else:
+
             func = node.name
             stop = False
-            x= 15
-            while(not stop and x>0):
+            while(not stop):
                 func, stop = scope.get_variable_info(func)
-                x=x-1
 
         return func
 
