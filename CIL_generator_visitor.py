@@ -386,29 +386,30 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
         for i in range(len(node.elif_conditions)):
             elif_conditions.append(self.visit(node.elif_conditions[i], scope.create_child_scope()))
 
-        self.register_instruction(cil.GotoNode('my_begin'))
+        index = len(self.instructions)
+        self.register_instruction(cil.GotoNode(f'my_begin_{self.current_function.name}_{index}'))
 
-        self.register_instruction(cil.LabelNode('my_if'))
+        self.register_instruction(cil.LabelNode(f'my_if_{self.current_function.name}_{index}'))
         expr = self.visit(node.body, scope.create_child_scope())
         self.register_instruction(cil.AssignNode(dest, expr))
 
-        self.register_instruction(cil.GotoNode('my_end'))
+        self.register_instruction(cil.GotoNode(f'my_end_{self.current_function.name}_{index}'))
 
         for i in range(len(node.elif_conditions)):
-            self.register_instruction(cil.LabelNode(f'my_elif_{i}'))
+            self.register_instruction(cil.LabelNode(f'my_elif_{i}_{self.current_function.name}_{index}'))
             expr = self.visit(node.elif_body[i], scope.create_child_scope())
             self.register_instruction(cil.AssignNode(dest, expr))
-            self.register_instruction(cil.GotoNode('my_end'))
+            self.register_instruction(cil.GotoNode(f'my_end_{self.current_function.name}_{index}'))
 
-        self.register_instruction(cil.LabelNode('my_else'))
+        self.register_instruction(cil.LabelNode(f'my_else_{self.current_function.name}_{index}'))
         else_expr = self.visit(node.else_body, scope.create_child_scope())
         self.register_instruction(cil.AssignNode(dest, else_expr))
-        self.register_instruction(cil.GotoNode('my_end'))
+        self.register_instruction(cil.GotoNode(f'my_end_{self.current_function.name}_{index}'))
 
-        self.register_instruction(cil.LabelNode('my_begin'))
+        self.register_instruction(cil.LabelNode(f'my_begin_{self.current_function.name}_{index}'))
         self.register_instruction(
-            cil.GotoIfNode(condition, 'my_if', 'my_else', elif_conditions, [f'my_elif_{i} 'for i in range(len(node.elif_conditions))]))
-        self.register_instruction(cil.LabelNode('my_end'))
+            cil.GotoIfNode(condition, f'my_if_{self.current_function.name}_{index}', f'my_else_{self.current_function.name}_{index}', elif_conditions, [f'my_elif_{i}_{self.current_function.name}_{index} 'for i in range(len(node.elif_conditions))]))
+        self.register_instruction(cil.LabelNode(f'my_end_{self.current_function.name}_{index}'))
 
         return dest
 
@@ -435,15 +436,16 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
         node.type = update_types(node.type)
         dest = self.define_internal_local(node.type)
 
-        self.register_instruction(cil.GotoNode('while_label'))
-        self.register_instruction(cil.LabelNode('body'))
+        index = len(self.instructions)
+        self.register_instruction(cil.GotoNode(f'while_label_{self.current_function.name}_{index}'))
+        self.register_instruction(cil.LabelNode(f'body_{self.current_function.name}_{index}'))
         expr = self.visit(node.body, scope.create_child_scope())
         self.register_instruction(cil.AssignNode(dest, expr))
-        self.register_instruction(cil.LabelNode('while_label'))
+        self.register_instruction(cil.LabelNode(f'while_label_{self.current_function.name}_{index}'))
         condition = self.visit(node.condition, scope.create_child_scope())
         self.register_instruction(cil.GotoIfNode(
-            condition, 'body', 'endwhile_label'))
-        self.register_instruction(cil.LabelNode('endwhile_label'))
+            condition, f'body_{self.current_function.name}_{index}', f'endwhile_label_{self.current_function.name}_{index}'))
+        self.register_instruction(cil.LabelNode(f'endwhile_label_{self.current_function.name}_{index}'))
 
         return dest
 
