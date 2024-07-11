@@ -533,7 +533,7 @@ class CodeToAST:
 
         parser = LR1Parser(self.G, 'parser')
 
-        derivations,msg = parser([tok.token_type for tok in tokens])
+        derivations,msg = parser(tokens)
         self.error_msg = msg
         
         if not derivations:

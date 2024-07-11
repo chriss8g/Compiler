@@ -163,9 +163,10 @@ class Lexer:
         return lex,tag
     
     def _tokenize(self, text):
-        line = 0
+        line = 1
         while text:
             if text[0] == '\n':
+                text = text[1:]
                 line += 1
             
             while text and (text[0] == ' ' or text[0] == '\t'):
@@ -189,7 +190,7 @@ class Lexer:
                 continue
             new_terminal = self.terminals[ttype]
             new_terminal.line = line
-            tokens.append(Token(lex, new_terminal , line))
+            tokens.append(Token(lex, new_terminal, line))
         return tokens
 
     

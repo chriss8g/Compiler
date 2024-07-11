@@ -183,7 +183,7 @@ class ShiftReduceParser:
             state = stack[-1]
             lookahead = w[cursor]
 
-            if(state, lookahead.Name, lookahead.IsTerminal) not in self.action:
+            if(state, lookahead.token_type.Name, lookahead.token_type.IsTerminal) not in self.action:
                 excepted_char = ''
 
                 for (state1, i, isTerminal) in self.action:
@@ -199,14 +199,14 @@ class ShiftReduceParser:
 
                 return None,message_error
 
-            if self.action[state, lookahead.Name, lookahead.IsTerminal] == self.OK:
+            if self.action[state, lookahead.token_type.Name, lookahead.token_type.IsTerminal] == self.OK:
                 action = self.OK
             else:
-                action, tag = self.action[state, lookahead.Name, lookahead.IsTerminal]
+                action, tag = self.action[state, lookahead.token_type.Name, lookahead.token_type.IsTerminal]
 
             if action == self.SHIFT:
                 operations.append(self.SHIFT)
-                stack += [lookahead.Name, tag]
+                stack += [lookahead.token_type.Name, tag]
                 cursor += 1
             elif action == self.REDUCE:
                 operations.append(self.REDUCE)
