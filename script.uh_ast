@@ -1,12 +1,22 @@
 \__ProgramNode [<program>]
-	\__FuncDeclarationNode: function next : None => <body> [<statement>]
-		Params
-		('x', None)
-		Body
-		\__PlusNode [<expression>]
-			\__IdentifierNode: x : None
-			\__NumberNode: 1
-	\__PrintNode [<expression>]
-		\__CallNode next   [<expression>]
-			\_ Arguments
-				\__NumberNode: 8
+	\__LetNode [<expression>]
+		\__AssignNode:
+			\__IdentifierNode: a : None
+			\__NumberNode: 0
+		\__BlockNode [<expression>]
+			\__PrintNode [<expression>]
+				\__IdentifierNode: a : None
+			\__LetNode [<expression>]
+				\__AssignNode:
+					\__IdentifierNode: a : None
+					\__NumberNode: 2
+				\__BlockNode [<expression>]
+					\__PrintNode [<expression>]
+						\__IdentifierNode: a : None
+					\DestructNode   [<expression>]
+						\__IdentifierNode: a : None
+						\__NumberNode: 1
+					\__PrintNode [<expression>]
+						\__IdentifierNode: a : None
+			\__PrintNode [<expression>]
+				\__IdentifierNode: a : None
