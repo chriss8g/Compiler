@@ -553,7 +553,7 @@ class CodeToAST:
 if __name__ == "__main__":
 
     text = '''
-            print("The meaning of life is " @ "Hola");
+            print("The meaning of life is " @ "Hola")1;
         '''
 
     codeToAST = CodeToAST(text)

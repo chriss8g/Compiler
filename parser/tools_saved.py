@@ -183,26 +183,26 @@ class ShiftReduceParser:
             state = stack[-1]
             lookahead = w[cursor]
 
-            if(state, lookahead.Name) not in self.action:
+            if(state, lookahead.Name, lookahead.IsTerminal) not in self.action:
                 excepted_char = ''
 
-                for (state1, i) in self.action:
-                    if i.IsTerminal and state1 == state:
+                for (state1, i, isTerminal) in self.action:
+                    if isTerminal and state1 == state:
                         excepted_char += str(i) + ', '
                 parsed = ' '.join([str(m)
                                     for m in stack if not str(m).isnumeric()])
                 excepted_char = excepted_char.rstrip(', ')
-                message_error = f'It was expected "{excepted_char}" received "{lookahead}" after {parsed}'
+                message_error = f'It was expected "{excepted_char}" but received "{lookahead}" at line {lookahead.line} after {parsed}'
                 # print("\nError. Aborting...")
                 # print('')
                 # print("\n", message_error)
 
                 return None,message_error
 
-            if self.action[state, lookahead.Name] == self.OK:
+            if self.action[state, lookahead.Name, lookahead.IsTerminal] == self.OK:
                 action = self.OK
             else:
-                action, tag = self.action[state, lookahead.Name]
+                action, tag = self.action[state, lookahead.Name, lookahead.IsTerminal]
 
             if action == self.SHIFT:
                 operations.append(self.SHIFT)

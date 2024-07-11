@@ -258,7 +258,7 @@ class LR1Parser(ShiftReduceParser):
         
         action = {}
         for key in self.action.keys():
-            action[key[0],key[1].Name] = self.action[key]
+            action[key[0],key[1].Name, key[1].IsTerminal] = self.action[key]
         goto = {}
         for key in self.goto.keys():
             goto[key[0],key[1].Name] = self.goto[key]
