@@ -46,11 +46,20 @@ class Scope:
         
         return False
     
-    def get_variable_info(self, vname):
+    def get_variable_info(self, vname):    
         if self.is_local_var(vname) or self.parent:
-            return self.dict[vname] if self.is_local_var(vname) else self.parent.get_variable_info(vname)
+            if self.is_local_var(vname):
+                # print(self.parent.get_variable_info(vname))
+                if(vname in self.dict.keys()):
+                    return self.dict[vname], False
+                else:
+                    return vname, True
+            else:
+                # print(self.parent.get_variable_info(vname))
+                return self.parent.get_variable_info(vname)
         else:
-            return None
+            # print(vname)
+            return vname, True
     
     def is_func_defined(self, fname, n):
         if (fname, n) in [(i.name, i.params) for i in self.local_funcs]:

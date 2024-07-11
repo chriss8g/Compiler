@@ -49,6 +49,9 @@ class BaseHULKToCILVisitor:
     def to_function_name(self, method_name):
         return f'function_{method_name}_{len(self.dotcode)}'
     
+    def to_param_name(self, param_name):
+        return f'param_{param_name}_{len(self.params)}'
+    
     def register_function(self, function_name, typex, params=None):
         params = params if params else []
         function_node = cil.FunctionNode(function_name, params, [], [], typex)
