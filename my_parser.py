@@ -342,62 +342,6 @@ class CodeToAST:
             # Identificador
             lambda h, s: IdentifierNode(s[1])
             
-            # # Aritmetica
-            # lambda h, s: PlusNode(s[1], s[3]),
-            # lambda h, s: MinusNode(s[1], s[3]),
-            # lambda h, s: AndNode(s[1], s[3]),
-            # lambda h, s: OrNode(s[1], s[3]),
-            # lambda h, s: NotNode(s[2]),
-            # lambda h, s: NENode(s[1], s[3]),
-            # lambda h, s: GTNode(s[1], s[3]),
-            # lambda h, s: GENode(s[1], s[3]),
-            # lambda h, s: LTNode(s[1], s[3]),
-            # lambda h, s: EQNode(s[1], s[3]),
-            # lambda h, s: LENode(s[1], s[3]),
-            # lambda h, s: ConcatNode(s[1], s[3]),
-            # lambda h, s: ConcatSpaceNode(s[1], s[3]),
-            # lambda h, s: s[1],
-            
-            # # Terminos
-            # lambda h, s: StarNode(s[1], s[3]),
-            # lambda h, s: DivNode(s[1], s[3]),
-            # lambda h, s: PowNode(s[1], s[3]),
-            # lambda h, s: ModNode(s[1], s[3]),
-            # lambda h, s: s[1],
-            
-            # # Factor
-            # lambda h, s: SinNode(s[3]),
-            # lambda h, s: CosNode(s[3]),
-            # lambda h, s: SqrtNode(s[3]),
-            # lambda h, s: ExpNode(s[3]),
-            # lambda h, s: LogNode(s[3], s[5]),
-            # lambda h, s: RandNode(),
-            # lambda h, s: s[1],
-            
-            # # Atom
-            # lambda h, s: NumberNode(s[1]),
-            # lambda h, s: BoolNode(s[1]),
-            # lambda h, s: BoolNode(s[1]),
-            # lambda h, s: NumberNode(s[1]),
-            # lambda h, s: NumberNode(s[1]),
-            # lambda h, s: StringNode(s[1]),
-            # lambda h, s: s[2],
-            # lambda h, s: SelfNode(s[3]),
-            # lambda h, s: SelfNode(IdentifierNode(s[3],s[5])),
-            # lambda h, s: SelfNode(s[3]),
-            # lambda h, s: VectorNode(s[2]),
-            # lambda h, s: s[1],
-            # lambda h, s: IdentifierNode(s[1], s[3]),
-            # lambda h, s: s[1],
-            
-            # # Objetos recurrentes
-            # lambda h, s: CallNode(s[1], s[3], s[6]),
-            # lambda h, s: CallNode(s[1], [], s[5]),
-            # lambda h, s: CallNode(s[1], s[3]),
-            # lambda h, s: CallNode(s[1]),
-            
-            # # Idnode
-            # lambda h, s: IdentifierNode(s[1])
         ]
 
         program %= stats + specialBlock
@@ -571,59 +515,6 @@ class CodeToAST:
 
         # Identificador
         idnode %= idx
-
-
-        # # Aritmetica
-        # subexpr %= subexpr + plus + term
-        # subexpr %= subexpr + minus + term
-        # subexpr %= subexpr + andx + term
-        # subexpr %= subexpr + orx + term
-        # subexpr %= notx + term
-        # subexpr %= subexpr + eq + term
-        # subexpr %= subexpr + ne + term
-        # subexpr %= subexpr + gt + term
-        # subexpr %= subexpr + lt + term
-        # subexpr %= subexpr + ge + term
-        # subexpr %= subexpr + le + term
-        # subexpr %= subexpr + concat + term
-        # subexpr %= subexpr + concat_space + term
-        # subexpr %= term
-
-        # term %= term + star + factor
-        # term %= term + div + factor
-        # term %= term + powx + factor
-        # term %= term + mod + factor
-        # term %= factor
-
-        # factor %= sin + opar + expr + cpar
-        # factor %= cos + opar + expr + cpar
-        # factor %= sqrt + opar + expr + cpar
-        # factor %= exp + opar + expr + cpar
-        # factor %= log + opar + expr + comma + expr + cpar
-        # factor %= rand + opar + cpar
-        # factor %= atom
-
-        # atom %= number
-        # atom %= true
-        # atom %= false
-        # atom %= pi
-        # atom %= e
-        # atom %= string
-        # atom %= opar + expr + cpar
-        # atom %= selfx + dot + idnode
-        # atom %= selfx + dot + idx + dot + recurrent_object
-        # atom %= selfx + dot + recurrent_object
-        # atom %= obrake + arg_expr + cbrake
-        # atom %= idnode
-        # atom %= idx + dot + recurrent_object
-        # atom %= recurrent_object
-
-        # recurrent_object %= idx + opar + arg_expr + cpar + dot + recurrent_object
-        # recurrent_object %= idx + opar + cpar + dot + recurrent_object
-        # recurrent_object %= idx + opar + arg_expr + cpar
-        # recurrent_object %= idx + opar + cpar
-
-        # idnode %= idx
 
         #############################################################################
 
