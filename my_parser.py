@@ -20,12 +20,13 @@ def ForRangeToWhile(s):
     else:
         body.append(s[12])
 
+    minus = AssignNode(count, MinusNode(count, NumberNode(1)))
+
     increase_count = DestructNode(count, PlusNode(count, NumberNode(1)))
-    body.append(increase_count)
+    # body.append(increase_count)
     assign = AssignNode(count, start)
-    while_term = WhileNode(LTNode(count, end), BlockNode(body))
-    let_term = LetNode([assign], while_term)
-    # return let_term
+    while_term = WhileNode(LTNode(increase_count, end), BlockNode(body))
+    let_term = LetNode([assign], BlockNode([minus, while_term]))
     return let_term
 
 def ForToWhile(s):

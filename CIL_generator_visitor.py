@@ -420,6 +420,15 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
         expr = self.visit(node.expr, scope.create_child_scope())
         self.register_instruction(cil.AssignNode(x, expr))
         return expr
+    
+    @visitor.when(hulk.AssignNode)
+    def visit(self, node, scope):
+        node.type = update_types(node.type)
+
+        x = self.visit(node.id, scope.create_child_scope())
+        expr = self.visit(node.expr, scope.create_child_scope())
+        self.register_instruction(cil.AssignNode(x, expr))
+        return expr
 
     @visitor.when(hulk.WhileNode)
     def visit(self, node, scope):
