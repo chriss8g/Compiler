@@ -31,7 +31,7 @@ def main(input_file):
     collector.context.create_type(hulk.NUMBER_TYPE)
     collector.context.create_type(hulk.STRING_TYPE)
     type_builder = TypeBuilder(collector.context)
-    errors = errors + type_builder.visit(codeToAST.ast)
+    errors = errors + type_builder.visit(codeToAST.ast, None)
     if(len(errors) > 0):
         for i, error in enumerate(errors, 1):
             print(f'{i}.', error)

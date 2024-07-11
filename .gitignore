@@ -2,7 +2,7 @@ __pycache__/*
 parser/__pycache__/*
 utils/__pycache__/*
 semantic_checker/__pycache__/*
-node_types/__pycache__/*
+nodes_types/__pycache__/*
 lexer/__pycache__/*
 tests/
 script.uh_ast

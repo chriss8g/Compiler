@@ -201,3 +201,23 @@ class VariableInfo:
     def __init__(self, name, vtype):
         self.name = name
         self.type = vtype
+
+class TypeTree:
+    def __init__(self, parent):
+        self.parent = parent
+        self.children = []
+        self.dict = {}
+
+    def create_child(self):
+        child = TypeTree(parent=self)
+        self.children.append(child)
+        return child
+    
+    def get_variable_info(self, vname):    
+        if vname in self.dict.keys():
+            return self.dict[vname]
+        else:
+            if self.parent:
+                return self.parent.get_variable_info(vname)
+            else:
+                return None
