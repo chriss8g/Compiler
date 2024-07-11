@@ -2,10 +2,11 @@ import json
 
 class Symbol(object):
 
-    def __init__(self, name, grammar):
+    def __init__(self, name, grammar, line):
         self.Name = name
         self.Grammar = grammar
-
+        self.line = line
+        
     def __str__(self):
         return self.Name
 
@@ -35,8 +36,8 @@ class Symbol(object):
 class NonTerminal(Symbol):
 
 
-    def __init__(self, name, grammar):
-        super().__init__(name, grammar)
+    def __init__(self, name, grammar, line):
+        super().__init__(name, grammar, line)
         self.productions = []
 
 
@@ -93,8 +94,8 @@ class NonTerminal(Symbol):
 
 class Terminal(Symbol):
 
-    def __init__(self, name, grammar):
-        super().__init__(name, grammar)
+    def __init__(self, name, grammar, line):
+        super().__init__(name, grammar, line)
 
     @property
     def IsTerminal(self):
@@ -187,8 +188,8 @@ class SentenceList(object):
 
 class Epsilon(Terminal, Sentence):
 
-    def __init__(self, grammar):
-        super().__init__('epsilon', grammar)
+    def __init__(self, grammar, line):
+        super().__init__('epsilon', grammar, line)
 
 
     def __str__(self):

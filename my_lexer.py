@@ -183,8 +183,14 @@ class Lexer:
         yield '$', self.eof
     
     def __call__(self, text):
-        return [ Token(lex, self.terminals[ttype]) for lex, ttype in self._tokenize(text) if ttype != "comment" ]
-    
+        tokens = []
+        for lex,ttype,line in self._tokenize(text):
+            if ttype == "comment":
+                continue
+            new_terminal = self.terminals[ttype]
+            new_terminal.line = line
+            tokens.append(Token(lex, new_terminal , line))
+        return tokens
 
     
     
