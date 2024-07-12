@@ -4,6 +4,17 @@ function fib(n) => if (n == 0 | n == 1) 1; else fib(n-1) + fib(n-2);
 function fact(x) => let f = 1 in for (i in range(1, x+1)) f := f * i;
 function next(x) => x+1;
 
+type Person(firstname:String, lastname:String) {
+    firstname:String = firstname;
+    lastname:String = lastname;
+
+    name() => self.firstname @@ self.lastname;
+    hash() : Number {
+        5;
+    }
+}
+
+
 {
     42;
     print(42);
@@ -87,5 +98,6 @@ function next(x) => x+1;
     print(fact(5));
     print(fib(5));
     print(next(8));
+    let p: Person = new Person("Phil", "Collins") in print(p.name());
     
 }
