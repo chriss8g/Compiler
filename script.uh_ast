@@ -228,7 +228,7 @@
 					\__NumberNode: 3.14
 					\__NumberNode: 2.71
 			\__PrintNode [<expression>]
-				\__NotNode: <nodes_types.hulk_types.EQNode object at 0x7439b8981e20>
+				\__NotNode: <nodes_types.hulk_types.EQNode object at 0x7fd29e774c20>
 			\__PrintNode [<expression>]
 				\__NENode [<expression>]
 					\__NumberNode: 10

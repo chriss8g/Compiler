@@ -60,6 +60,7 @@ class TypeBuilder:
     def visit(self, node, types):
         for param in node.params:
             self.var[param[0]] = param[1]
+            self.types.dict[param[0]] = param[1]
         self.current_type = self.context.get_type(node.name)
         self.visit(node.body, self.types.create_child())
         for param in self.var.keys():
@@ -761,6 +762,9 @@ class TypeBuilder:
                 self.visit(node.child, self.types.create_child())
                 self.recurrent_type = self.context.get_type(node.child.type)
                 # self.recurrent_type = None
+            else:
+                if node.name == 'self':
+                    node.type = self.current_type.get_attribute(node.child.name).type
         return self.errors
 
     # self
