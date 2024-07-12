@@ -148,7 +148,7 @@ type C inherits A {
     let a = 10 in while (a >= 0) {
         print(a);
         a := a - 1;
-    }
+    };
     
     for (x in range(0, 10)) print(x);
     let iterable = range(0, 10) in
@@ -175,7 +175,7 @@ type C inherits A {
             else "No, it's Superman!"
         );
     let x = 42 in print(x);
-    let total = { print("Total"); 5; } + 6 in print(total);
+    let total = 4 + 6 in print(total);
     let x : A = if (rand() < 0.5) new B() else new C() in
         if (x is B)
             let y : B = x as B in {
