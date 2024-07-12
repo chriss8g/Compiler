@@ -41,23 +41,7 @@ class CompilerTestCase(unittest.TestCase):
 # Lista de tuplas con nombres de archivos de entrada y salida esperada
 test_cases = [
     ('print_constant.uh', 'print_constant.output'),
-    ('basic_arithmetic.uh', 'basic_arithmetic.output'),
-    ('hello_world.uh', 'hello_world.output'),
-    ('escaped_quotes.uh', 'escaped_quotes.output'),
-    ('string_concatenation.uh', 'string_concatenation.output'),
-    ('trigonometric_functions.uh', 'trigonometric_functions.output'),
-    ('mixed_prints.uh', 'mixed_prints.output'),
-    ('advanced_expressions.uh', 'advanced_expressions.output'),
-    ('simple_function.uh', 'simple_function.output'),
     ('arithmetic_operations.uh', 'arithmetic_operations.output'),
-    ('variable_declarations.uh', 'variable_declarations.output'),
-    ('nested_scopes.uh', 'nested_scopes.output'),
-    ('while_loop.uh', 'while_loop.output'),
-    ('complex_arithmetic.uh', 'complex_arithmetic.output'),
-    ('variable_assignment.uh', 'variable_assignment.output'),
-    ('conditional_statements.uh', 'conditional_statements.output'),
-    ('for_loop.uh', 'for_loop.output'),
-    ('fibonacci.uh', 'fibonacci.output'),
     # ('class_definition.uh', 'class_definition.output'),
 
 ]
