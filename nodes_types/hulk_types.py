@@ -5,23 +5,20 @@ NUMBER_TYPE = 'Number'
 MY_TYPES = [BOOL_TYPE, STRING_TYPE, OBJECT_TYPE, NUMBER_TYPE]
 
 class Node:
-    def __init__(self, line=0):
-        self.line = line
+    pass
 
 class ProgramNode(Node):
-    def __init__(self, statements, main, line=0):
-        super().__init__(line)
+    def __init__(self, statements, main):
         self.statements = statements
         self.main = main
 
 
 class StatementNode(Node):
-    def __init__(self, line=0):
-        super().__init__(line)
+    pass
 
 class ProtocolNode(StatementNode):
-    def __init__(self,name,extension,body, line=0):
-        super().__init__(line)
+    def __init__(self,name,extension,body):
+        super().__init__()
         self.name = name
         self.extension = extension
         self.body = body
@@ -86,13 +83,12 @@ class IterableNode(Node):
 # **************************************************
 
 class ExpressionNode(Node):
-    def __init__(self, type=None,line=0):
-        super().__init__(line=0)
+    def __init__(self, type=None):
         self.type = type
         
 class PrintNode(ExpressionNode):
-    def __init__(self,expr,line=0):
-        super().__init__(None,line)
+    def __init__(self,expr):
+        super().__init__(None)
         self.expr = expr
 
 class BlockNode(ExpressionNode):
@@ -130,7 +126,7 @@ class ForRangeNode(ExpressionNode):
 class IfNode(ExpressionNode):
     def __init__(self, condition, body, else_body, elif_conditions=None, elif_body=None, type=None):
         super().__init__(type)
-        self.condition = condition
+        self.condition = condition if condition else []
         self.body = body
         self.else_body = else_body
         self.elif_conditions = elif_conditions if elif_conditions else []
@@ -171,8 +167,8 @@ class AsNode(Node):
 # **********************************************************
 
 class AtomicNode(ExpressionNode):
-    def __init__(self, lex, type=None,line=0):
-        super().__init__(type, line)
+    def __init__(self, lex, type=None):
+        super().__init__(type)
         self.lex = lex
 
 class BinaryNode(ExpressionNode):
@@ -361,8 +357,8 @@ class NumberNode(AtomicNode):
         super().__init__(lex, NUMBER_TYPE)
 
 class StringNode(AtomicNode):
-    def __init__(self, lex, type=STRING_TYPE,line=0):
-        super().__init__(lex, type, line)
+    def __init__(self, lex, type=STRING_TYPE):
+        super().__init__(lex, type)
 
 class BoolNode(AtomicNode):
     def __init__(self, lex, type=BOOL_TYPE):

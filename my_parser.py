@@ -254,7 +254,7 @@ class CodeToAST:
             lambda h, s: WhileNode(s[3], s[5]),
             lambda h, s: ForRangeToWhile(s),
             lambda h, s: ForToWhile(s),
-            lambda h, s: PrintNode(s[3],s[1].line),
+            lambda h, s: PrintNode(s[3]),
             lambda h, s: DestructNode(s[1], s[3]),
             lambda h, s: ObjectCreationNode(s[2], s[4]),
             lambda h, s: ObjectCreationNode(s[2], []),
