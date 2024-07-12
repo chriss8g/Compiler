@@ -165,6 +165,20 @@ class FormatVisitor(object):
         if node.child is not None:
             child = '\n' + self.visit(node.child,tabs+1)
         return f'{ans}{args}{child}'
+    
+    @visitor.when(hulk.IsNode)
+    def visit(self, node, tabs=0):
+        ans = '\t' * tabs + f'\\__{node.__class__.__name__} [<expression>]'
+        id = self.visit(node.id, tabs + 1)
+        typex = '\t' * (tabs+1) + f'\\__ Type: {node.type}'
+        return f'{ans}\n{id}\n{typex}'
+    
+    @visitor.when(hulk.AsNode)
+    def visit(self, node, tabs=0):
+        ans = '\t' * tabs + f'\\__{node.__class__.__name__} [<expression>]'
+        id = self.visit(node.id, tabs + 1)
+        typex = '\t' * (tabs+1) + f'\\__ Type: {node.type}'
+        return f'{ans}\n{id}\n{typex}'
         
 
     # **********************************************************
@@ -324,10 +338,3 @@ class FormatVisitor(object):
         ans = '\t' * tabs + f'\\__LoadNode: {node.dest} = LOAD {node.msg}'
         return ans
     
-    @visitor.when(cil.OpenScope)
-    def visit(self, node, tabs=0):
-        return '\t' * tabs + '{\n'
-    
-    @visitor.when(cil.CloseScope)
-    def visit(self, node, tabs=0):
-        return '\t' * tabs + '}\n'
