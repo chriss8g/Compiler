@@ -15,8 +15,6 @@ regular_expresions = [
     ('type', 'type'),
     ('return', 'return'),
     ('new', 'new'),
-    ('or2', 'or'),
-    ('and2', 'and'),
     # ('self', 'self'),
     ('dot', '.'),
     ('sin', 'sin'),
@@ -26,8 +24,6 @@ regular_expresions = [
     ('log', 'log'),
     ('rand', 'rand'),
     ('print', 'print'),
-    ('is', 'is'),
-    ('as', 'as'),
     ('PI', 'PI'),
     ('E', 'E'),
     ('let', 'let'),
@@ -42,9 +38,8 @@ regular_expresions = [
     ('range', 'range'),
     ('num', f'0|({nonzero_digits})(0|{nonzero_digits})*|0.(0|{nonzero_digits})*|({nonzero_digits})(0|{nonzero_digits})*.(0|{nonzero_digits})*'),
     ('id', f'({lettersLowerCase}|{lettersUpperCase}|_)({lettersLowerCase}|{lettersUpperCase}|_|0|{nonzero_digits})*'),
-    ('string', f'"({lettersLowerCase}|{lettersUpperCase}|0|{nonzero_digits}|@|##|#||=|:|,|#(|#)|+|-|\'|#*|/|^|%|#$| |\\"|!|<|>|\\|@|;|[|])*"'),
+    ('string', f'"({lettersLowerCase}|{lettersUpperCase}|0|{nonzero_digits}|@|##|#||=|:|,|#(|#)|+|-|#*|/|^|%|#$| |\\"|!|<|>|\\|@|;|[|])*"'),
     ('comment', f'/#*({lettersLowerCase}|{lettersUpperCase}|0|{nonzero_digits}| |,)*#*/'),
-    ('comment2', f'//({lettersLowerCase}|{lettersUpperCase}|0|{nonzero_digits}| |,)*\n'),
     ('asign1','='),
     ('asign2',':='),
     ('comma', ','),
@@ -53,13 +48,11 @@ regular_expresions = [
     ('plus', '+'),
     ('minus', '-'),
     ('star','#*'),
-    ('star2','#*#*'),
     ('divide', '/'),
     ('pow', '^'),
     ('mod', '%'),
     ('and', '&'),
     ('or', '#|'),
-    ('implicit', '#|#|'),
     ('not', '!'),
     ('eq', '=='),
     ('ne', '!='),
@@ -164,9 +157,6 @@ class Lexer:
             tag = self._getAceptedTag(self.regexs)
         else:
             head = 1
-            
-        if tag == 'comment2':
-            head -= 1
 
         lex = text[:head]
         
@@ -181,9 +171,6 @@ class Lexer:
             
             while text and (text[0] == ' ' or text[0] == '\t'):
                 text = text[1:]
-                while text and text[0] == '\n':
-                    text = text[1:]
-                    line += 1
             self._reset_automs()
             
             lex,tag = self._walk(text)
@@ -199,9 +186,11 @@ class Lexer:
     def __call__(self, text):
         tokens = []
         for lex,ttype,line in self._tokenize(text):
-            if ttype == "comment" or ttype == 'comment2':
+            if ttype == "comment":
                 continue
-            tokens.append(Token(lex, self.terminals[ttype], line))
+            new_terminal = self.terminals[ttype]
+            new_terminal.line = line
+            tokens.append(Token(lex, new_terminal, line))
         return tokens
 
     
