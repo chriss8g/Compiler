@@ -26,6 +26,8 @@ regular_expresions = [
     ('log', 'log'),
     ('rand', 'rand'),
     ('print', 'print'),
+    ('is', 'is'),
+    ('as', 'as'),
     ('PI', 'PI'),
     ('E', 'E'),
     ('let', 'let'),
@@ -40,7 +42,7 @@ regular_expresions = [
     ('range', 'range'),
     ('num', f'0|({nonzero_digits})(0|{nonzero_digits})*|0.(0|{nonzero_digits})*|({nonzero_digits})(0|{nonzero_digits})*.(0|{nonzero_digits})*'),
     ('id', f'({lettersLowerCase}|{lettersUpperCase}|_)({lettersLowerCase}|{lettersUpperCase}|_|0|{nonzero_digits})*'),
-    ('string', f'"({lettersLowerCase}|{lettersUpperCase}|0|{nonzero_digits}|@|##|#||=|:|,|#(|#)|+|-|#*|/|^|%|#$| |\\"|!|<|>|\\|@|;|[|])*"'),
+    ('string', f'"({lettersLowerCase}|{lettersUpperCase}|0|{nonzero_digits}|@|##|#||=|:|,|#(|#)|+|-|\'|#*|/|^|%|#$| |\\"|!|<|>|\\|@|;|[|])*"'),
     ('comment', f'/#*({lettersLowerCase}|{lettersUpperCase}|0|{nonzero_digits}| |,)*#*/'),
     ('comment2', f'//({lettersLowerCase}|{lettersUpperCase}|0|{nonzero_digits}| |,)*\n'),
     ('asign1','='),
@@ -57,6 +59,7 @@ regular_expresions = [
     ('mod', '%'),
     ('and', '&'),
     ('or', '#|'),
+    ('implicit', '#|#|'),
     ('not', '!'),
     ('eq', '=='),
     ('ne', '!='),
@@ -178,6 +181,9 @@ class Lexer:
             
             while text and (text[0] == ' ' or text[0] == '\t'):
                 text = text[1:]
+                while text and text[0] == '\n':
+                    text = text[1:]
+                    line += 1
             self._reset_automs()
             
             lex,tag = self._walk(text)

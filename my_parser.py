@@ -79,10 +79,10 @@ class CodeToAST:
         idx, number, string = self.G.Terminals('id num string')
         ifx, elsex, elifx, whilex, forx, rangex = self.G.Terminals(
             'if else elif while for range')
-        typex, inherits = self.G.Terminals('type inherits')
+        typex, inherits, isx, asx = self.G.Terminals('type inherits is as')
         new, extends = self.G.Terminals('new extends')
         dot, concat_space, returnx = self.G.Terminals('. @@ return')
-        obrake, cbrake, protocol = self.G.Terminals('[ ] protocol')
+        obrake, cbrake, protocol, implicit = self.G.Terminals('[ ] protocol implicit')
 
         program = self.G.NonTerminal('<program>', startSymbol=True)
         stats, specialBlock = self.G.NonTerminals(
@@ -140,10 +140,13 @@ class CodeToAST:
         terminals['divide'] = div
         terminals['pow'] = powx
         terminals['mod'] = mod
+        terminals['is'] = isx
+        terminals['as'] = asx
         terminals['and'] = andx
         terminals['or'] = orx
         terminals['not'] = notx
         terminals['eq'] = eq
+        terminals['implicit'] = implicit
         terminals['gt'] = gt
         terminals['lt'] = lt
         terminals['ge'] = ge
@@ -295,6 +298,7 @@ class CodeToAST:
             lambda h,s:s[1],
             
             lambda h, s: NotNode(s[2]),
+            lambda h, s: IsNode(s[1],s[3]),
             lambda h, s: s[1],
             
             # Expresiones comparativas
@@ -317,7 +321,7 @@ class CodeToAST:
             lambda h, s: s[1],
             
             lambda h, s: PowNode(s[1], s[3]),
-            lambda h, s: PowNode(s[1], s[4]),
+            lambda h, s: PowNode(s[1], s[3]),
             lambda h, s: SinNode(s[3]),
             lambda h, s: CosNode(s[3]),
             lambda h, s: SqrtNode(s[3]),
@@ -335,7 +339,11 @@ class CodeToAST:
             lambda h, s: s[2],
             # lambda h, s: s[1],
             lambda h, s: VectorNode(s[2]),
+            lambda h, s: VectorImplicitNode(s[2],s[4],s[8],s[10]),
+            lambda h, s: CallNode(s[1],[s[3],s[5]]),
             lambda h, s: s[1],
+            lambda h, s: VectorIndex(s[1],s[3]),
+            lambda h, s: AsNode(s[1],s[3]),
             lambda h, s: s[1],
 
             # Expresiones self
@@ -479,6 +487,7 @@ class CodeToAST:
         logical_term %= logical_factor
         
         logical_factor %= notx + logical_factor
+        logical_factor %= idnode + isx + idx
         logical_factor %= comparative_expr
         
         # Expresiones comparativas 
@@ -519,7 +528,11 @@ class CodeToAST:
         aritmetic_atom %= opar + expr + cpar
         # aritmetic_atom %= self_expr
         aritmetic_atom %= obrake + arg_expr + cbrake
+        aritmetic_atom %= obrake + calc_expr + implicit + idnode + inx + rangex + opar + calc_expr + comma + calc_expr + cpar + cbrake
+        aritmetic_atom %= rangex + opar + expr + comma + expr + cpar
         aritmetic_atom %= idnode
+        aritmetic_atom %= idx + obrake + calc_expr + cbrake
+        aritmetic_atom %= idnode + asx + idx
         aritmetic_atom %= recurrent_object
 
         # Expresiones self
@@ -576,7 +589,18 @@ class CodeToAST:
 if __name__ == "__main__":
 
     text = '''
-            print("hola " @ 42 @ id @ 43 @ "jooo");
+            {
+                let a = 10 in while (a >= 0) {
+                    print(a);
+                    a := a - 1;
+                };
+                
+                for (x in range(0, 10)) print(x);
+                let iterable = range(0, 10) in
+                    while (iterable.next())
+                        let x = iterable.current() in
+                            print(x);
+            }
         '''
 
     codeToAST = CodeToAST(text)
