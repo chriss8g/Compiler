@@ -71,18 +71,18 @@ class CodeToAST:
             'print sin cos sqrt exp log rand')
         semicolon, colon, comma, opar, cpar, arrow = self.G.Terminals(
             '; : , ( ) =>')
-        asign1, plus, minus, star, div = self.G.Terminals('= + - * /')
-        powx, mod, andx, orx, notx = self.G.Terminals('^ % & | !')
+        asign1, plus, minus, star, star2, div = self.G.Terminals('= + - * ** /')
+        powx, mod, andx, andx2, orx, orx2, notx = self.G.Terminals('^ % & | and or !')
         eq, gt, lt, ge, le = self.G.Terminals('== > < >= <=')
         ne, concat, obrace, cbrace, asign2 = self.G.Terminals('!= @ { } :=')
         pi, e, true, false = self.G.Terminals('PI E true false')
         idx, number, string = self.G.Terminals('id num string')
         ifx, elsex, elifx, whilex, forx, rangex = self.G.Terminals(
             'if else elif while for range')
-        typex, inherits = self.G.Terminals('type inherits')
+        typex, inherits, isx, asx = self.G.Terminals('type inherits is as')
         new, extends = self.G.Terminals('new extends')
         dot, concat_space, returnx = self.G.Terminals('. @@ return')
-        obrake, cbrake, protocol = self.G.Terminals('[ ] protocol')
+        obrake, cbrake, protocol, implicit = self.G.Terminals('[ ] protocol implicit')
 
         program = self.G.NonTerminal('<program>', startSymbol=True)
         stats, specialBlock = self.G.NonTerminals(
@@ -102,7 +102,7 @@ class CodeToAST:
         aritmetic_expr, aritmetic_term, aritmetic_factor, aritmetic_atom, self_expr = self.G.NonTerminals(
             '<aritmetic_expr> <aritmetic_term> <aritmetic_factor> <aritmetic_atom> <self_expr>')
         extension, protocolBody = self.G.NonTerminals(
-            '<extension> <protocolBody>')
+            '<extension> <protocolBody> ')
         type_body, inherit_item = self.G.NonTerminals(
             '<type_body> <inherit_item>')
         arg_list, func_body, arg_expr, arg_opt_typed = self.G.NonTerminals(
@@ -129,6 +129,8 @@ class CodeToAST:
         terminals['colon'] = colon
         terminals['comma'] = comma
         terminals['opar'] = opar
+        terminals['or2'] = orx2
+        terminals['and2'] = andx2
         terminals['cpar'] = cpar
         terminals['arrow'] = arrow
         terminals['asign1'] = asign1
@@ -138,10 +140,13 @@ class CodeToAST:
         terminals['divide'] = div
         terminals['pow'] = powx
         terminals['mod'] = mod
+        terminals['is'] = isx
+        terminals['as'] = asx
         terminals['and'] = andx
         terminals['or'] = orx
         terminals['not'] = notx
         terminals['eq'] = eq
+        terminals['implicit'] = implicit
         terminals['gt'] = gt
         terminals['lt'] = lt
         terminals['ge'] = ge
@@ -160,6 +165,7 @@ class CodeToAST:
         terminals['id'] = idx
         terminals['num'] = number
         terminals['string'] = string
+        terminals['star2'] = star2
         terminals['if'] = ifx
         terminals['else'] = elsex
         terminals['elif'] = elifx
@@ -181,7 +187,7 @@ class CodeToAST:
 
         atributes = [
             # Programa
-            lambda h, s: ProgramNode(s[1], s[2]),
+            lambda h, s: ProgramNode(s[1]+s[3], s[2]),
             lambda h, s: [],
             
             # Protocolos
@@ -244,6 +250,7 @@ class CodeToAST:
             lambda h, s: s[1],
             lambda h, s: MultipleLet(s),
             lambda h, s: IfNode(s[3], s[5], s[8], s[6][0], s[6][1]),
+            lambda h, s: IfNode(s[3], s[5], s[9], s[7][0], s[6][1]),
             lambda h, s: WhileNode(s[3], s[5]),
             lambda h, s: ForRangeToWhile(s),
             lambda h, s: ForToWhile(s),
@@ -283,12 +290,15 @@ class CodeToAST:
             
             # Expresiones logicas
             lambda h,s:OrNode(s[1],s[3]),
+            lambda h,s:OrNode(s[1],s[3]),
             lambda h,s:s[1],
             
+            lambda h, s: AndNode(s[1], s[3]),
             lambda h, s: AndNode(s[1], s[3]),
             lambda h,s:s[1],
             
             lambda h, s: NotNode(s[2]),
+            lambda h, s: IsNode(s[1],s[3]),
             lambda h, s: s[1],
             
             # Expresiones comparativas
@@ -311,6 +321,7 @@ class CodeToAST:
             lambda h, s: s[1],
             
             lambda h, s: PowNode(s[1], s[3]),
+            lambda h, s: PowNode(s[1], s[3]),
             lambda h, s: SinNode(s[3]),
             lambda h, s: CosNode(s[3]),
             lambda h, s: SqrtNode(s[3]),
@@ -328,7 +339,11 @@ class CodeToAST:
             lambda h, s: s[2],
             # lambda h, s: s[1],
             lambda h, s: VectorNode(s[2]),
+            lambda h, s: VectorImplicitNode(s[2],s[4],s[8],s[10]),
+            lambda h, s: CallNode(s[1],[s[3],s[5]]),
             lambda h, s: s[1],
+            lambda h, s: VectorIndex(s[1],s[3]),
+            lambda h, s: AsNode(s[1],s[3]),
             lambda h, s: s[1],
 
             # Expresiones self
@@ -350,7 +365,7 @@ class CodeToAST:
             
         ]
 
-        program %= stats + specialBlock
+        program %= stats + specialBlock + stats
         stats %= self.G.Epsilon
 
         # ************ Producciones de Protocols ************
@@ -392,7 +407,7 @@ class CodeToAST:
         arg_opt_typed %= idx + opt_typed + comma + arg_opt_typed
         arg_opt_typed %= self.G.Epsilon
 
-         # Tipado opcional
+        # Tipado opcional
         opt_typed %= colon + idx
         opt_typed %= self.G.Epsilon
 
@@ -421,7 +436,8 @@ class CodeToAST:
         # ***************** Expresiones ******************
         expr %= blockExpr
         expr %= let + asig_list + inx + expr
-        expr %= ifx + opar + expr + cpar + specialBlock + elifx_expr + elsex + superexpr
+        expr %= ifx + opar + expr + cpar + expr + elifx_expr + elsex + superexpr
+        expr %= ifx + opar + expr + cpar + expr + semicolon + elifx_expr + elsex + superexpr
         expr %= whilex + opar + expr + cpar + expr
         expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + expr + cpar + cpar + expr
         expr %= forx + opar + idnode + inx + idnode + cpar + expr
@@ -436,7 +452,7 @@ class CodeToAST:
         superexpr %= obrace + cbrace
 
         # Cuerpo del elif
-        elifx_expr %= elifx + opar + expr + cpar + specialBlock + elifx_expr
+        elifx_expr %= elifx + opar + expr + cpar + expr + elifx_expr
         elifx_expr %= self.G.Epsilon
 
         # Lista de asignaciones para el let
@@ -463,12 +479,15 @@ class CodeToAST:
 
         # Expresiones lógicas
         logical_expr %= logical_expr + orx + logical_term
+        logical_expr %= logical_expr + orx2 + logical_term
         logical_expr %= logical_term
         
         logical_term %= logical_term + andx + logical_factor
+        logical_term %= logical_term + andx2 + logical_factor
         logical_term %= logical_factor
         
         logical_factor %= notx + logical_factor
+        logical_factor %= idnode + isx + idx
         logical_factor %= comparative_expr
         
         # Expresiones comparativas 
@@ -491,6 +510,7 @@ class CodeToAST:
         aritmetic_term %= aritmetic_factor
 
         aritmetic_factor %= aritmetic_factor + powx + aritmetic_atom
+        aritmetic_factor %= aritmetic_factor + star2 + aritmetic_atom
         aritmetic_factor %= sin + opar + aritmetic_expr + cpar
         aritmetic_factor %= cos + opar + aritmetic_expr + cpar
         aritmetic_factor %= sqrt + opar + aritmetic_expr + cpar
@@ -508,7 +528,11 @@ class CodeToAST:
         aritmetic_atom %= opar + expr + cpar
         # aritmetic_atom %= self_expr
         aritmetic_atom %= obrake + arg_expr + cbrake
+        aritmetic_atom %= obrake + calc_expr + implicit + idnode + inx + rangex + opar + calc_expr + comma + calc_expr + cpar + cbrake
+        aritmetic_atom %= rangex + opar + expr + comma + expr + cpar
         aritmetic_atom %= idnode
+        aritmetic_atom %= idx + obrake + calc_expr + cbrake
+        aritmetic_atom %= idnode + asx + idx
         aritmetic_atom %= recurrent_object
 
         # Expresiones self
@@ -565,7 +589,18 @@ class CodeToAST:
 if __name__ == "__main__":
 
     text = '''
-            print("hola " @ 42 @ id @ 43 @ "jooo");
+            {
+                let a = 10 in while (a >= 0) {
+                    print(a);
+                    a := a - 1;
+                };
+                
+                for (x in range(0, 10)) print(x);
+                let iterable = range(0, 10) in
+                    while (iterable.next())
+                        let x = iterable.current() in
+                            print(x);
+            }
         '''
 
     codeToAST = CodeToAST(text)
