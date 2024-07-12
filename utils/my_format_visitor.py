@@ -180,6 +180,12 @@ class FormatVisitor(object):
         typex = '\t' * (tabs+1) + f'\\__ Type: {node.type}'
         return f'{ans}\n{id}\n{typex}'
         
+    @visitor.when(hulk.VectorIndex)
+    def visit(self, node, tabs=0):
+        ans = '\t' * tabs + f'\\__{node.__class__.__name__} [<expression>]'
+        index = self.visit(node.index, tabs + 1)
+        name = '\t' * (tabs+1) + f'\\__ {node.name}'
+        return f'{ans}\n{name}\n{index}'
 
     # **********************************************************
     # *******************    Operaciones  **********************
@@ -242,6 +248,15 @@ class FormatVisitor(object):
         items_head = '\t' * (tabs+1) + '\\_Items'
         items_body = '\n'.join(self.visit(item,tabs+2) for item in node.items)
         return f'{ans}\n{items_head}\n{items_body}'
+    
+    @visitor.when(hulk.VectorImplicitNode)
+    def visit(self, node, tabs=0):
+        ans = '\t' * tabs + f'\\__VectorImplicitNode  [<expression>]'
+        head = '\t' * (tabs+1) + '\\__Expression \n' + self.visit(node.expr,tabs+2)
+        variable = '\t' * (tabs+1) + '\\__Variable : {node.id}'
+        low = '\t' * (tabs+1) + '\\Range Low : {node.rangeLow}'
+        up = '\t' * (tabs+1) + '\\Range Up : {node.rangeUp}'
+        return f'{ans}\n{head}\n{variable}\n{low}\n{up}'
 
     @visitor.when(hulk.ForNode)
     def visit(self, node, tabs=0):

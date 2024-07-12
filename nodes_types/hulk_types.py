@@ -126,7 +126,7 @@ class ForRangeNode(ExpressionNode):
 class IfNode(ExpressionNode):
     def __init__(self, condition, body, else_body, elif_conditions=None, elif_body=None, type=None):
         super().__init__(type)
-        self.condition = condition if condition else []
+        self.condition = condition
         self.body = body
         self.else_body = else_body
         self.elif_conditions = elif_conditions if elif_conditions else []
