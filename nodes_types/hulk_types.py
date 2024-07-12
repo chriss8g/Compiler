@@ -94,7 +94,7 @@ class PrintNode(ExpressionNode):
 class BlockNode(ExpressionNode):
     def __init__(self, body, type=None):
         super().__init__(type)
-        self.body = body  # es un array de Sentences
+        self.body = body  # es un array de expresiones
 
 class LetNode(ExpressionNode):
     def __init__(self, args, body, type=None):
@@ -142,9 +142,25 @@ class CallNode(ExpressionNode):
     def __init__(self, name, args=None, child=None, type=None):
         super().__init__(type)
         self.name = name
-        self.args = args if args else []# array de expresiones
+        self.args = args if args else [] # array de expresiones
         self.child = child
 
+class VectorIndex(ExpressionNode):
+    def __init__(self, name, index, type=None):
+        super().__init__(type)
+        self.name = name
+        self.index = index
+
+class IsNode(Node):
+    def __init__(self, id, type):
+        self.id = id
+        self.type = type
+        
+class AsNode(Node):
+    def __init__(self, id, type):
+        self.id = id
+        self.type = type
+        
 
 # **********************************************************
 # *******************    Operaciones  **********************
@@ -326,6 +342,14 @@ class VectorNode(ExpressionNode):
         super().__init__(type)
         self.items = items # array de los elementos del vector
 
+class VectorImplicitNode(ExpressionNode):
+    def __init__(self, expr, id, rangeLow, rangeUp, type=None):
+        super().__init__(type)
+        self.expr = expr
+        self.id = id
+        self.rangeLow = rangeLow
+        self.rangeUp = rangeUp
+        
 #  Literales
 
 class NumberNode(AtomicNode):
