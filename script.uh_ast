@@ -1,4 +1,5 @@
 \__ProgramNode [<program>]
+<<<<<<< HEAD
 	\__FuncDeclarationNode: function tan : Number => <body> [<statement>]
 		Params
 		('x', 'Number')
@@ -904,3 +905,26 @@
 			\__PrintNode [<expression>]
 				\__IdentifierNode: x : None
 					\__CallNode hash   [<expression>]
+=======
+	\__LetNode [<expression>]
+		\__AssignNode:
+			\__IdentifierNode: a : None
+			\__NumberNode: 0
+		\__BlockNode [<expression>]
+			\__PrintNode [<expression>]
+				\__IdentifierNode: a : None
+			\__LetNode [<expression>]
+				\__AssignNode:
+					\__IdentifierNode: a : None
+					\__NumberNode: 2
+				\__BlockNode [<expression>]
+					\__PrintNode [<expression>]
+						\__IdentifierNode: a : None
+					\DestructNode   [<expression>]
+						\__IdentifierNode: a : None
+						\__NumberNode: 1
+					\__PrintNode [<expression>]
+						\__IdentifierNode: a : None
+			\__PrintNode [<expression>]
+				\__IdentifierNode: a : None
+>>>>>>> 664a242698c39a04223cedbfaf2d77c40b01646b

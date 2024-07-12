@@ -168,5 +168,9 @@ class OurFunctionNode(InstructionNode):
         self.type = type
         self.op_nd = op_nd
 
+class OpenScope(InstructionNode):
+    pass
 
+class CloseScope(InstructionNode):
+    pass
 

@@ -338,3 +338,10 @@ class FormatVisitor(object):
         ans = '\t' * tabs + f'\\__LoadNode: {node.dest} = LOAD {node.msg}'
         return ans
     
+    @visitor.when(cil.OpenScope)
+    def visit(self, node, tabs=0):
+        return '\t' * tabs + '{\n'
+    
+    @visitor.when(cil.CloseScope)
+    def visit(self, node, tabs=0):
+        return '\t' * tabs + '}\n'

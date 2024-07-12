@@ -1,1 +1,10 @@
-for (x in range(5, 10)) print(x);
+let a = 0 in {
+        print(a);
+        let a = 2 in {
+            print(a);
+            a := 1;
+            print(a);
+        };
+        print(a);
+
+    };

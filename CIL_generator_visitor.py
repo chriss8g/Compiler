@@ -10,7 +10,7 @@ def update_types(type):
     type = type if type != hulk.BOOL_TYPE else c.INT_TYPE
     type = type if type != hulk.NUMBER_TYPE else c.FLOAT_TYPE
     type = type if type != hulk.STRING_TYPE else c.STRING_TYPE
-    if(not type.endswith('*')):
+    if (not type.endswith('*')):
         type = type if type in c.MY_TYPES else (type + '*')
     return type
 
@@ -109,14 +109,14 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
             # print(param)
             name = self.to_param_name(param[0])
             scope.dict[param[0]] = name
-            scope.define_variable(param[0])
+            scope.define_variable(param[0], update_types(param[1]))
             param_node = cil.ParamNode(name, update_types(param[1]))
             self.register_param(param_node)
 
             dest = self.define_internal_local(update_types(param[1]))
             scope.dict[name] = dest
-            scope.define_variable(name)
-            scope.define_variable(dest)
+            scope.define_variable(name, update_types(param[1]))
+            scope.define_variable(dest, update_types(param[1]))
             self.register_instruction(cil.AssignNode(dest, name))
 
         expr = self.visit(node.body, scope.create_child_scope())
@@ -224,7 +224,8 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
         left = self.visit(node.left, scope.create_child_scope())
         right = self.visit(node.right, scope.create_child_scope())
-        space = self.visit(hulk.StringNode("\" \""), scope.create_child_scope())
+        space = self.visit(hulk.StringNode("\" \""),
+                           scope.create_child_scope())
 
         dest = self.define_internal_local(node.type)
 
@@ -384,32 +385,42 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
         elif_conditions = []
         for i in range(len(node.elif_conditions)):
-            elif_conditions.append(self.visit(node.elif_conditions[i], scope.create_child_scope()))
+            elif_conditions.append(self.visit(
+                node.elif_conditions[i], scope.create_child_scope()))
 
         index = len(self.instructions)
-        self.register_instruction(cil.GotoNode(f'my_begin_{self.current_function.name}_{index}'))
+        self.register_instruction(cil.GotoNode(
+            f'my_begin_{self.current_function.name}_{index}'))
 
-        self.register_instruction(cil.LabelNode(f'my_if_{self.current_function.name}_{index}'))
+        self.register_instruction(cil.LabelNode(
+            f'my_if_{self.current_function.name}_{index}'))
         expr = self.visit(node.body, scope.create_child_scope())
         self.register_instruction(cil.AssignNode(dest, expr))
 
-        self.register_instruction(cil.GotoNode(f'my_end_{self.current_function.name}_{index}'))
+        self.register_instruction(cil.GotoNode(
+            f'my_end_{self.current_function.name}_{index}'))
 
         for i in range(len(node.elif_conditions)):
-            self.register_instruction(cil.LabelNode(f'my_elif_{i}_{self.current_function.name}_{index}'))
+            self.register_instruction(cil.LabelNode(
+                f'my_elif_{i}_{self.current_function.name}_{index}'))
             expr = self.visit(node.elif_body[i], scope.create_child_scope())
             self.register_instruction(cil.AssignNode(dest, expr))
-            self.register_instruction(cil.GotoNode(f'my_end_{self.current_function.name}_{index}'))
+            self.register_instruction(cil.GotoNode(
+                f'my_end_{self.current_function.name}_{index}'))
 
-        self.register_instruction(cil.LabelNode(f'my_else_{self.current_function.name}_{index}'))
+        self.register_instruction(cil.LabelNode(
+            f'my_else_{self.current_function.name}_{index}'))
         else_expr = self.visit(node.else_body, scope.create_child_scope())
         self.register_instruction(cil.AssignNode(dest, else_expr))
-        self.register_instruction(cil.GotoNode(f'my_end_{self.current_function.name}_{index}'))
+        self.register_instruction(cil.GotoNode(
+            f'my_end_{self.current_function.name}_{index}'))
 
-        self.register_instruction(cil.LabelNode(f'my_begin_{self.current_function.name}_{index}'))
+        self.register_instruction(cil.LabelNode(
+            f'my_begin_{self.current_function.name}_{index}'))
         self.register_instruction(
             cil.GotoIfNode(condition, f'my_if_{self.current_function.name}_{index}', f'my_else_{self.current_function.name}_{index}', elif_conditions, [f'my_elif_{i}_{self.current_function.name}_{index} 'for i in range(len(node.elif_conditions))]))
-        self.register_instruction(cil.LabelNode(f'my_end_{self.current_function.name}_{index}'))
+        self.register_instruction(cil.LabelNode(
+            f'my_end_{self.current_function.name}_{index}'))
 
         return dest
 
@@ -417,11 +428,18 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
     def visit(self, node, scope):
         node.type = update_types(node.type)
 
-        x = self.visit(node.id, scope.create_child_scope())
         expr = self.visit(node.expr, scope.create_child_scope())
-        self.register_instruction(cil.AssignNode(x, expr))
+
+        func = node.id.name
+
+        stop = False
+        while(not stop):
+            func, stop = scope.get_variable_info(func)
+            self.register_instruction(cil.AssignNode(func, expr))
+
+
         return expr
-    
+
     @visitor.when(hulk.AssignNode)
     def visit(self, node, scope):
         node.type = update_types(node.type)
@@ -437,15 +455,19 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
         dest = self.define_internal_local(node.type)
 
         index = len(self.instructions)
-        self.register_instruction(cil.GotoNode(f'while_label_{self.current_function.name}_{index}'))
-        self.register_instruction(cil.LabelNode(f'body_{self.current_function.name}_{index}'))
+        self.register_instruction(cil.GotoNode(
+            f'while_label_{self.current_function.name}_{index}'))
+        self.register_instruction(cil.LabelNode(
+            f'body_{self.current_function.name}_{index}'))
         expr = self.visit(node.body, scope.create_child_scope())
         self.register_instruction(cil.AssignNode(dest, expr))
-        self.register_instruction(cil.LabelNode(f'while_label_{self.current_function.name}_{index}'))
+        self.register_instruction(cil.LabelNode(
+            f'while_label_{self.current_function.name}_{index}'))
         condition = self.visit(node.condition, scope.create_child_scope())
         self.register_instruction(cil.GotoIfNode(
             condition, f'body_{self.current_function.name}_{index}', f'endwhile_label_{self.current_function.name}_{index}'))
-        self.register_instruction(cil.LabelNode(f'endwhile_label_{self.current_function.name}_{index}'))
+        self.register_instruction(cil.LabelNode(
+            f'endwhile_label_{self.current_function.name}_{index}'))
 
         return dest
 
@@ -499,37 +521,37 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
     def visit(self, node, scope):
         node.type = update_types(node.type)
 
-        parent = self.current_function
+        scope = scope.create_child_scope()
 
-        params = []
-        for arg in parent.params:
+        self.register_instruction(cil.OpenScope())
 
-            # dest = self.define_internal_local(arg.type)
-            # scope.dict[arg.name] = dest
-            # scope.define_variable(arg.name)
-            # self.register_instruction(cil.AssignNode(dest, arg.name))
-            params.append((arg.name, arg.type))
+        for arg in scope.parent.parent.local_vars:
+            name = arg.name
+
+            breakx = True
+            for x in scope.parent.parent.dict.keys():
+                if scope.parent.parent.dict[x] == name:
+                    breakx = False
+            if breakx: continue
+
+            dest = self.define_internal_local(arg.type)
+            scope.dict[name] = dest
+            scope.define_variable(name, update_types(arg.type))
+            self.register_instruction(cil.AssignNode(dest, name))
 
         for child in node.args:
+            dest = self.visit(child.expr, scope.create_child_scope())
+            scope.dict[child.id.name] = dest
+            scope.define_variable(child.id.name, update_types(child.type))
 
-            child.type = update_types(child.type)
+            # dest2 = self.define_internal_local(update_types(child.type))
+            # scope.dict[dest] = dest2
+            # scope.define_variable(dest, update_types(child.type))
+            # self.register_instruction(cil.AssignNode(dest2, dest))
 
-            # dest = self.define_internal_local(child.type)
-            params.append((child.id.name, child.type))
-            # scope.dict[child.id.name] = dest
-            # scope.define_variable(child.id.name)
+        dest = self.visit(node.body, scope.create_child_scope())
 
-            # self.register_instruction(cil.AssignNode(dest, child.id.name))
-
-        name = self.visit(hulk.FuncDeclarationNode(
-            'let', node.body, params, node.body.type), scope.create_child_scope())
-
-        parent_params = [scope.get_variable_info(child.name) for child in parent.params]
-
-        temp = f'{name}(' + ", ".join(child[0] for child in parent_params) + (', ' if len(parent.params)
-                                                                           else "") + ", ".join(self.visit(child.expr, scope.create_child_scope()) for child in node.args) + ")"
-        dest = self.define_internal_local(node.type)
-        self.register_instruction(cil.AssignNode(dest, temp))
+        self.register_instruction(cil.CloseScope())
 
         return dest
 
@@ -547,7 +569,7 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
             func = node.name
             stop = False
-            while(not stop):
+            while (not stop):
                 func, stop = scope.get_variable_info(func)
 
         return func
