@@ -250,7 +250,7 @@ class CodeToAST:
             lambda h, s: s[1],
             lambda h, s: MultipleLet(s),
             lambda h, s: IfNode(s[3], s[5], s[8], s[6][0], s[6][1]),
-            lambda h, s: IfNode(s[3], s[5], s[9], s[7][0], s[6][1]),
+            lambda h, s: IfNode(s[3], s[5], s[9], s[7][0], s[7][1]),
             lambda h, s: WhileNode(s[3], s[5]),
             lambda h, s: ForRangeToWhile(s),
             lambda h, s: ForToWhile(s),
