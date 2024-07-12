@@ -215,8 +215,8 @@
 	\__TypeNode: type PolarPoint inherits Point [<statement>]
 					Param 0 ('phi', None)
 			Param 1 ('rho', None)
-					Params BaseType 0 <nodes_types.hulk_types.StarNode object at 0x0000023605722CC0>
-			Params BaseType 1 <nodes_types.hulk_types.StarNode object at 0x0000023605722D50>
+					Params BaseType 0 <nodes_types.hulk_types.StarNode object at 0x74f9554ece30>
+			Params BaseType 1 <nodes_types.hulk_types.StarNode object at 0x74f9554ecec0>
 		\__TypeBodyNode
 			Atributes
 
@@ -789,7 +789,7 @@
 			\__AssignNode:
 				\__IdentifierNode: total : None
 				\__PlusNode [<expression>]
-					\__NumberNode: 4
+					\__NumberNode: 5
 					\__NumberNode: 6
 			\__PrintNode [<expression>]
 				\__IdentifierNode: total : None
@@ -865,33 +865,17 @@
 						\__NumberNode: 8
 						\__NumberNode: 9
 			\__PrintNode [<expression>]
-				\__VectorIndex [<expression>]
-					\__ numbers
-					\__NumberNode: 7
+[]
 		\__LetNode [<expression>]
 			\__AssignNode:
 				\__IdentifierNode: squares : None
-				\__VectorImplicitNode  [<expression>]
-					\__Expression 
-						\__PowNode [<expression>]
-							\__IdentifierNode: x : None
-							\__NumberNode: 2
-					\__Variable : {node.id}
-					\Range Low : {node.rangeLow}
-					\Range Up : {node.rangeUp}
+[]
 			\__PrintNode [<expression>]
 				\__IdentifierNode: x : None
 		\__LetNode [<expression>]
 			\__AssignNode:
 				\__IdentifierNode: squares : None
-				\__VectorImplicitNode  [<expression>]
-					\__Expression 
-						\__PowNode [<expression>]
-							\__IdentifierNode: x : None
-							\__NumberNode: 2
-					\__Variable : {node.id}
-					\Range Low : {node.rangeLow}
-					\Range Up : {node.rangeUp}
+[]
 			\__WhileNode [<expression>]
 				\_ Condition
 					\__IdentifierNode: squares : None
