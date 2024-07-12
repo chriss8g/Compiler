@@ -139,11 +139,11 @@ class DestructNode(ExpressionNode):
         self.expr = expr
 
 class CallNode(ExpressionNode):
-    def __init__(self, name, args=None, child=None, type=None):
+    def __init__(self, name, args=None, parent=None, type=None):
         super().__init__(type)
         self.name = name
         self.args = args if args else [] # array de expresiones
-        self.child = child
+        self.parent = parent
 
 class VectorIndex(ExpressionNode):
     def __init__(self, name, index, type=None):
@@ -297,10 +297,10 @@ class ObjectCreationNode(ExpressionNode):
         self.args = args if args else []
         
 class IdentifierNode(ExpressionNode):
-    def __init__(self, name, child=None, type=None):
+    def __init__(self, name, parent=None, type=None):
         super().__init__(type)
         self.name = name
-        self.child = child
+        self.parent = parent
         
 class SelfNode(ExpressionNode):
     def __init__(self, lex,type=None):
