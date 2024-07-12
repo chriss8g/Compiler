@@ -345,3 +345,7 @@ class FormatVisitor(object):
     @visitor.when(cil.CloseScope)
     def visit(self, node, tabs=0):
         return '\t' * tabs + '}\n'
+
+    @visitor.when(cil.Force)
+    def visit(self, node, scope):
+        return node.body

@@ -1,5 +1,5 @@
 
-type Person(firstname, lastname) {
+type Person(firstname:String, lastname:String) {
     firstname:String = firstname;
     lastname:String = lastname;
 

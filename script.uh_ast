@@ -1,20 +1,20 @@
 \__ProgramNode [<program>]
 	\__TypeNode: type Person inherits None [<statement>]
-					Param 0 ('firstname', None)
-			Param 1 ('lastname', None)
+					Param 0 ('firstname', 'String')
+			Param 1 ('lastname', 'String')
 		\__TypeBodyNode
 			Atributes
 				\__AttributeNode id = <expr>
-					\__IdentifierNode: firstname : None
+					\__IdentifierNode: firstname : String
 					\__IdentifierNode: firstname : None
 				\__AttributeNode id = <expr>
-					\__IdentifierNode: lastname : None
+					\__IdentifierNode: lastname : String
 					\__IdentifierNode: lastname : None
 			Methods
 				\__MethodNode: function name : None => <body>
 					Params
 
-					\__PlusNode [<expression>]
+					\__ConcatSpaceNode [<expression>]
 						\__IdentifierNode: self : None
 							\__IdentifierNode: firstname : None
 						\__IdentifierNode: self : None
