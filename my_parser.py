@@ -254,7 +254,7 @@ class CodeToAST:
             lambda h, s: WhileNode(s[3], s[5]),
             lambda h, s: ForRangeToWhile(s),
             lambda h, s: ForToWhile(s),
-            lambda h, s: PrintNode(s[3]),
+            lambda h, s: PrintNode(s[3],s[1].line),
             lambda h, s: DestructNode(s[1], s[3]),
             lambda h, s: ObjectCreationNode(s[2], s[4]),
             lambda h, s: ObjectCreationNode(s[2], []),
@@ -589,18 +589,7 @@ class CodeToAST:
 if __name__ == "__main__":
 
     text = '''
-            {
-                let a = 10 in while (a >= 0) {
-                    print(a);
-                    a := a - 1;
-                };
-                
-                for (x in range(0, 10)) print(x);
-                let iterable = range(0, 10) in
-                    while (iterable.next())
-                        let x = iterable.current() in
-                            print(x);
-            }
+            print("hola");
         '''
 
     codeToAST = CodeToAST(text)

@@ -5,20 +5,23 @@ NUMBER_TYPE = 'Number'
 MY_TYPES = [BOOL_TYPE, STRING_TYPE, OBJECT_TYPE, NUMBER_TYPE]
 
 class Node:
-    pass
+    def __init__(self, line=0):
+        self.line = line
 
 class ProgramNode(Node):
-    def __init__(self, statements, main):
+    def __init__(self, statements, main, line=0):
+        super().__init__(line)
         self.statements = statements
         self.main = main
 
 
 class StatementNode(Node):
-    pass
+    def __init__(self, line=0):
+        super().__init__(line)
 
 class ProtocolNode(StatementNode):
-    def __init__(self,name,extension,body):
-        super().__init__()
+    def __init__(self,name,extension,body, line=0):
+        super().__init__(line)
         self.name = name
         self.extension = extension
         self.body = body
@@ -83,12 +86,13 @@ class IterableNode(Node):
 # **************************************************
 
 class ExpressionNode(Node):
-    def __init__(self, type=None):
+    def __init__(self, type=None,line=0):
+        super().__init__(line=0)
         self.type = type
         
 class PrintNode(ExpressionNode):
-    def __init__(self,expr):
-        super().__init__(None)
+    def __init__(self,expr,line=0):
+        super().__init__(None,line)
         self.expr = expr
 
 class BlockNode(ExpressionNode):
@@ -167,8 +171,8 @@ class AsNode(Node):
 # **********************************************************
 
 class AtomicNode(ExpressionNode):
-    def __init__(self, lex, type=None):
-        super().__init__(type)
+    def __init__(self, lex, type=None,line=0):
+        super().__init__(type, line)
         self.lex = lex
 
 class BinaryNode(ExpressionNode):
@@ -357,8 +361,8 @@ class NumberNode(AtomicNode):
         super().__init__(lex, NUMBER_TYPE)
 
 class StringNode(AtomicNode):
-    def __init__(self, lex, type=STRING_TYPE):
-        super().__init__(lex, type)
+    def __init__(self, lex, type=STRING_TYPE,line=0):
+        super().__init__(lex, type, line)
 
 class BoolNode(AtomicNode):
     def __init__(self, lex, type=BOOL_TYPE):
