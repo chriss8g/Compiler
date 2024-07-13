@@ -36,6 +36,8 @@ class Collector(object):
             
     @visitor.when(hulk.TypeDeclarationNode)
     def visit(self, node, scope):
+
+        scope.define_variable('self', node.name)
         try:
             self.context.create_type(node.name)
         except:

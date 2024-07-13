@@ -341,6 +341,7 @@ class CodeToAST:
             lambda h, s: VectorNode(s[2]),
             lambda h, s: VectorImplicitNode(s[2],s[4],s[8],s[10]),
             lambda h, s: CallNode(s[1],[s[3],s[5]]),
+            lambda h, s: s[1],
             lambda h, s: VectorIndex(s[1],s[3]),
             lambda h, s: AsNode(s[1],s[3]),
             lambda h, s: s[1],
@@ -360,6 +361,9 @@ class CodeToAST:
             
             # Identificador
             lambda h, s: IdentifierNode(s[1]),
+            lambda h, s: IdentifierNode(s[1], s[3]),
+            lambda h, s: IdentifierNode(s[1], IdentifierNode(s[3], s[5])),
+            lambda h, s: IdentifierNode(s[1], s[3])
             
         ]
 
@@ -465,11 +469,11 @@ class CodeToAST:
         calc_expr %= string_expr
         
         # Expresiones de cadena
-        string_expr %= string_expr + concat_space + recurrent_object
+        string_expr %= string_expr + concat_space + idnode
         string_expr %= string_expr + concat_space + number
         string_expr %= string_expr + concat_space + string
         string_expr %= string_expr + concat_space + recurrent_object
-        string_expr %= string_expr + concat + recurrent_object
+        string_expr %= string_expr + concat + idnode
         string_expr %= string_expr + concat + number
         string_expr %= string_expr + concat + string
         string_expr %= string_expr + concat + recurrent_object
@@ -528,6 +532,7 @@ class CodeToAST:
         aritmetic_atom %= obrake + arg_expr + cbrake
         aritmetic_atom %= obrake + calc_expr + implicit + idnode + inx + rangex + opar + calc_expr + comma + calc_expr + cpar + cbrake
         aritmetic_atom %= rangex + opar + expr + comma + expr + cpar
+        aritmetic_atom %= idnode
         aritmetic_atom %= idx + obrake + calc_expr + cbrake
         aritmetic_atom %= idnode + asx + idx
         aritmetic_atom %= recurrent_object
@@ -538,15 +543,16 @@ class CodeToAST:
         # self_expr %= selfx + dot + recurrent_object
 
         # Expresiones recurrentes
-        recurrent_object %= recurrent_object + dot + idx + opar + arg_expr + cpar
-        recurrent_object %= recurrent_object + dot + idx + opar + cpar
-        recurrent_object %= recurrent_object + dot + idx
+        recurrent_object %= idx + opar + arg_expr + cpar + dot + recurrent_object
+        recurrent_object %= idx + opar + cpar + dot + recurrent_object
         recurrent_object %= idx + opar + arg_expr + cpar
         recurrent_object %= idx + opar + cpar
-        recurrent_object %= idnode
 
         # Identificador
         idnode %= idx
+        idnode %= idx + dot + idnode
+        idnode %= idx + dot + idx + recurrent_object
+        idnode %= idx + dot + recurrent_object
 
         #############################################################################
 
@@ -585,7 +591,18 @@ class CodeToAST:
 if __name__ == "__main__":
 
     text = '''
-            print(a.b().c());
+            {
+                let a = 10 in while (a >= 0) {
+                    print(a);
+                    a := a - 1;
+                };
+                
+                for (x in range(0, 10)) print(x);
+                let iterable = range(0, 10) in
+                    while (iterable.next())
+                        let x = iterable.current() in
+                            print(x);
+            }
         '''
 
     codeToAST = CodeToAST(text)

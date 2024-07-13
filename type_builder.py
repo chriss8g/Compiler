@@ -59,6 +59,7 @@ class TypeBuilder:
     def visit(self, node, types):
         for param in node.params:
             self.var[param[0]] = param[1]
+            self.types.dict[param[0]] = param[1]
         self.current_type = self.context.get_type(node.name)
         self.visit(node.body, self.types.create_child())
         for param in self.var.keys():

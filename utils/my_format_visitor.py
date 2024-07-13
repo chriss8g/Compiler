@@ -161,10 +161,10 @@ class FormatVisitor(object):
         args = ''
         if node.args:
             args = '\n' + '\t' * (tabs+1) + '\\_ Arguments' + '\n' + '\n'.join(self.visit(arg, tabs + 2) for arg in node.args)
-        parent = ''
-        if node.parent is not None:
-            parent = '\n' + self.visit(node.parent,tabs+1)
-        return f'{ans}{args}{parent}'
+        child = ''
+        if node.child is not None:
+            child = '\n' + self.visit(node.child,tabs+1)
+        return f'{ans}{args}{child}'
     
     @visitor.when(hulk.IsNode)
     def visit(self, node, tabs=0):
@@ -205,10 +205,10 @@ class FormatVisitor(object):
     @visitor.when(hulk.IdentifierNode)
     def visit(self, node, tabs=0):
         ans = '\t' * tabs + f'\\__IdentifierNode: {node.name} : {node.type}'
-        parent = ''
-        if node.parent is not None:
-            parent = '\n' + self.visit(node.parent,tabs+1)
-        return f'{ans}{parent}'
+        child = ''
+        if node.child is not None:
+            child = '\n' + self.visit(node.child,tabs+1)
+        return f'{ans}{child}'
     
     @visitor.when(hulk.ObjectCreationNode)
     def visit(self, node, tabs=0):
