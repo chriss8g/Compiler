@@ -20,8 +20,8 @@ def main(input_file):
         print(codeToAST.error_msg)
         return
 
-    with open('script.uh_ast', 'w') as output_file:
-        output_file.write(str(codeToAST))
+    # with open('script.uh_ast', 'w') as output_file:
+    #     output_file.write(str(codeToAST))
 
 
     collector = Collector()
@@ -38,27 +38,27 @@ def main(input_file):
 
         return
     
-    cil_generator = HULKToCILVisitor({})
-    output = cil_generator.visit(codeToAST.ast)
+    # cil_generator = HULKToCILVisitor({})
+    # output = cil_generator.visit(codeToAST.ast)
 
-    from utils.my_format_visitor import FormatVisitor
-    formatter = FormatVisitor()
+    # from utils.my_format_visitor import FormatVisitor
+    # formatter = FormatVisitor()
 
-    with open('script.cil', 'w') as output_file:
-        output_file.write(formatter.visit(output))
+    # with open('script.cil', 'w') as output_file:
+    #     output_file.write(formatter.visit(output))
 
-    c_generator = CodeGeneratorVisitor()
-    output = c_generator.visit(output, None)
+    # c_generator = CodeGeneratorVisitor()
+    # output = c_generator.visit(output, None)
 
-    with open('script.c', 'w') as output_file:
-        output_file.write(output)
+    # with open('script.c', 'w') as output_file:
+    #     output_file.write(output)
 
-    os.system("gcc script.c -lm -o script.out && ./script.out")
+    # os.system("gcc script.c -lm -o script.out && ./script.out")
 
-if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Generate C code from custom script")
-    parser.add_argument('input_file', type=str, help='The input file containing the script')
-    args = parser.parse_args()
+# if __name__ == "__main__":
+#     parser = argparse.ArgumentParser(description="Generate C code from custom script")
+#     parser.add_argument('input_file', type=str, help='The input file containing the script')
+#     args = parser.parse_args()
 
-    main(args.input_file)
-# main('./script.uh')
+#     main(args.input_file)
+main('./test.hulk')

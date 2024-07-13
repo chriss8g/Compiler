@@ -15,18 +15,18 @@ class CodeGeneratorVisitor(object):
     def visit(self, node, scope=None):
         pass
 
-    @visitor.when(cil.ProgramNode)
-    def visit(self, node, scope):
-        scope = Scope() if not scope else scope
+    # @visitor.when(cil.ProgramNode)
+    # def visit(self, node, scope):
+    #     scope = Scope() if not scope else scope
 
-        dottypes = "\n".join(self.visit(child, scope.create_child_scope())
-                             for child in node.dottypes)
-        dotdata = "\n".join(self.visit(t, scope.create_child_scope())
-                            for t in node.dotdata)
-        dotcode = "\n".join(self.visit(child, scope.create_child_scope())
-                            for child in node.dotcode)
+    #     dottypes = "\n".join(self.visit(child, scope.create_child_scope())
+    #                          for child in node.dottypes)
+    #     dotdata = "\n".join(self.visit(t, scope.create_child_scope())
+    #                         for t in node.dotdata)
+    #     dotcode = "\n".join(self.visit(child, scope.create_child_scope())
+    #                         for child in node.dotcode)
 
-        return f'{"\n".join(self.headers)}\n{dottypes}\n{"\n".join(self.aux)}\n{dotdata}\n{dotcode}'
+    #     return f'{"\n".join(self.headers)}\n{dottypes}\n{"\n".join(self.aux)}\n{dotdata}\n{dotcode}'
 
     @visitor.when(cil.TypeNode)
     def visit(self, node, scope):

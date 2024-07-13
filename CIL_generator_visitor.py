@@ -574,17 +574,17 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
         return func
 
-    @visitor.when(hulk.CallNode)
-    def visit(self, node, scope):
-        node.type = update_types(node.type)
+    # @visitor.when(hulk.CallNode)
+    # def visit(self, node, scope):
+    #     node.type = update_types(node.type)
 
-        params = []
-        for child in node.args:
-            params.append(self.visit(child, scope.create_child_scope()))
+    #     params = []
+    #     for child in node.args:
+    #         params.append(self.visit(child, scope.create_child_scope()))
 
-        temp = f'{self.context[node.name]
-                  }(' + ", ".join(child for child in params) + ")"
-        dest = self.define_internal_local(node.type)
-        self.register_instruction(cil.AssignNode(dest, temp))
+    #     temp = f'{self.context[node.name]
+    #               }(' + ", ".join(child for child in params) + ")"
+    #     dest = self.define_internal_local(node.type)
+    #     self.register_instruction(cil.AssignNode(dest, temp))
 
-        return dest
+    #     return dest

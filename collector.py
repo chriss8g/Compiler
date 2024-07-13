@@ -43,8 +43,8 @@ class Collector(object):
         body_scope = scope.create_child_scope()
         for param in node.params:
             body_scope.define_variable(param[0],param[1])
-        for param in node.base_params:
-            body_scope.define_variable(param[0],param[1])
+        # for param in node.base_params:
+        #     body_scope.define_variable(param[0],param[1])
         self.visit(node.body, body_scope)
         return self.errors
     
@@ -254,8 +254,8 @@ class Collector(object):
     def visit(self,node,scope):
         if not scope.is_var_defined(node.name):
             self.errors.append(f"Variable {node.name} no declarada")
-        if node.child:
-            self.visit(node.child, scope.create_child_scope())
+        # if node.child:
+        #     self.visit(node.child, scope.create_child_scope())
         return self.errors
     
         #self

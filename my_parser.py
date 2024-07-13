@@ -354,7 +354,7 @@ class CodeToAST:
             lambda h, s: CallNode(s[3], s[5], s[1]),
             lambda h, s: CallNode(s[3], [], s[1]),
             lambda h, s: IdentifierNode(s[3], s[1]),
-            lambda h, s: CallNode(s[1], [], s[3]),
+            lambda h, s: CallNode(s[1], s[3]),
             lambda h, s: CallNode(s[1], []),
             lambda h, s: s[1],
             
@@ -440,7 +440,7 @@ class CodeToAST:
         expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + expr + cpar + cpar + expr
         expr %= forx + opar + idnode + inx + idnode + cpar + expr
         expr %= printx + opar + expr + cpar
-        expr %= idnode + asign2 + expr
+        expr %= recurrent_object + asign2 + expr
         expr %= new + idx + opar + arg_expr + cpar
         expr %= new + idx + opar + cpar
         expr %= calc_expr
