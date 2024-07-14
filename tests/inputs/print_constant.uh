@@ -14,6 +14,16 @@ type Person(firstname:String, lastname:String) {
     }
 }
 
+type Point(x:Number,y:Number) {
+    x = x;
+    y = y;
+
+    getX() => self.x;
+    getY() => self.y;
+
+    setX(x:Number) => self.x := x;
+    setY(y:Number) => self.y := y;
+}
 
 {
     42;
@@ -99,5 +109,10 @@ type Person(firstname:String, lastname:String) {
     print(fib(5));
     print(next(8));
     let p: Person = new Person("Phil", "Collins") in print(p.name());
+
+    let pt = new Point(4,5) in 
+        print("x: " @ pt.getX() @ "; y: " @ pt.getY());
+    let pt = new Point(3,4) in
+        print("x: " @ pt.getX() @ "; y: " @ pt.getY());
     
 }
