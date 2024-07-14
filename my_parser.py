@@ -589,84 +589,108 @@ class CodeToAST:
 
 if __name__ == "__main__":
     text = '''
-            type MyClass {
-                a = 5;
-                method() => print(2);
-            }
+            function tan(x: Number): Number => sin(x) / cos(x);
+            function cot(x) => 1 / tan(x);
+            function fib(n) => if (n == 0 | n == 1) 1; else fib(n-1) + fib(n-2);
+            function fact(x) => let f = 1 in for (i in range(1, x+1)) f := f * i;
+            function next(x) => x+1;
 
-            type Superman {
-            }
-            type Bird {
-            }
-            type Plane {
-            }
-            type A {
-                hello() => print("A");
-            }
+            type Person(firstname:String, lastname:String) {
+                firstname:String = firstname;
+                lastname:String = lastname;
 
-            type B inherits A {
-                hello() => print("B");
-            }
-
-            type C inherits A {
-                hello() => print("C");
-            }
-
-            type Animal {
-                name: String;
-                energy: Number;
-                position: Number;
-
-                move(steps: Number) => {
-                    position = position + steps;
-                    energy = energy - 1;
-                }
-
-                eat(food: Number) => {
-                    energy = energy + food;
-                }
-
-                status() => {
-                    print(name @ " is at position " @ position @ " with energy " @ energy);
-                }
-            }
-
-            type Predator extends Animal {
-                hunt(prey: Animal) => {
-                    if (position == prey.position) {
-                        prey.energy = 0;
-                        eat(5);
-                        print(name @ " has hunted " @ prey.name);
-                    } else {
-                        print(name @ " missed the hunt");
-                    }
-                }
-            }
-
-            type Prey extends Animal {
-                hide() => {
-                    position = position + 2;
-                    print(name @ " is hiding");
+                name() => self.firstname @@ self.lastname;
+                hash() : Number {
+                    5;
                 }
             }
 
 
             {
-                let lion = Predator(name = "Lion", energy = 10, position = 0),
-                    deer = Prey(name = "Deer", energy = 5, position = 5) in
+                42;
+                print(42);
+                print((((1 + 2) * 3) * 4) / 5);
+                print("Hello World");
+                print("The message is Hello World");
+                print("The meaning of life is " @ 42);
+                print(sin(2 * PI) * 2 + cos(3 * PI / log(4, 64)));
                 {
-                    for (i in range(1, 6)) {
-                        lion.move(1);
-                        deer.move(-1);
-                        lion.status();
-                        deer.status();
-                    }
-
-                    deer.hide();
-                    lion.hunt(deer);
-                    lion.status();
-                    deer.status();
+                    print(42);
+                    print(sin(PI/2));
+                    print("Hello World");
                 }
+
+
+                print(tan(PI) * 2 + cot(PI) * 2);
+
+                let msg = "Hello World" in print(msg);
+                let number = 42, text = "The meaning of life is" in
+                    print(text @@ number);
+                let number = 42 in
+                    let text = "The meaning of life is" in
+                        print(text @ number);
+                        
+                let number = 42 in (
+                    let text = "The meaning of life is" in (
+                            print(text @ number)
+                        )
+                    );
+                let a = 6, b = a * 7 in print(b);
+
+                let a = 6 in
+                    let b = a * 7 in
+                        print(b);
+
+                let a = 5, b = 10, c = 20 in {
+                    print(a+b);
+                    print(b*c);
+                    print(c/a);
+                };
+
+                let a = (let b = 6 in b * 7) in print(a);
+
+                print(let b = 6 in b * 7);
+                let a = 20 in {
+                    let a = 42 in print(a);
+                    print(a);
+                };
+                let a = 7, a = 7 * 6 in print(a);
+                let a = 7 in
+                    let a = 7 * 6 in
+                        print(a);
+                let a = 0 in {
+                    print(a);
+                    a := 1;
+                    print(a);
+                };
+                let a = 0 in
+                    let b = a := 1 in {
+                        print(a);
+                        print(b);
+                    };
+                let a = 42 in if (a % 2 == 0) print("Even") else print("odd");
+                let a = 42 in print(if (a % 2 == 0) "even" else "odd");
+                let a = 42 in
+                    if (a % 2 == 0) {
+                        print(a);
+                        print("Even");
+                    }
+                    else print("Odd");
+                let a = 42, mod = a % 3 in
+                    print(
+                        if (mod == 0) "Magic";
+                        else "Dumb"
+                    );
+                let a = 10 in while (a >= 0) {
+                    print(a);
+                    a := a - 1;
+                };
+
+                print(fact(5));
+                print(fib(5));
+                print(next(8));
+                let p: Person = new Person("Phil", "Collins") in print(p.name());
+                
             }
         '''
 
