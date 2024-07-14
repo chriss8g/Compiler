@@ -149,7 +149,7 @@ class DestructNode(ExpressionNode):
         self.expr = expr
 
 class CallNode(ExpressionNode):
-    def __init__(self, name, args=None, child=None, type=None, line=0):
+    def __init__(self, name, args=None, parent=None, type=None, line=0):
         super().__init__(type, line)
         self.name = name
         self.args = args if args else [] # array de expresiones
@@ -309,7 +309,7 @@ class ObjectCreationNode(ExpressionNode):
         self.args = args if args else []
         
 class IdentifierNode(ExpressionNode):
-    def __init__(self, name, child=None, type=None, line=0):
+    def __init__(self, name, parent=None, type=None, line=0):
         super().__init__(type, line)
         self.name = name
         self.parent = parent

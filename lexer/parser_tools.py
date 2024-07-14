@@ -1,9 +1,8 @@
 import os
 import pickle
-from utils.pycompiler import *
+from utils.pycompiler import Item
 from utils.automate import State, multiline_formatter
 from utils.utils import ContainerSet
-
 
 def compute_local_first(firsts, alpha):
     first_alpha = ContainerSet()
@@ -166,10 +165,7 @@ class ShiftReduceParser:
         self.action = {}
         self.goto = {}
         
-        with open('./parser/action', 'rb') as file1:
-            self.action = pickle.load(file1)
-        with open('./parser/goto', 'rb') as file2:
-            self.goto = pickle.load(file2)
+        self._build_parsing_table(parser_name)
 
     def _build_parsing_table(self):
         raise NotImplementedError()
@@ -183,30 +179,30 @@ class ShiftReduceParser:
             state = stack[-1]
             lookahead = w[cursor]
 
-            if(state, lookahead.token_type.Name, lookahead.token_type.IsTerminal) not in self.action:
+            if(state, lookahead.token_type) not in self.action:
                 excepted_char = ''
 
-                for (state1, i, isTerminal) in self.action:
-                    if isTerminal and state1 == state:
+                for (state1, i) in self.action:
+                    if i.IsTerminal and state1 == state:
                         excepted_char += str(i) + ', '
                 parsed = ' '.join([str(m)
                                     for m in stack if not str(m).isnumeric()])
                 excepted_char = excepted_char.rstrip(', ')
-                message_error = f'It was expected "{excepted_char}" but received "{lookahead.token_type}" at line {lookahead.line} after {parsed}'
+                message_error = f'It was expected "{excepted_char}" received "{lookahead.token_type}" at line {lookahead.line} after {parsed}'
                 # print("\nError. Aborting...")
                 # print('')
                 # print("\n", message_error)
 
                 return None,message_error
 
-            if self.action[state, lookahead.token_type.Name, lookahead.token_type.IsTerminal] == self.OK:
+            if self.action[state, lookahead.token_type] == self.OK:
                 action = self.OK
             else:
-                action, tag = self.action[state, lookahead.token_type.Name, lookahead.token_type.IsTerminal]
+                action, tag = self.action[state, lookahead.token_type]
 
             if action == self.SHIFT:
                 operations.append(self.SHIFT)
-                stack += [lookahead.token_type.Name, tag]
+                stack += [lookahead.token_type, tag]
                 cursor += 1
             elif action == self.REDUCE:
                 operations.append(self.REDUCE)
@@ -216,14 +212,14 @@ class ShiftReduceParser:
                 for symbol in reversed(body):
                     stack.pop()
 
-                    assert stack.pop() == symbol.Name
+                    assert stack.pop() == symbol
                     state = stack[-1]
 
-                goto = self.goto[state, head.Name]
-                stack += [head.Name, goto]
+                goto = self.goto[state, head]
+                stack += [head, goto]
             elif action == self.OK:
                 stack.pop()
-                assert stack.pop() == self.G.startSymbol.Name
+                assert stack.pop() == self.G.startSymbol
                 assert len(stack) == 1
                 return output,'Clean Code' if not get_shift_reduce else(output, 'Operations: ' + ', '.join(op for op in operations))
             else:
@@ -233,7 +229,7 @@ class LR1Parser(ShiftReduceParser):
     def __init__(self, G, parser_name='lexer' ,verbose=False):
         super().__init__(G, parser_name, verbose)
     
-    def _build_parsing_table(self, parser_name):
+    def _build_parsing_table(self, parser_name='lexer'):
         G = self.G.AugmentedGrammar(True)
         
         automaton = build_LR1_automaton(G)
@@ -260,12 +256,24 @@ class LR1Parser(ShiftReduceParser):
                 else:
                     self._register(self.goto, (idx, item.NextSymbol), node.get(item.NextSymbol.Name).idx)
         
+        action = {}
+        for key in self.action.keys():
+            action[key[0],key[1].Name, key[1].IsTerminal] = self.action[key]
+        goto = {}
+        for key in self.goto.keys():
+            goto[key[0],key[1].Name] = self.goto[key]
         
-        
+        if parser_name == "parser":
+            with open('./parser/action', 'wb') as file1:
+                pickle.dump(action, file1)
+            with open('./parser/goto', 'wb') as file2:
+                pickle.dump(goto, file2)
         
     @staticmethod
     def _register(table, key, value):
-        assert key not in table or table[key] == value, 'Shift-Reduce or Reduce-Reduce conflict!!!'
+        assert key not in table or table[key] == value, f'Reduce-Reduce or Shift-Reduce conflict!!!. value in table: {table[key]}, new value = {value}, key = {key}'
+        # assert key not in table or isinstance(table[key],int) or table[key][0] != 'SHIFT' or table[key][0] != 'SHIFT', f'Reduce-Reduce conflict!!!. value in table: {table[key]}, new value = {value}'
+        # assert key not in table or isinstance(table[key],int) or table[key][0] != value[0], f'Shift-Reduce conflict!!!. value in table: {table[key]}, new value = {value}'
         table[key] = value
      
        
@@ -300,12 +308,7 @@ def evaluate_parse(left_parse, tokens, G=None, attributes=None):
     
     if G:
         for i in range(len(G.Productions)):
-            prod = ''
-            if isinstance(G.Productions[i].Right,Epsilon):
-                prod = G.Productions[i].Left.Name + ' ' + 'epsilon'
-            else:
-                prod = G.Productions[i].Left.Name + ' ' + '\n'.join(s.Name for s in G.Productions[i].Right._symbols)
-            G.attributes[prod] = attributes[i]
+            G.attributes[G.Productions[i]] = attributes[i]
     
     if not left_parse or not tokens:
         return
@@ -324,12 +327,7 @@ def evaluate(production, left_parse, tokens, G, inherited_value=None):
     if not G:
         attributes = production.attributes
     else:
-        prod = ''
-        if isinstance(production.Right,Epsilon):
-            prod = production.Left.Name + ' ' + 'epsilon'
-        else:
-            prod = production.Left.Name + ' ' + '\n'.join(s.Name for s in production.Right._symbols)
-        attribute = G.attributes[prod]
+        attribute = G.attributes[production]
         attributes = [None for i in range(len(body)+1)]
         attributes[0] = attribute
         
@@ -345,7 +343,7 @@ def evaluate(production, left_parse, tokens, G, inherited_value=None):
     for i, symbol in enumerate(reversed(body),1):
         index = len(body)-i
         if symbol.IsTerminal:
-            a = next(tokens)
+            a = next(tokens).lex
             synteticed[index+1] = a
         else:
             next_production = next(left_parse)

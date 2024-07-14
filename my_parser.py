@@ -20,13 +20,13 @@ def ForRangeToWhile(s):
     else:
         body.append(s[12])
 
-    minus = AssignNode(count, MinusNode(count, NumberNode(1)))
+    minus = AssignNode(count, MinusNode(count, NumberNode(1, line=s[1].line), line=s[1].line), line=s[1].line)
 
-    increase_count = DestructNode(count, PlusNode(count, NumberNode(1)))
+    increase_count = DestructNode(count, PlusNode(count, NumberNode(1, line=s[1].line), line=s[1].line), line=s[1].line)
     # body.append(increase_count)
-    assign = AssignNode(count, start)
-    while_term = WhileNode(LTNode(increase_count, end), BlockNode(body, line=s[11].line), line=s[1].line)
-    let_term = LetNode([assign], BlockNode([minus, while_term]), line=s[1].line)
+    assign = AssignNode(count, start, line=s[1].line)
+    while_term = WhileNode(LTNode(increase_count, end, line=s[1].line), BlockNode(body, line=s[11].line), line=s[1].line)
+    let_term = LetNode([assign], BlockNode([minus, while_term], line=s[1].line), line=s[1].line)
     return let_term
 
 def ForToWhile(s):
@@ -278,11 +278,9 @@ class CodeToAST:
             lambda h,s:s[1],
             
             # Expresiones de cadena
-            lambda h,s:ConcatSpaceNode(s[1],s[3], line=s[2].line),
             lambda h,s:ConcatSpaceNode(s[1],NumberNode(s[3].lex), line=s[2].line),
             lambda h,s:ConcatSpaceNode(s[1],StringNode(s[3].lex), line=s[2].line),
             lambda h,s:ConcatSpaceNode(s[1],s[3], line=s[2].line),
-            lambda h,s:ConcatNode(s[1],s[3], line=s[2].line),
             lambda h,s:ConcatNode(s[1],NumberNode(s[3].lex), line=s[2].line),
             lambda h,s:ConcatNode(s[1],StringNode(s[3].lex), line=s[2].line),
             lambda h,s:ConcatNode(s[1],s[3], line=s[2].line),
@@ -337,30 +335,23 @@ class CodeToAST:
             lambda h, s: BoolNode(s[1].lex, line=s[1].line),
             lambda h, s: StringNode(s[1].lex, line=s[1].line),
             lambda h, s: s[2],
-            # lambda h, s: s[1],
-            lambda h, s: VectorNode(s[2]),
-            lambda h, s: VectorImplicitNode(s[2],s[4],s[8],s[10]),
-            lambda h, s: CallNode(s[1],[s[3],s[5]]),
-            lambda h, s: VectorIndex(s[1],s[3]),
-            lambda h, s: AsNode(s[1],s[3]),
+            lambda h, s: VectorNode(s[2], line=s[1].line),
+            lambda h, s: VectorImplicitNode(s[2],s[4],s[8],s[10], line=s[1].line),
+            lambda h, s: CallNode(s[1],[s[3],s[5]], line=s[2].line),
+            lambda h, s: VectorIndex(s[1].lex,s[3], line=s[2].line),
+            lambda h, s: AsNode(s[1],s[3].lex, line=s[2].line),
             lambda h, s: s[1],
-
-            # Expresiones self
-            # lambda h, s: SelfNode(s[3]),
-            # lambda h, s: SelfNode(IdentifierNode(s[3],s[5])),
-            # lambda h, s: SelfNode(s[3]),
             
             # Objetos recurrentes
-            lambda h, s: CallNode(s[1].lex, s[3], s[6], line=s[2].line),
-            lambda h, s: CallNode(s[1].lex, [], s[5], line=s[2].line),
-            lambda h, s: CallNode(s[1].lex, s[3], line=s[2].line),
-            lambda h, s: CallNode(s[1].lex, line=s[2].line),
+            lambda h, s: CallNode(s[3].lex, s[5], s[1], line=s[2].line),
+            lambda h, s: CallNode(s[3].lex, None, s[1], line=s[2].line),
+            lambda h, s: IdentifierNode(s[3].lex, s[1], line=s[2].line),
+            lambda h, s: s[1],
+            lambda h, s: CallNode(s[1].lex, s[3], None, line=s[2].line),
+            lambda h, s: CallNode(s[1].lex, None, None, line=s[2].line),
             
             # Identificador
-            lambda h, s: IdentifierNode(s[1].lex, line=s[1].line),
-            lambda h, s: IdentifierNode(s[1].lex, s[3], line=s[1].line),
-            lambda h, s: IdentifierNode(s[1].lex, IdentifierNode(s[3], s[5]), line=s[1].line),
-            lambda h, s: IdentifierNode(s[1].lex, s[3], line=s[1].line)
+            lambda h, s: IdentifierNode(s[1].lex, line=s[1].line)
             
         ]
 
@@ -466,11 +457,9 @@ class CodeToAST:
         calc_expr %= string_expr
         
         # Expresiones de cadena
-        string_expr %= string_expr + concat_space + recurrent_object
         string_expr %= string_expr + concat_space + number
         string_expr %= string_expr + concat_space + string
         string_expr %= string_expr + concat_space + recurrent_object
-        string_expr %= string_expr + concat + recurrent_object
         string_expr %= string_expr + concat + number
         string_expr %= string_expr + concat + string
         string_expr %= string_expr + concat + recurrent_object
@@ -525,7 +514,6 @@ class CodeToAST:
         aritmetic_atom %= false
         aritmetic_atom %= string
         aritmetic_atom %= opar + expr + cpar
-        # aritmetic_atom %= self_expr
         aritmetic_atom %= obrake + arg_expr + cbrake
         aritmetic_atom %= obrake + calc_expr + implicit + idnode + inx + rangex + opar + calc_expr + comma + calc_expr + cpar + cbrake
         aritmetic_atom %= rangex + opar + expr + comma + expr + cpar
@@ -533,18 +521,13 @@ class CodeToAST:
         aritmetic_atom %= idnode + asx + idx
         aritmetic_atom %= recurrent_object
 
-        # Expresiones self
-        # self_expr %= selfx + dot + idnode
-        # self_expr %= selfx + dot + idx + dot + recurrent_object
-        # self_expr %= selfx + dot + recurrent_object
-
         # Expresiones recurrentes
         recurrent_object %= recurrent_object + dot + idx + opar + arg_expr + cpar
         recurrent_object %= recurrent_object + dot + idx + opar + cpar
         recurrent_object %= recurrent_object + dot + idx
+        recurrent_object %= idnode
         recurrent_object %= idx + opar + arg_expr + cpar
         recurrent_object %= idx + opar + cpar
-        recurrent_object %= idnode
 
         # Identificador
         idnode %= idx
@@ -586,93 +569,7 @@ class CodeToAST:
 
 if __name__ == "__main__":
     text = '''
-            function tan(x: Number): Number => sin(x) / cos(x);
-            function cot(x) => 1 / tan(x);
-            function fib(n) => if (n == 0 | n == 1) 1; else fib(n-1) + fib(n-2);
-            function fact(x) => let f = 1 in for (i in range(1, x+1)) f := f * i;
-            function next(x) => x+1;
-
-            type Person(firstname:String, lastname:String) {
-                firstname:String = firstname;
-                lastname:String = lastname;
-
-                name() => self.firstname @@ self.lastname;
-                hash() : Number {
-                    5;
-                }
-            }
-
-
             {
-                42;
-                print(42);
-                print((((1 + 2) * 3) * 4) / 5);
-                print("Hello World");
-                print("The message is Hello World");
-                print("The meaning of life is " @ 42);
-                print(sin(2 * PI) * 2 + cos(3 * PI / log(4, 64)));
-                {
-                    print(42);
-                    print(sin(PI/2));
-                    print("Hello World");
-                }
-
-
-                print(tan(PI) * 2 + cot(PI) * 2);
-
-                let msg = "Hello World" in print(msg);
-                let number = 42, text = "The meaning of life is" in
-                    print(text @@ number);
-                let number = 42 in
-                    let text = "The meaning of life is" in
-                        print(text @ number);
-                        
-                let number = 42 in (
-                    let text = "The meaning of life is" in (
-                            print(text @ number)
-                        )
-                    );
-                let a = 6, b = a * 7 in print(b);
-
-                let a = 6 in
-                    let b = a * 7 in
-                        print(b);
-
-                let a = 5, b = 10, c = 20 in {
-                    print(a+b);
-                    print(b*c);
-                    print(c/a);
-                };
-
-                let a = (let b = 6 in b * 7) in print(a);
-
-                print(let b = 6 in b * 7);
-                let a = 20 in {
-                    let a = 42 in print(a);
-                    print(a);
-                };
-                let a = 7, a = 7 * 6 in print(a);
-                let a = 7 in
-                    let a = 7 * 6 in
-                        print(a);
-                let a = 0 in {
-                    print(a);
-                    a := 1;
-                    print(a);
-                };
-                let a = 0 in
-                    let b = a := 1 in {
-                        print(a);
-                        print(b);
-                    };
-                let a = 42 in if (a % 2 == 0) print("Even") else print("odd");
-                let a = 42 in print(if (a % 2 == 0) "even" else "odd");
-                let a = 42 in
-                    if (a % 2 == 0) {
-                        print(a);
-                        print("Even");
-                    }
-                    else print("Odd");
                 let a = 42, mod = a % 3 in
                     print(
                         if (mod == 0) "Magic";
@@ -682,12 +579,7 @@ if __name__ == "__main__":
                     print(a);
                     a := a - 1;
                 };
-
-                print(fact(5));
-                print(fib(5));
-                print(next(8));
-                let p: Person = new Person("Phil", "Collins") in print(p.name());
-                
+                print(a.b.c().d());
             }
         '''
 
