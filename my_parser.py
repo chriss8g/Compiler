@@ -191,27 +191,27 @@ class CodeToAST:
             lambda h, s: [],
             
             # Protocolos
-            lambda h,s:[ProtocolNode(s[2],s[3],s[5])] + s[7],
+            lambda h,s:[ProtocolNode(s[2],s[3],s[5], line=s[1].line)] + s[7],
             lambda h,s: s[2],
             lambda h,s:None,
-            lambda h,s: [MethodProtocolNode(s[1],s[3],s[6])] + s[8],
+            lambda h,s: [MethodProtocolNode(s[1],s[3],s[6], line=s[1].line)] + s[8],
             lambda h,s:[],
             
             # Funciones
-            lambda h, s: [FuncDeclarationNode(s[2], s[7], s[4], s[6])] + s[8],
+            lambda h, s: [FuncDeclarationNode(s[2], s[7], s[4], s[6], line=s[1].line)] + s[8],
             lambda h, s: s[2],
             lambda h, s: s[1],
             
             # Tipos
-            lambda h,s: [TypeDeclarationNode(s[2],TypeBodyDeclarationNode(s[6][0],s[6][1]),s[3],s[4][0],s[4][1])]+s[8],
+            lambda h,s: [TypeDeclarationNode(s[2],TypeBodyDeclarationNode(s[6][0],s[6][1]),s[3],s[4][0],s[4][1], line=s[1].line)]+s[8],
             lambda h,s: (s[2],[]),
             lambda h,s: (s[2],s[4]),
             lambda h,s: (None,[]),
             lambda h,s: ([s[1]]+s[2][0],s[2][1]),
             lambda h,s: (s[2][0],[s[1]]+s[2][1]),
             lambda h,s: ([],[]),
-            lambda h,s: AttributeNode(IdentifierNode(s[1],None,s[2]),s[4],s[2]),
-            lambda h,s:MethodNode(s[1], s[6], s[3], s[5]),
+            lambda h,s: AttributeNode(IdentifierNode(s[1],None,s[2],line=s[1].line),s[4],s[2],line=s[1].line),
+            lambda h,s:MethodNode(s[1], s[6], s[3], s[5], s[1].line),
             
             # Lista de parámetros opcionalmente tipados
             lambda h,s:[],
@@ -240,7 +240,7 @@ class CodeToAST:
             # Bloques especiales
             lambda h, s: s[1],
             lambda h, s: s[1],
-            lambda h, s: BlockNode(s[2]),
+            lambda h, s: BlockNode(s[2], s[1].line),
             
             # Lista de bloques especiales
             lambda h, s: [s[1]],
@@ -249,15 +249,15 @@ class CodeToAST:
             # Expresiones
             lambda h, s: s[1],
             lambda h, s: MultipleLet(s),
-            lambda h, s: IfNode(s[3], s[5], s[8], s[6][0], s[6][1]),
-            lambda h, s: IfNode(s[3], s[5], s[9], s[7][0], s[7][1]),
-            lambda h, s: WhileNode(s[3], s[5]),
+            lambda h, s: IfNode(s[3], s[5], s[8], s[6][0], s[6][1], line=s[1].line),
+            lambda h, s: IfNode(s[3], s[5], s[9], s[7][0], s[7][1], line=s[1].line),
+            lambda h, s: WhileNode(s[3], s[5], line=s[1].line),
             lambda h, s: ForRangeToWhile(s),
             lambda h, s: ForToWhile(s),
-            lambda h, s: PrintNode(s[3]),
-            lambda h, s: DestructNode(s[1], s[3]),
-            lambda h, s: ObjectCreationNode(s[2], s[4]),
-            lambda h, s: ObjectCreationNode(s[2], []),
+            lambda h, s: PrintNode(s[3], line=s[1].line),
+            lambda h, s: DestructNode(s[1], s[3], s[2].line),
+            lambda h, s: ObjectCreationNode(s[2], s[4], s[1].line),
+            lambda h, s: ObjectCreationNode(s[2], [], s[1].line),
             lambda h, s: s[1],
             
             # Super expresion
@@ -271,79 +271,79 @@ class CodeToAST:
             # Lista de asignaciones para el let
             lambda h, s: [s[1]],
             lambda h, s: [s[1]] + s[3],
-            lambda h, s: AssignNode(s[1], s[4], s[2]),
+            lambda h, s: AssignNode(s[1], s[4], s[2], line=s[3].line),
             
             
             # Expresion calculable
             lambda h,s:s[1],
             
             # Expresiones de cadena
-            lambda h,s:ConcatSpaceNode(s[1],s[3]),
-            lambda h,s:ConcatSpaceNode(s[1],NumberNode(s[3])),
-            lambda h,s:ConcatSpaceNode(s[1],StringNode(s[3])),
-            lambda h,s:ConcatSpaceNode(s[1],s[3]),
-            lambda h,s:ConcatNode(s[1],s[3]),
-            lambda h,s:ConcatNode(s[1],NumberNode(s[3])),
-            lambda h,s:ConcatNode(s[1],StringNode(s[3])),
-            lambda h,s:ConcatNode(s[1],s[3]),
+            lambda h,s:ConcatSpaceNode(s[1],s[3], line=s[2].line),
+            lambda h,s:ConcatSpaceNode(s[1],NumberNode(s[3]), line=s[2].line),
+            lambda h,s:ConcatSpaceNode(s[1],StringNode(s[3]), line=s[2].line),
+            lambda h,s:ConcatSpaceNode(s[1],s[3], line=s[2].line),
+            lambda h,s:ConcatNode(s[1],s[3], line=s[2].line),
+            lambda h,s:ConcatNode(s[1],NumberNode(s[3]), line=s[2].line),
+            lambda h,s:ConcatNode(s[1],StringNode(s[3]), line=s[2].line),
+            lambda h,s:ConcatNode(s[1],s[3], line=s[2].line),
             lambda h,s:s[1],
             
             # Expresiones logicas
-            lambda h,s:OrNode(s[1],s[3]),
-            lambda h,s:OrNode(s[1],s[3]),
+            lambda h,s:OrNode(s[1],s[3], line=s[2].line),
+            lambda h,s:OrNode(s[1],s[3], line=s[2].line),
             lambda h,s:s[1],
             
-            lambda h, s: AndNode(s[1], s[3]),
-            lambda h, s: AndNode(s[1], s[3]),
+            lambda h, s: AndNode(s[1], s[3], line=s[2].line),
+            lambda h, s: AndNode(s[1], s[3], line=s[2].line),
             lambda h,s:s[1],
             
-            lambda h, s: NotNode(s[2]),
-            lambda h, s: IsNode(s[1],s[3]),
+            lambda h, s: NotNode(s[2], line=s[1].line),
+            lambda h, s: IsNode(s[1],s[3], line=s[2].line),
             lambda h, s: s[1],
             
             # Expresiones comparativas
-            lambda h, s: EQNode(s[1], s[3]),
-            lambda h, s: NENode(s[1], s[3]),
-            lambda h, s: GENode(s[1], s[3]),
-            lambda h, s: GTNode(s[1], s[3]),
-            lambda h, s: LENode(s[1], s[3]),
-            lambda h, s: LTNode(s[1], s[3]),
+            lambda h, s: EQNode(s[1], s[3], line=s[2].line),
+            lambda h, s: NENode(s[1], s[3], line=s[2].line),
+            lambda h, s: GENode(s[1], s[3], line=s[2].line),
+            lambda h, s: GTNode(s[1], s[3], line=s[2].line),
+            lambda h, s: LENode(s[1], s[3], line=s[2].line),
+            lambda h, s: LTNode(s[1], s[3], line=s[2].line),
             lambda h, s: s[1],
             
             # Expresiones aritmeticas
-            lambda h, s: PlusNode(s[1], s[3]),
-            lambda h, s: MinusNode(s[1], s[3]),
+            lambda h, s: PlusNode(s[1], s[3], line=s[2].line),
+            lambda h, s: MinusNode(s[1], s[3], line=s[2].line),
             lambda h, s: s[1],
             
-            lambda h, s: StarNode(s[1], s[3]),
-            lambda h, s: DivNode(s[1], s[3]),
-            lambda h, s: ModNode(s[1], s[3]),
+            lambda h, s: StarNode(s[1], s[3], line=s[2].line),
+            lambda h, s: DivNode(s[1], s[3], line=s[2].line),
+            lambda h, s: ModNode(s[1], s[3], line=s[2].line),
             lambda h, s: s[1],
             
-            lambda h, s: PowNode(s[1], s[3]),
-            lambda h, s: PowNode(s[1], s[3]),
-            lambda h, s: SinNode(s[3]),
-            lambda h, s: CosNode(s[3]),
-            lambda h, s: SqrtNode(s[3]),
-            lambda h, s: ExpNode(s[3]),
-            lambda h, s: LogNode(s[3], s[5]),
-            lambda h, s: RandNode(),
+            lambda h, s: PowNode(s[1], s[3], line=s[2].line),
+            lambda h, s: PowNode(s[1], s[3], line=s[2].line),
+            lambda h, s: SinNode(s[3], line=s[1].line),
+            lambda h, s: CosNode(s[3], line=s[1].line),
+            lambda h, s: SqrtNode(s[3], line=s[1].line),
+            lambda h, s: ExpNode(s[3], line=s[1].line),
+            lambda h, s: LogNode(s[3], s[5], line=s[1].line),
+            lambda h, s: RandNode(line=s[1].line),
             lambda h, s: s[1],
             
-            lambda h, s: NumberNode(s[1]),
-            lambda h, s: NumberNode(s[1]),
-            lambda h, s: NumberNode(s[1]),
-            lambda h, s: BoolNode(s[1]),
-            lambda h, s: BoolNode(s[1]),
-            lambda h, s: StringNode(s[1]),
+            lambda h, s: NumberNode(s[1], line=s[1].line),
+            lambda h, s: NumberNode(s[1], line=s[1].line),
+            lambda h, s: NumberNode(s[1], line=s[1].line),
+            lambda h, s: BoolNode(s[1], line=s[1].line),
+            lambda h, s: BoolNode(s[1], line=s[1].line),
+            lambda h, s: StringNode(s[1], line=s[1].line),
             lambda h, s: s[2],
             # lambda h, s: s[1],
-            lambda h, s: VectorNode(s[2]),
-            lambda h, s: VectorImplicitNode(s[2],s[4],s[8],s[10]),
-            lambda h, s: CallNode(s[1],[s[3],s[5]]),
+            lambda h, s: VectorNode(s[2], line=s[1].line),
+            lambda h, s: VectorImplicitNode(s[2],s[4],s[8],s[10], line=s[1].line),
+            lambda h, s: CallNode(s[1],[s[3],s[5]], line=s[2].line),
             lambda h, s: s[1],
-            lambda h, s: VectorIndex(s[1],s[3]),
-            lambda h, s: AsNode(s[1],s[3]),
+            lambda h, s: VectorIndex(s[1],s[3], line=s[2].line),
+            lambda h, s: AsNode(s[1],s[3], line=s[2].line),
             lambda h, s: s[1],
 
             # Expresiones self
@@ -352,16 +352,16 @@ class CodeToAST:
             # lambda h, s: SelfNode(s[3]),
             
             # Objetos recurrentes
-            lambda h, s: CallNode(s[1], s[3], s[6]),
-            lambda h, s: CallNode(s[1], [], s[5]),
-            lambda h, s: CallNode(s[1], s[3]),
-            lambda h, s: CallNode(s[1]),
+            lambda h, s: CallNode(s[1], s[3], s[6], line=s[2].line),
+            lambda h, s: CallNode(s[1], [], s[5], line=s[2].line),
+            lambda h, s: CallNode(s[1], s[3], line=s[2].line),
+            lambda h, s: CallNode(s[1], line=s[2].line),
             
             # Identificador
-            lambda h, s: IdentifierNode(s[1]),
-            lambda h, s: IdentifierNode(s[1], s[3]),
-            lambda h, s: IdentifierNode(s[1], IdentifierNode(s[3], s[5])),
-            lambda h, s: IdentifierNode(s[1], s[3])
+            lambda h, s: IdentifierNode(s[1], line=s[1].line),
+            lambda h, s: IdentifierNode(s[1], s[3], line=s[1].line),
+            lambda h, s: IdentifierNode(s[1], IdentifierNode(s[3], s[5]), line=s[1].line),
+            lambda h, s: IdentifierNode(s[1], s[3], line=s[1].line)
             
         ]
 
