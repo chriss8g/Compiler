@@ -25,8 +25,8 @@ def ForRangeToWhile(s):
     increase_count = DestructNode(count, PlusNode(count, NumberNode(1)))
     # body.append(increase_count)
     assign = AssignNode(count, start)
-    while_term = WhileNode(LTNode(increase_count, end), BlockNode(body))
-    let_term = LetNode([assign], BlockNode([minus, while_term]))
+    while_term = WhileNode(LTNode(increase_count, end), BlockNode(body, line=s[11].line), line=s[1].line)
+    let_term = LetNode([assign], BlockNode([minus, while_term]), line=s[1].line)
     return let_term
 
 def ForToWhile(s):
@@ -590,16 +590,9 @@ if __name__ == "__main__":
 
     text = '''
             {
-                let a = 10 in while (a >= 0) {
-                    print(a);
-                    a := a - 1;
+                for (x in range(0,10)){
+                    print(x);
                 };
-                
-                for (x in range(0, 10)) print(x);
-                let iterable = range(0, 10) in
-                    while (iterable.next())
-                        let x = iterable.current() in
-                            print(x);
             }
         '''
 
