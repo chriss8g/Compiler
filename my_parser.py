@@ -278,11 +278,9 @@ class CodeToAST:
             lambda h,s:s[1],
             
             # Expresiones de cadena
-            lambda h,s:ConcatSpaceNode(s[1],s[3], line=s[2].line),
             lambda h,s:ConcatSpaceNode(s[1],NumberNode(s[3].lex), line=s[2].line),
             lambda h,s:ConcatSpaceNode(s[1],StringNode(s[3].lex), line=s[2].line),
             lambda h,s:ConcatSpaceNode(s[1],s[3], line=s[2].line),
-            lambda h,s:ConcatNode(s[1],s[3], line=s[2].line),
             lambda h,s:ConcatNode(s[1],NumberNode(s[3].lex), line=s[2].line),
             lambda h,s:ConcatNode(s[1],StringNode(s[3].lex), line=s[2].line),
             lambda h,s:ConcatNode(s[1],s[3], line=s[2].line),
@@ -349,8 +347,8 @@ class CodeToAST:
             lambda h, s: CallNode(s[3].lex, None, s[1], line=s[2].line),
             lambda h, s: IdentifierNode(s[3].lex, s[1], line=s[2].line),
             lambda h, s: s[1],
-            lambda h, s: CallNode(s[3].lex, s[5], None, line=s[2].line),
-            lambda h, s: CallNode(s[3].lex, None, None, line=s[2].line),
+            lambda h, s: CallNode(s[1].lex, s[3], None, line=s[2].line),
+            lambda h, s: CallNode(s[1].lex, None, None, line=s[2].line),
             
             # Identificador
             lambda h, s: IdentifierNode(s[1].lex, line=s[1].line)
@@ -434,7 +432,7 @@ class CodeToAST:
         expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + expr + cpar + cpar + expr
         expr %= forx + opar + idnode + inx + idnode + cpar + expr
         expr %= printx + opar + expr + cpar
-        expr %= idnode + asign2 + expr
+        expr %= recurrent_object + asign2 + expr
         expr %= new + idx + opar + arg_expr + cpar
         expr %= new + idx + opar + cpar
         expr %= calc_expr
@@ -459,11 +457,9 @@ class CodeToAST:
         calc_expr %= string_expr
         
         # Expresiones de cadena
-        string_expr %= string_expr + concat_space + idnode
         string_expr %= string_expr + concat_space + number
         string_expr %= string_expr + concat_space + string
         string_expr %= string_expr + concat_space + recurrent_object
-        string_expr %= string_expr + concat + idnode
         string_expr %= string_expr + concat + number
         string_expr %= string_expr + concat + string
         string_expr %= string_expr + concat + recurrent_object

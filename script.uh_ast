@@ -56,20 +56,20 @@
 				\__AssignNode:
 					\__IdentifierNode: i : None   at line 4  
 					\__NumberNode: 1  at line 4  
-				\__BlockNode  at line 0  [<expression>]
+				\__BlockNode  at line 4  [<expression>]
 					\__AssignNode:
 						\__IdentifierNode: i : None   at line 4  
-						\__MinusNode  at line 0  [<expression>]
+						\__MinusNode  at line 4  [<expression>]
 							\__IdentifierNode: i : None   at line 4  
-							\__NumberNode: 1  at line 0  
+							\__NumberNode: 1  at line 4  
 					\__WhileNode  at line 4  [<expression>]
 						\_ Condition
-							\__LTNode  at line 0  [<expression>]
-								\__DestructNode at line 0   [<expression>]
+							\__LTNode  at line 4  [<expression>]
+								\__DestructNode at line 4   [<expression>]
 									\__IdentifierNode: i : None   at line 4  
-									\__PlusNode  at line 0  [<expression>]
+									\__PlusNode  at line 4  [<expression>]
 										\__IdentifierNode: i : None   at line 4  
-										\__NumberNode: 1  at line 0  
+										\__NumberNode: 1  at line 4  
 								\__PlusNode  at line 4  [<expression>]
 									\__IdentifierNode: x : None   at line 4  
 									\__NumberNode: 1  at line 4  
@@ -103,10 +103,10 @@
 					Params
 
 					\__ConcatSpaceNode  at line 11  [<expression>]
-						\__IdentifierNode: self : None   at line 11  
-							\__IdentifierNode: firstname : None   at line 11  
-						\__IdentifierNode: self : None   at line 11  
-							\__IdentifierNode: lastname : None   at line 11  
+						\__IdentifierNode: firstname : None   at line 11  
+							\__IdentifierNode: self : None   at line 11  
+						\__IdentifierNode: lastname : None   at line 11  
+							\__IdentifierNode: self : None   at line 11  
 				\__MethodNode: function hash : Number => <body>   at line 12  
 					Params
 
@@ -127,26 +127,26 @@
 				\__MethodNode: function getX : None => <body>   at line 21  
 					Params
 
-					\__IdentifierNode: self : None   at line 21  
-						\__IdentifierNode: x : None   at line 21  
+					\__IdentifierNode: x : None   at line 21  
+						\__IdentifierNode: self : None   at line 21  
 				\__MethodNode: function getY : None => <body>   at line 22  
 					Params
 
-					\__IdentifierNode: self : None   at line 22  
-						\__IdentifierNode: y : None   at line 22  
+					\__IdentifierNode: y : None   at line 22  
+						\__IdentifierNode: self : None   at line 22  
 				\__MethodNode: function setX : None => <body>   at line 24  
 					Params
 						('x', 'Number')
 					\__DestructNode at line 24   [<expression>]
-						\__IdentifierNode: self : None   at line 24  
-							\__IdentifierNode: x : None   at line 24  
+						\__IdentifierNode: x : None   at line 24  
+							\__IdentifierNode: self : None   at line 24  
 						\__IdentifierNode: x : None   at line 24  
 				\__MethodNode: function setY : None => <body>   at line 25  
 					Params
 						('y', 'Number')
 					\__DestructNode at line 25   [<expression>]
-						\__IdentifierNode: self : None   at line 25  
-							\__IdentifierNode: y : None   at line 25  
+						\__IdentifierNode: y : None   at line 25  
+							\__IdentifierNode: self : None   at line 25  
 						\__IdentifierNode: y : None   at line 25  
 	\__BlockNode  at line 28  [<expression>]
 		\__NumberNode: 42  at line 29  
@@ -493,8 +493,8 @@
 					\__StringNode: "Phil"  at line 111  
 					\__StringNode: "Collins"  at line 111  
 			\__PrintNode  at line 111  [<expression>]
-				\__IdentifierNode: p : None   at line 111  
-					\__CallNode name  at line 111   [<expression>]
+				\__CallNode name  at line 111   [<expression>]
+					\__IdentifierNode: p : None   at line 111  
 		\__LetNode  at line 113  [<expression>]
 			\__AssignNode:
 				\__IdentifierNode: pt : None   at line 113  
@@ -506,11 +506,11 @@
 					\__ConcatNode  at line 114  [<expression>]
 						\__ConcatNode  at line 114  [<expression>]
 							\__StringNode: "x: "  at line 114  
-							\__IdentifierNode: pt : None   at line 114  
-								\__CallNode getX  at line 114   [<expression>]
+							\__CallNode getX  at line 114   [<expression>]
+								\__IdentifierNode: pt : None   at line 114  
 						\__StringNode: "; y: "  at line 0  
-					\__IdentifierNode: pt : None   at line 114  
-						\__CallNode getY  at line 114   [<expression>]
+					\__CallNode getY  at line 114   [<expression>]
+						\__IdentifierNode: pt : None   at line 114  
 		\__LetNode  at line 115  [<expression>]
 			\__AssignNode:
 				\__IdentifierNode: pt : None   at line 115  
@@ -522,8 +522,8 @@
 					\__ConcatNode  at line 116  [<expression>]
 						\__ConcatNode  at line 116  [<expression>]
 							\__StringNode: "x: "  at line 116  
-							\__IdentifierNode: pt : None   at line 116  
-								\__CallNode getX  at line 116   [<expression>]
+							\__CallNode getX  at line 116   [<expression>]
+								\__IdentifierNode: pt : None   at line 116  
 						\__StringNode: "; y: "  at line 0  
-					\__IdentifierNode: pt : None   at line 116  
-						\__CallNode getY  at line 116   [<expression>]
+					\__CallNode getY  at line 116   [<expression>]
+						\__IdentifierNode: pt : None   at line 116  

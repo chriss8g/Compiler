@@ -343,7 +343,7 @@ def evaluate(production, left_parse, tokens, G, inherited_value=None):
     for i, symbol in enumerate(reversed(body),1):
         index = len(body)-i
         if symbol.IsTerminal:
-            a = next(tokens).lex
+            a = next(tokens)
             synteticed[index+1] = a
         else:
             next_production = next(left_parse)

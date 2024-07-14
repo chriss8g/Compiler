@@ -1,3 +1,5 @@
+import os
+import pickle
 from utils.pycompiler import Item
 from utils.automate import State, multiline_formatter
 from utils.utils import ContainerSet
@@ -157,12 +159,13 @@ class ShiftReduceParser:
     REDUCE = 'REDUCE'
     OK = 'OK'
 
-    def __init__(self, G, verbose=False):
+    def __init__(self, G, parser_name ,verbose=False):
         self.G = G
         self.verbose = verbose
         self.action = {}
         self.goto = {}
-        self._build_parsing_table()
+        
+        self._build_parsing_table(parser_name)
 
     def _build_parsing_table(self):
         raise NotImplementedError()
@@ -176,7 +179,7 @@ class ShiftReduceParser:
             state = stack[-1]
             lookahead = w[cursor]
 
-            if(state, lookahead) not in self.action:
+            if(state, lookahead.token_type) not in self.action:
                 excepted_char = ''
 
                 for (state1, i) in self.action:
@@ -184,21 +187,22 @@ class ShiftReduceParser:
                         excepted_char += str(i) + ', '
                 parsed = ' '.join([str(m)
                                     for m in stack if not str(m).isnumeric()])
-                message_error = f'It was expected "{excepted_char}" received "{lookahead}" after {parsed}'
-                print("\nError. Aborting...")
-                print('')
-                print("\n", message_error)
+                excepted_char = excepted_char.rstrip(', ')
+                message_error = f'It was expected "{excepted_char}" received "{lookahead.token_type}" at line {lookahead.line} after {parsed}'
+                # print("\nError. Aborting...")
+                # print('')
+                # print("\n", message_error)
 
-                return None
+                return None,message_error
 
-            if self.action[state, lookahead] == self.OK:
+            if self.action[state, lookahead.token_type] == self.OK:
                 action = self.OK
             else:
-                action, tag = self.action[state, lookahead]
+                action, tag = self.action[state, lookahead.token_type]
 
             if action == self.SHIFT:
                 operations.append(self.SHIFT)
-                stack += [lookahead, tag]
+                stack += [lookahead.token_type, tag]
                 cursor += 1
             elif action == self.REDUCE:
                 operations.append(self.REDUCE)
@@ -217,15 +221,19 @@ class ShiftReduceParser:
                 stack.pop()
                 assert stack.pop() == self.G.startSymbol
                 assert len(stack) == 1
-                return output if not get_shift_reduce else(output, operations)
+                return output,'Clean Code' if not get_shift_reduce else(output, 'Operations: ' + ', '.join(op for op in operations))
             else:
-                raise Exception('Invalid action!!!')
+                return None,'Invalid Code'
 
 class LR1Parser(ShiftReduceParser):
-    def _build_parsing_table(self):
+    def __init__(self, G, parser_name='lexer' ,verbose=False):
+        super().__init__(G, parser_name, verbose)
+    
+    def _build_parsing_table(self, parser_name='lexer'):
         G = self.G.AugmentedGrammar(True)
         
         automaton = build_LR1_automaton(G)
+        
         for i, node in enumerate(automaton):
             if self.verbose: print(i, '\t', '\n\t '.join(str(x) for x in node.state), '\n')
             node.idx = i
@@ -247,11 +255,25 @@ class LR1Parser(ShiftReduceParser):
 
                 else:
                     self._register(self.goto, (idx, item.NextSymbol), node.get(item.NextSymbol.Name).idx)
-     
+        
+        action = {}
+        for key in self.action.keys():
+            action[key[0],key[1].Name, key[1].IsTerminal] = self.action[key]
+        goto = {}
+        for key in self.goto.keys():
+            goto[key[0],key[1].Name] = self.goto[key]
+        
+        if parser_name == "parser":
+            with open('./parser/action', 'wb') as file1:
+                pickle.dump(action, file1)
+            with open('./parser/goto', 'wb') as file2:
+                pickle.dump(goto, file2)
         
     @staticmethod
     def _register(table, key, value):
-        assert key not in table or table[key] == value, 'Shift-Reduce or Reduce-Reduce conflict!!!'
+        assert key not in table or table[key] == value, f'Reduce-Reduce or Shift-Reduce conflict!!!. value in table: {table[key]}, new value = {value}, key = {key}'
+        # assert key not in table or isinstance(table[key],int) or table[key][0] != 'SHIFT' or table[key][0] != 'SHIFT', f'Reduce-Reduce conflict!!!. value in table: {table[key]}, new value = {value}'
+        # assert key not in table or isinstance(table[key],int) or table[key][0] != value[0], f'Shift-Reduce conflict!!!. value in table: {table[key]}, new value = {value}'
         table[key] = value
      
        
@@ -282,7 +304,11 @@ class Token:
 # *******************************************
 
 
-def evaluate_parse(left_parse, tokens):
+def evaluate_parse(left_parse, tokens, G=None, attributes=None):
+    
+    if G:
+        for i in range(len(G.Productions)):
+            G.attributes[G.Productions[i]] = attributes[i]
     
     if not left_parse or not tokens:
         return
@@ -290,14 +316,22 @@ def evaluate_parse(left_parse, tokens):
     left_parse = iter(left_parse)
     tokens = iter(tokens)
     next(tokens)
-    result = evaluate(next(left_parse), left_parse, tokens)
+    result = evaluate(next(left_parse), left_parse, tokens, G)
     
     return result
     
-def evaluate(production, left_parse, tokens, inherited_value=None):
+def evaluate(production, left_parse, tokens, G, inherited_value=None):
     _, body = production
     
-    attributes = production.attributes
+    attributes = None
+    if not G:
+        attributes = production.attributes
+    else:
+        attribute = G.attributes[production]
+        attributes = [None for i in range(len(body)+1)]
+        attributes[0] = attribute
+        
+    
     synteticed = []
     inherited = []
     for i in range(len(attributes)):
@@ -313,7 +347,7 @@ def evaluate(production, left_parse, tokens, inherited_value=None):
             synteticed[index+1] = a
         else:
             next_production = next(left_parse)
-            synteticed[index+1] = evaluate(next_production,left_parse,tokens, inherited_value)
+            synteticed[index+1] = evaluate(next_production,left_parse,tokens,G, inherited_value)
 
     return attributes[0](inherited, synteticed)
     
