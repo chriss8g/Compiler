@@ -586,13 +586,87 @@ class CodeToAST:
         return tree
 
 
-if __name__ == "__main__":
 
+if __name__ == "__main__":
     text = '''
+            type MyClass {
+                a = 5;
+                method() => print(2);
+            }
+
+            type Superman {
+            }
+            type Bird {
+            }
+            type Plane {
+            }
+            type A {
+                hello() => print("A");
+            }
+
+            type B inherits A {
+                hello() => print("B");
+            }
+
+            type C inherits A {
+                hello() => print("C");
+            }
+
+            type Animal {
+                name: String;
+                energy: Number;
+                position: Number;
+
+                move(steps: Number) => {
+                    position = position + steps;
+                    energy = energy - 1;
+                }
+
+                eat(food: Number) => {
+                    energy = energy + food;
+                }
+
+                status() => {
+                    print(name @ " is at position " @ position @ " with energy " @ energy);
+                }
+            }
+
+            type Predator extends Animal {
+                hunt(prey: Animal) => {
+                    if (position == prey.position) {
+                        prey.energy = 0;
+                        eat(5);
+                        print(name @ " has hunted " @ prey.name);
+                    } else {
+                        print(name @ " missed the hunt");
+                    }
+                }
+            }
+
+            type Prey extends Animal {
+                hide() => {
+                    position = position + 2;
+                    print(name @ " is hiding");
+                }
+            }
+
+
             {
-                for (x in range(0,10)){
-                    print(x);
-                };
+                let lion = Predator(name = "Lion", energy = 10, position = 0),
+                    deer = Prey(name = "Deer", energy = 5, position = 5) in
+                {
+                    for (i in range(1, 6)) {
+                        lion.move(1);
+                        deer.move(-1);
+                        lion.status();
+                        deer.status();
+                    }
+
+                    deer.hide();
+                    lion.hunt(deer);
+                    lion.status();
+                    deer.status();
+                }
             }
         '''
 
