@@ -2,11 +2,11 @@ import json
 
 class Symbol(object):
 
-    def __init__(self, name, grammar,line):
+    def __init__(self, name, grammar, line):
         self.Name = name
         self.Grammar = grammar
         self.line = line
-
+        
     def __str__(self):
         return f'{self.Name}'
 
@@ -36,8 +36,8 @@ class Symbol(object):
 class NonTerminal(Symbol):
 
 
-    def __init__(self, name, grammar,line=0):
-        super().__init__(name, grammar,line)
+    def __init__(self, name, grammar, line=0):
+        super().__init__(name, grammar, line)
         self.productions = []
 
 
@@ -94,8 +94,8 @@ class NonTerminal(Symbol):
 
 class Terminal(Symbol):
 
-    def __init__(self, name, grammar,line=0):
-        super().__init__(name, grammar,line)
+    def __init__(self, name, grammar, line=0):
+        super().__init__(name, grammar, line)
 
     @property
     def IsTerminal(self):
@@ -285,6 +285,7 @@ class Grammar():
         self.pType = None
         self.Epsilon = Epsilon(self)
         self.EOF = EOF(self)
+        self.attributes = {}
 
         self.symbDict = { '$': self.EOF }
 

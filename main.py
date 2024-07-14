@@ -31,16 +31,14 @@ def main(input_file):
     collector.context.create_type(hulk.NUMBER_TYPE)
     collector.context.create_type(hulk.STRING_TYPE)
     type_builder = TypeBuilder(collector.context)
-    errors = errors + type_builder.visit(codeToAST.ast)
+    errors = errors + type_builder.visit(codeToAST.ast, None)
     if(len(errors) > 0):
         for i, error in enumerate(errors, 1):
             print(f'{i}.', error)
 
         return
     
-    print("✅ Semantic Checked")
-
-    cil_generator = HULKToCILVisitor([])
+    cil_generator = HULKToCILVisitor(collector.context)
     output = cil_generator.visit(codeToAST.ast)
 
     from utils.my_format_visitor import FormatVisitor
@@ -63,3 +61,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     main(args.input_file)
+# main('./script.uh')

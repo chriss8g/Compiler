@@ -1,7 +1,7 @@
-BOOL_TYPE = 'bool'
-STRING_TYPE = 'string'
-OBJECT_TYPE = 'object'
-NUMBER_TYPE = 'float'
+BOOL_TYPE = 'Boolean'
+STRING_TYPE = 'String'
+OBJECT_TYPE = 'Object'
+NUMBER_TYPE = 'Number'
 MY_TYPES = [BOOL_TYPE, STRING_TYPE, OBJECT_TYPE, NUMBER_TYPE]
 
 class Node:
@@ -94,7 +94,7 @@ class PrintNode(ExpressionNode):
 class BlockNode(ExpressionNode):
     def __init__(self, body, type=None):
         super().__init__(type)
-        self.body = body  # es un array de Sentences
+        self.body = body  # es un array de expresiones
 
 class LetNode(ExpressionNode):
     def __init__(self, args, body, type=None):
@@ -130,7 +130,7 @@ class IfNode(ExpressionNode):
         self.body = body
         self.else_body = else_body
         self.elif_conditions = elif_conditions if elif_conditions else []
-        self.elif_body = elif_body
+        self.elif_body = elif_body if elif_body else []
 
 class DestructNode(ExpressionNode):
     def __init__(self, idx, expr, type=None):
@@ -142,9 +142,25 @@ class CallNode(ExpressionNode):
     def __init__(self, name, args=None, child=None, type=None):
         super().__init__(type)
         self.name = name
-        self.args = args if args else []# array de expresiones
+        self.args = args if args else [] # array de expresiones
         self.child = child
 
+class VectorIndex(ExpressionNode):
+    def __init__(self, name, index, type=None):
+        super().__init__(type)
+        self.name = name
+        self.index = index
+
+class IsNode(Node):
+    def __init__(self, id, type):
+        self.id = id
+        self.type = type
+        
+class AsNode(Node):
+    def __init__(self, id, type):
+        self.id = id
+        self.type = type
+        
 
 # **********************************************************
 # *******************    Operaciones  **********************
@@ -326,6 +342,14 @@ class VectorNode(ExpressionNode):
         super().__init__(type)
         self.items = items # array de los elementos del vector
 
+class VectorImplicitNode(ExpressionNode):
+    def __init__(self, expr, id, rangeLow, rangeUp, type=None):
+        super().__init__(type)
+        self.expr = expr
+        self.id = id
+        self.rangeLow = rangeLow
+        self.rangeUp = rangeUp
+        
 #  Literales
 
 class NumberNode(AtomicNode):

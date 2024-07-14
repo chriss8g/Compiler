@@ -165,6 +165,20 @@ class FormatVisitor(object):
         if node.child is not None:
             child = '\n' + self.visit(node.child,tabs+1)
         return f'{ans}{args}{child}'
+    
+    @visitor.when(hulk.IsNode)
+    def visit(self, node, tabs=0):
+        ans = '\t' * tabs + f'\\__{node.__class__.__name__} [<expression>]'
+        id = self.visit(node.id, tabs + 1)
+        typex = '\t' * (tabs+1) + f'\\__ Type: {node.type}'
+        return f'{ans}\n{id}\n{typex}'
+    
+    @visitor.when(hulk.AsNode)
+    def visit(self, node, tabs=0):
+        ans = '\t' * tabs + f'\\__{node.__class__.__name__} [<expression>]'
+        id = self.visit(node.id, tabs + 1)
+        typex = '\t' * (tabs+1) + f'\\__ Type: {node.type}'
+        return f'{ans}\n{id}\n{typex}'
         
 
     # **********************************************************
@@ -177,7 +191,7 @@ class FormatVisitor(object):
         left = self.visit(node.left, tabs + 1)
         right = self.visit(node.right, tabs + 1)
         return f'{ans}\n{left}\n{right}'
-
+    
     @visitor.when(hulk.AtomicNode)
     def visit(self, node, tabs=0):
         return '\t' * tabs + f'\\__{node.__class__.__name__}: {node.lex}'
@@ -238,6 +252,8 @@ class FormatVisitor(object):
         return f'{ans}\n{iter_var}\n{iter_vect}\n{body}'
 
 
+    
+    
     #########################################################################################
     #########################################################################################
     #########################################################################################
@@ -322,3 +338,14 @@ class FormatVisitor(object):
         ans = '\t' * tabs + f'\\__LoadNode: {node.dest} = LOAD {node.msg}'
         return ans
     
+    @visitor.when(cil.OpenScope)
+    def visit(self, node, tabs=0):
+        return '\t' * tabs + '{\n'
+    
+    @visitor.when(cil.CloseScope)
+    def visit(self, node, tabs=0):
+        return '\t' * tabs + '}\n'
+
+    @visitor.when(cil.Force)
+    def visit(self, node, scope):
+        return node.body

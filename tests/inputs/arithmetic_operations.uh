@@ -4,5 +4,104 @@ function operate(x, y) {
     print(x * y);
     print(x / y);
 }
+{
+    operate(6, 3);
+    print((1 + 2) - (3 * 4) * 5);
 
-operate(6, 3);
+    let a = 6, b = a * 7 in print(b);
+
+    let a = 5, b = 10, c = 20 in {
+        print(a+b);
+        print(b*c);
+        print(c/a);
+    };
+
+    {
+        let b = 7 in print(b);
+        
+        let a = 20 in {
+            print(a);
+        };
+    }
+
+    let a = 0 in {
+        print(a);
+        a := 1;
+        print(a);
+    };
+
+    let x = 10 in {
+        if(x == 10)
+        {
+            print(x + 3);
+        }
+        else
+        {
+            print(x);
+        };
+    };
+
+    let x = 5 in {
+        if(x == 10) print(x + 3)
+        else        print(x);
+    };
+
+    let x = 5 in {
+        if(x == 10) print(x + 3);
+        else        {   print(x);   };
+    };
+
+    let x = 5 in
+        if(x == 10) print(x + 3)
+        else        print(x);
+    
+    print("The message is \"Hello World\"");
+
+    {
+        print(42);
+        print(sin(PI/2));
+        print("Hello World");
+    }
+
+    {
+        print(5);
+        print(sin(PI / 2));
+        print(3 + 4.5 * 10);
+        print((3 + 4) * 10.5);
+        print(true & false | true);
+        print(3.0 >= 2);
+        print("Hello" @ " World!");
+        print(log(10, 100));
+        print(3.14 + 2.71);
+        print(!(5 == 5));
+        print(10 != 20);
+        print(sqrt(4));
+        print(exp(1));
+        print(4 / 2.0);
+        print(10 - 5);
+        print(true);
+        print(false);
+        print(sin(PI) + cos(E));
+    }
+
+    print(sin(2 * PI) + cos(3 * PI / 2));
+
+    {
+        for (x in range(5, 10)) print(x);
+
+        for (a in range(0, 10))
+            let mod = a % 3 in
+                print(
+                    if (mod == 0) "Magic"
+                    elif (mod % 3 == 1) "Woke"
+                    else "Dumb"
+                );
+    }
+
+    let a = 10 in 
+        while (a >= 0) {
+
+        print(a);
+        a := a - 1;
+    };
+}

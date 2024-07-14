@@ -15,11 +15,10 @@ class Token:
         Token's type.
     """
 
-    def __init__(self, lex, token_type, line = None,column = None):
+    def __init__(self, lex, token_type, line=0):
         self.lex = lex
         self.token_type = token_type
         self.line = line
-        self.column = column
 
     def __str__(self):
         return f'{self.token_type}: {self.lex}, in [line:{self.line}]'
@@ -108,7 +107,7 @@ class RegexHandler:
         tokens = self._regex_tokenizer(text)
         
         parser = LR1Parser(self.grammar)
-        derivations,_ = parser([tok.token_type for tok in tokens])
+        derivations,_ = parser(tokens)
         
         tokens.reverse()
         derivations.reverse()
