@@ -8,7 +8,7 @@ class Symbol(object):
         self.line = line
         
     def __str__(self):
-        return self.Name
+        return f'{self.Name}'
 
     def __repr__(self):
         return repr(self.Name)

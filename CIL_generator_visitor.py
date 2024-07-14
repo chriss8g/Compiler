@@ -48,6 +48,18 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
         for attribute in node.body.attributes:
             self.current_type.attributes.append(
                 cil.LocalNode(attribute.id.name, update_types(attribute.type)))
+            sub_scope = scope.create_child_scope()
+            self.visit( hulk.MethodNode(
+                                f'init_{attribute.id.name}_of_{node.name}',
+                                hulk.AssignNode(
+                                        hulk.IdentifierNode(
+                                                f'self->{attribute.id.name}',
+                                                None, attribute.id.type),
+                                        attribute.value, 
+                                        'void'), 
+                                node.params + [('self', f'{node.name}*')],
+                                attribute.value.type), 
+                        sub_scope)
 
         for method in node.body.methods:
             function_name = self.to_function_name_in_type(
@@ -430,13 +442,26 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
         expr = self.visit(node.expr, scope.create_child_scope())
 
-        func = node.id.name
-
-        stop = False
-        while(not stop):
-            func, stop = scope.get_variable_info(func)
+        child = node.id.child
+        func = ''
+        if (child):
+            if node.id.name == 'self':
+                x = child.name
+                func = 'self->' + x
+            else:
+                var = node.id.name
+                stop = False
+                while (not stop):
+                    var, stop = scope.get_variable_info(var)
             self.register_instruction(cil.AssignNode(func, expr))
 
+        else:
+
+            func = node.id.name
+            stop = False
+            while (not stop):
+                func, stop = scope.get_variable_info(func)
+                self.register_instruction(cil.AssignNode(func, expr))
 
         return expr
 
@@ -563,8 +588,18 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
         func = ''
         if (child):
-            func = self.to_function_name_in_type(child.name, node.type[:-1])
-            func += '(' + ", ".join(child.args) + ')'
+            if node.name == 'self':
+                x = self.visit(child, scope.create_child_scope())
+                func = 'self->' + x
+            else:
+                var = node.name
+                stop = False
+                while (not stop):
+                    var, stop = scope.get_variable_info(var)
+
+                func = self.to_function_name_in_type(child.name, node.type[:-1])
+                node.type = update_types(child.type) #!!!!!!!!!!!!!!!111
+                func += '(' + ", ".join(child.args) + (', ' if len(child.args) else '') + f'{var})'
         else:
 
             func = node.name

@@ -25,8 +25,8 @@ def ForRangeToWhile(s):
     increase_count = DestructNode(count, PlusNode(count, NumberNode(1)))
     # body.append(increase_count)
     assign = AssignNode(count, start)
-    while_term = WhileNode(LTNode(increase_count, end), BlockNode(body))
-    let_term = LetNode([assign], BlockNode([minus, while_term]))
+    while_term = WhileNode(LTNode(increase_count, end), BlockNode(body, line=s[11].line), line=s[1].line)
+    let_term = LetNode([assign], BlockNode([minus, while_term]), line=s[1].line)
     return let_term
 
 def ForToWhile(s):
@@ -38,8 +38,8 @@ def ForToWhile(s):
     arr_current = IdentifierNode(s[5].name,current)
     body = s[7]
     assig = AssignNode(s[3],arr_current)
-    let = LetNode([assig],body)
-    whilex = WhileNode(arr_next,let)
+    let = LetNode([assig],body, line=s[1].line)
+    whilex = WhileNode(arr_next,let, line=s[1])
     return whilex
 
 def MultipleLet(s):
@@ -48,16 +48,16 @@ def MultipleLet(s):
     assign_list = s[2]
     
     if len(assign_list) > 1:
-        let = LetNode([assign_list[0]],None)
+        let = LetNode([assign_list[0]],None, line = s[1].line)
         tmp = let
         for i in range(1,len(assign_list)-1):
-            tmp.body = LetNode([assign_list[i]],None)
+            tmp.body = LetNode([assign_list[i]],None, line=s[1].line)
             tmp = tmp.body
-        tmp.body = LetNode([assign_list[len(assign_list)-1]],s[4])
+        tmp.body = LetNode([assign_list[len(assign_list)-1]],s[4], line=s[1].line)
         return let
     
 
-    return LetNode([assign_list[0]],s[4])
+    return LetNode([assign_list[0]],s[4], line=s[1].line)
 
 
 class CodeToAST:
@@ -191,43 +191,43 @@ class CodeToAST:
             lambda h, s: [],
             
             # Protocolos
-            lambda h,s:[ProtocolNode(s[2],s[3],s[5])] + s[7],
-            lambda h,s: s[2],
+            lambda h,s:[ProtocolNode(s[2].lex,s[3],s[5], line=s[1].line)] + s[7],
+            lambda h,s: s[2].lex,
             lambda h,s:None,
-            lambda h,s: [MethodProtocolNode(s[1],s[3],s[6])] + s[8],
+            lambda h,s: [MethodProtocolNode(s[1].lex,s[3],s[6].lex, line=s[1].line)] + s[8],
             lambda h,s:[],
             
             # Funciones
-            lambda h, s: [FuncDeclarationNode(s[2], s[7], s[4], s[6])] + s[8],
+            lambda h, s: [FuncDeclarationNode(s[2].lex, s[7], s[4], s[6], line=s[1].line)] + s[8],
             lambda h, s: s[2],
             lambda h, s: s[1],
             
             # Tipos
-            lambda h,s: [TypeDeclarationNode(s[2],TypeBodyDeclarationNode(s[6][0],s[6][1]),s[3],s[4][0],s[4][1])]+s[8],
-            lambda h,s: (s[2],[]),
-            lambda h,s: (s[2],s[4]),
+            lambda h,s: [TypeDeclarationNode(s[2].lex,TypeBodyDeclarationNode(s[6][0],s[6][1]),s[3],s[4][0],s[4][1], line=s[1].line)]+s[8],
+            lambda h,s: (s[2].lex,[]),
+            lambda h,s: (s[2].lex,s[4]),
             lambda h,s: (None,[]),
             lambda h,s: ([s[1]]+s[2][0],s[2][1]),
             lambda h,s: (s[2][0],[s[1]]+s[2][1]),
             lambda h,s: ([],[]),
-            lambda h,s: AttributeNode(IdentifierNode(s[1],None,s[2]),s[4],s[2]),
-            lambda h,s:MethodNode(s[1], s[6], s[3], s[5]),
+            lambda h,s: AttributeNode(IdentifierNode(s[1].lex,None,s[2],line=s[1].line),s[4],s[2],line=s[1].line),
+            lambda h,s: MethodNode(s[1].lex, s[6], s[3], s[5], line=s[1].line),
             
             # Lista de parámetros opcionalmente tipados
             lambda h,s:[],
             lambda h,s:s[2],
-            lambda h,s:[(s[1],s[2])],
-            lambda h,s:[(s[1],s[2])] + s[4],
+            lambda h,s:[(s[1].lex,s[2])],
+            lambda h,s:[(s[1].lex,s[2])] + s[4],
             lambda h,s:[],
             
             # Tipado opcional
-            lambda h, s: s[2],
+            lambda h, s: s[2].lex,
             lambda h, s: None,
             
             # Lista de parametros con tipado obligatorio
             lambda h,s:[],
-            lambda h,s:[(s[1],s[3])],
-            lambda h,s:[(s[1],s[3])] + s[5],
+            lambda h,s:[(s[1].lex,s[3].lex)],
+            lambda h,s:[(s[1].lex,s[3].lex)] + s[5],
             
             # Lista de variables
             lambda h, s: [s[1]],
@@ -240,7 +240,7 @@ class CodeToAST:
             # Bloques especiales
             lambda h, s: s[1],
             lambda h, s: s[1],
-            lambda h, s: BlockNode(s[2]),
+            lambda h, s: BlockNode(s[2], line = s[1].line),
             
             # Lista de bloques especiales
             lambda h, s: [s[1]],
@@ -249,15 +249,15 @@ class CodeToAST:
             # Expresiones
             lambda h, s: s[1],
             lambda h, s: MultipleLet(s),
-            lambda h, s: IfNode(s[3], s[5], s[8], s[6][0], s[6][1]),
-            lambda h, s: IfNode(s[3], s[5], s[9], s[7][0], s[7][1]),
-            lambda h, s: WhileNode(s[3], s[5]),
+            lambda h, s: IfNode(s[3], s[5], s[8], s[6][0], s[6][1], line=s[1].line),
+            lambda h, s: IfNode(s[3], s[5], s[9], s[7][0], s[7][1], line=s[1].line),
+            lambda h, s: WhileNode(s[3], s[5], line=s[1].line),
             lambda h, s: ForRangeToWhile(s),
             lambda h, s: ForToWhile(s),
-            lambda h, s: PrintNode(s[3]),
-            lambda h, s: DestructNode(s[1], s[3]),
-            lambda h, s: ObjectCreationNode(s[2], s[4]),
-            lambda h, s: ObjectCreationNode(s[2], []),
+            lambda h, s: PrintNode(s[3], line=s[1].line),
+            lambda h, s: DestructNode(s[1], s[3], line=s[2].line),
+            lambda h, s: ObjectCreationNode(s[2].lex, s[4], line=s[1].line),
+            lambda h, s: ObjectCreationNode(s[2].lex, [], line=s[1].line),
             lambda h, s: s[1],
             
             # Super expresion
@@ -271,71 +271,71 @@ class CodeToAST:
             # Lista de asignaciones para el let
             lambda h, s: [s[1]],
             lambda h, s: [s[1]] + s[3],
-            lambda h, s: AssignNode(s[1], s[4], s[2]),
+            lambda h, s: AssignNode(s[1], s[4], s[2], line=s[3].line),
             
             
             # Expresion calculable
             lambda h,s:s[1],
             
             # Expresiones de cadena
-            lambda h,s:ConcatSpaceNode(s[1],s[3]),
-            lambda h,s:ConcatSpaceNode(s[1],NumberNode(s[3])),
-            lambda h,s:ConcatSpaceNode(s[1],StringNode(s[3])),
-            lambda h,s:ConcatSpaceNode(s[1],s[3]),
-            lambda h,s:ConcatNode(s[1],s[3]),
-            lambda h,s:ConcatNode(s[1],NumberNode(s[3])),
-            lambda h,s:ConcatNode(s[1],StringNode(s[3])),
-            lambda h,s:ConcatNode(s[1],s[3]),
+            lambda h,s:ConcatSpaceNode(s[1],s[3], line=s[2].line),
+            lambda h,s:ConcatSpaceNode(s[1],NumberNode(s[3].lex), line=s[2].line),
+            lambda h,s:ConcatSpaceNode(s[1],StringNode(s[3].lex), line=s[2].line),
+            lambda h,s:ConcatSpaceNode(s[1],s[3], line=s[2].line),
+            lambda h,s:ConcatNode(s[1],s[3], line=s[2].line),
+            lambda h,s:ConcatNode(s[1],NumberNode(s[3].lex), line=s[2].line),
+            lambda h,s:ConcatNode(s[1],StringNode(s[3].lex), line=s[2].line),
+            lambda h,s:ConcatNode(s[1],s[3], line=s[2].line),
             lambda h,s:s[1],
             
             # Expresiones logicas
-            lambda h,s:OrNode(s[1],s[3]),
-            lambda h,s:OrNode(s[1],s[3]),
+            lambda h,s:OrNode(s[1],s[3], line=s[2].line),
+            lambda h,s:OrNode(s[1],s[3], line=s[2].line),
             lambda h,s:s[1],
             
-            lambda h, s: AndNode(s[1], s[3]),
-            lambda h, s: AndNode(s[1], s[3]),
+            lambda h, s: AndNode(s[1], s[3], line=s[2].line),
+            lambda h, s: AndNode(s[1], s[3], line=s[2].line),
             lambda h,s:s[1],
             
-            lambda h, s: NotNode(s[2]),
-            lambda h, s: IsNode(s[1],s[3]),
+            lambda h, s: NotNode(s[2], line=s[1].line),
+            lambda h, s: IsNode(s[1], s[3].lex, line=s[2].line),
             lambda h, s: s[1],
             
             # Expresiones comparativas
-            lambda h, s: EQNode(s[1], s[3]),
-            lambda h, s: NENode(s[1], s[3]),
-            lambda h, s: GENode(s[1], s[3]),
-            lambda h, s: GTNode(s[1], s[3]),
-            lambda h, s: LENode(s[1], s[3]),
-            lambda h, s: LTNode(s[1], s[3]),
+            lambda h, s: EQNode(s[1], s[3], line=s[2].line),
+            lambda h, s: NENode(s[1], s[3], line=s[2].line),
+            lambda h, s: GENode(s[1], s[3], line=s[2].line),
+            lambda h, s: GTNode(s[1], s[3], line=s[2].line),
+            lambda h, s: LENode(s[1], s[3], line=s[2].line),
+            lambda h, s: LTNode(s[1], s[3], line=s[2].line),
             lambda h, s: s[1],
             
             # Expresiones aritmeticas
-            lambda h, s: PlusNode(s[1], s[3]),
-            lambda h, s: MinusNode(s[1], s[3]),
+            lambda h, s: PlusNode(s[1], s[3], line=s[2].line),
+            lambda h, s: MinusNode(s[1], s[3], line=s[2].line),
             lambda h, s: s[1],
             
-            lambda h, s: StarNode(s[1], s[3]),
-            lambda h, s: DivNode(s[1], s[3]),
-            lambda h, s: ModNode(s[1], s[3]),
+            lambda h, s: StarNode(s[1], s[3], line=s[2].line),
+            lambda h, s: DivNode(s[1], s[3], line=s[2].line),
+            lambda h, s: ModNode(s[1], s[3], line=s[2].line),
             lambda h, s: s[1],
             
-            lambda h, s: PowNode(s[1], s[3]),
-            lambda h, s: PowNode(s[1], s[3]),
-            lambda h, s: SinNode(s[3]),
-            lambda h, s: CosNode(s[3]),
-            lambda h, s: SqrtNode(s[3]),
-            lambda h, s: ExpNode(s[3]),
-            lambda h, s: LogNode(s[3], s[5]),
-            lambda h, s: RandNode(),
+            lambda h, s: PowNode(s[1], s[3], line=s[2].line),
+            lambda h, s: PowNode(s[1], s[3], line=s[2].line),
+            lambda h, s: SinNode(s[3], line=s[1].line),
+            lambda h, s: CosNode(s[3], line=s[1].line),
+            lambda h, s: SqrtNode(s[3], line=s[1].line),
+            lambda h, s: ExpNode(s[3], line=s[1].line),
+            lambda h, s: LogNode(s[3], s[5], line=s[1].line),
+            lambda h, s: RandNode(line=s[1].line),
             lambda h, s: s[1],
             
-            lambda h, s: NumberNode(s[1]),
-            lambda h, s: NumberNode(s[1]),
-            lambda h, s: NumberNode(s[1]),
-            lambda h, s: BoolNode(s[1]),
-            lambda h, s: BoolNode(s[1]),
-            lambda h, s: StringNode(s[1]),
+            lambda h, s: NumberNode(s[1].lex, line=s[1].line),
+            lambda h, s: NumberNode(s[1].lex, line=s[1].line),
+            lambda h, s: NumberNode(s[1].lex, line=s[1].line),
+            lambda h, s: BoolNode(s[1].lex, line=s[1].line),
+            lambda h, s: BoolNode(s[1].lex, line=s[1].line),
+            lambda h, s: StringNode(s[1].lex, line=s[1].line),
             lambda h, s: s[2],
             # lambda h, s: s[1],
             lambda h, s: VectorNode(s[2]),
@@ -351,15 +351,16 @@ class CodeToAST:
             # lambda h, s: SelfNode(s[3]),
             
             # Objetos recurrentes
-            lambda h, s: CallNode(s[3], s[5], s[1]),
-            lambda h, s: CallNode(s[3], [], s[1]),
-            lambda h, s: IdentifierNode(s[3], s[1]),
-            lambda h, s: CallNode(s[1], s[3]),
-            lambda h, s: CallNode(s[1], []),
-            lambda h, s: s[1],
+            lambda h, s: CallNode(s[1].lex, s[3], s[6], line=s[2].line),
+            lambda h, s: CallNode(s[1].lex, [], s[5], line=s[2].line),
+            lambda h, s: CallNode(s[1].lex, s[3], line=s[2].line),
+            lambda h, s: CallNode(s[1].lex, line=s[2].line),
             
             # Identificador
-            lambda h, s: IdentifierNode(s[1]),
+            lambda h, s: IdentifierNode(s[1].lex, line=s[1].line),
+            lambda h, s: IdentifierNode(s[1].lex, s[3], line=s[1].line),
+            lambda h, s: IdentifierNode(s[1].lex, IdentifierNode(s[3], s[5]), line=s[1].line),
+            lambda h, s: IdentifierNode(s[1].lex, s[3], line=s[1].line)
             
         ]
 
@@ -582,10 +583,112 @@ class CodeToAST:
         return tree
 
 
-if __name__ == "__main__":
 
+if __name__ == "__main__":
     text = '''
-            print(a.b().c());
+            function tan(x: Number): Number => sin(x) / cos(x);
+            function cot(x) => 1 / tan(x);
+            function fib(n) => if (n == 0 | n == 1) 1; else fib(n-1) + fib(n-2);
+            function fact(x) => let f = 1 in for (i in range(1, x+1)) f := f * i;
+            function next(x) => x+1;
+
+            type Person(firstname:String, lastname:String) {
+                firstname:String = firstname;
+                lastname:String = lastname;
+
+                name() => self.firstname @@ self.lastname;
+                hash() : Number {
+                    5;
+                }
+            }
+
+
+            {
+                42;
+                print(42);
+                print((((1 + 2) * 3) * 4) / 5);
+                print("Hello World");
+                print("The message is Hello World");
+                print("The meaning of life is " @ 42);
+                print(sin(2 * PI) * 2 + cos(3 * PI / log(4, 64)));
+                {
+                    print(42);
+                    print(sin(PI/2));
+                    print("Hello World");
+                }
+
+
+                print(tan(PI) * 2 + cot(PI) * 2);
+
+                let msg = "Hello World" in print(msg);
+                let number = 42, text = "The meaning of life is" in
+                    print(text @@ number);
+                let number = 42 in
+                    let text = "The meaning of life is" in
+                        print(text @ number);
+                        
+                let number = 42 in (
+                    let text = "The meaning of life is" in (
+                            print(text @ number)
+                        )
+                    );
+                let a = 6, b = a * 7 in print(b);
+
+                let a = 6 in
+                    let b = a * 7 in
+                        print(b);
+
+                let a = 5, b = 10, c = 20 in {
+                    print(a+b);
+                    print(b*c);
+                    print(c/a);
+                };
+
+                let a = (let b = 6 in b * 7) in print(a);
+
+                print(let b = 6 in b * 7);
+                let a = 20 in {
+                    let a = 42 in print(a);
+                    print(a);
+                };
+                let a = 7, a = 7 * 6 in print(a);
+                let a = 7 in
+                    let a = 7 * 6 in
+                        print(a);
+                let a = 0 in {
+                    print(a);
+                    a := 1;
+                    print(a);
+                };
+                let a = 0 in
+                    let b = a := 1 in {
+                        print(a);
+                        print(b);
+                    };
+                let a = 42 in if (a % 2 == 0) print("Even") else print("odd");
+                let a = 42 in print(if (a % 2 == 0) "even" else "odd");
+                let a = 42 in
+                    if (a % 2 == 0) {
+                        print(a);
+                        print("Even");
+                    }
+                    else print("Odd");
+                let a = 42, mod = a % 3 in
+                    print(
+                        if (mod == 0) "Magic";
+                        else "Dumb"
+                    );
+                let a = 10 in while (a >= 0) {
+                    print(a);
+                    a := a - 1;
+                };
+
+                print(fact(5));
+                print(fib(5));
+                print(next(8));
+                let p: Person = new Person("Phil", "Collins") in print(p.name());
+                
+            }
         '''
 
     codeToAST = CodeToAST(text)

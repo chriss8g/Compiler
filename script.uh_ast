@@ -1,0 +1,36 @@
+\__ProgramNode [<program>]
+	\__TypeNode: type Person inherits None  at line 2  [<statement>]
+					Param 0 ('firstname', 'String')
+			Param 1 ('lastname', 'String')
+		\__TypeBodyNode   at line 0  
+			Atributes
+				\__AttributeNode id = <expr>   at line 3  
+					\__IdentifierNode: firstname : String   at line 3  
+					\__IdentifierNode: firstname : None   at line 3  
+				\__AttributeNode id = <expr>   at line 4  
+					\__IdentifierNode: lastname : String   at line 4  
+					\__IdentifierNode: lastname : None   at line 4  
+			Methods
+				\__MethodNode: function name : None => <body>   at line 6  
+					Params
+
+					\__ConcatSpaceNode  at line 6  [<expression>]
+						\__IdentifierNode: self : None   at line 6  
+							\__IdentifierNode: firstname : None   at line 6  
+						\__IdentifierNode: self : None   at line 6  
+							\__IdentifierNode: lastname : None   at line 6  
+				\__MethodNode: function hash : Number => <body>   at line 7  
+					Params
+
+					\__BlockNode  at line 7  [<expression>]
+						\__NumberNode: 5  at line 8  
+	\__BlockNode  at line 12  [<expression>]
+		\__LetNode  at line 13  [<expression>]
+			\__AssignNode : Person   at line 13  
+				\__IdentifierNode: p : None   at line 13  
+				\_ObjectCreationNode: new Person   at line 13  [<expression>]
+					\__StringNode: "Phil"  at line 13  
+					\__StringNode: "Collins"  at line 13  
+			\__PrintNode  at line 13  [<expression>]
+				\__IdentifierNode: p : None   at line 13  
+					\__CallNode name  at line 13   [<expression>]

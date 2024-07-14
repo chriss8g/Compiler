@@ -23,7 +23,7 @@ class FormatVisitor(object):
 
     @visitor.when(hulk.ProtocolNode)
     def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__ProtocolNode protocol {node.name} : {node.extension}  [<statement>]'
+        ans = '\t' * tabs + f'\\__ProtocolNode protocol {node.name} : {node.extension} at line {node.line}   [<statement>]'
         body = ''
         if node.body:
             body = '\t' * (tabs+1) + '\\__Body' + '\n' + '\n'.join(self.visit(child, tabs+2) for child in node.body)
@@ -31,7 +31,7 @@ class FormatVisitor(object):
     
     @visitor.when(hulk.MethodProtocolNode)
     def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__MethodProtocolNode {node.name} : {node.type}  [<statement>]'
+        ans = '\t' * tabs + f'\\__MethodProtocolNode {node.name} : {node.type}  at line {node.line}   [<statement>]'
         args = ''
         if node.args:
             args = '\t' * (tabs+1) + 'Arguments' + '\n' + '\n'.join('\t' * (tabs+2) + f'{arg}' for arg in node.args)
@@ -40,7 +40,7 @@ class FormatVisitor(object):
     
     @visitor.when(hulk.FuncDeclarationNode)
     def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__FuncDeclarationNode: function {node.name} : {node.type} => <body> [<statement>]'
+        ans = '\t' * tabs + f'\\__FuncDeclarationNode: function {node.name} : {node.type} => <body>  at line {node.line}   [<statement>]'
         body = '\t' * (tabs+1) + 'Body' + '\n' + self.visit(node.body, tabs + 1)
         params = '\t' * (tabs+1) + 'Params' + '\n' + '\n'.join('\t' * (tabs+1) + f'{param}' for param in node.params)
         return f'{ans}\n{params}\n{body}'
@@ -48,7 +48,7 @@ class FormatVisitor(object):
     @visitor.when(hulk.TypeDeclarationNode)
     def visit(self, node, tabs=0):
         inherits = node.base_type
-        ans = '\t' * tabs + f'\\__TypeNode: type {node.name} inherits {inherits} [<statement>]'
+        ans = '\t' * tabs + f'\\__TypeNode: type {node.name} inherits {inherits}  at line {node.line}  [<statement>]'
         body = self.visit(node.body, tabs + 1)
         params = ''
         if node.params:
@@ -60,14 +60,14 @@ class FormatVisitor(object):
 
     @visitor.when(hulk.TypeBodyDeclarationNode)
     def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__TypeBodyNode'
+        ans = '\t' * tabs + f'\\__TypeBodyNode   at line {node.line}  '
         attributes = '\t' * (tabs+1) + 'Atributes' + '\n' + '\n'.join(self.visit(attr, tabs + 2) for attr in node.attributes)
         methods = '\t' * (tabs+1) + 'Methods' + '\n' + '\n'.join(self.visit(method, tabs + 2) for method in node.methods)
         return f'{ans}\n{attributes}\n{methods}'
     
     @visitor.when(hulk.AttributeNode)
     def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__AttributeNode id = <expr>'
+        ans = '\t' * tabs + f'\\__AttributeNode id = <expr>   at line {node.line}  '
         idx = self.visit(node.id, tabs+1)
         value = self.visit(node.value, tabs + 1)
         return f'{ans}\n{idx}\n{value}'
@@ -75,7 +75,7 @@ class FormatVisitor(object):
     @visitor.when(hulk.MethodNode)
     def visit(self, node, tabs=0):
         params = ', '.join(f'({param[0],param[1]})' for param in node.params)
-        ans = '\t' * tabs + f'\\__MethodNode: function {node.name} : {node.type} => <body>'
+        ans = '\t' * tabs + f'\\__MethodNode: function {node.name} : {node.type} => <body>   at line {node.line}  '
         params = '\t' * (tabs+1) + 'Params' + '\n' + '\n'.join('\t' * (tabs+2) + f'{param}' for param in node.params)
         if isinstance(node.body, list):
             body = '\n'.join(self.visit(child, tabs + 1) for child in node.body)
@@ -88,7 +88,7 @@ class FormatVisitor(object):
     def visit(self, node, tabs=0):
         ans = '\t' * tabs + f'\\__AssignNode:'
         if node.type:
-            ans = '\t' * tabs + f'\\__AssignNode : {node.type}'
+            ans = '\t' * tabs + f'\\__AssignNode : {node.type}   at line {node.line}  '
         id = self.visit(node.id, tabs + 1)
         expr = self.visit(node.expr, tabs + 1)
         return f'{ans}\n{id}\n{expr}'
@@ -99,13 +99,13 @@ class FormatVisitor(object):
 
     @visitor.when(hulk.PrintNode)
     def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__PrintNode [<expression>]'
+        ans = '\t' * tabs + f'\\__PrintNode  at line {node.line}  [<expression>]'
         expr = self.visit(node.expr, tabs + 1)
         return f'{ans}\n{expr}'
     
     @visitor.when(hulk.BlockNode)
     def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__BlockNode [<expression>]'
+        ans = '\t' * tabs + f'\\__BlockNode  at line {node.line}  [<expression>]'
         body = None
         if node.body is not None:
             body = '\n'.join(self.visit(child, tabs + 1) for child in node.body)
@@ -113,21 +113,21 @@ class FormatVisitor(object):
     
     @visitor.when(hulk.LetNode)
     def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__LetNode [<expression>]'
+        ans = '\t' * tabs + f'\\__LetNode  at line {node.line}  [<expression>]'
         args = '\n'.join(self.visit(child, tabs + 1) for child in node.args)
         body = self.visit(node.body, tabs + 1)
         return f'{ans}\n{args}\n{body}'
     
     @visitor.when(hulk.WhileNode)
     def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__WhileNode [<expression>]'
+        ans = '\t' * tabs + f'\\__WhileNode  at line {node.line}  [<expression>]'
         condition = '\t' * (tabs+1) + '\\_ Condition' + '\n' + self.visit(node.condition, tabs + 2)
         body = '\t' * (tabs+1) + '\\_ Body' + '\n' + self.visit(node.body, tabs+2)
         return f'{ans}\n{condition}\n{body}'
     
     @visitor.when(hulk.ForRangeNode)
     def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__ForRangeNode: {node.id.name} in range(<expr>, <expr>)  [<expression>]'
+        ans = '\t' * tabs + f'\\__ForRangeNode: {node.id.name} in range(<expr>, <expr>)   at line {node.line}  [<expression>]'
         init = '\t' * (tabs+1) + '\\_Init' + '\n' + self.visit(node.init, tabs + 2)
         final = '\t' * (tabs+1) + '\\Final' + '\n' + self.visit(node.final, tabs + 2)
         body = '\t' * (tabs+1) + '\\_ Body' + '\n' + self.visit(node.body, tabs+2)
@@ -135,7 +135,7 @@ class FormatVisitor(object):
     
     @visitor.when(hulk.IfNode)
     def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__IfNode  [<expression>]'
+        ans = '\t' * tabs + f'\\__IfNode   at line {node.line}  [<expression>]'
         condition = '\t' * (tabs+1) + '\\_ Condition' + '\n' + self.visit(node.condition, tabs + 2)
         body = '\t' * (tabs+1) + '\\_ Body' + '\n' + self.visit(node.body, tabs+2)
         
@@ -150,14 +150,14 @@ class FormatVisitor(object):
 
     @visitor.when(hulk.DestructNode)
     def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\DestructNode   [<expression>]'
+        ans = '\t' * tabs + f'\\__DestructNode at line {node.line}   [<expression>]'
         id = self.visit(node.id, tabs + 1)
         expr = self.visit(node.expr, tabs + 1)
         return f'{ans}\n{id}\n{expr}'
     
     @visitor.when(hulk.CallNode)
     def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__CallNode {node.name}   [<expression>]'
+        ans = '\t' * tabs + f'\\__CallNode {node.name}  at line {node.line}   [<expression>]'
         args = ''
         if node.args:
             args = '\n' + '\t' * (tabs+1) + '\\_ Arguments' + '\n' + '\n'.join(self.visit(arg, tabs + 2) for arg in node.args)
@@ -168,14 +168,14 @@ class FormatVisitor(object):
     
     @visitor.when(hulk.IsNode)
     def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__{node.__class__.__name__} [<expression>]'
+        ans = '\t' * tabs + f'\\__{node.__class__.__name__}  at line {node.line}  [<expression>]'
         id = self.visit(node.id, tabs + 1)
         typex = '\t' * (tabs+1) + f'\\__ Type: {node.type}'
         return f'{ans}\n{id}\n{typex}'
     
     @visitor.when(hulk.AsNode)
     def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__{node.__class__.__name__} [<expression>]'
+        ans = '\t' * tabs + f'\\__{node.__class__.__name__}  at line {node.line}  [<expression>]'
         id = self.visit(node.id, tabs + 1)
         typex = '\t' * (tabs+1) + f'\\__ Type: {node.type}'
         return f'{ans}\n{id}\n{typex}'
@@ -187,18 +187,18 @@ class FormatVisitor(object):
 
     @visitor.when(hulk.BinaryNode)
     def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__{node.__class__.__name__} [<expression>]'
+        ans = '\t' * tabs + f'\\__{node.__class__.__name__}  at line {node.line}  [<expression>]'
         left = self.visit(node.left, tabs + 1)
         right = self.visit(node.right, tabs + 1)
         return f'{ans}\n{left}\n{right}'
     
     @visitor.when(hulk.AtomicNode)
     def visit(self, node, tabs=0):
-        return '\t' * tabs + f'\\__{node.__class__.__name__}: {node.lex}'
+        return '\t' * tabs + f'\\__{node.__class__.__name__}: {node.lex}  at line {node.line}  '
     
     @visitor.when(hulk.SingleAritmeticOpNode)
     def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__{node.__class__.__name__}   [<expression>]'
+        ans = '\t' * tabs + f'\\__{node.__class__.__name__}  at line {node.line}    [<expression>]'
         body = self.visit(node.expr,tabs+1)
         return f'{ans}\n{body}'
 
@@ -212,7 +212,7 @@ class FormatVisitor(object):
     
     @visitor.when(hulk.ObjectCreationNode)
     def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\_ObjectCreationNode: new {node.type}  [<expression>]'
+        ans = '\t' * tabs + f'\\_ObjectCreationNode: new {node.type}   at line {node.line}  [<expression>]'
         args = ""
         if node.args != []:
             for arg in node.args:
@@ -221,31 +221,31 @@ class FormatVisitor(object):
     
     @visitor.when(hulk.SelfNode)
     def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\SelfNode  [<expression>]'
+        ans = '\t' * tabs + f'\\SelfNode  at line {node.line}   [<expression>]'
         child = self.visit(node.lex,tabs+1)
         return f'{ans}\n{child}'
 
     @visitor.when(hulk.LogNode)
     def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__{node.__class__.__name__} [<expression>]'
+        ans = '\t' * tabs + f'\\__{node.__class__.__name__}  at line {node.line}  [<expression>]'
         left = self.visit(node.base, tabs + 1)
         right = self.visit(node.arg, tabs + 1)
         return f'{ans}\n{left}\n{right}'
 
     @visitor.when(hulk.RandNode)
     def visit(self, node, tabs=0):
-        return '\t' * tabs + f'\\__{node.__class__.__name__} ()'
+        return '\t' * tabs + f'\\__{node.__class__.__name__} ()   at line {node.line}  '
 
     @visitor.when(hulk.VectorNode)
     def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__VectorNode  [<expression>]'
+        ans = '\t' * tabs + f'\\__VectorNode  at line {node.line}   [<expression>]'
         items_head = '\t' * (tabs+1) + '\\_Items'
         items_body = '\n'.join(self.visit(item,tabs+2) for item in node.items)
         return f'{ans}\n{items_head}\n{items_body}'
 
     @visitor.when(hulk.ForNode)
     def visit(self, node, tabs=0):
-        ans = '\t' * tabs + f'\\__ForNode: {node.id.name} in <vector>  [<expression>]'
+        ans = '\t' * tabs + f'\\__ForNode: {node.id.name} in <vector>  at line {node.line}   [<expression>]'
         iter_var = self.visit(node.id,tabs+1)
         iter_vect = self.visit(node.iterable,tabs+1)
         body = self.visit(node.body,tabs+1)
