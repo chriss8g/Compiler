@@ -61,19 +61,25 @@ class TypeBuilder:
             self.var[param[0]] = param[1]
             self.types.dict[param[0]] = param[1]
         self.current_type = self.context.get_type(node.name)
-        self.visit(node.body, self.types.create_child())
-        for param in self.var.keys():
-            self.current_type.params.append((param, self.var[param]))
-        self.var = {}
-        self.current_type = None
-        return self.errors
-
-    @visitor.when(hulk.TypeBodyDeclarationNode)
-    def visit(self, node, types):
-        for attr in node.attributes:
+        
+        # if(node.base_type and node.base_type != hulk.OBJECT_TYPE):
+        #     parent = self.context.get_type(node.base_type)
+        #     for attr in parent.attributes:
+        #         self.visit(attr, self.types.create_child())
+        #         self.current_type.define_attribute(attr.name, attr.type)
+        #     for meth in parent.methods:
+        #         self.visit(meth, self.types.create_child())
+        #         param_names = []
+        #         param_types = []
+        #         for param in meth.params:
+        #             param_names.append(param[0])
+        #             param_types.append(param[1])
+        #         self.current_type.define_method(
+        #             meth.name, param_names, param_types, meth.type)
+        for attr in node.body.attributes:
             self.visit(attr, self.types.create_child())
             self.current_type.define_attribute(attr.id.name, attr.type)
-        for meth in node.methods:
+        for meth in node.body.methods:
             self.visit(meth, self.types.create_child())
             param_names = []
             param_types = []
@@ -82,6 +88,18 @@ class TypeBuilder:
                 param_types.append(param[1])
             self.current_type.define_method(
                 meth.name, param_names, param_types, meth.type)
+        
+
+
+        for param in self.var.keys():
+            self.current_type.params.append((param, self.var[param]))
+        self.var = {}
+        self.current_type = None
+        return self.errors
+
+    @visitor.when(hulk.TypeBodyDeclarationNode)
+    def visit(self, node, types):
+        
         return self.errors
 
     @visitor.when(hulk.AttributeNode)
@@ -750,13 +768,17 @@ class TypeBuilder:
 
         if node.child:
             if node.type:
-                self.recurrent_type = self.context.get_type(node.type)
-                self.visit(node.child, self.types.create_child())
-                self.recurrent_type = self.context.get_type(node.child.type)
+                # self.recurrent_type = self.context.get_type(node.type)
+                # self.visit(node.child, self.types.create_child())
+                # self.recurrent_type = self.context.get_type(node.child.type)
                 # self.recurrent_type = None
+                pass
             else:
                 if node.name == 'self':
-                    node.type = self.current_type.get_attribute(node.child.name).type
+                    try:
+                        node.type = self.current_type.get_attribute(node.child.name).type
+                    except:
+                        node.type = self.current_type.get_method(node.child.name).return_type
         return self.errors
 
     # self

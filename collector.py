@@ -39,14 +39,18 @@ class Collector(object):
 
         scope.define_variable('self', node.name)
         try:
-            self.context.create_type(node.name)
+            typex = self.context.create_type(node.name)
         except:
             self.errors.append(f"La clase '{node.name}' ha sido definida más de una vez.")
+
+        if node.base_type:
+            typex.parent = self.context.get_type(node.base_type)
+
         body_scope = scope.create_child_scope()
         for param in node.params:
             body_scope.define_variable(param[0],param[1])
-        for param in node.base_params:
-            body_scope.define_variable(param[0],param[1])
+        # for param in node.base_params:
+        #     body_scope.define_variable(param[0],param[1])
         self.visit(node.body, body_scope)
         return self.errors
     

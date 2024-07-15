@@ -53,6 +53,7 @@ def main(input_file):
     with open('script.c', 'w') as output_file:
         output_file.write(output)
 
+    os.system("rm ./script.exe")
     os.system("gcc script.c -lm -o script.exe")
     os.system("./script.exe")
 
