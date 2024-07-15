@@ -221,3 +221,11 @@ class TypeTree:
                 return self.parent.get_variable_info(vname)
             else:
                 return None
+            
+    def set_variable (self, vname, vtype):
+        if vname in self.dict.keys():
+            self.dict[vname] = vtype
+        else:
+            if self.parent:
+                self.parent.set_variable(vname, vtype)
+            

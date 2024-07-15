@@ -59,6 +59,9 @@ type C inherits A {
     hello() => print("C");
 }
 
+<<<<<<< HEAD
+let a = new MyClass() in a.method();
+=======
 {
 
     let pt = new Point(4,5) in 
@@ -99,3 +102,4 @@ type C inherits A {
     let x : Hashable = new Person() in print(x.hash());
     let x : Hashable = new Point(0,0) in print(x.hash()); // error
 }
+>>>>>>> 286deb6e5aa1d5e1302535c835164d4f91d1a510

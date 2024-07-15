@@ -30,22 +30,16 @@ class Collector(object):
         try:
             self.context.create_func(node.name)
         except:
-            self.errors.append(f"La Función '{node.name}' ha sido definida más de una vez.")
+            self.errors.append(f"line: {node.line} La Función '{node.name}' ha sido definida más de una vez.")
         return self.errors
         
             
     @visitor.when(hulk.TypeDeclarationNode)
     def visit(self, node, scope):
-
-        scope.define_variable('self', node.name)
         try:
             typex = self.context.create_type(node.name)
         except:
-            self.errors.append(f"La clase '{node.name}' ha sido definida más de una vez.")
-
-        if node.base_type:
-            typex.parent = self.context.get_type(node.base_type)
-
+            self.errors.append(f"line: {node.line} La clase '{node.name}' ha sido definida más de una vez.")
         body_scope = scope.create_child_scope()
         for param in node.params:
             body_scope.define_variable(param[0],param[1])
@@ -63,12 +57,12 @@ class Collector(object):
                 sub_scope.define_variable(attr.id.name,attr.type)
             else:
                 pass
-                # self.errors.append(f"El atributo '{attr.id.name}' ha sido definido más de una vez")
+                # self.errors.append(f"line: {node.line} El atributo '{attr.id.name}' ha sido definido más de una vez")
         for meth in node.methods:
             if not sub_scope.is_func_defined(meth.name,len(meth.params)):
                 sub_scope.define_function(meth.name,meth.params)
             else:
-                self.errors.append(f"El método '{meth.name}' con '{len(meth.params)}' parámetros ha sido definido más de una vez")
+                self.errors.append(f"line: {node.line} El método '{meth.name}' con '{len(meth.params)}' parámetros ha sido definido más de una vez")
         for meth in node.methods:
             self.visit(meth, sub_scope)
         return self.errors
@@ -145,7 +139,7 @@ class Collector(object):
             for arg in node.args:
                 self.visit(arg, scope.create_child_scope())
         else:
-            # self.errors.append(f"La función '{node.id}' no está definida")
+            # self.errors.append(f"line: {node.line} La función '{node.id}' no está definida")
             pass
         return self.errors
     
@@ -259,9 +253,9 @@ class Collector(object):
     @visitor.when(hulk.IdentifierNode)
     def visit(self,node,scope):
         if not scope.is_var_defined(node.name):
-            self.errors.append(f"Variable {node.name} no declarada")
-        if node.child:
-            self.visit(node.child, scope.create_child_scope())
+            self.errors.append(f"line: {node.line} Variable {node.name} no declarada")
+        # if node.child:
+        #     self.visit(node.child, scope.create_child_scope())
         return self.errors
     
         #self

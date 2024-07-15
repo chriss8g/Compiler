@@ -278,11 +278,9 @@ class CodeToAST:
             lambda h,s:s[1],
             
             # Expresiones de cadena
-            lambda h,s:ConcatSpaceNode(s[1],s[3], line=s[2].line),
             lambda h,s:ConcatSpaceNode(s[1],NumberNode(s[3].lex), line=s[2].line),
             lambda h,s:ConcatSpaceNode(s[1],StringNode(s[3].lex), line=s[2].line),
             lambda h,s:ConcatSpaceNode(s[1],s[3], line=s[2].line),
-            lambda h,s:ConcatNode(s[1],s[3], line=s[2].line),
             lambda h,s:ConcatNode(s[1],NumberNode(s[3].lex), line=s[2].line),
             lambda h,s:ConcatNode(s[1],StringNode(s[3].lex), line=s[2].line),
             lambda h,s:ConcatNode(s[1],s[3], line=s[2].line),
@@ -340,22 +338,20 @@ class CodeToAST:
             lambda h, s: VectorNode(s[2], line=s[1].line),
             lambda h, s: VectorImplicitNode(s[2],s[4],s[8],s[10], line=s[1].line),
             lambda h, s: CallNode(s[1],[s[3],s[5]], line=s[2].line),
-            lambda h, s: s[1],
             lambda h, s: VectorIndex(s[1].lex,s[3], line=s[2].line),
             lambda h, s: AsNode(s[1],s[3].lex, line=s[2].line),
             lambda h, s: s[1],
             
             # Objetos recurrentes
-            lambda h, s: CallNode(s[1].lex, s[3], s[6], line=s[2].line),
-            lambda h, s: CallNode(s[1].lex, [], s[5], line=s[2].line),
-            lambda h, s: CallNode(s[1].lex, s[3], line=s[2].line),
-            lambda h, s: CallNode(s[1].lex, line=s[2].line),
+            lambda h, s: CallNode(s[3].lex, s[5], s[1], line=s[2].line),
+            lambda h, s: CallNode(s[3].lex, None, s[1], line=s[2].line),
+            lambda h, s: IdentifierNode(s[3].lex, s[1], line=s[2].line),
+            lambda h, s: s[1],
+            lambda h, s: CallNode(s[1].lex, s[3], None, line=s[2].line),
+            lambda h, s: CallNode(s[1].lex, None, None, line=s[2].line),
             
             # Identificador
-            lambda h, s: IdentifierNode(s[1].lex, line=s[1].line),
-            lambda h, s: IdentifierNode(s[1].lex, s[3], line=s[1].line),
-            lambda h, s: IdentifierNode(s[1].lex, IdentifierNode(s[3], s[5]), line=s[1].line),
-            lambda h, s: IdentifierNode(s[1].lex, s[3], line=s[1].line)
+            lambda h, s: IdentifierNode(s[1].lex, line=s[1].line)
             
         ]
 
@@ -436,7 +432,7 @@ class CodeToAST:
         expr %= forx + opar + idnode + inx + rangex + opar + expr + comma + expr + cpar + cpar + expr
         expr %= forx + opar + idnode + inx + idnode + cpar + expr
         expr %= printx + opar + expr + cpar
-        expr %= idnode + asign2 + expr
+        expr %= recurrent_object + asign2 + expr
         expr %= new + idx + opar + arg_expr + cpar
         expr %= new + idx + opar + cpar
         expr %= calc_expr
@@ -461,11 +457,9 @@ class CodeToAST:
         calc_expr %= string_expr
         
         # Expresiones de cadena
-        string_expr %= string_expr + concat_space + idnode
         string_expr %= string_expr + concat_space + number
         string_expr %= string_expr + concat_space + string
         string_expr %= string_expr + concat_space + recurrent_object
-        string_expr %= string_expr + concat + idnode
         string_expr %= string_expr + concat + number
         string_expr %= string_expr + concat + string
         string_expr %= string_expr + concat + recurrent_object
@@ -523,22 +517,20 @@ class CodeToAST:
         aritmetic_atom %= obrake + arg_expr + cbrake
         aritmetic_atom %= obrake + calc_expr + implicit + idnode + inx + rangex + opar + calc_expr + comma + calc_expr + cpar + cbrake
         aritmetic_atom %= rangex + opar + expr + comma + expr + cpar
-        aritmetic_atom %= idnode
         aritmetic_atom %= idx + obrake + calc_expr + cbrake
         aritmetic_atom %= idnode + asx + idx
         aritmetic_atom %= recurrent_object
 
         # Expresiones recurrentes
-        recurrent_object %= idx + opar + arg_expr + cpar + dot + recurrent_object
-        recurrent_object %= idx + opar + cpar + dot + recurrent_object
+        recurrent_object %= recurrent_object + dot + idx + opar + arg_expr + cpar
+        recurrent_object %= recurrent_object + dot + idx + opar + cpar
+        recurrent_object %= recurrent_object + dot + idx
+        recurrent_object %= idnode
         recurrent_object %= idx + opar + arg_expr + cpar
         recurrent_object %= idx + opar + cpar
 
         # Identificador
         idnode %= idx
-        idnode %= idx + dot + idnode
-        idnode %= idx + dot + idx + recurrent_object
-        idnode %= idx + dot + recurrent_object
 
         #############################################################################
 

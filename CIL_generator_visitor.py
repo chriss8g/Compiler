@@ -7,8 +7,6 @@ from semantic_checker.scope import Scope, VariableInfo
 
 
 def update_types(type):
-    if not type:
-        return None
     type = type if type != hulk.BOOL_TYPE else c.INT_TYPE
     type = type if type != hulk.NUMBER_TYPE else c.FLOAT_TYPE
     type = type if type != hulk.STRING_TYPE else c.STRING_TYPE
@@ -135,26 +133,14 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
         for param in node.params:
             # vinfo = scope.find_variable(param)
-            # print(param)
-            name = param[0]
-            scope.dict[param[0]] = name
-            scope.define_variable(param[0], update_types(param[1]))
-            param_node = cil.ParamNode(name, update_types(param[1]))
+            param_node = cil.ParamNode(param[0])
             self.register_param(param_node)
-
-            dest = self.define_internal_local(update_types(param[1]))
-            scope.dict[name] = dest
-            scope.define_variable(name, update_types(param[1]))
-            scope.define_variable(dest, update_types(param[1]))
-            self.register_instruction(cil.AssignNode(dest, name))
 
         expr = self.visit(node.body, scope.create_child_scope())
 
         self.register_instruction(cil.ReturnNode(expr))
 
         self.current_function = parent
-
-        return function_name
 
     @visitor.when(hulk.ObjectCreationNode)
     def visit(self, node, scope):
@@ -183,7 +169,7 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
         parent = self.current_function
 
         function_name = self.to_function_name(node.name)
-        self.context2[node.name] = function_name
+        self.context[node.name] = function_name
         self.current_function = self.register_function(
             function_name, node.type)
 
@@ -693,16 +679,16 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
         return func
 
-    @visitor.when(hulk.CallNode)
-    def visit(self, node, scope):
-        node.type = update_types(node.type)
+    # @visitor.when(hulk.CallNode)
+    # def visit(self, node, scope):
+    #     node.type = update_types(node.type)
 
-        params = []
-        for child in node.args:
-            params.append(self.visit(child, scope.create_child_scope()))
+    #     params = []
+    #     for child in node.args:
+    #         params.append(self.visit(child, scope.create_child_scope()))
 
         temp = f'{self.context2[node.name]}(' + ", ".join(child for child in params) + ")"
         dest = self.define_internal_local(node.type)
         self.register_instruction(cil.AssignNode(dest, temp))
 
-        return dest
+    #     return dest

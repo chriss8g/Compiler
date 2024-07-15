@@ -20,8 +20,8 @@ def main(input_file):
         print(codeToAST.error_msg)
         return
 
-    with open('script.uh_ast', 'w') as output_file:
-        output_file.write(str(codeToAST))
+    # with open('script.uh_ast', 'w') as output_file:
+    #     output_file.write(str(codeToAST))
 
 
     collector = Collector()
@@ -38,7 +38,7 @@ def main(input_file):
 
         return
     
-    cil_generator = HULKToCILVisitor(collector.context)
+    cil_generator = HULKToCILVisitor({})
     output = cil_generator.visit(codeToAST.ast)
 
     from utils.my_format_visitor import FormatVisitor
@@ -63,4 +63,4 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     main(args.input_file)
-# main('./script.uh')
+# main('./test.hulk')
