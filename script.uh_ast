@@ -1,529 +1,253 @@
 \__ProgramNode [<program>]
-	\__FuncDeclarationNode: function tan : Number => <body>  at line 1   [<statement>]
-		Params
-		('x', 'Number')
-		Body
-		\__DivNode  at line 1  [<expression>]
-			\__SinNode  at line 1    [<expression>]
-				\__IdentifierNode: x : None   at line 1  
-			\__CosNode  at line 1    [<expression>]
-				\__IdentifierNode: x : None   at line 1  
-	\__FuncDeclarationNode: function cot : None => <body>  at line 2   [<statement>]
-		Params
-		('x', None)
-		Body
-		\__DivNode  at line 2  [<expression>]
-			\__NumberNode: 1  at line 2  
-			\__CallNode tan  at line 2   [<expression>]
-				\_ Arguments
-					\__IdentifierNode: x : None   at line 2  
-	\__FuncDeclarationNode: function fib : None => <body>  at line 3   [<statement>]
-		Params
-		('n', None)
-		Body
-		\__IfNode   at line 3  [<expression>]
-			\_ Condition
-				\__OrNode  at line 3  [<expression>]
-					\__EQNode  at line 3  [<expression>]
-						\__IdentifierNode: n : None   at line 3  
-						\__NumberNode: 0  at line 3  
-					\__EQNode  at line 3  [<expression>]
-						\__IdentifierNode: n : None   at line 3  
-						\__NumberNode: 1  at line 3  
-			\_ Body
-				\__NumberNode: 1  at line 3  
-			\_ Else Body
-				\__PlusNode  at line 3  [<expression>]
-					\__CallNode fib  at line 3   [<expression>]
-						\_ Arguments
-							\__MinusNode  at line 3  [<expression>]
-								\__IdentifierNode: n : None   at line 3  
-								\__NumberNode: 1  at line 3  
-					\__CallNode fib  at line 3   [<expression>]
-						\_ Arguments
-							\__MinusNode  at line 3  [<expression>]
-								\__IdentifierNode: n : None   at line 3  
-								\__NumberNode: 2  at line 3  
-	\__FuncDeclarationNode: function fact : None => <body>  at line 4   [<statement>]
-		Params
-		('x', None)
-		Body
-		\__LetNode  at line 4  [<expression>]
-			\__AssignNode:
-				\__IdentifierNode: f : None   at line 4  
-				\__NumberNode: 1  at line 4  
-			\__LetNode  at line 4  [<expression>]
-				\__AssignNode:
-					\__IdentifierNode: i : None   at line 4  
-					\__NumberNode: 1  at line 4  
-				\__BlockNode  at line 4  [<expression>]
-					\__AssignNode:
-						\__IdentifierNode: i : None   at line 4  
-						\__MinusNode  at line 4  [<expression>]
-							\__IdentifierNode: i : None   at line 4  
-							\__NumberNode: 1  at line 4  
-					\__WhileNode  at line 4  [<expression>]
-						\_ Condition
-							\__LTNode  at line 4  [<expression>]
-								\__DestructNode at line 4   [<expression>]
-									\__IdentifierNode: i : None   at line 4  
-									\__PlusNode  at line 4  [<expression>]
-										\__IdentifierNode: i : None   at line 4  
-										\__NumberNode: 1  at line 4  
-								\__PlusNode  at line 4  [<expression>]
-									\__IdentifierNode: x : None   at line 4  
-									\__NumberNode: 1  at line 4  
-						\_ Body
-							\__BlockNode  at line 4  [<expression>]
-								\__DestructNode at line 4   [<expression>]
-									\__IdentifierNode: f : None   at line 4  
-									\__StarNode  at line 4  [<expression>]
-										\__IdentifierNode: f : None   at line 4  
-										\__IdentifierNode: i : None   at line 4  
-	\__FuncDeclarationNode: function next : None => <body>  at line 5   [<statement>]
-		Params
-		('x', None)
-		Body
-		\__PlusNode  at line 5  [<expression>]
-			\__IdentifierNode: x : None   at line 5  
-			\__NumberNode: 1  at line 5  
-	\__TypeNode: type Person inherits None  at line 7  [<statement>]
-					Param 0 ('firstname', 'String')
-			Param 1 ('lastname', 'String')
+	\__TypeNode: type Stack inherits None  at line 1  [<statement>]
 		\__TypeBodyNode   at line 0  
 			Atributes
-				\__AttributeNode id = <expr>   at line 8  
-					\__IdentifierNode: firstname : String   at line 8  
-					\__IdentifierNode: firstname : None   at line 8  
-				\__AttributeNode id = <expr>   at line 9  
-					\__IdentifierNode: lastname : String   at line 9  
-					\__IdentifierNode: lastname : None   at line 9  
+				\__AttributeNode id = <expr>   at line 3  
+					\__IdentifierNode: count : None   at line 3  
+					\__NumberNode: 0  at line 3  
+				\__AttributeNode id = <expr>   at line 4  
+					\__IdentifierNode: top : Node   at line 4  
+					\__NumberNode: 5  at line 4  
+				\__AttributeNode id = <expr>   at line 5  
+					\__IdentifierNode: index : None   at line 5  
+					\__NumberNode: 0  at line 5  
+				\__AttributeNode id = <expr>   at line 6  
+					\__IdentifierNode: currentProp : None   at line 6  
+					\__NumberNode: 4  at line 6  
 			Methods
-				\__MethodNode: function name : None => <body>   at line 11  
+				\__MethodNode: function push : number => <body>   at line 8  
+					Params
+						('value', 'number')
+					\__LetNode  at line 8  [<expression>]
+						\__AssignNode:
+							\__IdentifierNode: node : None   at line 8  
+							\_ObjectCreationNode: new Node   at line 8  [<expression>]
+								\__IdentifierNode: value : None   at line 8  
+						\__BlockNode  at line 9  [<expression>]
+							\__IfNode   at line 10  [<expression>]
+								\_ Condition
+									\__EQNode  at line 10  [<expression>]
+										\__IdentifierNode: count : None   at line 10  
+											\__IdentifierNode: self : None   at line 10  
+										\__NumberNode: 0  at line 10  
+								\_ Body
+									\__BlockNode  at line 11  [<expression>]
+										\__DestructNode at line 12   [<expression>]
+											\__IdentifierNode: top : None   at line 12  
+												\__IdentifierNode: self : None   at line 12  
+											\__IdentifierNode: node : None   at line 12  
+										\__DestructNode at line 13   [<expression>]
+											\__IdentifierNode: count : None   at line 13  
+												\__IdentifierNode: self : None   at line 13  
+											\__NumberNode: 1  at line 13  
+								\_ Else Body
+									\__BlockNode  at line 16  [<expression>]
+										\__CallNode setNext  at line 17   [<expression>]
+											\_ Arguments
+												\__IdentifierNode: node : None   at line 17  
+											\__IdentifierNode: top : None   at line 17  
+												\__IdentifierNode: self : None   at line 17  
+										\__CallNode setPrevious  at line 18   [<expression>]
+											\_ Arguments
+												\__IdentifierNode: top : None   at line 18  
+													\__IdentifierNode: self : None   at line 18  
+											\__IdentifierNode: node : None   at line 18  
+										\__DestructNode at line 19   [<expression>]
+											\__IdentifierNode: top : None   at line 19  
+												\__IdentifierNode: self : None   at line 19  
+											\__IdentifierNode: node : None   at line 19  
+										\__DestructNode at line 20   [<expression>]
+											\__IdentifierNode: count : None   at line 20  
+												\__IdentifierNode: self : None   at line 20  
+											\__PlusNode  at line 20  [<expression>]
+												\__IdentifierNode: count : None   at line 20  
+													\__IdentifierNode: self : None   at line 20  
+												\__NumberNode: 1  at line 20  
+							\__DestructNode at line 23   [<expression>]
+								\__IdentifierNode: currentProp : None   at line 23  
+									\__IdentifierNode: self : None   at line 23  
+								\__IdentifierNode: top : None   at line 23  
+									\__IdentifierNode: self : None   at line 23  
+							\__DestructNode at line 24   [<expression>]
+								\__IdentifierNode: index : None   at line 24  
+									\__IdentifierNode: self : None   at line 24  
+								\__IdentifierNode: count : None   at line 24  
+									\__IdentifierNode: self : None   at line 24  
+							\__IdentifierNode: value : None   at line 25  
+				\__MethodNode: function peek : number => <body>   at line 28  
 					Params
 
-					\__ConcatSpaceNode  at line 11  [<expression>]
-						\__IdentifierNode: firstname : None   at line 11  
-							\__IdentifierNode: self : None   at line 11  
-						\__IdentifierNode: lastname : None   at line 11  
-							\__IdentifierNode: self : None   at line 11  
-				\__MethodNode: function hash : Number => <body>   at line 12  
+					\__CallNode getValue  at line 28   [<expression>]
+						\__IdentifierNode: top : None   at line 28  
+							\__IdentifierNode: self : None   at line 28  
+				\__MethodNode: function getCount : number => <body>   at line 30  
 					Params
 
-					\__BlockNode  at line 12  [<expression>]
-						\__NumberNode: 5  at line 13  
-	\__TypeNode: type Point inherits None  at line 17  [<statement>]
-					Param 0 ('x', 'Number')
-			Param 1 ('y', 'Number')
+					\__IdentifierNode: count : None   at line 30  
+						\__IdentifierNode: self : None   at line 30  
+				\__MethodNode: function next : bool => <body>   at line 32  
+					Params
+
+					\__BlockNode  at line 33  [<expression>]
+						\__IfNode   at line 34  [<expression>]
+							\_ Condition
+								\__AndNode  at line 34  [<expression>]
+									\__EQNode  at line 34  [<expression>]
+										\__IdentifierNode: index : None   at line 34  
+											\__IdentifierNode: self : None   at line 34  
+										\__IdentifierNode: count : None   at line 34  
+											\__IdentifierNode: self : None   at line 34  
+									\__GTNode  at line 34  [<expression>]
+										\__IdentifierNode: index : None   at line 34  
+											\__IdentifierNode: self : None   at line 34  
+										\__NumberNode: 0  at line 34  
+							\_ Body
+								\__BlockNode  at line 35  [<expression>]
+									\__DestructNode at line 36   [<expression>]
+										\__IdentifierNode: currentProp : None   at line 36  
+											\__IdentifierNode: self : None   at line 36  
+										\__IdentifierNode: top : None   at line 36  
+											\__IdentifierNode: self : None   at line 36  
+									\__DestructNode at line 37   [<expression>]
+										\__IdentifierNode: index : None   at line 37  
+											\__IdentifierNode: self : None   at line 37  
+										\__MinusNode  at line 37  [<expression>]
+											\__IdentifierNode: index : None   at line 37  
+												\__IdentifierNode: self : None   at line 37  
+											\__NumberNode: 1  at line 37  
+									\__BoolNode: true  at line 38  
+							\_ Elif Condition 0
+								\__GTNode  at line 40  [<expression>]
+									\__IdentifierNode: index : None   at line 40  
+										\__IdentifierNode: self : None   at line 40  
+									\__NumberNode: 0  at line 40  
+							\_ Elif Body 0
+								\__BlockNode  at line 41  [<expression>]
+									\__DestructNode at line 42   [<expression>]
+										\__IdentifierNode: currentProp : None   at line 42  
+											\__IdentifierNode: self : None   at line 42  
+										\__CallNode getPrevious  at line 42   [<expression>]
+											\__IdentifierNode: currentProp : None   at line 42  
+												\__IdentifierNode: self : None   at line 42  
+									\__DestructNode at line 43   [<expression>]
+										\__IdentifierNode: index : None   at line 43  
+											\__IdentifierNode: self : None   at line 43  
+										\__MinusNode  at line 43  [<expression>]
+											\__IdentifierNode: index : None   at line 43  
+												\__IdentifierNode: self : None   at line 43  
+											\__NumberNode: 1  at line 43  
+									\__BoolNode: true  at line 44  
+							\_ Else Body
+								\__BoolNode: false  at line 47  
+				\__MethodNode: function current : number => <body>   at line 50  
+					Params
+
+					\__CallNode getValue  at line 50   [<expression>]
+						\__IdentifierNode: currentProp : None   at line 50  
+							\__IdentifierNode: self : None   at line 50  
+	\__TypeNode: type Node inherits None  at line 53  [<statement>]
+					Param 0 ('value', 'number')
 		\__TypeBodyNode   at line 0  
 			Atributes
-				\__AttributeNode id = <expr>   at line 18  
-					\__IdentifierNode: x : None   at line 18  
-					\__IdentifierNode: x : None   at line 18  
-				\__AttributeNode id = <expr>   at line 19  
-					\__IdentifierNode: y : None   at line 19  
-					\__IdentifierNode: y : None   at line 19  
-			Methods
-				\__MethodNode: function getX : None => <body>   at line 21  
-					Params
-
-					\__IdentifierNode: x : None   at line 21  
-						\__IdentifierNode: self : None   at line 21  
-				\__MethodNode: function getY : None => <body>   at line 22  
-					Params
-
-					\__IdentifierNode: y : None   at line 22  
-						\__IdentifierNode: self : None   at line 22  
-				\__MethodNode: function setX : None => <body>   at line 24  
-					Params
-						('x', 'Number')
-					\__DestructNode at line 24   [<expression>]
-						\__IdentifierNode: x : None   at line 24  
-							\__IdentifierNode: self : None   at line 24  
-						\__IdentifierNode: x : None   at line 24  
-				\__MethodNode: function setY : None => <body>   at line 25  
-					Params
-						('y', 'Number')
-					\__DestructNode at line 25   [<expression>]
-						\__IdentifierNode: y : None   at line 25  
-							\__IdentifierNode: self : None   at line 25  
-						\__IdentifierNode: y : None   at line 25  
-	\__BlockNode  at line 28  [<expression>]
-		\__NumberNode: 42  at line 29  
-		\__PrintNode  at line 30  [<expression>]
-			\__NumberNode: 42  at line 30  
-		\__PrintNode  at line 31  [<expression>]
-			\__DivNode  at line 31  [<expression>]
-				\__StarNode  at line 31  [<expression>]
-					\__StarNode  at line 31  [<expression>]
-						\__PlusNode  at line 31  [<expression>]
-							\__NumberNode: 1  at line 31  
-							\__NumberNode: 2  at line 31  
-						\__NumberNode: 3  at line 31  
-					\__NumberNode: 4  at line 31  
-				\__NumberNode: 5  at line 31  
-		\__PrintNode  at line 32  [<expression>]
-			\__StringNode: "Hello World"  at line 32  
-		\__PrintNode  at line 33  [<expression>]
-			\__StringNode: "The message is \"Hello World\""  at line 33  
-		\__PrintNode  at line 34  [<expression>]
-			\__ConcatNode  at line 34  [<expression>]
-				\__StringNode: "The meaning of life is "  at line 34  
-				\__NumberNode: 42  at line 0  
-		\__PrintNode  at line 35  [<expression>]
-			\__PlusNode  at line 35  [<expression>]
-				\__StarNode  at line 35  [<expression>]
-					\__SinNode  at line 35    [<expression>]
-						\__StarNode  at line 35  [<expression>]
-							\__NumberNode: 2  at line 35  
-							\__NumberNode: PI  at line 35  
-					\__NumberNode: 2  at line 35  
-				\__CosNode  at line 35    [<expression>]
-					\__DivNode  at line 35  [<expression>]
-						\__StarNode  at line 35  [<expression>]
-							\__NumberNode: 3  at line 35  
-							\__NumberNode: PI  at line 35  
-						\__LogNode  at line 35  [<expression>]
-							\__NumberNode: 4  at line 35  
-							\__NumberNode: 64  at line 35  
-		\__BlockNode  at line 36  [<expression>]
-			\__PrintNode  at line 37  [<expression>]
-				\__NumberNode: 42  at line 37  
-			\__PrintNode  at line 38  [<expression>]
-				\__SinNode  at line 38    [<expression>]
-					\__DivNode  at line 38  [<expression>]
-						\__NumberNode: PI  at line 38  
-						\__NumberNode: 2  at line 38  
-			\__PrintNode  at line 39  [<expression>]
-				\__StringNode: "Hello World"  at line 39  
-		\__PrintNode  at line 43  [<expression>]
-			\__PlusNode  at line 43  [<expression>]
-				\__StarNode  at line 43  [<expression>]
-					\__CallNode tan  at line 43   [<expression>]
-						\_ Arguments
-							\__NumberNode: PI  at line 43  
-					\__NumberNode: 2  at line 43  
-				\__StarNode  at line 43  [<expression>]
-					\__CallNode cot  at line 43   [<expression>]
-						\_ Arguments
-							\__NumberNode: PI  at line 43  
-					\__NumberNode: 2  at line 43  
-		\__LetNode  at line 45  [<expression>]
-			\__AssignNode:
-				\__IdentifierNode: msg : None   at line 45  
-				\__StringNode: "Hello World"  at line 45  
-			\__PrintNode  at line 45  [<expression>]
-				\__IdentifierNode: msg : None   at line 45  
-		\__LetNode  at line 46  [<expression>]
-			\__AssignNode:
-				\__IdentifierNode: number : None   at line 46  
-				\__NumberNode: 42  at line 46  
-			\__LetNode  at line 46  [<expression>]
-				\__AssignNode:
-					\__IdentifierNode: text : None   at line 46  
-					\__StringNode: "The meaning of life is"  at line 46  
-				\__PrintNode  at line 47  [<expression>]
-					\__ConcatSpaceNode  at line 47  [<expression>]
-						\__IdentifierNode: text : None   at line 47  
-						\__IdentifierNode: number : None   at line 47  
-		\__LetNode  at line 48  [<expression>]
-			\__AssignNode:
-				\__IdentifierNode: number : None   at line 48  
-				\__NumberNode: 42  at line 48  
-			\__LetNode  at line 49  [<expression>]
-				\__AssignNode:
-					\__IdentifierNode: text : None   at line 49  
-					\__StringNode: "The meaning of life is"  at line 49  
-				\__PrintNode  at line 50  [<expression>]
-					\__ConcatNode  at line 50  [<expression>]
-						\__IdentifierNode: text : None   at line 50  
-						\__IdentifierNode: number : None   at line 50  
-		\__LetNode  at line 52  [<expression>]
-			\__AssignNode:
-				\__IdentifierNode: number : None   at line 52  
-				\__NumberNode: 42  at line 52  
-			\__LetNode  at line 53  [<expression>]
-				\__AssignNode:
-					\__IdentifierNode: text : None   at line 53  
-					\__StringNode: "The meaning of life is"  at line 53  
-				\__PrintNode  at line 54  [<expression>]
-					\__ConcatNode  at line 54  [<expression>]
-						\__IdentifierNode: text : None   at line 54  
-						\__IdentifierNode: number : None   at line 54  
-		\__LetNode  at line 57  [<expression>]
-			\__AssignNode:
-				\__IdentifierNode: a : None   at line 57  
-				\__NumberNode: 6  at line 57  
-			\__LetNode  at line 57  [<expression>]
-				\__AssignNode:
-					\__IdentifierNode: b : None   at line 57  
-					\__StarNode  at line 57  [<expression>]
-						\__IdentifierNode: a : None   at line 57  
-						\__NumberNode: 7  at line 57  
-				\__PrintNode  at line 57  [<expression>]
-					\__IdentifierNode: b : None   at line 57  
-		\__LetNode  at line 59  [<expression>]
-			\__AssignNode:
-				\__IdentifierNode: a : None   at line 59  
-				\__NumberNode: 6  at line 59  
-			\__LetNode  at line 60  [<expression>]
-				\__AssignNode:
-					\__IdentifierNode: b : None   at line 60  
-					\__StarNode  at line 60  [<expression>]
-						\__IdentifierNode: a : None   at line 60  
-						\__NumberNode: 7  at line 60  
-				\__PrintNode  at line 61  [<expression>]
-					\__IdentifierNode: b : None   at line 61  
-		\__LetNode  at line 63  [<expression>]
-			\__AssignNode:
-				\__IdentifierNode: a : None   at line 63  
-				\__NumberNode: 5  at line 63  
-			\__LetNode  at line 63  [<expression>]
-				\__AssignNode:
-					\__IdentifierNode: b : None   at line 63  
-					\__NumberNode: 10  at line 63  
-				\__LetNode  at line 63  [<expression>]
-					\__AssignNode:
-						\__IdentifierNode: c : None   at line 63  
-						\__NumberNode: 20  at line 63  
-					\__BlockNode  at line 63  [<expression>]
-						\__PrintNode  at line 64  [<expression>]
-							\__PlusNode  at line 64  [<expression>]
-								\__IdentifierNode: a : None   at line 64  
-								\__IdentifierNode: b : None   at line 64  
-						\__PrintNode  at line 65  [<expression>]
-							\__StarNode  at line 65  [<expression>]
-								\__IdentifierNode: b : None   at line 65  
-								\__IdentifierNode: c : None   at line 65  
-						\__PrintNode  at line 66  [<expression>]
-							\__DivNode  at line 66  [<expression>]
-								\__IdentifierNode: c : None   at line 66  
-								\__IdentifierNode: a : None   at line 66  
-		\__LetNode  at line 69  [<expression>]
-			\__AssignNode:
-				\__IdentifierNode: a : None   at line 69  
-				\__LetNode  at line 69  [<expression>]
-					\__AssignNode:
-						\__IdentifierNode: b : None   at line 69  
-						\__NumberNode: 6  at line 69  
-					\__StarNode  at line 69  [<expression>]
-						\__IdentifierNode: b : None   at line 69  
-						\__NumberNode: 7  at line 69  
-			\__PrintNode  at line 69  [<expression>]
-				\__IdentifierNode: a : None   at line 69  
-		\__PrintNode  at line 71  [<expression>]
-			\__LetNode  at line 71  [<expression>]
-				\__AssignNode:
-					\__IdentifierNode: b : None   at line 71  
-					\__NumberNode: 6  at line 71  
-				\__StarNode  at line 71  [<expression>]
-					\__IdentifierNode: b : None   at line 71  
-					\__NumberNode: 7  at line 71  
-		\__LetNode  at line 72  [<expression>]
-			\__AssignNode:
-				\__IdentifierNode: a : None   at line 72  
-				\__NumberNode: 20  at line 72  
-			\__BlockNode  at line 72  [<expression>]
-				\__LetNode  at line 73  [<expression>]
-					\__AssignNode:
-						\__IdentifierNode: a : None   at line 73  
-						\__NumberNode: 42  at line 73  
-					\__PrintNode  at line 73  [<expression>]
-						\__IdentifierNode: a : None   at line 73  
-				\__PrintNode  at line 74  [<expression>]
-					\__IdentifierNode: a : None   at line 74  
-		\__LetNode  at line 76  [<expression>]
-			\__AssignNode:
-				\__IdentifierNode: a : None   at line 76  
-				\__NumberNode: 7  at line 76  
-			\__LetNode  at line 76  [<expression>]
-				\__AssignNode:
-					\__IdentifierNode: a : None   at line 76  
-					\__StarNode  at line 76  [<expression>]
-						\__NumberNode: 7  at line 76  
-						\__NumberNode: 6  at line 76  
-				\__PrintNode  at line 76  [<expression>]
-					\__IdentifierNode: a : None   at line 76  
-		\__LetNode  at line 77  [<expression>]
-			\__AssignNode:
-				\__IdentifierNode: a : None   at line 77  
-				\__NumberNode: 7  at line 77  
-			\__LetNode  at line 78  [<expression>]
-				\__AssignNode:
-					\__IdentifierNode: a : None   at line 78  
-					\__StarNode  at line 78  [<expression>]
-						\__NumberNode: 7  at line 78  
-						\__NumberNode: 6  at line 78  
-				\__PrintNode  at line 79  [<expression>]
-					\__IdentifierNode: a : None   at line 79  
-		\__LetNode  at line 80  [<expression>]
-			\__AssignNode:
-				\__IdentifierNode: a : None   at line 80  
-				\__NumberNode: 0  at line 80  
-			\__BlockNode  at line 80  [<expression>]
-				\__PrintNode  at line 81  [<expression>]
-					\__IdentifierNode: a : None   at line 81  
-				\__DestructNode at line 82   [<expression>]
-					\__IdentifierNode: a : None   at line 82  
-					\__NumberNode: 1  at line 82  
-				\__PrintNode  at line 83  [<expression>]
-					\__IdentifierNode: a : None   at line 83  
-		\__LetNode  at line 85  [<expression>]
-			\__AssignNode:
-				\__IdentifierNode: a : None   at line 85  
-				\__NumberNode: 0  at line 85  
-			\__LetNode  at line 86  [<expression>]
-				\__AssignNode:
-					\__IdentifierNode: b : None   at line 86  
-					\__DestructNode at line 86   [<expression>]
-						\__IdentifierNode: a : None   at line 86  
-						\__NumberNode: 1  at line 86  
-				\__BlockNode  at line 86  [<expression>]
-					\__PrintNode  at line 87  [<expression>]
-						\__IdentifierNode: a : None   at line 87  
-					\__PrintNode  at line 88  [<expression>]
-						\__IdentifierNode: b : None   at line 88  
-		\__LetNode  at line 90  [<expression>]
-			\__AssignNode:
-				\__IdentifierNode: a : None   at line 90  
-				\__NumberNode: 42  at line 90  
-			\__IfNode   at line 90  [<expression>]
-				\_ Condition
-					\__EQNode  at line 90  [<expression>]
-						\__ModNode  at line 90  [<expression>]
-							\__IdentifierNode: a : None   at line 90  
-							\__NumberNode: 2  at line 90  
-						\__NumberNode: 0  at line 90  
-				\_ Body
-					\__PrintNode  at line 90  [<expression>]
-						\__StringNode: "Even"  at line 90  
-				\_ Else Body
-					\__PrintNode  at line 90  [<expression>]
-						\__StringNode: "odd"  at line 90  
-		\__LetNode  at line 91  [<expression>]
-			\__AssignNode:
-				\__IdentifierNode: a : None   at line 91  
-				\__NumberNode: 42  at line 91  
-			\__PrintNode  at line 91  [<expression>]
-				\__IfNode   at line 91  [<expression>]
-					\_ Condition
-						\__EQNode  at line 91  [<expression>]
-							\__ModNode  at line 91  [<expression>]
-								\__IdentifierNode: a : None   at line 91  
-								\__NumberNode: 2  at line 91  
-							\__NumberNode: 0  at line 91  
-					\_ Body
-						\__StringNode: "even"  at line 91  
-					\_ Else Body
-						\__StringNode: "odd"  at line 91  
-		\__LetNode  at line 92  [<expression>]
-			\__AssignNode:
-				\__IdentifierNode: a : None   at line 92  
-				\__NumberNode: 42  at line 92  
-			\__IfNode   at line 93  [<expression>]
-				\_ Condition
-					\__EQNode  at line 93  [<expression>]
-						\__ModNode  at line 93  [<expression>]
-							\__IdentifierNode: a : None   at line 93  
-							\__NumberNode: 2  at line 93  
-						\__NumberNode: 0  at line 93  
-				\_ Body
-					\__BlockNode  at line 93  [<expression>]
-						\__PrintNode  at line 94  [<expression>]
-							\__IdentifierNode: a : None   at line 94  
-						\__PrintNode  at line 95  [<expression>]
-							\__StringNode: "Even"  at line 95  
-				\_ Else Body
-					\__PrintNode  at line 97  [<expression>]
-						\__StringNode: "Odd"  at line 97  
-		\__LetNode  at line 98  [<expression>]
-			\__AssignNode:
-				\__IdentifierNode: a : None   at line 98  
-				\__NumberNode: 42  at line 98  
-			\__LetNode  at line 98  [<expression>]
-				\__AssignNode:
-					\__IdentifierNode: mod : None   at line 98  
-					\__ModNode  at line 98  [<expression>]
-						\__IdentifierNode: a : None   at line 98  
-						\__NumberNode: 3  at line 98  
-				\__PrintNode  at line 99  [<expression>]
-					\__IfNode   at line 100  [<expression>]
+				\__AttributeNode id = <expr>   at line 55  
+					\__IdentifierNode: value : None   at line 55  
+					\__IdentifierNode: value : None   at line 55  
+				\__AttributeNode id = <expr>   at line 56  
+					\__IdentifierNode: previous : Node   at line 56  
+					\__WhileNode  at line 56  [<expression>]
 						\_ Condition
-							\__EQNode  at line 100  [<expression>]
-								\__IdentifierNode: mod : None   at line 100  
-								\__NumberNode: 0  at line 100  
+							\__BoolNode: false  at line 56  
 						\_ Body
-							\__StringNode: "Magic"  at line 100  
-						\_ Else Body
-							\__StringNode: "Dumb"  at line 101  
-		\__LetNode  at line 103  [<expression>]
-			\__AssignNode:
-				\__IdentifierNode: a : None   at line 103  
-				\__NumberNode: 10  at line 103  
-			\__WhileNode  at line 103  [<expression>]
+							\__NumberNode: 0  at line 56  
+				\__AttributeNode id = <expr>   at line 57  
+					\__IdentifierNode: next : Node   at line 57  
+					\__WhileNode  at line 57  [<expression>]
+						\_ Condition
+							\__BoolNode: false  at line 57  
+						\_ Body
+							\__NumberNode: 0  at line 57  
+			Methods
+				\__MethodNode: function getValue : number => <body>   at line 58  
+					Params
+
+					\__IdentifierNode: value : None   at line 58  
+						\__IdentifierNode: self : None   at line 58  
+				\__MethodNode: function getNext : Node => <body>   at line 59  
+					Params
+
+					\__IdentifierNode: next : None   at line 59  
+						\__IdentifierNode: self : None   at line 59  
+				\__MethodNode: function getPrevious : Node => <body>   at line 60  
+					Params
+
+					\__IdentifierNode: previous : None   at line 60  
+						\__IdentifierNode: self : None   at line 60  
+				\__MethodNode: function setNext : Node => <body>   at line 61  
+					Params
+						('node', 'Node')
+					\__DestructNode at line 61   [<expression>]
+						\__IdentifierNode: next : None   at line 61  
+							\__IdentifierNode: self : None   at line 61  
+						\__IdentifierNode: node : None   at line 61  
+				\__MethodNode: function setPrevious : Node => <body>   at line 62  
+					Params
+						('node', 'Node')
+					\__DestructNode at line 62   [<expression>]
+						\__IdentifierNode: previous : None   at line 62  
+							\__IdentifierNode: self : None   at line 62  
+						\__IdentifierNode: node : None   at line 62  
+	\__LetNode  at line 65  [<expression>]
+		\__AssignNode:
+			\__IdentifierNode: s : None   at line 65  
+			\_ObjectCreationNode: new Stack   at line 65  [<expression>]
+		\__BlockNode  at line 66  [<expression>]
+			\__CallNode push  at line 67   [<expression>]
+				\_ Arguments
+					\__NumberNode: 1  at line 67  
+				\__IdentifierNode: s : None   at line 67  
+			\__CallNode push  at line 68   [<expression>]
+				\_ Arguments
+					\__NumberNode: 2  at line 68  
+				\__IdentifierNode: s : None   at line 68  
+			\__CallNode push  at line 69   [<expression>]
+				\_ Arguments
+					\__NumberNode: 3  at line 69  
+				\__IdentifierNode: s : None   at line 69  
+			\__WhileNode  at line for: for, in [line:71]  [<expression>]
 				\_ Condition
-					\__GENode  at line 103  [<expression>]
-						\__IdentifierNode: a : None   at line 103  
-						\__NumberNode: 0  at line 103  
+					\__IdentifierNode: s : None   at line 0  
+						\__CallNode next  at line 0   [<expression>]
 				\_ Body
-					\__BlockNode  at line 103  [<expression>]
-						\__PrintNode  at line 104  [<expression>]
-							\__IdentifierNode: a : None   at line 104  
-						\__DestructNode at line 105   [<expression>]
-							\__IdentifierNode: a : None   at line 105  
-							\__MinusNode  at line 105  [<expression>]
-								\__IdentifierNode: a : None   at line 105  
-								\__NumberNode: 1  at line 105  
-		\__PrintNode  at line 108  [<expression>]
-			\__CallNode fact  at line 108   [<expression>]
+					\__LetNode  at line 71  [<expression>]
+						\__AssignNode:
+							\__IdentifierNode: elem : None   at line 71  
+							\__IdentifierNode: s : None   at line 0  
+								\__CallNode current  at line 0   [<expression>]
+						\__PrintNode  at line 72  [<expression>]
+							\__IdentifierNode: elem : None   at line 72  
+			\__PrintNode  at line 74  [<expression>]
+				\__StringNode: "\n"  at line 74  
+			\__CallNode push  at line 76   [<expression>]
 				\_ Arguments
-					\__NumberNode: 5  at line 108  
-		\__PrintNode  at line 109  [<expression>]
-			\__CallNode fib  at line 109   [<expression>]
+					\__NumberNode: 10  at line 76  
+				\__IdentifierNode: s : None   at line 76  
+			\__CallNode push  at line 77   [<expression>]
 				\_ Arguments
-					\__NumberNode: 5  at line 109  
-		\__PrintNode  at line 110  [<expression>]
-			\__CallNode next  at line 110   [<expression>]
+					\__NumberNode: 25  at line 77  
+				\__IdentifierNode: s : None   at line 77  
+			\__CallNode push  at line 78   [<expression>]
 				\_ Arguments
-					\__NumberNode: 8  at line 110  
-		\__LetNode  at line 111  [<expression>]
-			\__AssignNode : Person   at line 111  
-				\__IdentifierNode: p : None   at line 111  
-				\_ObjectCreationNode: new Person   at line 111  [<expression>]
-					\__StringNode: "Phil"  at line 111  
-					\__StringNode: "Collins"  at line 111  
-			\__PrintNode  at line 111  [<expression>]
-				\__CallNode name  at line 111   [<expression>]
-					\__IdentifierNode: p : None   at line 111  
-		\__LetNode  at line 113  [<expression>]
-			\__AssignNode:
-				\__IdentifierNode: pt : None   at line 113  
-				\_ObjectCreationNode: new Point   at line 113  [<expression>]
-					\__NumberNode: 4  at line 113  
-					\__NumberNode: 5  at line 113  
-			\__PrintNode  at line 114  [<expression>]
-				\__ConcatNode  at line 114  [<expression>]
-					\__ConcatNode  at line 114  [<expression>]
-						\__ConcatNode  at line 114  [<expression>]
-							\__StringNode: "x: "  at line 114  
-							\__CallNode getX  at line 114   [<expression>]
-								\__IdentifierNode: pt : None   at line 114  
-						\__StringNode: "; y: "  at line 0  
-					\__CallNode getY  at line 114   [<expression>]
-						\__IdentifierNode: pt : None   at line 114  
-		\__LetNode  at line 115  [<expression>]
-			\__AssignNode:
-				\__IdentifierNode: pt : None   at line 115  
-				\_ObjectCreationNode: new Point   at line 115  [<expression>]
-					\__NumberNode: 3  at line 115  
-					\__NumberNode: 4  at line 115  
-			\__PrintNode  at line 116  [<expression>]
-				\__ConcatNode  at line 116  [<expression>]
-					\__ConcatNode  at line 116  [<expression>]
-						\__ConcatNode  at line 116  [<expression>]
-							\__StringNode: "x: "  at line 116  
-							\__CallNode getX  at line 116   [<expression>]
-								\__IdentifierNode: pt : None   at line 116  
-						\__StringNode: "; y: "  at line 0  
-					\__CallNode getY  at line 116   [<expression>]
-						\__IdentifierNode: pt : None   at line 116  
+					\__NumberNode: 100  at line 78  
+				\__IdentifierNode: s : None   at line 78  
+			\__WhileNode  at line for: for, in [line:80]  [<expression>]
+				\_ Condition
+					\__IdentifierNode: s : None   at line 0  
+						\__CallNode next  at line 0   [<expression>]
+				\_ Body
+					\__LetNode  at line 80  [<expression>]
+						\__AssignNode:
+							\__IdentifierNode: elem : None   at line 80  
+							\__IdentifierNode: s : None   at line 0  
+								\__CallNode current  at line 0   [<expression>]
+						\__PrintNode  at line 81  [<expression>]
+							\__IdentifierNode: elem : None   at line 81  

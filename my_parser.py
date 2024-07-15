@@ -569,29 +569,7 @@ class CodeToAST:
 
 if __name__ == "__main__":
     text = '''
-            type A(id : string) 
-            {
-                id = id;
-                jump() : object => print(self.id);
-                greet() : object => print("Call me" @@ self.id);
-            }
-
-            type B(id : string, size : number) inherits A(id)
-            {
-                size = size;
-                jump() : object => print("My size is" @@ self.size);
-            }
-
-            type C inherits B { }
-
-            let a = new A("Pancho"), b = new B("Jenn", 20), c = new C("John", 30) in 
-            {
-                a.jump();
-                b.jump();
-                b.greet();
-                c.jump();
-                c.greet();
-            };
+        print(3+4-2*8/3-2/3**2 < 90 and 5+0 == 0 or true);
         '''
 
     codeToAST = CodeToAST(text)
