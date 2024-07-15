@@ -569,18 +569,29 @@ class CodeToAST:
 
 if __name__ == "__main__":
     text = '''
+            type A(id : string) 
             {
-                let a = 42, mod = a % 3 in
-                    print(
-                        if (mod == 0) "Magic";
-                        else "Dumb"
-                    );
-                let a = 10 in while (a >= 0) {
-                    print(a);
-                    a := a - 1;
-                };
-                print(a.b.c().d());
+                id = id;
+                jump() : object => print(self.id);
+                greet() : object => print("Call me" @@ self.id);
             }
+
+            type B(id : string, size : number) inherits A(id)
+            {
+                size = size;
+                jump() : object => print("My size is" @@ self.size);
+            }
+
+            type C inherits B { }
+
+            let a = new A("Pancho"), b = new B("Jenn", 20), c = new C("John", 30) in 
+            {
+                a.jump();
+                b.jump();
+                b.greet();
+                c.jump();
+                c.greet();
+            };
         '''
 
     codeToAST = CodeToAST(text)
