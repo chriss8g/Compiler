@@ -1,176 +1,19 @@
 \__.TYPES
-	\__TypeNode: type Point
-		\__TypeBodyNode
-			Atributes
-			\__LocalNode float x
-			\__LocalNode float y
-			Methods
-function_getX_at_Point(self:Point*);
-			 function_getY_at_Point(self:Point*);
-			 function_setX_at_Point(x:Number.self:Point*);
-			 function_setY_at_Point(y:Number.self:Point*); 
-	\__TypeNode: type PolarPoint
-		\__TypeBodyNode
-			Atributes
 
-			Methods
-function_rho_at_PolarPoint(self:PolarPoint*);
 \__.DATA
-	\__DataNode data_0 = "x: " 
-	\__DataNode data_1 = "; y: " 
-	\__DataNode data_2 = "x: " 
-	\__DataNode data_3 = "; y: " 
-	\__DataNode data_4 = "rho: "
+
 \__.CODE
-	 \__FunctionNode function <init_x_of_Point>
-		 \__params
-			\__ParamNode x
-			\__ParamNode y
-			\__ParamNode self
-		 \__local_vars
-			\__LocalNode float local__Point_internal_0
-			\__LocalNode float local__Point_internal_1
-			\__LocalNode Point* local__Point_internal_2
-		 \__instructions
-			\__AsignNode: local__Point_internal_0 = x
-			\__AsignNode: local__Point_internal_1 = y
-			\__AsignNode: local__Point_internal_2 = self
-			\__AsignNode: self->x = local__Point_internal_0
-			\__ReturnNode return local__Point_internal_0 
-	 \__FunctionNode function <init_y_of_Point>
-		 \__params
-			\__ParamNode x
-			\__ParamNode y
-			\__ParamNode self
-		 \__local_vars
-			\__LocalNode float local__Point_internal_0
-			\__LocalNode float local__Point_internal_1
-			\__LocalNode Point* local__Point_internal_2
-		 \__instructions
-			\__AsignNode: local__Point_internal_0 = x
-			\__AsignNode: local__Point_internal_1 = y
-			\__AsignNode: local__Point_internal_2 = self
-			\__AsignNode: self->y = local__Point_internal_1
-			\__ReturnNode return local__Point_internal_1 
-	 \__FunctionNode function <function_getX_at_Point>
-		 \__params
-			\__ParamNode self
-		 \__local_vars
-			\__LocalNode Point* local_getX_at_Point_internal_0
-		 \__instructions
-			\__AsignNode: local_getX_at_Point_internal_0 = self
-			\__ReturnNode return self->x 
-	 \__FunctionNode function <function_getY_at_Point>
-		 \__params
-			\__ParamNode self
-		 \__local_vars
-			\__LocalNode Point* local_getY_at_Point_internal_0
-		 \__instructions
-			\__AsignNode: local_getY_at_Point_internal_0 = self
-			\__ReturnNode return self->y 
-	 \__FunctionNode function <function_setX_at_Point>
-		 \__params
-			\__ParamNode x
-			\__ParamNode self
-		 \__local_vars
-			\__LocalNode float local_setX_at_Point_internal_0
-			\__LocalNode Point* local_setX_at_Point_internal_1
-		 \__instructions
-			\__AsignNode: local_setX_at_Point_internal_0 = x
-			\__AsignNode: local_setX_at_Point_internal_1 = self
-			\__AsignNode: self->x = local_setX_at_Point_internal_0
-			\__ReturnNode return local_setX_at_Point_internal_0 
-	 \__FunctionNode function <function_setY_at_Point>
-		 \__params
-			\__ParamNode y
-			\__ParamNode self
-		 \__local_vars
-			\__LocalNode float local_setY_at_Point_internal_0
-			\__LocalNode Point* local_setY_at_Point_internal_1
-		 \__instructions
-			\__AsignNode: local_setY_at_Point_internal_0 = y
-			\__AsignNode: local_setY_at_Point_internal_1 = self
-			\__AsignNode: self->y = local_setY_at_Point_internal_0
-			\__ReturnNode return local_setY_at_Point_internal_0 
-	 \__FunctionNode function <function_rho_at_PolarPoint>
-		 \__params
-			\__ParamNode self
-		 \__local_vars
-			\__LocalNode PolarPoint* local_rho_at_PolarPoint_internal_0
-			\__LocalNode float local_rho_at_PolarPoint_internal_1
-			\__LocalNode float local_rho_at_PolarPoint_internal_2
-		 \__instructions
-			\__AsignNode: local_rho_at_PolarPoint_internal_0 = self
-			\__AsignNode: local_rho_at_PolarPoint_internal_1 = [] + []
-			\__OurFunctionNode local_rho_at_PolarPoint_internal_2 = sqrt local_rho_at_PolarPoint_internal_1
-			\__ReturnNode return local_rho_at_PolarPoint_internal_2 
 	 \__FunctionNode function <main>
 		 \__params
 
 		 \__local_vars
-			\__LocalNode Point* local__internal_0
-			\__LocalNode char * local__internal_1
-			\__LocalNode char * local__internal_2
-			\__LocalNode char * local__internal_3
-			\__LocalNode char * local__internal_4
-			\__LocalNode char * local__internal_5
-			\__LocalNode char * local__internal_6
-			\__LocalNode char * local__internal_7
-			\__LocalNode char * local__internal_8
-			\__LocalNode int local__internal_9
-			\__LocalNode Point* local__internal_10
-			\__LocalNode char * local__internal_11
-			\__LocalNode char * local__internal_12
-			\__LocalNode char * local__internal_13
-			\__LocalNode char * local__internal_14
-			\__LocalNode char * local__internal_15
-			\__LocalNode char * local__internal_16
-			\__LocalNode char * local__internal_17
-			\__LocalNode char * local__internal_18
-			\__LocalNode int local__internal_19
-			\__LocalNode PolarPoint* local__internal_20
-			\__LocalNode char * local__internal_21
-			\__LocalNode char * local__internal_22
-			\__LocalNode char * local__internal_23
-			\__LocalNode int local__internal_24
+			\__LocalNode float local__internal_0
+			\__LocalNode float local__internal_1
+			\__LocalNode float local__internal_2
+			\__LocalNode int local__internal_3
 		 \__instructions
-			{
-
-			\CallNode local__internal_0 = ALOCATE Point
-init_x_of_Point(local__internal_0);
-init_y_of_Point(local__internal_0);
-
-			\__LoadNode: local__internal_1 = LOAD data_0
-			\__AsignNode: local__internal_2 = local__internal_3
-			\__LoadNode: local__internal_4 = LOAD data_1
-			\__OurFunctionNode local__internal_6 = concat0 local__internal_2
-			\__AsignNode: local__internal_5 = local__internal_6
-			\__AsignNode: local__internal_7 = local__internal_8
-			\__OurFunctionNode local__internal_9 = printf local__internal_7
-			}
-
-			{
-
-			\CallNode local__internal_10 = ALOCATE Point
-init_x_of_Point(3, 4, local__internal_10);
-init_y_of_Point(3, 4, local__internal_10);
-
-			\__LoadNode: local__internal_11 = LOAD data_2
-			\__AsignNode: local__internal_12 = local__internal_13
-			\__LoadNode: local__internal_14 = LOAD data_3
-			\__OurFunctionNode local__internal_16 = concat0 local__internal_12
-			\__AsignNode: local__internal_15 = local__internal_16
-			\__AsignNode: local__internal_17 = local__internal_18
-			\__OurFunctionNode local__internal_19 = printf local__internal_17
-			}
-
-			{
-
-			\CallNode local__internal_20 = ALOCATE PolarPoint
-
-			\__LoadNode: local__internal_21 = LOAD data_4
-			\__AsignNode: local__internal_22 = local__internal_23
-			\__OurFunctionNode local__internal_24 = printf local__internal_22
-			}
-
+			\__AsignNode: local__internal_0 = 2
+			\__AsignNode: local__internal_1 = 4
+			\__OurFunctionNode local__internal_2 = pow local__internal_0
+			\__OurFunctionNode local__internal_3 = printf local__internal_2
 			\__ReturnNode return 0

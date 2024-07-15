@@ -97,6 +97,11 @@ class CodeGeneratorVisitor(object):
             if header not in self.headers:
                 self.headers.append(header)
             return f'{node.dest} = (float)({node.name}({node.op_nd})/{node.name}({node.source}));\n'
+        elif node.name == 'pow':
+            header = "#include <math.h>"
+            if header not in self.headers:
+                self.headers.append(header)
+            return f'{node.dest} = (float)({node.name}({node.source}, {node.op_nd}));\n'
         elif node.name == 'mod':
             return f'{node.dest} = (int){node.source} % (int){node.op_nd};\n'
         elif node.name == 'rand':

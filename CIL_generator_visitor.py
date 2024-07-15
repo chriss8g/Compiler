@@ -226,6 +226,16 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
         self.register_instruction(cil.OurFunctionNode(
             'log', dest, base, node.type, arg))
         return dest
+    
+    @visitor.when(hulk.PowNode)
+    def visit(self, node, scope):
+        node.type = update_types(node.type)
+        left = self.visit(node.left, scope.create_child_scope())
+        right = self.visit(node.right, scope.create_child_scope())
+        dest = self.define_internal_local(node.type)
+        self.register_instruction(cil.OurFunctionNode(
+            'pow', dest, left, node.type, right))
+        return dest
 
     @visitor.when(hulk.RandNode)
     def visit(self, node, scope):
