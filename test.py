@@ -26,7 +26,7 @@ class CompilerTestCase(unittest.TestCase):
 
         # Ejecuta el programa generado y guarda la salida
         with open(actual_output_path, 'w') as output_file:
-            subprocess.run(['./script.out'], stdout=output_file, stderr=subprocess.STDOUT)
+            subprocess.run(['./script.exe'], stdout=output_file, stderr=subprocess.STDOUT)
 
         # Compara el archivo de salida generado con el archivo de salida esperado
         self.assertTrue(filecmp.cmp(expected_output_path, actual_output_path), 
