@@ -66,8 +66,10 @@ class TypeBuilder:
             types.dict[param[0]] = param[1]
         self.current_type = self.context.get_type(node.name)
         self.visit(node.body, types.create_child())
-        for param in self.var.keys():
-            self.current_type.params.append((param, self.var[param]))
+        for param in types.dict.keys():
+            self.current_type.params.append((param, types.dict[param]))
+            if not types.dict[param]:
+                self.errors.append(f"line: {node.line} No se pudo inferir el tipo del parámetro '{param}' del tipo '{node.name}'")
         self.var = {}
         self.current_type = None
         return self.errors
@@ -86,29 +88,21 @@ class TypeBuilder:
                 param_types.append(param[1])
             self.current_type.define_method(
                 meth.name, param_names, param_types, meth.type)
-        
-
-
-        for param in self.var.keys():
-            self.current_type.params.append((param, self.var[param]))
-        self.var = {}
-        self.current_type = None
-        return self.errors
-
-    @visitor.when(hulk.TypeBodyDeclarationNode)
-    def visit(self, node, types):
-        
         return self.errors
 
     @visitor.when(hulk.AttributeNode)
     def visit(self, node, types):
         self.visit(node.value, types.create_child())
         if node.id.type:
+            if not node.value.type:
+                node.value.type = node.id.type
+                types.set_variable(node.value.name, node.id.type)
             if node.id.type != node.value.type:
                 self.errors.append(f"line: {node.line} No se puede asignar un '{node.value.type}' a un '{node.id.type}'")
         else:
             node.id.type = node.value.type
             node.type = node.value.type
+            types.set_variable(node.id.name, node.value.type)
         if not node.type:
             self.errors.append(
                 f"line: {node.line} No se pudo inferir el tipo del atributo '{node.id.name}'")
@@ -138,6 +132,14 @@ class TypeBuilder:
             self.errors.append(
                 f"line: {node.line} No se pudo inferir el tipo de retorno del método '{node.name}'")
         return self.errors
+    
+    @visitor.when(hulk.ObjectCreationNode)
+    def visit(self, node, types):
+        typex = self.context.get_type(node.type)
+        if len(node.args) != len(typex.params):
+            self.errors.append(f"line: {node.line} El tipo {node.type} debe ser inicializado con {len(typex.params)} parámetros")
+        # for param in typex.params:
+        #     if 
 
     @visitor.when(hulk.AssignNode)
     def visit(self, node, types):
@@ -148,6 +150,14 @@ class TypeBuilder:
         #     else:
         #         node.type = node.expr.type
         # except:
+        if node.id.type and not node.expr.type:
+            node.expr.type = node.id.type
+            self.var[node.expr.name] = node.id.type
+            self.visit(node.expr, types)
+        if not node.id.type and node.expr.type:
+            node.id.type = node.expr.type
+            self.var[node.id.name] = node.expr.type
+            self.visit(node.id, types)
         node.type = node.expr.type
         if node.id.type:
             if node.id.type != node.type:
