@@ -26,7 +26,8 @@ class CodeGeneratorVisitor(object):
         dotcode = "\n".join(self.visit(child, scope.create_child_scope())
                             for child in node.dotcode)
 
-        return f'{"\n".join(self.headers)}\n{dottypes}\n{"\n".join(self.aux)}\n{dotdata}\n{dotcode}'
+        jump = '\n'
+        return f'{f"{jump}".join(self.headers)}{jump}{dottypes}{jump}{f"{jump}".join(self.aux)}{jump}{dotdata}{jump}{dotcode}'
 
     @visitor.when(cil.TypeNode)
     def visit(self, node, scope):

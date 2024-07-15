@@ -50,8 +50,7 @@ class TypeBuilder:
                 f"No se pudo inferir el tipo de retorno de la función '{node.name}'")
         for param in self.context.get_func(node.name).params:
             if not param[1]:
-                self.errors.append(f"No se pudo inferir el tipo del parámetro '{
-                                   param[0]}' de la función '{node.name}'")
+                self.errors.append(f"No se pudo inferir el tipo del parámetro '{param[0]}' de la función '{node.name}'")
         node.params = self.context.get_func(node.name).params
         # print(node.args)
         return self.errors
@@ -90,8 +89,7 @@ class TypeBuilder:
         self.visit(node.value, self.types.create_child())
         if node.type:
             if node.type != node.value.type:
-                self.errors.append(f"No se puede asignar un '{
-                                   node.value.type}' a un '{node.type}'")
+                self.errors.append(f"No se puede asignar un '{node.value.type}' a un '{node.type}'")
         else:
             node.type = node.value.type
         if not node.type:
@@ -110,8 +108,7 @@ class TypeBuilder:
 
         for param in node.params:
             if not self.var[param[0]]:
-                self.errors.append(f"No se pudo inferir el tipo del parámetro '{
-                                   node.name}' del método '{node.name}'")
+                self.errors.append(f"No se pudo inferir el tipo del parámetro '{node.name}' del método '{node.name}'")
         
         if node.type:
             if node.type != node.body.type:
@@ -136,8 +133,7 @@ class TypeBuilder:
             node.type = node.expr.type
         if node.id.type:
             if node.id.type != node.type:
-                self.errors.append(f"No se puede asignar un '{
-                                   node.type}' a un '{node.id.type}'")
+                self.errors.append(f"No se puede asignar un '{node.type}' a un '{node.id.type}'")
         else:
             node.id.type = node.type
             self.types.dict[node.id.name] = node.type
@@ -209,8 +205,7 @@ class TypeBuilder:
         self.visit(node.id, self.types.create_child())
         self.visit(node.expr, self.types.create_child())
         if node.id.type != node.expr.type:
-            self.errors.append(f"No se puede asignar un '{
-                               node.expr.type}' a un '{node.id.type}'")
+            self.errors.append(f"No se puede asignar un '{node.expr.type}' a un '{node.id.type}'")
         else:
             node.type = node.id.type
         try:
@@ -228,8 +223,7 @@ class TypeBuilder:
             try:
                 fun = self.recurrent_type.get_method(node.name)
             except:
-                self.errors.append(f"El método '{node.name}' no está definido en '{
-                                   self.recurrent_type.name}'")
+                self.errors.append(f"El método '{node.name}' no está definido en '{self.recurrent_type.name}'")
                 return self.errors
             for i, arg in enumerate(node.args):
                 self.visit(arg, self.types.create_child())
@@ -238,8 +232,7 @@ class TypeBuilder:
                         arg.type = fun.param_types[i]
                         self.vist(arg)
                     else:
-                        self.errors.append(f"La función '{fun.name}' esperaba como argumento número {
-                                           i + 1} un '{fun.param_types[i]}' y recibió un '{arg.type}'")
+                        self.errors.append(f"La función '{fun.name}' esperaba como argumento número {i + 1} un '{fun.param_types[i]}' y recibió un '{arg.type}'")
             node.type = fun.return_type
         else:
             try:
@@ -256,8 +249,7 @@ class TypeBuilder:
                         arg.type = fun.params[i][1]
                         self.visit(arg, self.types.create_child())
                     else:
-                        self.errors.append(f"La función '{fun.name}' esperaba como argumento número {
-                                           i + 1} un '{fun.params[i][1]}' y recibió un '{arg.type}'")
+                        self.errors.append(f"La función '{fun.name}' esperaba como argumento número {i + 1} un '{fun.params[i][1]}' y recibió un '{arg.type}'")
             if fun.type:
                 if node.type and fun.type != node.type:
                      self.errors.append(f"La función '{fun.name}' es de tipo '{fun.type}' pero un llamado a esta es de tipo '{node.type}' ")

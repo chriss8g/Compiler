@@ -56,17 +56,17 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
             self.current_type.attributes.append(
                 cil.LocalNode(attribute.id.name, update_types(attribute.type)))
             sub_scope = scope.create_child_scope()
-            self.visit( hulk.MethodNode(
-                                f'init_{attribute.id.name}_of_{node.name}',
-                                hulk.AssignNode(
-                                        hulk.IdentifierNode(
-                                                f'self->{attribute.id.name}',
-                                                None, attribute.id.type),
-                                        attribute.value, 
-                                        'void'), 
-                                node.params + [('self', f'{node.name}*')],
-                                attribute.value.type), 
-                        sub_scope)
+            self.visit(hulk.MethodNode(
+                f'init_{attribute.id.name}_of_{node.name}',
+                hulk.AssignNode(
+                    hulk.IdentifierNode(
+                        f'self->{attribute.id.name}',
+                        None, attribute.id.type),
+                    attribute.value,
+                    'void'),
+                node.params + [('self', f'{node.name}*')],
+                attribute.value.type),
+                sub_scope)
 
         for method in node.body.methods:
             method.params.append(('self', f'{node.name}*'))
@@ -76,7 +76,9 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
             method.name = function_name
             self.visit(method, scope.create_child_scope())
 
-            text = function_name + '(' + ".".join([f'{i[0]}:{i[1]}' for i in method.params]) + ');'
+            text = function_name + \
+                '(' + \
+                ".".join([f'{i[0]}:{i[1]}' for i in method.params]) + ');'
             self.current_type.methods.append(text)
 
         self.current_type = parent_type
@@ -128,7 +130,8 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
         force = ''
         for i in self.context.get_type(node.type[:-1]).attributes:
-            force += f'init_{i.name}_of_{self.context.get_type(node.type[:-1]).name}({', '.join([ arg.lex for arg in (node.args + [hulk.StringNode(dest)]) ])});\n'
+            info = ', '.join([ arg.lex for arg in (node.args + [hulk.StringNode(dest)]) ])
+            force += f'init_{i.name}_of_{self.context.get_type(node.type[:-1]).name}({info});\n'
 
         self.register_instruction(cil.Force(force))
 
@@ -586,7 +589,8 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
             for x in scope.parent.parent.dict.keys():
                 if scope.parent.parent.dict[x] == name:
                     breakx = False
-            if breakx: continue
+            if breakx:
+                continue
 
             dest = self.define_internal_local(arg.type)
             scope.dict[name] = dest
@@ -626,9 +630,11 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
                 while (not stop):
                     var, stop = scope.get_variable_info(var)
 
-                func = self.to_function_name_in_type(child.name, node.type[:-1])
-                node.type = update_types(child.type) #!!!!!!!!!!!!!!!111
-                func += '(' + ", ".join(child.args) + (', ' if len(child.args) else '') + f'{var})'
+                func = self.to_function_name_in_type(
+                    child.name, node.type[:-1])
+                node.type = update_types(child.type)  # !!!!!!!!!!!!!!!111
+                func += '(' + ", ".join(child.args) + \
+                    (', ' if len(child.args) else '') + f'{var})'
         else:
 
             func = node.name
@@ -646,8 +652,7 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
         for child in node.args:
             params.append(self.visit(child, scope.create_child_scope()))
 
-        temp = f'{self.context2[node.name]
-                  }(' + ", ".join(child for child in params) + ")"
+        temp = f'{self.context2[node.name]}(' + ", ".join(child for child in params) + ")"
         dest = self.define_internal_local(node.type)
         self.register_instruction(cil.AssignNode(dest, temp))
 
