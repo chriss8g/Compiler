@@ -337,7 +337,6 @@ class CodeToAST:
             lambda h, s: BoolNode(s[1].lex, line=s[1].line),
             lambda h, s: StringNode(s[1].lex, line=s[1].line),
             lambda h, s: s[2],
-            # lambda h, s: s[1],
             lambda h, s: VectorNode(s[2], line=s[1].line),
             lambda h, s: VectorImplicitNode(s[2],s[4],s[8],s[10], line=s[1].line),
             lambda h, s: CallNode(s[1],[s[3],s[5]], line=s[2].line),
@@ -345,11 +344,6 @@ class CodeToAST:
             lambda h, s: VectorIndex(s[1].lex,s[3], line=s[2].line),
             lambda h, s: AsNode(s[1],s[3].lex, line=s[2].line),
             lambda h, s: s[1],
-
-            # Expresiones self
-            # lambda h, s: SelfNode(s[3]),
-            # lambda h, s: SelfNode(IdentifierNode(s[3],s[5])),
-            # lambda h, s: SelfNode(s[3]),
             
             # Objetos recurrentes
             lambda h, s: CallNode(s[1].lex, s[3], s[6], line=s[2].line),
@@ -526,7 +520,6 @@ class CodeToAST:
         aritmetic_atom %= false
         aritmetic_atom %= string
         aritmetic_atom %= opar + expr + cpar
-        # aritmetic_atom %= self_expr
         aritmetic_atom %= obrake + arg_expr + cbrake
         aritmetic_atom %= obrake + calc_expr + implicit + idnode + inx + rangex + opar + calc_expr + comma + calc_expr + cpar + cbrake
         aritmetic_atom %= rangex + opar + expr + comma + expr + cpar
@@ -534,11 +527,6 @@ class CodeToAST:
         aritmetic_atom %= idx + obrake + calc_expr + cbrake
         aritmetic_atom %= idnode + asx + idx
         aritmetic_atom %= recurrent_object
-
-        # Expresiones self
-        # self_expr %= selfx + dot + idnode
-        # self_expr %= selfx + dot + idx + dot + recurrent_object
-        # self_expr %= selfx + dot + recurrent_object
 
         # Expresiones recurrentes
         recurrent_object %= idx + opar + arg_expr + cpar + dot + recurrent_object
@@ -589,9 +577,18 @@ class CodeToAST:
 
 if __name__ == "__main__":
     text = '''
-            for (x in range(0,10)) {
-                print(x);
-            };
+            {
+                let a = 42, mod = a % 3 in
+                    print(
+                        if (mod == 0) "Magic";
+                        else "Dumb"
+                    );
+                let a = 10 in while (a >= 0) {
+                    print(a);
+                    a := a - 1;
+                };
+                print(a.b.c().d());
+            }
         '''
 
     codeToAST = CodeToAST(text)
