@@ -174,3 +174,6 @@ class OpenScope(InstructionNode):
 class CloseScope(InstructionNode):
     pass
 
+class Force(InstructionNode):
+    def __init__(self, body):
+        self.body = body

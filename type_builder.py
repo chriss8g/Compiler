@@ -86,18 +86,6 @@ class TypeBuilder:
                 param_types.append(param[1])
             self.current_type.define_method(
                 meth.name, param_names, param_types, meth.type)
-        
-
-
-        for param in self.var.keys():
-            self.current_type.params.append((param, self.var[param]))
-        self.var = {}
-        self.current_type = None
-        return self.errors
-
-    @visitor.when(hulk.TypeBodyDeclarationNode)
-    def visit(self, node, types):
-        
         return self.errors
 
     @visitor.when(hulk.AttributeNode)
