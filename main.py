@@ -38,7 +38,7 @@ def main(input_file):
 
         return
     
-    cil_generator = HULKToCILVisitor({})
+    cil_generator = HULKToCILVisitor(collector.context)
     output = cil_generator.visit(codeToAST.ast)
 
     from utils.my_format_visitor import FormatVisitor

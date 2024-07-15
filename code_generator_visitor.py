@@ -224,3 +224,7 @@ class CodeGeneratorVisitor(object):
     @visitor.when(cil.CloseScope)
     def visit(self, node, scope):
         return '}\n'
+
+    @visitor.when(cil.Force)
+    def visit(self, node, tabs=0):
+        return f'{node.body}\n'
