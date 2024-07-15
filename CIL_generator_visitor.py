@@ -21,6 +21,7 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
     def __init__(self, context):
         super().__init__(context)
+        self.types = {}
         self.context2 = {}
 
     @visitor.on('node')
@@ -48,9 +49,45 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
         parent_type = self.current_type
 
+        self.types[node.name] = node
         type_node = self.register_type(node.name)
 
         self.current_type = type_node
+
+        if node.base_type and node.base_type != hulk.OBJECT_TYPE:
+            
+
+            parent = self.types[node.base_type]
+
+            for attribute in parent.body.attributes:
+                self.current_type.attributes.append(
+                    cil.LocalNode(attribute.id.name, update_types(attribute.type)))
+                sub_scope = scope.create_child_scope()
+                self.visit(hulk.MethodNode(
+                    f'init_{attribute.id.name}_of_{node.name}',
+                    hulk.AssignNode(
+                        hulk.IdentifierNode(
+                            f'self->{attribute.id.name}',
+                            None, attribute.id.type),
+                        attribute.value,
+                        'void'),
+                    node.params + [('self', f'{node.name}*')],
+                    attribute.value.type),
+                    sub_scope)
+
+            for method in parent.body.methods:
+                its_methods = method.params[:-1]
+                its_methods.append(('self', f'{node.name}*'))
+
+                self.visit(method, scope.create_child_scope())
+
+                function_name = self.to_function_name_in_type(
+                    method.name, node.name)
+                
+                text = function_name + \
+                    '(' + \
+                    ".".join([f'{i[0]}:{i[1]}' for i in its_methods]) + ');'
+                self.current_type.methods.append(text)
 
         for attribute in node.body.attributes:
             self.current_type.attributes.append(
@@ -69,13 +106,15 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
                 sub_scope)
 
         for method in node.body.methods:
-            method.params.append(('self', f'{node.name}*'))
-            function_name = self.to_function_name_in_type(
-                method.name, node.name)
 
-            method.name = function_name
+            # if not node.base_type or node.base_type == hulk.OBJECT_TYPE:
+            method.params.append(('self', f'{node.name}*'))
+
             self.visit(method, scope.create_child_scope())
 
+            function_name = self.to_function_name_in_type(
+                method.name, node.name)
+            
             text = function_name + \
                 '(' + \
                 ".".join([f'{i[0]}:{i[1]}' for i in method.params]) + ');'
@@ -89,7 +128,7 @@ class HULKToCILVisitor(BaseHULKToCILVisitor):
 
         parent = self.current_function
 
-        function_name = node.name
+        function_name = self.to_function_name_in_type(node.name, self.current_type.name)
         self.context2[node.name] = function_name
         self.current_function = self.register_function(
             function_name, node.type)
