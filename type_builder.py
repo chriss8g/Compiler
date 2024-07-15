@@ -30,6 +30,10 @@ class TypeBuilder:
         for param in node.params: # Actualiza var con los parametros de la funcion
             self.var[param[0]] = param[1]
             types.dict[param[0]] = param[1]
+        # self.context.get_func(node.name).params = []
+        # for param in self.var.keys():
+        #     self.context.get_func(node.name).params.append(     
+        #         (param, self.var[param]))
         self.visit(node.body, types.create_child())
 
         self.context.get_func(node.name).params = [] # Inicializa la funcion del contexto con los params empty
@@ -91,6 +95,7 @@ class TypeBuilder:
             if node.id.type != node.value.type:
                 self.errors.append(f"line: {node.line} No se puede asignar un '{node.value.type}' a un '{node.id.type}'")
         else:
+            node.id.type = node.value.type
             node.type = node.value.type
         if not node.type:
             self.errors.append(
@@ -102,13 +107,14 @@ class TypeBuilder:
         self.var = {}
         for param in node.params:
             self.var[param[0]] = param[1]
+            types.dict[param[0]] = param[1]
         self.visit(node.body, types.create_child())
 
         node.params = [(param[0], self.var[param[0]]) for param in node.params]
 
         for param in node.params:
             if not self.var[param[0]]:
-                self.errors.append(f"line: {node.line} No se pudo inferir el tipo del parámetro '{node.name}' del método '{node.name}'")
+                self.errors.append(f"line: {node.line} No se pudo inferir el tipo del parámetro '{param[0]}' del método '{node.name}'")
         
         if node.type:
             if node.type != node.body.type:
@@ -136,7 +142,8 @@ class TypeBuilder:
                 self.errors.append(f"line: {node.line} No se puede asignar un '{node.type}' a un '{node.id.type}'")
         else:
             node.id.type = node.type
-            types.dict[node.id.name] = node.type
+            # types.dict[node.id.name] = node.type
+            types.set_variable(node.id.name, node.type)
         return self.errors
 
     @visitor.when(hulk.BlockNode)
@@ -202,8 +209,16 @@ class TypeBuilder:
 
     @visitor.when(hulk.DestructNode)
     def visit(self, node, types):
-        self.visit(node.id, types.create_child())
-        self.visit(node.expr, types.create_child())
+        self.visit(node.id, types)
+        self.visit(node.expr, types)
+        if node.id.type and not node.expr.type:
+            node.expr.type = node.id.type
+            self.var[node.expr.name] = node.id.type
+            self.visit(node.expr, types)
+        if not node.id.type and node.expr.type:
+            node.id.type = node.expr.type
+            self.var[node.id.name] = node.expr.type
+            self.visit(node.id, types)
         if node.id.type != node.expr.type:
             self.errors.append(f"line: {node.line} No se puede asignar un '{node.expr.type}' a un '{node.id.type}'")
         else:
@@ -225,7 +240,7 @@ class TypeBuilder:
                 node.parent.type = self.current_type.name
             try:
                 typex = self.context.get_type(node.parent.type)
-                fun = typex.getmethod(node.name)
+                fun = typex.get_method(node.name)
             except:
                 self.errors.append(f"line: {node.line} El método '{node.name}' no está definido en '{self.context.get_type(node.parent.type).name}'")
                 return self.errors
@@ -250,10 +265,10 @@ class TypeBuilder:
                 params = list(self.var.values()) if len(fun.params) == 0 else [i[1] for i in fun.params]
                 if arg.type != params[i]:
                     if not arg.type:
-                        arg.type = fun.params[i][1]
+                        arg.type = params[i]
                         self.visit(arg, types.create_child())
                     else:
-                        self.errors.append(f"line: {node.line} La función '{fun.name}' esperaba como argumento número {i + 1} un '{fun.params[i][1]}' y recibió un '{arg.type}'")
+                        self.errors.append(f"line: {node.line} La función '{fun.name}' esperaba como argumento número {i + 1} un '{params[i]}' y recibió un '{arg.type}'")
             if fun.type:
                 if node.type and fun.type != node.type:
                      self.errors.append(f"line: {node.line} La función '{fun.name}' es de tipo '{fun.type}' pero un llamado a esta es de tipo '{node.type}' ")
@@ -287,9 +302,11 @@ class TypeBuilder:
         if not node.left.type:
             node.left.type = hulk.NUMBER_TYPE
             self.visit(node.left, types.create_child())
+            types.set_variable(node.left.name, hulk.NUMBER_TYPE)
         if not node.right.type:
             node.right.type = hulk.NUMBER_TYPE
             self.visit(node.right, types.create_child())
+            types.set_variable(node.right.name, hulk.NUMBER_TYPE)
         if node.left.type != hulk.NUMBER_TYPE or node.right.type != hulk.NUMBER_TYPE:
             self.errors.append(
                 f"line: {node.line} La operación + solo esta definida entre números")
@@ -319,9 +336,11 @@ class TypeBuilder:
         if not node.left.type:
             node.left.type = hulk.NUMBER_TYPE
             self.visit(node.left, types.create_child())
+            types.set_variable(node.left.name, hulk.NUMBER_TYPE)
         if not node.right.type:
             node.right.type = hulk.NUMBER_TYPE
             self.visit(node.right, types.create_child())
+            types.set_variable(node.right.name, hulk.NUMBER_TYPE)
         if node.left.type != hulk.NUMBER_TYPE or node.right.type != hulk.NUMBER_TYPE:
             self.errors.append(
                 f"line: {node.line} La operación - solo esta definida entre números")
@@ -351,9 +370,11 @@ class TypeBuilder:
         if not node.left.type:
             node.left.type = hulk.NUMBER_TYPE
             self.visit(node.left, types.create_child())
+            types.set_variable(node.left.name, hulk.NUMBER_TYPE)
         if not node.right.type:
             node.right.type = hulk.NUMBER_TYPE
             self.visit(node.right, types.create_child())
+            types.set_variable(node.right.name, hulk.NUMBER_TYPE)
         if node.left.type != hulk.NUMBER_TYPE or node.right.type != hulk.NUMBER_TYPE:
             self.errors.append(
                 f"line: {node.line} La operación * solo esta definida entre números")
@@ -383,9 +404,11 @@ class TypeBuilder:
         if not node.left.type:
             node.left.type = hulk.NUMBER_TYPE
             self.visit(node.left, types.create_child())
+            types.set_variable(node.left.name, hulk.NUMBER_TYPE)
         if not node.right.type:
             node.right.type = hulk.NUMBER_TYPE
             self.visit(node.right, types.create_child())
+            types.set_variable(node.right.name, hulk.NUMBER_TYPE)
         if node.left.type != hulk.NUMBER_TYPE or node.right.type != hulk.NUMBER_TYPE:
             self.errors.append(
                 f"line: {node.line} La operación / solo esta definida entre números")
@@ -426,9 +449,11 @@ class TypeBuilder:
         if not node.left.type:
             node.left.type = hulk.NUMBER_TYPE
             self.visit(node.left, types.create_child())
+            types.set_variable(node.left.name, hulk.NUMBER_TYPE)
         if not node.right.type:
             node.right.type = hulk.NUMBER_TYPE
             self.visit(node.right, types.create_child())
+            types.set_variable(node.right.name, hulk.NUMBER_TYPE)
         if node.left.type != hulk.NUMBER_TYPE or node.right.type != hulk.NUMBER_TYPE:
             self.errors.append(
                 f"line: {node.line} La operación ^ solo esta definida entre números")
@@ -456,9 +481,11 @@ class TypeBuilder:
         if not node.left.type:
             node.left.type = hulk.NUMBER_TYPE
             self.visit(node.left, types.create_child())
+            types.set_variable(node.left.name, hulk.NUMBER_TYPE)
         if not node.right.type:
             node.right.type = hulk.NUMBER_TYPE
             self.visit(node.right, types.create_child())
+            types.set_variable(node.right.name, hulk.NUMBER_TYPE)
         if node.left.type != hulk.NUMBER_TYPE or node.right.type != hulk.NUMBER_TYPE:
             self.errors.append(
                 f"line: {node.line} La operación % solo esta definida entre números")
@@ -486,9 +513,11 @@ class TypeBuilder:
         if not node.left.type:
             node.left.type = hulk.NUMBER_TYPE
             self.visit(node.left, types.create_child())
+            types.set_variable(node.left.name, hulk.NUMBER_TYPE)
         if not node.right.type:
             node.right.type = hulk.NUMBER_TYPE
             self.visit(node.right, types.create_child())
+            types.set_variable(node.right.name, hulk.NUMBER_TYPE)
         if node.left.type != hulk.NUMBER_TYPE or node.right.type != hulk.NUMBER_TYPE:
             self.errors.append(
                 f"line: {node.line} La operación == solo esta definida entre números")
@@ -516,9 +545,11 @@ class TypeBuilder:
         if not node.left.type:
             node.left.type = hulk.NUMBER_TYPE
             self.visit(node.left, types.create_child())
+            types.set_variable(node.left.name, hulk.NUMBER_TYPE)
         if not node.right.type:
             node.right.type = hulk.NUMBER_TYPE
             self.visit(node.right, types.create_child())
+            types.set_variable(node.right.name, hulk.NUMBER_TYPE)
         if node.left.type != hulk.NUMBER_TYPE or node.right.type != hulk.NUMBER_TYPE:
             self.errors.append(
                 f"line: {node.line} La operación > solo esta definida entre números")
@@ -546,9 +577,11 @@ class TypeBuilder:
         if not node.left.type:
             node.left.type = hulk.NUMBER_TYPE
             self.visit(node.left, types.create_child())
+            types.set_variable(node.left.name, hulk.NUMBER_TYPE)
         if not node.right.type:
             node.right.type = hulk.NUMBER_TYPE
             self.visit(node.right, types.create_child())
+            types.set_variable(node.right.name, hulk.NUMBER_TYPE)
         if node.left.type != hulk.NUMBER_TYPE or node.right.type != hulk.NUMBER_TYPE:
             self.errors.append(
                 f"line: {node.line} La operación < solo esta definida entre números")
@@ -576,9 +609,11 @@ class TypeBuilder:
         if not node.left.type:
             node.left.type = hulk.NUMBER_TYPE
             self.visit(node.left, types.create_child())
+            types.set_variable(node.left.name, hulk.NUMBER_TYPE)
         if not node.right.type:
             node.right.type = hulk.NUMBER_TYPE
             self.visit(node.right, types.create_child())
+            types.set_variable(node.right.name, hulk.NUMBER_TYPE)
         if node.left.type != hulk.NUMBER_TYPE or node.right.type != hulk.NUMBER_TYPE:
             self.errors.append(
                 f"line: {node.line} La operación >= solo esta definida entre números")
@@ -606,9 +641,11 @@ class TypeBuilder:
         if not node.left.type:
             node.left.type = hulk.NUMBER_TYPE
             self.visit(node.left, types.create_child())
+            types.set_variable(node.left.name, hulk.NUMBER_TYPE)
         if not node.right.type:
             node.right.type = hulk.NUMBER_TYPE
             self.visit(node.right, types.create_child())
+            types.set_variable(node.right.name, hulk.NUMBER_TYPE)
         if node.left.type != hulk.NUMBER_TYPE or node.right.type != hulk.NUMBER_TYPE:
             self.errors.append(
                 f"line: {node.line} La operación <= solo esta definida entre números")
@@ -636,9 +673,11 @@ class TypeBuilder:
         if not node.left.type:
             node.left.type = hulk.NUMBER_TYPE
             self.visit(node.left, types.create_child())
+            types.set_variable(node.left.name, hulk.NUMBER_TYPE)
         if not node.right.type:
             node.right.type = hulk.NUMBER_TYPE
             self.visit(node.right, types.create_child())
+            types.set_variable(node.right.name, hulk.NUMBER_TYPE)
         if node.left.type != hulk.NUMBER_TYPE or node.right.type != hulk.NUMBER_TYPE:
             self.errors.append(
                 f"line: {node.line} La operación != solo esta definida entre números")
@@ -666,9 +705,11 @@ class TypeBuilder:
         if not node.left.type:
             node.left.type = hulk.BOOL_TYPE
             self.visit(node.left, types.create_child())
+            types.set_variable(node.left.name, hulk.BOOL_TYPE)
         if not node.right.type:
             node.right.type = hulk.BOOL_TYPE
             self.visit(node.right, types.create_child())
+            types.set_variable(node.right.name, hulk.BOOL_TYPE)
         if node.left.type != hulk.BOOL_TYPE or node.right.type != hulk.BOOL_TYPE:
             self.errors.append(
                 f"line: {node.line} La operación & solo esta definida entre booleanos")
@@ -696,9 +737,11 @@ class TypeBuilder:
         if not node.left.type:
             node.left.type = hulk.BOOL_TYPE
             self.visit(node.left, types.create_child())
+            types.set_variable(node.left.name, hulk.BOOL_TYPE)
         if not node.right.type:
             node.right.type = hulk.BOOL_TYPE
             self.visit(node.right, types.create_child())
+            types.set_variable(node.right.name, hulk.BOOL_TYPE)
         if node.left.type != hulk.BOOL_TYPE or node.right.type != hulk.BOOL_TYPE:
             self.errors.append(
                 f"La operación | solo esta definida entre booleanos")
@@ -718,6 +761,7 @@ class TypeBuilder:
         if not node.lex.type:
             node.lex.type = hulk.BOOL_TYPE
             self.visit(node.lex, types.create_child())
+            types.set_variable(node.lex.name, hulk.BOOL_TYPE)
         if node.lex.type != hulk.BOOL_TYPE:
             self.errors.append(
                 f"line: {node.line} La operación ! solo esta definida para booleanos")
@@ -746,11 +790,25 @@ class TypeBuilder:
     def visit(self, node, types):
         if not node.type:
             node.type = types.get_variable_info(node.name)
+            if self.current_type and node.parent and node.parent == 'self':
+                node.type = self.current_type.get_attribute(node.name).type
         else:
+            types.set_variable(node.name, node.type)
             if(node.name in self.var.keys()):
                 self.var[node.name] = node.type
-            types.dict[node.name] = node.type
-
+            # types.dict[node.name] = node.type
+        if node.name == 'self' and self.current_type:
+            node.type = self.current_type.name
+        if node.parent:
+            if node.parent.name == 'self':
+                self.visit(node.parent, types.create_child())
+                typex = self.context.get_type(node.parent.type)
+                try:
+                    attr = typex.get_attribute(node.name)
+                    node.type = attr.type
+                except:
+                    self.errors.append(f"line: {node.line} El atributo {node.name} no se encuentra definido en el tipo {node.parent.name}")
+                
         # if node.child:
         #     if node.type:
         #         self.recurrent_type = self.context.get_type(node.type)
@@ -831,9 +889,11 @@ class TypeBuilder:
         if not node.base.type:
             node.base.type = hulk.NUMBER_TYPE
             self.visit(node.base, types.create_child())
+            types.set_variable(node.left.name, hulk.NUMBER_TYPE)
         if not node.arg.type:
             node.arg.type = hulk.NUMBER_TYPE
             self.visit(node.arg, types.create_child())
+            types.set_variable(node.right.name, hulk.NUMBER_TYPE)
         if node.base.type != hulk.NUMBER_TYPE or node.arg.type != hulk.NUMBER_TYPE:
             self.errors.append(
                 f"line: {node.line} La operación log solo esta definida entre números")
